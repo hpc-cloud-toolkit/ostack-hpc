@@ -36,8 +36,8 @@ USECASE=1
 source common_functions
 
 usage () {
-  echo "USAGE: $0 [-f] [-h] [-i=<input.local>] [-n=<cloud_node_inventory>]"
-  echo " -u,--usecase       Select use case, 1 or 2"
+  echo "USAGE: $0 [-f] [-h] [-c] [-o] [-p] [-i=<input.local>] [-n=<cloud_node_inventory>] [-u=<use case id>]"
+  echo " -u,--usecase       Select use case, 1 or 2." 
   echo " -c,--openhpc       Install OpenHPC using the OpenHPC installation recipe"
   echo " -f,--forced        Forced run, run all sections with no prompt"
   echo " -h,--help          Print this message"

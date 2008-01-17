@@ -1,10 +1,12 @@
 This directory "hpc/recipe/1_combined_controller" maintains the recipes for use
-case 1, where the OpenStack controller node and HPC head node are the same.
+case 1, where the OpenStack controller node and HPC head node are the same 
+physical node in a cloud system.
 Below are the scripts called to create the environment for use case 1:
 
 file: set_os_hpc
 ================
-This is the script to setup HPC in OpenStack Cloud. To perform the job it 
+This is the script to setup HPC in OpenStack Cloud. This script is called by 
+setup_cloud_hpc.sh if user provides a "-u=1" input to it. To perform the job it 
 execute other scripts.
 
 file: prepare_cloud_init

@@ -24,7 +24,7 @@ This generates HPC images for provisioning bare metal cloud nodes. It generates
      One user image
          3. icloud-hpc-cent7.qcow2
 		 
-File: deploy_chpc_openstack
+file: deploy_chpc_openstack
 ===========================
 This script deploy baremetal nodes in an openstack using nova, ironic, neutron 
 and glance by using cloudinit recipe (prepare under prepare_cloudInit) and HPC
