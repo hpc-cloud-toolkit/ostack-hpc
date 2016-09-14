@@ -1,0 +1,30 @@
+#!/bin/bash
+# It installs lmod
+
+if [ ${DIB_DEBUG_TRACE:-0} -gt 0 ]; then
+    set -x
+fi
+set -eu
+set -o pipefail
+
+#install ntp, kernel, lmod and pdsh
+install-packages -m ntp kernel lmod-$DIB_HPC_BASE pdsh-$DIB_HPC_BASE
+
+# Configure the rsyslog 
+if [ -e /etc/rsyslog.conf ]; then
+    #comment out unwanted messages, reduce noice
+    sed -e "s/^\*\.info/\\#\*\.info/" /etc/rsyslog.conf
+    sed -e "s/^authpriv/\\#authpriv/" /etc/rsyslog.conf
+    sed -e "s/^mail/\\#mail/" /etc/rsyslog.conf
+    sed -e "s/^cron/\\#cron/" /etc/rsyslog.conf
+    sed -e "s/^uucp/\\#uucp/" /etc/rsyslog.conf
+    #restart the rsyslog
+    case "$DIB_INIT_SYSTEM" in
+    systemd)
+        systemctl restart rsyslog
+    *)
+        echo "Unsupported init system"
+        exit 1
+        ;;
+fi
+

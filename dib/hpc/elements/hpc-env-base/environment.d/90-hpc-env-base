@@ -1,0 +1,3 @@
+# Base can be ohpc (OpenHPC) or orch (HPC Orchestrator) 
+# Defauilt is ohpc
+export DIB_HPC_BASE=${DIB_HPC_BASE:-ohpc}
