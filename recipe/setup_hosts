@@ -1,0 +1,9 @@
+# setup /etc/hosts  to resolve the compute node names
+function setup_hosts () {
+    echo "#### Cloud-HPC nodes entry, entered by HPC Orchestrator ####" >> /etc/hosts
+    # first search if nodes are already configured if yes then do not configure again, so that it can be re-run
+    for ((i=0; i<$num_computes; i++)) ; do
+       echo -e "${cc_ip[$i]}\t${cc_name[$i]}.localdomain ${cc_name[$i]} ${cc_name[$i]}-$sms_eth_internal.localdomain ${cc_name[$i]}-$sms_eth_internal"
+    done >> /etc/hosts
+}
+

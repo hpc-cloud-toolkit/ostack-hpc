@@ -1,0 +1,28 @@
+#!bin/bash
+chpcInitPath=/tmp/CloudHPCInit
+# if directory exists then mv to Old directory. TBD
+mkdir -p $chpcInitPath
+#copy Cloud HPC files to temp working directory
+sudo cp -fr -L $CHPC_SCRIPTDIR/CloudHPCInit/* $chpcInitPath/
+chpcInit=$chpcInitPath/chpcInit
+
+#update sms_ip to the scripts
+sudo sed -i -e 's/<sms_id>/${sms_ip}/g' $chpcInit
+#
+# Update basic slurm configuration at sms node
+perl -pi -e "s/^NodeName=(\S+)/NodeName=${nodename_prefix}[1-${num_computes}]/" /etc/slurm/slurm.conf
+perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=${nodename_prefix}[1-${num_computes}]/" /etc/slurm/slurm.conf
+# copy slurm file to Nodes
+cp -fr -L /etc/slurm/slurm.conf $chpcInitPath
+#perl -pi -e "s/^NodeName=(\S+)/NodeName=${nodename_prefix}[1-${num_computes}]/" $CHROOT/etc/slurm/slurm.conf
+#perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=${nodename_prefix}[1-${num_computes}]/" $CHROOT/etc/slurm/slurm.conf
+#echo "# sync passwd, group, shadow, slurm.conf, munge.key" >> $chpcInit
+#
+##
+# Copy other files needed for Cloud Init
+sudo cp -fr /etc/passwd $chpcInitPath
+sudo cp -fr /etc/shadow $chpcInitPath
+sudo cp -fr /etc/group $chpcInitPath
+sudo cp -fr /etc/slurm/slurm.conf $chpcInitPath
+sudo cp -fr /etc/pam.d/slurm $chpcInitPath
+sudo cp -fr /etc/munge/munge.key $chpcInitPath

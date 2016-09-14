@@ -1,0 +1,20 @@
+#!/bin/bash
+# =========================
+# Prepare OpenStack for HPC baremetal instances
+# ========================
+# This script prepares Openstack for Instantiating baremetal nodes via ironic
+# This depends on an inventory of baremetal node
+# This script assumes that Openstack is already installed on controller node
+# Assumes ironic is installed and configure to use pxe_ipmi driver
+# TBD: run this script remotely from head node on openstack controller node
+
+# - BKM: make sure selinux is permissive
+# - Read Inventory file
+# - Create flavor via Nova
+# - Create user, tenant and projects in nova
+# - check if flat network exists if not then create flat network via neytron
+# - Create provider subnet and available IP addresses via Neutron
+# - Register nodes with ironic
+# - Register deploy images with ironic
+# - Register User Images with ironic
+# - At the end we should get IP addresses for each compute node, and update inventory file accordingly

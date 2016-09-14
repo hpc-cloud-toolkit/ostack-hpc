@@ -1,0 +1,39 @@
+#!/bin/bash
+#
+
+
+# nfs mount directoruy from SMS head node to Compute Node
+echo "<sms_ip>:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" >> /etc/fstab
+echo "<sms_ip>:/opt/intel/hpc-orchestrator/pub /opt/intel/hpc-orchestrator/pub nfs nfsvers=3 0 0" >> /etc/fstab
+echo "server <sms_ip>" >> /etc/ntp.conf
+# Restart nfs
+systemctl restart nfs
+# Restart ntp at CN
+systemctl enable ntpd
+# Update ntp server
+echo "server <sms_ip>" >> /etc/ntp.conf
+systemctl restart ntpd
+#
+# Copy slurm file: 
+# TBD: this should happen in parent script at HN
+#cp -f /etc/slurm/slurm.conf $chpcInitPath/
+
+#TBD Extend nodes here
+# Update basic slurm configuration
+perl -pi -e "s/^NodeName=(\S+)/NodeName=${nodename_prefix}[1-${num_computes}]/" slurm.conf
+perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=${nodename_prefix}[1-${num_computes}]/" /etc/slurm/slurm.conf
+#perl -pi -e "s/^NodeName=(\S+)/NodeName=${nodename_prefix}[1-${num_computes}]/" $CHROOT/etc/slurm/slurm.conf
+#perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=${nodename_prefix}[1-${num_computes}]/" $CHROOT/etc/slurm/slurm.conf
+# Now update the slurm file
+cp -f slurm.conf /etc/slurm/slurm.conf
+# Update rsyslog
+$Update  rsyslog
+echo "*.* @<sms_ip>:514" >> /etc/rsyslog.conf
+systemctl restart rsyslog
+#Sync following files to compute node
+cp -f -L passwd /etc/passwd
+cp -f -L group /etc/group
+cp -f -L shadow /etc/shadow 
+cp -f -L slurm.conf /etc/slurm/slurm.conf
+cp -f -L slurm /etc/pam.d/slurm
+cp -f -L munge.key /etc/munge/munge.key
