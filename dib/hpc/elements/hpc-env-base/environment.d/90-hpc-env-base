@@ -1,3 +1,6 @@
 # Base can be ohpc (OpenHPC) or orch (HPC Orchestrator) 
 # Defauilt is ohpc
 export DIB_HPC_BASE=${DIB_HPC_BASE:-ohpc}
+
+# This variable will configure user from host, running this script. By defualt it is 0. should be 1 to configure
+#export DIB_HPC_KEEP_USERS=${DIB_HPC_KEEP_USERS=:-0}  

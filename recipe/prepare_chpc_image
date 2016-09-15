@@ -16,11 +16,12 @@ export DIB_DEV_USER_PWDLESS_SUDO=1
 # For debugging enable DEBUG_TRACE
 #export DIB_DEBUG_TRACE=1
 # Add our custom element path
-export ELEMENTS_PATH=/home/ppk/PPK/dib/dev/hpc/elements
+export ELEMENTS_PATH="$( realpath ../elements)"
+chpc_image_deply_kernel="$( readlink icloud-hpc-deploy-c7.kernel)"
 # define base for image as ohpc or orch. we are using orch
 export DIB_HPC_BASE=orch
 # for orch define Packge path
-export DIB_HPC_ORCH_PKG=/home/ppk/Downloads/HPC-Orchestrator-rhel7.2u5-16.01.002.beta.iso
+#export DIB_HPC_ORCH_PKG=/home/ppk/Downloads/HPC-Orchestrator-rhel7.2u5-16.01.002.beta.iso
 #Path to HPC base yum repo file
 if [ ${DIB_HPC_BASE} == "orch" ]; then
     export DIB_YUM_REPO_CONF=/etc/yum.repos.d/HPC_Orchestrator.repo

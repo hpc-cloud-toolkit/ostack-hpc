@@ -9,6 +9,7 @@ set -o pipefail
 case "$DIB_INIT_SYSTEM" in
     systemd)
         systemctl enable xinetd
+        ;;
     *)
         echo "Unsupported init system"
         exit 1

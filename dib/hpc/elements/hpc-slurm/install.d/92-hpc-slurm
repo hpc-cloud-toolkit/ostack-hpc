@@ -8,7 +8,7 @@ set -eu
 set -o pipefail
 
 #install slurm
-install-packages -m -g $DIB_HPC_BASE-slurm-client
+install-packages -g $DIB_HPC_BASE-slurm-client
 
 # Update slurm pam module for mrsh and mrlogin
 if [[ -f "/etc/pam.d/mrsh" && -f "etc/pam.d/mrlogin" ]]; then

@@ -8,4 +8,4 @@ set -eu
 set -o pipefail
 
 #install ntp, kernel, lmod and pdsh
-install-packages -m mrsh-$DIB_HPC_BASE mrsh-rsh-compat-$DIB_HPC_BASE mrsh-server-$DIB_HPC_BASE
+install-packages mrsh-$DIB_HPC_BASE mrsh-rsh-compat-$DIB_HPC_BASE mrsh-server-$DIB_HPC_BASE

@@ -8,7 +8,11 @@ set -eu
 set -o pipefail
 
 #install ntp, kernel, lmod and pdsh
-install-packages -m ntp kernel lmod-$DIB_HPC_BASE pdsh-$DIB_HPC_BASE
+install-packages ntp kernel lmod-$DIB_HPC_BASE pdsh-$DIB_HPC_BASE
+#install infiniband support
+# TBD need to try with element mellanox, if that work then need to remove following 2 lines
+install-packages -g "InfiniBand Support"
+install-packages  infinipath-psm
 
 # Configure the rsyslog 
 if [ -e /etc/rsyslog.conf ]; then
@@ -20,11 +24,17 @@ if [ -e /etc/rsyslog.conf ]; then
     sed -e "s/^uucp/\\#uucp/" /etc/rsyslog.conf
     #restart the rsyslog
     case "$DIB_INIT_SYSTEM" in
-    systemd)
-        systemctl restart rsyslog
-    *)
-        echo "Unsupported init system"
-        exit 1
-        ;;
+        systemd)
+            systemctl restart rsyslog
+            #enable infiniBand
+            systemctl enable rdma
+            # update mem limit
+            sed -i -- 's/# End of file/\* hard memlock unlimited\n&/' /etc/security/limits.conf
+            ;;
+        *)
+            echo "Unsupported init system"
+            exit 1
+            ;;
+    esac
 fi
 
