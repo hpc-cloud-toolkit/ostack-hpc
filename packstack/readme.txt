@@ -109,7 +109,6 @@ cleaning_network_uuid = 4d5fd01c-4be6-4de2-b24e-68df725b809b
 # this should be the tftp server ip that is reachable from baremetal nodes physnet1 for pxe process
 tftp_server=10.0.2.9
 
-
 You need to restart the relevant openstack services for changges to the above ini or conf files.
 systemctl restart neutron-dhcp-agent
 systemctl restart neutron-openvswitch-agent
@@ -117,4 +116,39 @@ systemctl restart neutron-metadata-agent
 systemctl restart openstack-nova-scheduler
 systemctl restart openstack-nova-compute
 systemctl restart openstack-ironic-conductor
+
+------------
+Install TFTP
+------------
+# PackStack does not install tftp
+mkdir -p /tftpboot
+chown -R ironic /tftpboot
+yum install -y tftp-server syslinux-tftpboot xinetd
+
+# Edit /etc/xinetd.d/tftp with the following content
+service tftp
+{
+  protocol        = udp
+  port            = 69
+  socket_type     = dgram
+  wait            = yes
+  user            = root
+  server          = /usr/sbin/in.tftpd
+  server_args     = -v -v -v -v -v --map-file /tftpboot/map-file /tftpboot
+  disable         = no
+  # This is a workaround for Fedora, where TFTP will listen only on
+  # IPv6 endpoint, if IPv4 flag is not used.
+  flags           = IPv4
+}
+
+cd /usr/share/syslinux/
+cp pxelinux.0 menu.c32 memdisk mboot.c32 chain.c32 /tftpboot
+
+echo 're ^(/tftpboot/) /tftpboot/\2' > /tftpboot/map-file
+echo 're ^/tftpboot/ /tftpboot/' >> /tftpboot/map-file
+echo 're ^(^/) /tftpboot/\1' >> /tftpboot/map-file
+echo 're ^([^/]) /tftpboot/\1' >> /tftpboot/map-file
+
+# Restart xinetd
+systemctl restart xinetd
 
