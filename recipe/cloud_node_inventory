@@ -1,6 +1,6 @@
 # list Compute nodes
 # Prefix for compute node hostnames
-nodename_prefix="${nodename_prefix:-cc}"
+cnodename_prefix="${cnodename_prefix:-cc}"
 
 
 # cloud compute node IP addresses

@@ -30,55 +30,5 @@ prepare_chpc_openstack
 # Prepare SMS/Service Node. 
 # Add Cloud baremetal nodes to HPC Orchestrator
 # ========================================================
-#Update the genders at sms with compute node information
-# first check if genders is install TBD
-for ((i=0; i<$num_computes; i++)) ; do
-   echo -e "${cc_name[$i]}\tcompute,bmc=${cc_bmc[$i]}"
-done >> /etc/genders
-
-# configure mrsh at sms
-if [[ en[[ ${enable_mrsh} -eq 1 ]];then
-   # check if it is already configured grep mshell /etc/services will return non-zero, else configure"
-   echo "mshell          21212/tcp                  # mrshd" >> /etc/services
-   echo "mlogin            541/tcp                  # mrlogind" >> /etc/services
-fi
-
-#Update cluster shell
-if [[ ${enable_clustershell} -eq 1 ]];then
-     # TBD check if clustershell is installed
-     #cd /etc/clustershell/groups.d
-     #echo "compute: cc[1-${num_computes}]" >> local.cfg
-     #echo "all: @adm,@compute" >> local.cfg
-     #Update configuration with new nodes
-     sed -i -- 's/all: @adm,@compute/compute: cc[1-${num_computes}]\n&/' /etc/clustershell/group.d/local.cfg
-fi
-
-
-#on Head node
-#perl -pi -e "s/ControlMachine=\S+/ControlMachine=${sms_name}/" /etc/slurm/slurm.conf
-#echo "/home *(rw,no_subtree_check,fsid=10,no_root_squash)" >> /etc/exports
-#echo "/opt/intel/hpc-orchestrator/pub *(rw,no_subtree_check,fsid=11,no_root_squash)" >> /etc/export
-# exportfs -a
-# systemctl restart nfs
-# Update slurm configuration on Head node
-# if [ ${num_computes} -gt 4 ];then
-#    perl -pi -e "s/^NodeName=(\S+)/NodeName=${nodename_prefix}[1-${num_computes}]/" /etc/slurm/slurm.conf
-#    perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=${nodename_prefix}[1-${num_computes}]/" /etc/slurm/slurm.conf
-#    perl -pi -e "s/^NodeName=(\S+)/NodeName=${nodename_prefix}[1-${num_computes}]/" $CHROOT/etc/slurm/slurm.conf
-#    perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=${nodename_prefix}[1-${num_computes}]/" $CHROOT/etc/slurm/slurm.conf
-#fi
-#
-# Power ON the CNs using Nova or Ironic,
-#
-
-# Restart munge and slurmd after they are restarted at HN
-# pdsh -w c[1-4] systemctl start munge
-# pdsh -w c[1-4] systemctl start slurmd
-scontrol update nodename=c[1-4] state=idle
-#
-# # Startup slurm on additional computes if defined
-#if [ ${num_computes} -gt 4 ];then
-#   pdsh -w c[5-$num_computes] systemctl start munge
-#   pdsh -w c[5-$num_computes] systemctl start slurmd
-#fi
+update_cnodes_to_sms
 
