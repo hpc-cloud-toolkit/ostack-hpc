@@ -21,6 +21,8 @@ systemctl enable ntpd
 # Update ntp server
 echo "server <sms_ip>" >> /etc/ntp.conf
 systemctl restart ntpd
+# time sync
+ntpstat
 #
 # Copy slurm file: 
 # TBD: this should happen in parent script at HN
@@ -28,8 +30,6 @@ systemctl restart ntpd
 
 #TBD Extend nodes here
 # Update basic slurm configuration, Ideally this should happen in SMS node, we should just copy files 
-#perl -pi -e "s/^NodeName=(\S+)/NodeName=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
-#perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
 # Now update the slurm file
 cp -f slurm.conf /etc/slurm/slurm.conf
 # Update rsyslog
@@ -45,6 +45,9 @@ cp -f -L munge.key /etc/munge/munge.key
 # For hostname resolution
 #TBD: This is a workaround for now, what we want is nodes to communicate to other nodes and sms node. so need to update cn entries here. might want to generate a script which is executed on compute node, and that updates entries into /etc/hosts of compute node. This workaround will break other functionalities in Cloudburst scenario
 cp -f -L hosts /etc/hosts
-# Start slurm and munge ?? TBD
+# make sure that hostname mentioned into /etc/hosts matches machine hostname. TBD
+# Start slurm and munge ?? 
+systemctl enable munge
 systemctl restart munge
-systemctl restart slurm
+systemctl enable slurmd
+systemctl restart slurmd
