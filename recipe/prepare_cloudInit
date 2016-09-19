@@ -7,17 +7,14 @@ mkdir -p $chpcInitPath
 sudo cp -fr -L $CHPC_SCRIPTDIR/CloudHPCInit/* $chpcInitPath/
 chpcInit=$chpcInitPath/chpcInit
 
-#update sms_ip to the scripts
-sudo sed -i -e 's/<sms_id>/${sms_ip}/g' $chpcInit
+#update sms_ip in cloidInt scripts
+sudo sed -i -e "s/<sms_ip>/${sms_ip}/g" $chpcInit
 #
 # Update basic slurm configuration at sms node
 perl -pi -e "s/^NodeName=(\S+)/NodeName=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
 perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
-# copy slurm file to Nodes
+# copy slurm file from sms node to Cloud Comute Nodes
 cp -fr -L /etc/slurm/slurm.conf $chpcInitPath
-#perl -pi -e "s/^NodeName=(\S+)/NodeName=${cnodename_prefix}[1-${num_ccomputes}]/" $CHROOT/etc/slurm/slurm.conf
-#perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=${cnodename_prefix}[1-${num_ccomputes}]/" $CHROOT/etc/slurm/slurm.conf
-#echo "# sync passwd, group, shadow, slurm.conf, munge.key" >> $chpcInit
 #
 ##
 # Copy other files needed for Cloud Init

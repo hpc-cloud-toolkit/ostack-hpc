@@ -1,57 +1,110 @@
 #!bin/bash
-#enable local disk-image-builder
-# Goto /opt/intel/hpc-orchestrator/ TODO
-# Check if disk-image-builder is installed
-sudo yum /y install diskimage-builder
-# copy patch to installed location
-# TBD
-sudo cp -fr ../dib/dib_patch/* /usr/share/diskimage-builder/
+function prepare_user_image() {
+    if [[ ${chpc_create_new_image} -ne 1 ]] && [[ -s $chpc_image_user ]]; then
+        # No need to create an image, image is provided by user
+        echo -n "Skiping cloud user-image build, Image provided:"
+        echo "$chpc_image_user"
+        CHPC_IMAGE_DEST=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_user)
+        if [[ ! -e $CHPC_IMAGE_DEST ]]; then
+            sudo cp $chpc_image_user $CHPC_CLOUD_IMAGE_PATH
+        fi
+        chpc_image_user=$CHPC_IMAGE_DEST
+    else
+        echo "Building new User Image"
+        #enable local disk-image-builder
+        # Goto /opt/intel/hpc-orchestrator/ TODO
+        # Check if disk-image-builder is installed
+        sudo yum /y install diskimage-builder
+        # copy patch to installed location
+        # TBD
+        sudo cp -fr ../dib/dib_patch/* /usr/share/diskimage-builder/
+        
+        # For Debugging enable user
+        #export PATH=/home/ppk/PPK/dib/dev/diskimage-builder/bin:/home/ppk/PPK/dib/dev/dib-utils/bin:$PATH
+        # if cloudinit does not work then we will use this user for debugging
+        export DIB_DEV_USER_USERNAME=chpc
+        export DIB_DEV_USER_PASSWORD=intel8086
+        export DIB_DEV_USER_PWDLESS_SUDO=1
+        # For debugging enable DEBUG_TRACE
+        #export DIB_DEBUG_TRACE=1
+        # Add our custom element path
+        export ELEMENTS_PATH="$( realpath ../dib/hpc/elements)"
+        chpc_image_deploy_kernel="$( readlink icloud-hpc-deploy-c7.kernel)"
+        # define base for image as ohpc or orch. we are using orch
+        export DIB_HPC_BASE=orch
+        # for orch define Packge path
+        #export DIB_HPC_ORCH_PKG=/home/ppk/Downloads/HPC-Orchestrator-rhel7.2u5-16.01.002.beta.iso
+        #Path to HPC base yum repo file
+        if [ ${DIB_HPC_BASE} == "orch" ]; then
+            export DIB_YUM_REPO_CONF=/etc/yum.repos.d/HPC_Orchestrator.repo
+        fi
+        DIB_HPC_ELEMENTS="hpc-env-base hpc-slurm"
+        #add mrsh if it is enabled
+        if [[ ${enable_mrsh} -eq 1 ]];then
+           DIB_HPC_ELEMENTS+=" hpc-mrsh"
+        fi
+        # Configure Cloud init source as Openstack
+        export DIB_CLOUD_INIT_DATASOURCES="ConfigDrive, OpenStack"
+        # build an image
+        echo "====================================================================="
+        echo "=== Preparing cloud-hpc user image =================================="
+        echo "====================================================================="
+        disk-image-create centos7 vm dhcp-all-interfaces devuser cloud-init-datasources $DIB_HPC_ELEMENTS -o icloud-hpc-cent7 
+        echo "====================================================================="
+        echo "=== User Image Creation complete ===================================="
+        echo "====================================================================="
+        # User Image is reday
+        chpc_image_user="$( readlink icloud-hpc-cent7.qcow2)"
+        mv -f $chpc_image_user $CHPC_CLOUD_IMAGE_PATH 
+        chpc_image_user=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_user)
+    fi 
+}
 
-# For Debugging enable user
-#export PATH=/home/ppk/PPK/dib/dev/diskimage-builder/bin:/home/ppk/PPK/dib/dev/dib-utils/bin:$PATH
-# if cloudinit does not work then we will use this user for debugging
-export DIB_DEV_USER_USERNAME=chpc
-export DIB_DEV_USER_PASSWORD=intel8086
-export DIB_DEV_USER_PWDLESS_SUDO=1
-# For debugging enable DEBUG_TRACE
-#export DIB_DEBUG_TRACE=1
-# Add our custom element path
-export ELEMENTS_PATH="$( realpath ../elements)"
-chpc_image_deply_kernel="$( readlink icloud-hpc-deploy-c7.kernel)"
-# define base for image as ohpc or orch. we are using orch
-export DIB_HPC_BASE=orch
-# for orch define Packge path
-#export DIB_HPC_ORCH_PKG=/home/ppk/Downloads/HPC-Orchestrator-rhel7.2u5-16.01.002.beta.iso
-#Path to HPC base yum repo file
-if [ ${DIB_HPC_BASE} == "orch" ]; then
-    export DIB_YUM_REPO_CONF=/etc/yum.repos.d/HPC_Orchestrator.repo
-fi
-DIB_HPC_ELEMENTS="hpc-env-base hpc-slurm"
-#add mrsh if it is enabled
-if [[ ${enable_mrsh} -eq 1 ]];then
-   DIB_HPC_ELEMENTS+=" hpc-mrsh"
-fi
-# Configure Cloud init source as Openstack
-export DIB_CLOUD_INIT_DATASOURCES="ConfigDrive, OpenStack"
-# build an image
-echo "====================================================================="
-echo "=== Preparing cloud-hpc user image =================================="
-echo "====================================================================="
-disk-image-create centos7 vm dhcp-all-interfaces devuser cloud-init-datasources $DIB_HPC_ELEMENTS -o icloud-hpc-cent7 
-echo "====================================================================="
-echo "=== User Image Creation complete ===================================="
-echo "====================================================================="
-# User Image is reday
-chpc_image_user="$( readlink icloud-hpc-cent7.qcow2)"
+function prepare_deploy_image() {
+    if [[ ${chpc_create_new_image} -ne 1 ]] && [[ -s $chpc_image_deploy_kernel ]] && [[ -s $chpc_image_deploy_ramdisk ]]; then
+        # No need to create an image, image is provided by user
+        echo "Skiping cloud deploy-image build, Image provided:"
+        echo "Deploy kernel Image:$chpc_image_deploy_kernel"
+        echo "Deploy ramdisk Image:$chpc_image_deploy_ramdisk"
+        #Store Images file
+        CHPC_IMAGE_DEST=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_deploy_kernel)
+        if [[ ! -e $CHPC_IMAGE_DEST ]]; then
+            sudo cp -f $chpc_image_deploy_kernel $CHPC_CLOUD_IMAGE_PATH/
+        fi
+        chpc_image_deploy_kernel=$CHPC_IMAGE_DEST
+        CHPC_IMAGE_DEST=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_deploy_ramdisk)
+        if [[ ! -e $CHPC_IMAGE_DEST ]]; then
+            sudo cp -f $chpc_image_deploy_ramdisk $CHPC_CLOUD_IMAGE_PATH/
+        fi
+        chpc_image_deploy_ramdisk=$CHPC_IMAGE_DEST
+    else
+        echo "Building new Cloud Deploy Image"
+        exit 0
+        echo "====================================================================="
+        echo "=== Preparing cloud-hpc deploy images for ironic====================="
+        echo "====================================================================="
+        #prepare deploy images
+        disk-image-create ironic-agent centos7 -o icoud-hpc-deploy-c7
+        echo "====================================================================="
+        echo "=== cloud-hpc deploy images Complete ================================"
+        echo "====================================================================="
+        chpc_image_deploy_kernel="$( readlink icloud-hpc-deploy-c7.kernel)"
+        chpc_image_deploy_ramdisk="$( readlink icloud-hpc-deploy-c7.initramfs)"
+        #Store Images file
+        sudo mv -f $chpc_image_deploy_kernel $CHPC_CLOUD_IMAGE_PATH/
+        chpc_image_deploy_kernel=CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_deploy_kernel)
+        sudo mv -f $chpc_image_deploy_ramdisk $CHPC_CLOUD_IMAGE_PATH/
+        chpc_image_deploy_ramdisk=CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_deploy_ramdisk)
+    fi
+}
+ 
+CHPC_CLOUD_IMAGE_PATH=/opt/intel/hpc-orchestrator/admin/images/cloud/
+mkdir -p $CHPC_CLOUD_IMAGE_PATH
+### Build HPC user image
+prepare_user_image
+#### Build hpc deploy image
+prepare_deploy_image
 
-# P
-echo "====================================================================="
-echo "=== Preparing cloud-hpc deploy images for ironic====================="
-echo "====================================================================="
-#prepare deploy images
-disk-image-create ironic-agent centos7 -o icoud-hpc-deploy-c7
-echo "====================================================================="
-echo "=== cloud-hpc deploy images Complete ================================"
-echo "====================================================================="
-chpc_image_deply_kernel="$( readlink icloud-hpc-deploy-c7.kernel)"
-chpc_image_deploy_ramdisk="$( readlink icloud-hpc-deploy-c7.initramfs)"
+echo $chpc_image_deploy_kernel
+echo $chpc_image_deploy_ramdisk
+echo $chpc_image_user

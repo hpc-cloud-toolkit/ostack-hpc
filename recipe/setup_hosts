@@ -1,15 +1,2 @@
 # setup /etc/hosts  to resolve the compute node names
-function setup_hosts () {
-    echo "#### Cloud-HPC nodes entry, entered by HPC Orchestrator ####" >> /etc/hosts
-    #check if sms_name is already configured
-    if ! grep -Fq ${sms_name} /etc/hosts; then
-        echo "${sms_ip}\t${sms_name}"
-    fi
-    # first search if nodes are already configured if yes then do not configure again, so that it can be re-run
-    for ((i=0; i<$num_computes; i++)) ; do
-       if ! grep -Fq "${cc_ip[$i]}" /etc/hosts; then
-           echo -e "${cc_ip[$i]}\t${cc_name[$i]}"
-       fi
-    done >> /etc/hosts
-}
 
