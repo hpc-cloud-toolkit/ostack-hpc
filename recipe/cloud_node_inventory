@@ -4,7 +4,7 @@ cnodename_prefix="${cnodename_prefix:-cc}"
 
 
 # Local (internal) IP address on SMS
-sms_ip="${sms_ip=192.168.46.2}"
+controller_ip="${controller_ip=192.168.46.2}"
 
 # cloud subnet CIDR
 c_subnet_cidr="${c_subnet_cidr=192.168.46.0/24}"
@@ -15,7 +15,7 @@ c_subnet_dhcp_end="${c_subnet_dhcp_end=192.168.46.200}"
 
 # cloud compute node IP addresses
 # might need to get MAC and IP from Nova and use here, TBD
-cc_ip[0]=192.168.46.5
+cc_ip[0]=192.168.46.101
 #cc_ip[1]=192.168.78.62
 #cc_ip[2]=192.168.78.63
 #cc_ip[3]=192.168.78.64

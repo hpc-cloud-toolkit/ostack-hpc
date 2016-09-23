@@ -6,7 +6,7 @@
 #---------------------------------------------------------------------------------
 
 #Create the endpoint for the Bare metal service's API node
-openstack endpoint create --region RegionOne --publicurl http://${sms_ip}:6385 --internalurl http://${sms_ip}:6385 --adminurl http://${sms_ip}:6385 baremetal
+openstack endpoint create --region RegionOne --publicurl http://${controller_ip}:6385 --internalurl http://${controller_ip}:6385 --adminurl http://${controller_ip}:6385 baremetal
 
 #Create roles for the baremetal service. These can be used later to give special permissions to baremetal. This script will be using the defaults.
 openstack role create baremetal_admin
@@ -42,8 +42,8 @@ echo 're ^/tftpboot/ /tftpboot/' >> /tftpboot/map-file
 echo 're ^(^/) /tftpboot/\1' >> /tftpboot/map-file
 echo 're ^([^/]) /tftpboot/\1' >> /tftpboot/map-file
 
-#Edit our template ironic.conf file with the <sms_ip> variable's value
-sed --in-place "s|sms_ip|${sms_ip}|" ironic.conf
+#Edit our template ironic.conf file with the <controller_ip> variable's value
+sed --in-place "s|controller_ip|${controller_ip}|" ironic.conf
 
 #Copy the ironic.conf file into /etc/ironic/ironic.conf
 mv /etc/ironic/ironic.conf /etc/ironic/ironic.conf.old
@@ -80,7 +80,7 @@ NEUTRON_NETWORK_UUID=`neutron net-list | grep sharednet1 | awk '{print $2}'`
 neutron subnet-list | grep subnet01
 subnet_exists=$?
 if [ "${subnet_exists}" -ne "0" ]; then
-    neutron subnet-create sharednet1 --name subnet01 --ip-version=4 --gateway=${sms_ip} --allocation-pool start=${c_subnet_dhcp_start},end=${c_subnet_dhcp_end} --enable-dhcp ${c_subnet_cidr}
+    neutron subnet-create sharednet1 --name subnet01 --ip-version=4 --gateway=${controller_ip} --allocation-pool start=${c_subnet_dhcp_start},end=${c_subnet_dhcp_end} --enable-dhcp ${c_subnet_cidr}
 fi
 NEUTRON_SUBNET_UUID=`neutron subnet-list | grep subnet01 | awk '{print $2}'`
 
