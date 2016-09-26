@@ -26,7 +26,7 @@ chown -R ironic /tftpboot
 yum install -y tftp-server syslinux-tftpboot xinetd
 
 #Copy our template configuration for xinetd into /etc/xinet.d/tftp
-mv /etc/xinet.d/tftp /etc/xinetd.d/tftp.bak
+mv /etc/xinetd.d/tftp /etc/xinetd.d/tftp.bak
 cp tftp /etc/xinetd.d/
 
 #Restart the xinetd service
