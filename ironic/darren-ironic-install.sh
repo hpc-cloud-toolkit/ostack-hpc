@@ -8,11 +8,16 @@
 #Set SELinux to permissive
 setenforce 0
 
-#Create the endpoint for the Bare metal service's API node
-openstack endpoint create --region RegionOne --publicurl http://${controller_ip}:6385 --internalurl http://${controller_ip}:6385 --adminurl http://${controller_ip}:6385 baremetal
-
 #Create roles for the baremetal service. These can be used later to give special permissions to baremetal. This script will be using the defaults.
-openstack role create baremetal_admin
+openstack role list | grep -i baremetal_admin
+role_exists=$?
+if [ "${role_exists}" -ne "0" ]; then 
+    openstack role create baremetal_admin
+fi
+
+openstack role list | grep -i baremetal_observer
+role_exists=$?
+if [ "${role_exists}" -ne "0" ]; then 
 openstack role create baremetal_observer
 
 #Restart the ironic-api service
@@ -45,12 +50,10 @@ echo 're ^/tftpboot/ /tftpboot/' >> /tftpboot/map-file
 echo 're ^(^/) /tftpboot/\1' >> /tftpboot/map-file
 echo 're ^([^/]) /tftpboot/\1' >> /tftpboot/map-file
 
-#Edit our template ironic.conf file with the <controller_ip> variable's value
-sed --in-place "s|controller_ip|${controller_ip}|" ironic.conf
-
-#Copy the ironic.conf file into /etc/ironic/ironic.conf
-mv /etc/ironic/ironic.conf /etc/ironic/ironic.conf.old
-cp ironic.conf /etc/ironic/ironic.conf
+#Edit /etc/ironic/ironic.conf file with the <controller_ip> variable's value
+sed --in-place "s|#tftp_server=\$my_ip|tftp_server=${controller_ip}|" /etc/ironic/ironic.conf
+sed --in-place "s|#tftp_root=/tftpboot|tftp_root=/tftpboot|" /etc/ironic/ironic.conf
+sed --in-place "s|#ip_version=4|ip_version=4|" /etc/ironic/ironic.conf
 
 #Edit the /etc/nova/nova.conf file
 sed --in-place "s|reserved_host_memory_mb=512|reserved_host_memory_mb=0|" /etc/nova/nova.conf
@@ -86,9 +89,6 @@ if [ "${subnet_exists}" -ne "0" ]; then
     neutron subnet-create sharednet1 --name subnet01 --ip-version=4 --gateway=${controller_ip} --allocation-pool start=${c_subnet_dhcp_start},end=${c_subnet_dhcp_end} --enable-dhcp ${c_subnet_cidr}
 fi
 NEUTRON_SUBNET_UUID=`neutron subnet-list | grep subnet01 | awk '{print $2}'`
-
-#Edit the ironic.conf file and input the newly created neutron network into the cleaning_network_uuid configuration
-sed --in-place "s|neutron_network_uuid|${NEUTRON_NETWORK_UUID}|" /etc/ironic/ironic.conf
 
 #Restart the ironic-conductor service
 systemctl restart openstack-ironic-conductor
