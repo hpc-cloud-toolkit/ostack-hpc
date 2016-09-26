@@ -18,7 +18,8 @@ fi
 openstack role list | grep -i baremetal_observer
 role_exists=$?
 if [ "${role_exists}" -ne "0" ]; then 
-openstack role create baremetal_observer
+    openstack role create baremetal_observer
+fi
 
 #Restart the ironic-api service
 systemctl restart openstack-ironic-api
