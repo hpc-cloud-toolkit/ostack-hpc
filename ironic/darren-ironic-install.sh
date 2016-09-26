@@ -34,9 +34,6 @@ yum install -y qemu-img iscsi-initiator-utils
 mkdir -p /tftpboot
 chown -R ironic /tftpboot
 
-#Install the packages for PXE boot
-yum install -y tftp-server syslinux-tftpboot xinetd
-
 #Copy our template configuration for xinetd into /etc/xinet.d/tftp
 mv /etc/xinetd.d/tftp /etc/xinetd.d/tftp.bak
 cp tftp /etc/xinetd.d/
@@ -58,11 +55,12 @@ echo 're ^([^/]) /tftpboot/\1' >> /tftpboot/map-file
 sed --in-place "s|#tftp_server=\$my_ip|tftp_server=${controller_ip}|" /etc/ironic/ironic.conf
 sed --in-place "s|#tftp_root=/tftpboot|tftp_root=/tftpboot|" /etc/ironic/ironic.conf
 sed --in-place "s|#ip_version=4|ip_version=4|" /etc/ironic/ironic.conf
+sed --in-place "s|#automated_clean=true|automated_clean=false|" /etc/ironic/ironic.conf
 
 #Edit the /etc/nova/nova.conf file
 sed --in-place "s|reserved_host_memory_mb=512|reserved_host_memory_mb=0|" /etc/nova/nova.conf
 sed --in-place "s|#scheduler_host_subset_size=1|scheduler_host_subset_size=9999999|" /etc/nova/nova.conf
-sed --in-place "s|#scheduler_use_baremetal_filters=false|scheduler_use_baremetal_filters=True|" /etc/nova/nova.conf
+sed --in-place "s|#scheduler_use_baremetal_filters=false|scheduler_use_baremetal_filters=true|" /etc/nova/nova.conf
 
 #Restart ironic, nova, and ovs to load in the new configuration
 systemctl restart neutron-dhcp-agent
@@ -123,7 +121,6 @@ flavor_exists=$?
 if [ "$flavor_exists" -ne "0" ]; then
     nova flavor-create baremetal-flavor baremetal-flavor ${RAM_MB} ${DISK_GB} ${CPU}
     nova flavor-key baremetal-flavor set cpu_arch=$ARCH
-    nova flavor-key baremetal-flavor set capabilities:boot_option="bios"
 fi
 FLAVOR_UUID=`nova flavor-list | grep baremetal-flavor | awk '{print $2}'`
 
