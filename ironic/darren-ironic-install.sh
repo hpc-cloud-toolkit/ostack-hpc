@@ -8,6 +8,9 @@
 #Set SELinux to permissive
 setenforce 0
 
+#Source the keystonerc_admin file
+source ${HOME}/keystonerc_admin
+
 #Create roles for the baremetal service. These can be used later to give special permissions to baremetal. This script will be using the defaults.
 openstack role list | grep -i baremetal_admin
 role_exists=$?
@@ -68,9 +71,6 @@ systemctl restart neutron-metadata-agent
 systemctl restart openstack-nova-scheduler
 systemctl restart openstack-nova-compute
 systemctl restart openstack-ironic-conductor
-
-#Source the keystonerc_admin file
-source ${HOME}/keystonerc_admin
 
 #Get the tenant ID for the services tenant
 SERVICES_TENANT_ID=`keystone tenant-list | grep services | awk '{print $2}'`
