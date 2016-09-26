@@ -6,21 +6,19 @@ cnodename_prefix="${cnodename_prefix:-cc}"
 # cloud compute node IP addresses
 # might need to get MAC and IP from Nova and use here, TBD
 cc_ip[0]=192.168.46.5
-#cc_ip[1]=192.168.78.62
-#cc_ip[2]=192.168.78.63
+#cc_ip[1]=192.168.46.6
+#cc_ip[2]=192.168.46.7
 #cc_ip[3]=192.168.78.64
 
 # cloud compute node MAC addreses for provisioning interface
-cc_mac[0]=00:15:17:a3:7a:ed
-#cc_mac[1]=00:1a:2b:3c:4f:56
-#cc_mac[2]=00:1a:2b:3c:4f:56
-#cc_mac[3]=00:1a:2b:3c:4f:56
+cc_mac[0]=00:1e:67:43:86:eb
+#cc_mac[1]=00:1e:67:b0:c0:c8
+#cc_mac[2]=00:1e:67:43:87:fe
 
 # cloud compute node BMC addresses
-cc_bmc[0]=10.54.134.95
-#cc_bmc[1]=10.16.1.2
-#cc_bmc[2]=10.16.1.3
-#cc_bmc[3]=10.16.1.4
+cc_bmc[0]=10.23.182.157
+#cc_bmc[1]=10.23.182.254
+#cc_bmc[2]=10.23.183.32
 
 #cloud compute node characterstics (aka nova flavor)
 RAM_MB=24456
@@ -29,7 +27,7 @@ DISK_GB=500
 ARCH=x86_64
 
 # Cloud Compute Node Images
-chpc_image_deploy_kernel="${chpc_image_deply=/mnt/data/home/ppkd/dib/ironic-deploy-c7.kernel}"
-chpc_image_deploy_ramdisk="${chpc_image_ramdisk=/mnt/data/home/ppkd/dib/ironic-deploy-c7.initramfs}"
-chpc_image_user="${chpc_image_user=/mnt/data/home/ppkd/dib/my-cent7-hpc2.qcow2}"
-chpc_create_new_image="${chpc_create_new_image=0}"
+chpc_image_deploy_kernel="${chpc_image_deply=/opt/intel/hpc-orchestrator/admin/images/cloud/ironic-deploy-c7.kernel}"
+chpc_image_deploy_ramdisk="${chpc_image_ramdisk=/opt/intel/hpc-orchestrator/admin/images/cloud/ironic-deploy-c7.initramfs}"
+chpc_image_user="${chpc_image_user=/opt/intel/hpc-orchestrator/admin/images/cloud/icloud-hpc-cent7.qcow2}"
+chpc_create_new_image="${chpc_create_new_image=1}"
