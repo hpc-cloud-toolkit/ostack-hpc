@@ -5,6 +5,9 @@
 #This relies on the packstack installation to happen first.
 #---------------------------------------------------------------------------------
 
+#Set SELinux to permissive
+setenforce 0
+
 #Create the endpoint for the Bare metal service's API node
 openstack endpoint create --region RegionOne --publicurl http://${controller_ip}:6385 --internalurl http://${controller_ip}:6385 --adminurl http://${controller_ip}:6385 baremetal
 
