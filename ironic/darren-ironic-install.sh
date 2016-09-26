@@ -137,6 +137,9 @@ ironic port-create -n ${CC0_NODE_UUID} -a ${cc_mac[0]}
 #Add the instance_info/image_source and instance_info/root_gb
 ironic node-update ${CC0_NODE_UUID} add instance_info/image_source=${WHOLE_DISK_IMAGE_UUID} instance_info/root_gb=50
 
+#Increase the Quota limit for admin to allow nova boot
+openstack quota set --ram 512000 --cores 1000 admin
+
 #Register SSH keys with Nova
 nova keypair-list | grep ostack_key
 keypair_exists=$?
