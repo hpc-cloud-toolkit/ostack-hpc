@@ -86,7 +86,7 @@ validateHpcInventory
 setup_computename
 
 #set up hosts at head node or sms node
-#setup_hosts
+setup_hosts
 
 # extend HPC to cloud
 time source set_os_hpc

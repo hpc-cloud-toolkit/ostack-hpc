@@ -63,15 +63,15 @@ function validateHpcInventory() {
 }
 
 function setup_hosts () {
-    #check if sms_name is already configured, if not then add sms entry
-    if ! grep -Fq ${sms_name} /etc/hosts; then
-        echo "${sms_ip}\t${sms_name}"
-    fi
     # first search if nodes are already configured. if yes then do not configure again, so that it can be re-run
     hpc_tag="#### Cloud-HPC nodes entry, entered by HPC Orchestrator ####"
     #if ! grep -Pq "^$hpc_tag" /etc/hosts; then
     if ! grep -Fq "$hpc_tag" /etc/hosts; then
         echo $hpc_tag >> /etc/hosts
+    fi
+    #check if sms_name is already configured, if not then add sms entry
+    if ! grep -Fq ${sms_name} /etc/hosts; then
+        echo -e "${sms_ip}\t${sms_name}" >> /etc/hosts
     fi
     for ((i=0; i<$num_computes; i++)) ; do
        if ! grep -Fq "${cc_ip[$i]}" /etc/hosts; then

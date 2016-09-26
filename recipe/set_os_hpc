@@ -17,7 +17,6 @@ echo "..$CHPC_SCRIPTDIR .."
 # =====================================
 # This assumes that HPC head node recipe is installed and SMS_node functionality is already configured. It will get some data from there to prepare cloudInit
 time source prepare_cloudInit
-set +x
 #
 # ===========================
 # Prepare CloudHPC Image : TODO
