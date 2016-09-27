@@ -28,7 +28,7 @@ fi
 systemctl restart openstack-ironic-api
 
 #Ensure the utilities for baremetal are installed
-yum install -y qemu-img iscsi-initiator-utils
+yum install -y tftp-server syslinux-tftpboot xinetd
 
 #Make the directory for tftp and give it the ironic owner
 mkdir -p /tftpboot
