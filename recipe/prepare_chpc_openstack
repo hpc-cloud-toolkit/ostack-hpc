@@ -85,7 +85,7 @@ NEUTRON_NETWORK_UUID=`neutron net-list | grep sharednet1 | awk '{print $2}'`
 neutron subnet-list | grep subnet01
 subnet_exists=$?
 if [ "${subnet_exists}" -ne "0" ]; then
-    neutron subnet-create sharednet1 --name subnet01 --ip-version=4 --gateway=${controller_ip} --allocation-pool start=${c_subnet_dhcp_start},end=${c_subnet_dhcp_end} --enable-dhcp ${c_subnet_cidr}
+    neutron subnet-create sharednet1 --name subnet01 --ip-version=4 --gateway=${controller_ip} --allocation-pool start=${cc_subnet_dhcp_start},end=${cc_subnet_dhcp_end} --enable-dhcp ${cc_subnet_cidr}
 fi
 NEUTRON_SUBNET_UUID=`neutron subnet-list | grep subnet01 | awk '{print $2}'`
 
@@ -128,7 +128,7 @@ FLAVOR_UUID=`nova flavor-list | grep baremetal-flavor | awk '{print $2}'`
 ironic node-list | grep cc0
 node_exists=$?
 if [ "${node_exists}" -ne "0" ]; then
-    ironic node-create -d pxe_ipmitool -i deploy_kernel=${DEPLOY_VMLINUZ_UUID} -i deploy_ramdisk=${DEPLOY_INITRD_UUID} -i ipmi_terminal_port=8023 -i ipmi_address=${cc_bmc[0]} -i ipmi_username=${c_bmc_username} -i ipmi_password=${c_bmc_password} -p cpus=${CPU} -p memory_mb=${RAM_MB} -p local_gb=${DISK_GB} -p cpu_arch=${ARCH} -p capabilities="boot_mode:bios" -n cc0
+    ironic node-create -d pxe_ipmitool -i deploy_kernel=${DEPLOY_VMLINUZ_UUID} -i deploy_ramdisk=${DEPLOY_INITRD_UUID} -i ipmi_terminal_port=8023 -i ipmi_address=${cc_bmc[0]} -i ipmi_username=${cc_bmc_username} -i ipmi_password=${cc_bmc_password} -p cpus=${CPU} -p memory_mb=${RAM_MB} -p local_gb=${DISK_GB} -p cpu_arch=${ARCH} -p capabilities="boot_mode:bios" -n cc0
 fi
 CC0_NODE_UUID=`ironic node-list | grep cc0 | awk '{print $2}'`
 
