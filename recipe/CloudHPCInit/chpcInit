@@ -6,6 +6,9 @@ SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P
 SCRIPTDIR="${SCRIPTDIR%x}"
 cd $SCRIPTDIR
 
+#set the hostname
+hostnamectl set-hostname <cnode_name>
+
 # nfs mount directory from SMS head node to Compute Node
 echo "<sms_ip>:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" >> /etc/fstab
 echo "<sms_ip>:/opt/intel/hpc-orchestrator/pub /opt/intel/hpc-orchestrator/pub nfs nfsvers=3 0 0" >> /etc/fstab
