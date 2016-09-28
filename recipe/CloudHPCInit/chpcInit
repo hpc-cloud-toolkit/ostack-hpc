@@ -1,8 +1,12 @@
 #!/bin/bash
 #
 
+#Ensure the executing shell is in the same directory as the script.
+SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P && echo x)"
+SCRIPTDIR="${SCRIPTDIR%x}"
+cd $SCRIPTDIR
 
-# nfs mount directoruy from SMS head node to Compute Node
+# nfs mount directory from SMS head node to Compute Node
 echo "<sms_ip>:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" >> /etc/fstab
 echo "<sms_ip>:/opt/intel/hpc-orchestrator/pub /opt/intel/hpc-orchestrator/pub nfs nfsvers=3 0 0" >> /etc/fstab
 mount /home
