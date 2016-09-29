@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#Copy local CloudHPCInit to all compute nodes. TODO: Call all nodes through a for loop
+scp -r /tmp/CloudHPCInit/ ${cc_ip[0]}:/root
+
+#Execute CloudHPCInit/chpcInit on nodes using pdsh. TODO: Call all nodes through a for loop
+pdsh -w cc1 /root/CloudHPCInit/chpcInit
