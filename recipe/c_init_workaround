@@ -1,14 +1,16 @@
 #!/bin/bash
-
+set -x
 #Possible requirement for this script: Set hostkey checking to no
-#sed --in-place "s|#\s*StrictHostKeyChecking\s*ask|StrictHostKeyChecking no|" /etc/ssh/ssh_config
+sed --in-place "s|#\s*StrictHostKeyChecking\s*ask|StrictHostKeyChecking no|" /etc/ssh/ssh_config
 
 #Possible requirement for this script: set ssh key permissions to 600
 #chmod 600 /etc/ssh/ssh_host_ed*_key.pub
 #chmod 600 /etc/ssh/ssh_host_ecdsa_key.pub
 
 #Copy local CloudHPCInit to all compute nodes. TODO: Call all nodes through a for loop
-scp -r /tmp/CloudHPCInit/ ${cc_ip[0]}:/root
+#scp -r /tmp/CloudHPCInit/ ${cc_ip[0]}:/root
+scp -r /tmp/CloudHPCInit/ cc1:/root
 
 #Execute CloudHPCInit/chpcInit on nodes using pdsh. TODO: Call all nodes through a for loop
 pdsh -w cc1 /root/CloudHPCInit/chpcInit
+set +x
