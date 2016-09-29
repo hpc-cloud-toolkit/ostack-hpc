@@ -10,23 +10,41 @@ cd $SCRIPTDIR
 hostnamectl set-hostname <cnode_name>
 
 # nfs mount directory from SMS head node to Compute Node
-echo "<sms_ip>:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" >> /etc/fstab
-echo "<sms_ip>:/opt/intel/hpc-orchestrator/pub /opt/intel/hpc-orchestrator/pub nfs nfsvers=3 0 0" >> /etc/fstab
+cat /etc/fstab | grep "<sms_ip>:/home"
+home_exists=$?
+if [ "${home_exists}" -ne "0" ]; then
+    echo "<sms_ip>:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" >> /etc/fstab
+fi
+cat /etc/fstab | grep "<sms_ip>:/opt/intel/hpc-orchestrator/pub"
+orchestrator_pub_exists=$?
+if [ "${orchestrator_pub_exists}" -ne "0" ]; then
+    echo "<sms_ip>:/opt/intel/hpc-orchestrator/pub /opt/intel/hpc-orchestrator/pub nfs nfsvers=3 0 0" >> /etc/fstab
+fi
 mount /home
 mount /opt/intel/hpc-orchestrator/pub
 # enable test suite
-echo -n "<sms_ip>:/opt/intel/hpc-orchestrator/pub/tests " >> /etc/fstab
-echo "/opt/intel/hpc-orchestrator/pub/tests nfs nfsvers=3 0 0" >> /etc/fstab
+cat /etc/fstab | grep "<sms_ip>:/op/intel/hpc-orchestrator/pub/tests"
+orchestrator_tests_exist=$?
+if [ "${orchestrator_tests_exist}" -ne "0" ]
+    echo -n "<sms_ip>:/opt/intel/hpc-orchestrator/pub/tests " >> /etc/fstab
+fi
+cat /etc/fstab | grep "opt/intel/hpc-orchestrator/pub/tests"
+orchestrator_tests_exist=$?
+if [ "${orchestrator_tests_exist}" -ne "0" ]; then
+	echo "/opt/intel/hpc-orchestrator/pub/tests nfs nfsvers=3 0 0" >> /etc/fstab
+fi
 #mount 
 mount /opt/intel/hpc-orchestrator/pub/tests
-#update ntp server
-echo "server <sms_ip>" >> /etc/ntp.conf
 # Restart nfs
 systemctl restart nfs
 # Restart ntp at CN
 systemctl enable ntpd
 # Update ntp server
-echo "server <sms_ip>" >> /etc/ntp.conf
+cat /etc/ntp.conf | grep "server <sms_ip>"
+ntp_server_exists=$?
+if [ "${ntp_server_exists}" -ne "0" ]; then
+    echo "server <sms_ip>" >> /etc/ntp.conf
+fi
 systemctl restart ntpd
 # time sync
 ntpstat
@@ -40,8 +58,14 @@ ntpstat
 # Now update the slurm file
 cp -f slurm.conf /etc/slurm/slurm.conf
 # Update rsyslog
-echo "*.* @<sms_ip>:514" >> /etc/rsyslog.conf
+cat /etc/rsyslog.conf | grep "<sms_ip>:514"
+rsyslog_set=$?
+if [ "${rsyslog_set}" -ne "0" ]; then
+    echo "*.* @<sms_ip>:514" >> /etc/rsyslog.conf
+fi
+
 systemctl restart rsyslog
+
 #Sync following files to compute node
 cp -f -L passwd /etc/passwd
 cp -f -L group /etc/group
