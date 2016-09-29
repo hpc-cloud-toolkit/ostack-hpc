@@ -150,5 +150,8 @@ fi
 
 KEYPAIR_NAME=ostack_key
 
+#Wait for the Nova hypervisor-stats to sync with available Ironic resources
+sleep 60
+
 #Boot the node with nova
 nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${WHOLE_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} cc0
