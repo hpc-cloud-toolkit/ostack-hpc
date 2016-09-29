@@ -25,7 +25,7 @@ mount /opt/intel/hpc-orchestrator/pub
 # enable test suite
 cat /etc/fstab | grep "<sms_ip>:/opt/intel/hpc-orchestrator/pub/tests"
 orchestrator_tests_exist=$?
-if [ "${orchestrator_tests_exist}" -ne "0" ]
+if [ "${orchestrator_tests_exist}" -ne "0" ]; then
     echo -n "<sms_ip>:/opt/intel/hpc-orchestrator/pub/tests " >> /etc/fstab
 fi
 cat /etc/fstab | grep "opt/intel/hpc-orchestrator/pub/tests"
