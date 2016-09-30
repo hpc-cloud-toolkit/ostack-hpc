@@ -158,4 +158,4 @@ neutron port-create sharednet1 --fixed-ip ip_address=${cc_ip[0]} --name cc1 --ma
 NEUTRON_PORT_ID=`neutron port-list | grep cc1 | awk '{print $2}'`
 
 #Boot the node with nova
-nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${WHOLE_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --NIC PORT-ID=${NEUTRON_PORT_ID} cc1
+nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${WHOLE_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --nic port-id=${NEUTRON_PORT_ID} cc1
