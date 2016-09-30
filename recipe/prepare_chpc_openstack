@@ -154,4 +154,10 @@ KEYPAIR_NAME=ostack_key
 sleep 65
 
 #Boot the node with nova
-nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${WHOLE_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} cc0
+nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${WHOLE_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} cc1
+
+#Wait for the IP address to get set on the compute node
+sleep 61
+
+#Find the IP address of the newly created node(s) and set it in cc_ip[$i]
+cc_ip[0]=`nova list | grep cc1 | awk '{print $12}' | cut -d'=' -f2`
