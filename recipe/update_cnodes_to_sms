@@ -55,7 +55,7 @@ systemctl restart slurmctld
 #
 #
 # Restart munge and slurmd after they are restarted at HN
-pdsh -w cc[1-4] systemctl start munge
-pdsh -w cc[1-4] systemctl start slurmd
-scontrol update cnodename=cc[1-4] state=idle
+pdsh -w cc[1-1] systemctl start munge
+pdsh -w cc[1-1] systemctl start slurmd
+scontrol update nodename=cc[1-1] state=idle
 
