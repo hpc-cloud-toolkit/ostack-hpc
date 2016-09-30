@@ -7,7 +7,7 @@ mkdir -p $chpcInitPath
 sudo cp -fr -L $CHPC_SCRIPTDIR/CloudHPCInit/* $chpcInitPath/
 chpcInit=$chpcInitPath/chpcInit
 
-#update sms_ip in cloidInt scripts
+#update sms_ip in cloudInit scripts
 sudo sed -i -e "s/<sms_ip>/${sms_ip}/g" $chpcInit
 #update node host name in cloudint scripts. TODO iterate this for all compute nodes
 #    for((i=0; i<${num_ccomputes}; i++)) ; do
