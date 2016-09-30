@@ -82,3 +82,7 @@ systemctl enable munge
 systemctl restart munge
 systemctl enable slurmd
 systemctl restart slurmd
+
+#Change file permissions in /etc/ssh to fix ssh into compute node
+chmod 0600 /etc/ssh/ssh_host_*_key
+
