@@ -36,9 +36,21 @@ yum install -y tftp-server syslinux-tftpboot xinetd
 mkdir -p /tftpboot
 chown -R ironic /tftpboot
 
-#Copy our template configuration for xinetd into /etc/xinet.d/tftp
-mv /etc/xinetd.d/tftp /etc/xinetd.d/tftp.bak
-cp tftp /etc/xinetd.d/
+#Configure /etc/xinet.d/tftp
+echo "service tftp" > /etc/xinetd.d/tftp
+echo "{" >> /etc/xinetd.d/tftp
+echo "  protocol        = udp" >> /etc/xinetd.d/tftp
+echo "  port            = 69" >> /etc/xinetd.d/tftp
+echo "  socket_type     = dgram" >> /etc/xinetd.d/tftp
+echo "  wait            = yes" >> /etc/xinetd.d/tftp
+echo "  user            = root" >> /etc/xinetd.d/tftp
+echo "  server          = /usr/sbin/in.tftpd" >> /etc/xinetd.d/tftp
+echo "  server_args     = -v -v -v -v -v --map-file /tftpboot/map-file /tftpboot" >> /etc/xinetd.d/tftp
+echo "  disable         = no" >> /etc/xinetd.d/tftp
+echo "  # This is a workaround for Fedora, where TFTP will listen only on" >> /etc/xinetd.d/tftp
+echo "  # IPv6 endpoint, if IPv4 flag is not used." >> /etc/xinetd.d/tftp
+echo "  flags           = IPv4" >> /etc/xinetd.d/tftp
+echo "}" >> /etc/xinetd.d/tftp
 
 #Restart the xinetd service
 systemctl restart xinetd
