@@ -103,9 +103,6 @@ if [ "${subnet_exists}" -ne "0" ]; then
 fi
 NEUTRON_SUBNET_UUID=`neutron subnet-list | grep subnet01 | awk '{print $2}'`
 
-#Restart the ironic-conductor service
-systemctl restart openstack-ironic-conductor
-
 #Create the whole-disk-image from the qcow2 file
 glance image-list | grep whole-disk-image
 img_exists=$?
