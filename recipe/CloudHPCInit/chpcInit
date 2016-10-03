@@ -6,8 +6,24 @@ SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P
 SCRIPTDIR="${SCRIPTDIR%x}"
 cd $SCRIPTDIR
 
+#Find the hostname of this machine from the copied over /etc/hosts file
+ipaddrs=(`hostname -I`)
+for ipaddr in ${ipaddrs[@]}; do
+    cat /etc/hosts | grep ${ipaddr} > /dev/null
+	result=$?
+	if [ "$result" -eq "0" ]; then
+	    hostname=`cat /etc/hosts | grep ${ipaddr | cut -d$'\t' -f2`
+		break
+	fi
+done
+
+if [ -z "${hostname}" ]; then
+    echo "ERROR: No resolved hostname found for any IP address in /etc/hosts"
+	exit 1
+fi
+
 #set the hostname
-hostnamectl set-hostname <cnode_name>
+hostnamectl set-hostname ${hostname}
 
 # nfs mount directory from SMS head node to Compute Node
 cat /etc/fstab | grep "<sms_ip>:/home"

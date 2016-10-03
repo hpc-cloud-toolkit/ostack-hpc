@@ -9,12 +9,7 @@ chpcInit=$chpcInitPath/chpcInit
 
 #update sms_ip in cloudInit scripts
 sudo sed -i -e "s/<sms_ip>/${sms_ip}/g" $chpcInit
-#update node host name in cloudint scripts. TODO iterate this for all compute nodes
-#    for((i=0; i<${num_ccomputes}; i++)) ; do
-#       sudo sed -i -e "s/<cnode_name>/${cc_name[$i]}/g" $chpcInit
-#    done
-sudo sed -i -e "s/<cnode_name>/cc1/g" $chpcInit
-#
+
 # Update basic slurm configuration at sms node
 perl -pi -e "s/^NodeName=(\S+)/NodeName=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
 perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
