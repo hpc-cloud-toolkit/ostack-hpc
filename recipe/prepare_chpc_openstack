@@ -1,8 +1,10 @@
 #!/bin/bash
 #---------------------------------------------------------------------------------
 #This script installs and configures ironic for baremetal provisioning on CentOS 7
-#Using the OpenStack-Mitaka release
-#This relies on the packstack installation to happen first.
+#Using the OpenStack-Mitaka release.
+#This relies on the packstack installation to happen first and the keystonerc_admin
+#file being in the user's home directory. It is assumed this script is run with
+#sudo permissions.
 #---------------------------------------------------------------------------------
 
 #Set SELinux to permissive
