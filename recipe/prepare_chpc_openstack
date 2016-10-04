@@ -176,7 +176,7 @@ for ((i=0; i < ${num_ccomputes}; i++)); do
     NEUTRON_PORT_ID_CC[$i]=`neutron port-list | grep ${cnodename_prefix}$((i+1)) | awk '{print $2}'`
 done
 
-#Boot the node(s) with nova
+#Boot the node(s) with nova. chpcInit is set from prepare_cloudInit
 for ((i=0; i < ${num_computes}; i++)); do
-    nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${WHOLE_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --nic port-id=${NEUTRON_PORT_ID_CC[$i]} ${cnodename_prefix}$((i+1))
+    nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${WHOLE_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcInit --nic port-id=${NEUTRON_PORT_ID_CC[$i]} ${cnodename_prefix}$((i+1))
 done
