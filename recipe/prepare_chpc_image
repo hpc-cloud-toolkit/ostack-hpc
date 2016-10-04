@@ -31,13 +31,20 @@ function prepare_user_image() {
         # Add our custom element path
         export ELEMENTS_PATH="$( realpath ../dib/hpc/elements)"
         # define base for image as ohpc or orch. we are using orch
-        export DIB_HPC_BASE=orch
-        # for orch define Packge path
-        # This file is used to install orch component inside image
-        export DIB_HPC_ORCH_PKG=/home/sunil/HPC-Orch/HPC-Orchestrator-rhel7.2u5-16.01.002.beta.iso
+        export DIB_HPC_BASE=${chpc_base}
+	# define number of compute nodes
+	export num_computes=${num_computes:-${#c_ip[@]}}
+
         #Path to HPC base yum repo file
-        if [ ${DIB_HPC_BASE} == "orch" ]; then
+	# We support either Intel Orchestrator or OpenHPC
+        if [[ "${DIB_HPC_BASE}" == "orch" ]]; then
             export DIB_YUM_REPO_CONF=/etc/yum.repos.d/HPC_Orchestrator.repo
+            # for orch define Packge path
+	    # This file is used to install orch component inside image
+            export DIB_HPC_ORCH_PKG=${orch_iso_path}
+	else
+	    export DIB_YUM_REPO_CONF=/etc/yum.repos.d/OpenHPC.repo
+	    export DIB_HPC_OHPC_PKG=${ohpc_pkg}
         fi
         DIB_HPC_ELEMENTS="hpc-env-base hpc-slurm"
         #add mrsh if it is enabled
@@ -85,7 +92,7 @@ function prepare_deploy_image() {
         echo "=== Preparing cloud-hpc deploy images for ironic====================="
         echo "====================================================================="
         #prepare deploy images
-        disk-image-create ironic-agent centos7 -o icoud-hpc-deploy-c7
+        disk-image-create ironic-agent centos7 -o icloud-hpc-deploy-c7
         echo "====================================================================="
         echo "=== cloud-hpc deploy images Complete ================================"
         echo "====================================================================="
@@ -99,13 +106,18 @@ function prepare_deploy_image() {
         chpc_image_deploy_ramdisk=CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_deploy_ramdisk)
     fi
 }
- 
-CHPC_CLOUD_IMAGE_PATH=/opt/intel/hpc-orchestrator/admin/images/cloud/
+
+if [[ "${DIB_HPC_BASE}" == "orch" ]]; then 
+    CHPC_CLOUD_IMAGE_PATH=/opt/intel/hpc-orchestrator/admin/images/cloud/
+else
+    CHPC_CLOUD_IMAGE_PATH=/opt/ohpc/admin/images/cloud/
+fi
+
 mkdir -p $CHPC_CLOUD_IMAGE_PATH
 ### Build HPC user image
 prepare_user_image
 #### Build hpc deploy image
-prepare_deploy_image
+#prepare_deploy_image
 
 echo $chpc_image_deploy_kernel
 echo $chpc_image_deploy_ramdisk

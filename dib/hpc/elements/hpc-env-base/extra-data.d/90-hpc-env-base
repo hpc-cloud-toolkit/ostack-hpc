@@ -52,6 +52,8 @@ case "$DIB_HPC_BASE" in
         fi
         ;;
     ohpc)
+        # Check if the OpenHPC repo is installed
+        # install-packages "${DIB_HPC_OHPC_PKG}"
         ;;
     *)
         echo "Error !! no DIB_HPC_BASE available!"

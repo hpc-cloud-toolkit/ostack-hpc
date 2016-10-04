@@ -42,9 +42,7 @@ case "$DIB_HPC_BASE" in
         fi
         ;;
     ohpc)
-        #TBD
-        echo "Error !! DIB_HPC_BASE=ohpc is not supported at this point"
-        exit 1
+	# Nothing to be done for OpenHPC
         ;;
     *)
         echo "Error !! no DIB_HPC_BASE available!"

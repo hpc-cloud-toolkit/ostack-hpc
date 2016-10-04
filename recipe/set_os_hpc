@@ -16,7 +16,7 @@ echo "..$CHPC_SCRIPTDIR .."
 # Preperation for CloudInit Script and files
 # =====================================
 # This assumes that HPC head node recipe is installed and SMS_node functionality is already configured. It will get some data from there to prepare cloudInit
-time source prepare_cloudInit
+#time source prepare_cloudInit
 set +x
 #
 # ===========================
@@ -27,11 +27,11 @@ time source prepare_chpc_image
 # =========================
 # Prepare OpenStack for HPC baremetal instances
 # ==========================
-#prepare_chpc_openstack
+prepare_chpc_openstack
 #
 # ========================================================
 # Prepare SMS/Service Node. 
 # Add Cloud baremetal nodes to HPC Orchestrator
 # ========================================================
-#update_cnodes_to_sms
+update_cnodes_to_sms
 

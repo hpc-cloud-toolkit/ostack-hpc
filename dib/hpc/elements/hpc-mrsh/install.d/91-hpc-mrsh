@@ -7,5 +7,6 @@ fi
 set -eu
 set -o pipefail
 
-#install ntp, kernel, lmod and pdsh
+# install mrsh packages on compute image
 install-packages mrsh-$DIB_HPC_BASE mrsh-rsh-compat-$DIB_HPC_BASE mrsh-server-$DIB_HPC_BASE
+
