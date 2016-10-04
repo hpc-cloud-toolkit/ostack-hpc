@@ -1,0 +1,28 @@
+#!/bin/bash
+# It installs lmod
+
+if [ ${DIB_DEBUG_TRACE:-0} -gt 0 ]; then
+    set -x
+fi
+set -eu
+set -o pipefail
+
+case "$DIB_INIT_SYSTEM" in
+    systemd)
+        if [ -e /etc/rsyslog.conf ]; then
+            # Restart the rsyslog
+            systemctl restart rsyslog
+        fi
+
+        # Enable InfiniBand
+        systemctl enable rdma
+        # Enable NTPD
+        systemctl enable ntpd
+        ;;
+    *)
+        echo "Unsupported init system"
+        exit 1
+        ;;
+esac
+ 
+

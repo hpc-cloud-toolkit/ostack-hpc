@@ -10,12 +10,19 @@ set -o pipefail
 #install slurm
 install-packages -g $DIB_HPC_BASE-slurm-client
 
+# Update basic slurm configuration if additional computes defined
+if [ ${num_computes} -gt 4 ]; then
+    echo ">>--> Updating basic slurm configurations..."
+    sed -e "s/^NodeName=(\S+)/NodeName=${nodename_prefix}[1-${num_computes}]/" /etc/slurm/slurm.conf
+    sed -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=${nodename_prefix}[1-${num_computes}]/" /etc/slurm/slurm.conf
+fi
+
 # Update slurm pam module for mrsh and mrlogin
 if [[ -f "/etc/pam.d/mrsh" && -f "etc/pam.d/mrlogin" ]]; then
    echo "account    required     pam_slurm.so" >> /etc/pam.d/mrsh
    echo "account    required     pam_slurm.so" >> /etc/pam.d/mrlogin
 fi
 #update slurm pam module for sshd
-if [[ -f "/etc/pam.d/ssd" ]]; then
+if [[ -f "/etc/pam.d/sshd" ]]; then
    echo "account    required     pam_slurm.so" >> /etc/pam.d/sshd
 fi

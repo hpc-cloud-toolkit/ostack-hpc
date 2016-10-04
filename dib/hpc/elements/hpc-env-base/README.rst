@@ -19,6 +19,6 @@ DIB_HPC_BASE
     This element only tested on CentOS7
 
 Put `OpenHPC.repo` or `hpcorch.repo` into `/etc/yum.repos.d/`::
-   export DIB_YUM_REPO_CONF=/etc/yum.repos.d/HPC_Orchestrator.base
+   export DIB_YUM_REPO_CONF=/etc/yum.repos.d/HPC_Orchestrator.repo
 
 
