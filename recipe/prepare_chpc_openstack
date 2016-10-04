@@ -152,7 +152,7 @@ done
 
 #Add the instance_info/image_source and instance_info/root_gb
 for ((i=0; i < ${num_ccomputes}; i++)); do
-    ironic node-update ${NODE_UUID_CC[i]} add instance_info/image_source=${WHOLE_DISK_IMAGE_UUID} instance_info/root_gb=50
+    ironic node-update ${NODE_UUID_CC[$i]} add instance_info/image_source=${WHOLE_DISK_IMAGE_UUID} instance_info/root_gb=50
 done
 
 #Increase the Quota limit for admin to allow nova boot
