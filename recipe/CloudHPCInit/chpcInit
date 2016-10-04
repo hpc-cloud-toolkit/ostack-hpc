@@ -6,24 +6,14 @@ SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P
 SCRIPTDIR="${SCRIPTDIR%x}"
 cd $SCRIPTDIR
 
-#Find the hostname of this machine from the copied over /etc/hosts file
-ipaddrs=(`hostname -I`)
-for ipaddr in ${ipaddrs[@]}; do
-    cat /etc/hosts | grep ${ipaddr} > /dev/null
-	result=$?
-	if [ "$result" -eq "0" ]; then
-	    hostname=`cat /etc/hosts | grep ${ipaddr | cut -d$'\t' -f2`
-		break
-	fi
-done
-
-if [ -z "${hostname}" ]; then
-    echo "ERROR: No resolved hostname found for any IP address in /etc/hosts"
-	exit 1
+# Update rsyslog
+cat /etc/rsyslog.conf | grep "<sms_ip>:514"
+rsyslog_set=$?
+if [ "${rsyslog_set}" -ne "0" ]; then
+    echo "*.* @<sms_ip>:514" >> /etc/rsyslog.conf
 fi
 
-#set the hostname
-hostnamectl set-hostname ${hostname}
+systemctl restart rsyslog
 
 # nfs mount directory from SMS head node to Compute Node
 cat /etc/fstab | grep "<sms_ip>:/home"
@@ -73,14 +63,6 @@ ntpstat
 # Update basic slurm configuration, Ideally this should happen in SMS node, we should just copy files 
 # Now update the slurm file
 cp -f slurm.conf /etc/slurm/slurm.conf
-# Update rsyslog
-cat /etc/rsyslog.conf | grep "<sms_ip>:514"
-rsyslog_set=$?
-if [ "${rsyslog_set}" -ne "0" ]; then
-    echo "*.* @<sms_ip>:514" >> /etc/rsyslog.conf
-fi
-
-systemctl restart rsyslog
 
 #Sync following files to compute node
 cp -f -L passwd /etc/passwd
@@ -92,7 +74,26 @@ cp -f -L munge.key /etc/munge/munge.key
 # For hostname resolution
 #TBD: This is a workaround for now, what we want is nodes to communicate to other nodes and sms node. so need to update cn entries here. might want to generate a script which is executed on compute node, and that updates entries into /etc/hosts of compute node. This workaround will break other functionalities in Cloudburst scenario
 cp -f -L hosts /etc/hosts
-# make sure that hostname mentioned into /etc/hosts matches machine hostname. TBD
+
+#Find the hostname of this machine from the copied over /etc/hosts file
+cc_ipaddrs=(`hostname -I`)
+for cc_ipaddr in ${cc_ipaddrs[@]}; do
+    cat /etc/hosts | grep ${cc_ipaddr} > /dev/null
+	result=$?
+	if [ "$result" -eq "0" ]; then
+	    cc_hostname=`cat /etc/hosts | grep ${cc_ipaddr} | cut -d$'\t' -f2`
+		break
+	fi
+done
+
+if [ -z "${cc_hostname}" ]; then
+    logger "ERROR: No resolved hostname found for any IP address in /etc/hosts"
+	exit 1
+fi
+
+#set the hostname
+hostnamectl set-hostname ${cc_hostname}
+
 # Start slurm and munge ?? 
 systemctl enable munge
 systemctl restart munge
