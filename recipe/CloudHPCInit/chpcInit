@@ -5,7 +5,9 @@
 SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P && echo x)"
 SCRIPTDIR="${SCRIPTDIR%x}"
 cd $SCRIPTDIR
+chpcInitPath=/opt/intel/hpc-orchestrator/admin/CloudHPCInit
 
+logger "chpcInit: Updating Compute Node with HPC configuration"
 # Update rsyslog
 cat /etc/rsyslog.conf | grep "<sms_ip>:514"
 rsyslog_set=$?
@@ -14,6 +16,7 @@ if [ "${rsyslog_set}" -ne "0" ]; then
 fi
 
 systemctl restart rsyslog
+logger "chpcInit: rsyslog configuration complete, updating remaining HPC configuration"
 
 # nfs mount directory from SMS head node to Compute Node
 cat /etc/fstab | grep "<sms_ip>:/home"
@@ -33,11 +36,18 @@ cat /etc/fstab | grep "<sms_ip>:/opt/intel/hpc-orchestrator/pub/tests"
 orchestrator_tests_exist=$?
 if [ "${orchestrator_tests_exist}" -ne "0" ]; then
     echo -n "<sms_ip>:/opt/intel/hpc-orchestrator/pub/tests " >> /etc/fstab
-	echo "/opt/intel/hpc-orchestrator/pub/tests nfs nfsvers=3 0 0" >> /etc/fstab
+    echo "/opt/intel/hpc-orchestrator/pub/tests nfs nfsvers=3 0 0" >> /etc/fstab
 fi
-
 #mount 
 mount /opt/intel/hpc-orchestrator/pub/tests
+# mount cloudhpcinit
+cat /etc/fstab | grep "192.168.46.2:$chpcInitPath"
+CloudHPCInit_exist=$?
+if [ "${CloudHPCInit_exist}" -ne "0" ]; then
+    echo "192.168.46.2:$chpcInitPath $chpcInitPath nfs nfsvers=3 0 0" >> /etc/fstab
+fi 
+mkdir -p $chpcInitPath
+mount $chpcInitPath
 # Restart nfs
 systemctl restart nfs
 # Restart ntp at CN
@@ -51,47 +61,54 @@ fi
 systemctl restart ntpd
 # time sync
 ntpstat
-#
-# Copy slurm file: 
-# TBD: this should happen in parent script at HN
-#cp -f /etc/slurm/slurm.conf $chpcInitPath/
 
-#TBD Extend nodes here
-# Update basic slurm configuration, Ideally this should happen in SMS node, we should just copy files 
-# Now update the slurm file
-cp -f slurm.conf /etc/slurm/slurm.conf
+# Sync following files to compute node
+# Assuming nfs is setup properly
+if [ -d $chpcInitPath ]; then
+    # Update the slurm file
+    cp -f -L $chpcInitPath/slurm.conf /etc/slurm/slurm.conf
+    # Sync head node configuration with Compute Node
+    cp -f -L $chpcInitPath/passwd /etc/passwd
+    cp -f -L $chpcInitPath/group /etc/group
+    cp -f -L $chpcInitPath/shadow /etc/shadow 
+    cp -f -L $chpcInitPath/slurm.conf /etc/slurm/slurm.conf
+    cp -f -L $chpcInitPath/slurm /etc/pam.d/slurm
+    cp -f -L $chpcInitPath/munge.key /etc/munge/munge.key
+    # For hostname resolution
+    cp -f -L $chpcInitPath/hosts /etc/hosts
+    # make sure that hostname mentioned into /etc/hosts matches machine hostname. TBD
+    # Start slurm and munge 
+    systemctl enable munge
+    systemctl restart munge
+    systemctl enable slurmd
+    systemctl restart slurmd
+else
+    logger "chpcInit:ERROR: cannot stat nfs shared /opt directory, cannot copy HPC system files"
+fi
 
-#Sync following files to compute node
-cp -f -L passwd /etc/passwd
-cp -f -L group /etc/group
-cp -f -L shadow /etc/shadow 
-cp -f -L slurm.conf /etc/slurm/slurm.conf
-cp -f -L slurm /etc/pam.d/slurm
-cp -f -L munge.key /etc/munge/munge.key
-# For hostname resolution
-#TBD: This is a workaround for now, what we want is nodes to communicate to other nodes and sms node. so need to update cn entries here. might want to generate a script which is executed on compute node, and that updates entries into /etc/hosts of compute node. This workaround will break other functionalities in Cloudburst scenario
-cp -f -L hosts /etc/hosts
-
+# Setup hostname as per the head node
 #Find the hostname of this machine from the copied over /etc/hosts file
 cc_ipaddrs=(`hostname -I`)
 for cc_ipaddr in ${cc_ipaddrs[@]}; do
     cat /etc/hosts | grep ${cc_ipaddr} > /dev/null
-	result=$?
-	if [ "$result" -eq "0" ]; then
-	    cc_hostname=`cat /etc/hosts | grep ${cc_ipaddr} | cut -d$'\t' -f2`
-		break
-	fi
+    result=$?
+    if [ "$result" -eq "0" ]; then
+        cc_hostname=`cat /etc/hosts | grep ${cc_ipaddr} | cut -d$'\t' -f2`
+        break
+    fi
 done
 
 if [ -z "${cc_hostname}" ]; then
-    logger "ERROR: No resolved hostname found for any IP address in /etc/hosts"
-	exit 1
+    logger "chpcInit:ERROR: No resolved hostname found for any IP address in /etc/hosts"
+    exit 1
 fi
 
 #set the hostname
-hostnamectl set-hostname ${cc_hostname}
+if [ $(hostname) != ${cc_hostname} ]; then
+    hostnamectl set-hostname ${cc_hostname}
+fi
 
-# Start slurm and munge ?? 
+# Start slurm and munge 
 systemctl enable munge
 systemctl restart munge
 systemctl enable slurmd
