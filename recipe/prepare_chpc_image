@@ -44,13 +44,11 @@ function prepare_user_image() {
         if [[ ${enable_mrsh} -eq 1 ]];then
            DIB_HPC_ELEMENTS+=" hpc-mrsh"
         fi
-        # Configure Cloud init source as Openstack
-        export DIB_CLOUD_INIT_DATASOURCES="ConfigDrive, OpenStack"
         # build an image
         echo "====================================================================="
         echo "=== Preparing cloud-hpc user image =================================="
         echo "====================================================================="
-        disk-image-create centos7 vm local-config dhcp-all-interfaces devuser cloud-init-datasources $DIB_HPC_ELEMENTS -o icloud-hpc-cent7 
+        disk-image-create centos7 vm local-config dhcp-all-interfaces devuser $DIB_HPC_ELEMENTS -o icloud-hpc-cent7 
         echo "====================================================================="
         echo "=== User Image Creation complete ===================================="
         echo "====================================================================="
