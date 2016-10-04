@@ -1,6 +1,6 @@
 #!bin/bash
 # 
-chpcInitPath=/opt/intel/hpc-orchestrator/admin/images/cloud/CloudHPCInit
+chpcInitPath=/tmp/CloudHPCInit
 # if directory exists then mv to Old directory. TBD
 mkdir -p $chpcInitPath
 #copy Cloud HPC files to temp working directory
