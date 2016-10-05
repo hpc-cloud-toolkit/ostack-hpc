@@ -103,13 +103,13 @@ if [ "${subnet_exists}" -ne "0" ]; then
 fi
 NEUTRON_SUBNET_UUID=`neutron subnet-list | grep subnet01 | awk '{print $2}'`
 
-#Create the whole-disk-image from the qcow2 file
-glance image-list | grep whole-disk-image
+#Create the whole-disk-image from the user's qcow2 file
+glance image-list | grep user-image
 img_exists=$?
 if [ "${img_exists}" -ne "0" ]; then
-    glance image-create --name whole-disk-image --visibility public --disk-format qcow2 --container-format bare < ${chpc_image_user}
+    glance image-create --name user-image --visibility public --disk-format qcow2 --container-format bare < ${chpc_image_user}
 fi
-WHOLE_DISK_IMAGE_UUID=`glance image-list | grep whole-disk-image | awk '{print $2}'`
+USER_DISK_IMAGE_UUID=`glance image-list | grep user-image | awk '{print $2}'`
 
 #Create the deploy-kernel and deploy-initrd images
 glance image-list | grep deploy-vmlinuz
@@ -152,7 +152,7 @@ done
 
 #Add the instance_info/image_source and instance_info/root_gb
 for ((i=0; i < ${num_ccomputes}; i++)); do
-    ironic node-update ${NODE_UUID_CC[$i]} add instance_info/image_source=${WHOLE_DISK_IMAGE_UUID} instance_info/root_gb=50
+    ironic node-update ${NODE_UUID_CC[$i]} add instance_info/image_source=${USER_DISK_IMAGE_UUID} instance_info/root_gb=50
 done
 
 #Increase the Quota limit for admin to allow nova boot
@@ -178,5 +178,5 @@ done
 
 #Boot the node(s) with nova. chpcInit is set from prepare_cloudInit
 for ((i=0; i < ${num_computes}; i++)); do
-    nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${WHOLE_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcInit --nic port-id=${NEUTRON_PORT_ID_CC[$i]} ${cnodename_prefix}$((i+1))
+    nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${USER_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcInit --nic port-id=${NEUTRON_PORT_ID_CC[$i]} ${cnodename_prefix}$((i+1))
 done
