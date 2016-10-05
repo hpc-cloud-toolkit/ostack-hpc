@@ -1,0 +1,77 @@
+heat_template_version: 2013-05-23
+
+description: > 
+  This is a sample heat template to create HPC codes
+
+  #Created by: Dr Yih Leong Sun, 2016-10-05
+
+parameters:
+  ssh_key_name:
+    type: string
+    label: SSH Keypair
+    description: Name of a SSH keypair.
+    hidden: false
+    default: ironic-key
+
+  server_name:
+    type: string
+    label: Instance Name
+    description: Name of the baremetal instance.
+    hidden: false
+    default: bm
+
+  instance_flavor:
+    type: string
+    label: Instance Flavor
+    description: The flavor type to use for baremetal server.
+    default: my-baremetal-flavor
+    hidden: false
+
+  image_id:
+    type: string
+    label: Image ID
+    description: The image to use for baremetal server.
+    default: bde5bc20-8ef2-41ef-9910-7fb2c6625496
+    hidden: false
+
+  network_id:
+    type: string
+    label: Network ID
+    description: The flat network to be used for baremetal server
+    default: 4d5fd01c-4be6-4de2-b24e-68df725b809b
+    
+  password:
+    type: string
+    label: Password (centos)
+    description: The password for user centos.
+    default: openstack
+
+resources:
+  baremetal_instance:
+    type: OS::Nova::Server
+    properties:
+      name: { get_param: server_name }
+      image: { get_param: image_id }
+      flavor: { get_param: instance_flavor }
+      key_name: { get_param: ssh_key_name }
+      networks:
+        - network: { get_param: network_id }
+      user_data_format: RAW
+      user_data: 
+        str_replace:
+          template: |
+            #!/bin/bash
+            echo "Running boot script"
+            echo "Setting password to " $password           
+            echo $password | passwd --stdin $user
+
+          params:
+            $password: { get_param: password }
+            $user: centos
+
+outputs:
+  ip_address:
+    description: IP address of the baremetal instance
+    value: { get_attr: [baremetal_instance, first_address] }
+
+
