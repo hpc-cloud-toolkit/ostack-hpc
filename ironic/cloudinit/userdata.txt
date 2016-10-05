@@ -1,0 +1,14 @@
+#!/bin/bash
+
+echo "running clout-init user data" 
+
+echo "hello world" > /tmp/test.txt
+
+cat /tmp/test.txt
+
+cat /tmp/testscript.sh
+
+sh /tmp/testscript.sh
+
+exit 0
+

@@ -56,7 +56,7 @@ resources:
           content: {get_file: cloudinit/testscript1.sh}
         - path: /tmp/testscript2.sh
           content: {get_file: cloudinit/testscript2.sh}
-          
+        
   boot_script:
     type: OS::Heat::SoftwareConfig
     properties:
@@ -70,8 +70,11 @@ resources:
             echo $password | passwd --stdin $user
             
             cat /tmp/testscript1.sh
+            sh /tmp/testscript1.sh
             
             cat /tmp/testscript2.sh
+            sh /tmp/testscript2.sh
+       
             echo "Done"
           params:
             $password: { get_param: password }
