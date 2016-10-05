@@ -66,7 +66,7 @@ systemctl stop firewalld
 
 #Disable NetworkManager
 systemctl disable NetworkManager
-systemctl stop Network Manager
+systemctl stop NetworkManager
 
 #Enable network
 systemctl enable network
