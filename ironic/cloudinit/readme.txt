@@ -5,8 +5,6 @@ nova boot --user-data cloudinit/userdata.yml \
 --image ironic-hpc-centos7  --nic net-id=4d5fd01c-4be6-4de2-b24e-68df725b809b bm1
 
 nova boot --user-data cloudinit/userdata.txt \
---file /tmp/testscript.sh=cloudinit/testscript.sh \
---file /tmp/testscript2.sh=cloudinit/testscript.sh \
 --flavor my-baremetal-flavor --key-name ironic-key \
 --image ironic-hpc-centos7 --nic net-id=4d5fd01c-4be6-4de2-b24e-68df725b809b bm2
 
