@@ -115,7 +115,7 @@ mkdir -p $CHPC_CLOUD_IMAGE_PATH
 ### Build HPC user image
 prepare_user_image
 #### Build hpc deploy image
-#prepare_deploy_image
+prepare_deploy_image
 
 echo $chpc_image_deploy_kernel
 echo $chpc_image_deploy_ramdisk
