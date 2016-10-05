@@ -30,7 +30,7 @@ time source prepare_chpc_openstack
 #Wait for CN(s) to come up. TODO: Poll and wait rather than just a set 10 minutes.
 sleep 600
 #Call cloudInit workaround script
-time source c_init_workaround
+#time source c_init_workaround
 #
 # ========================================================
 # Prepare SMS/Service Node. 

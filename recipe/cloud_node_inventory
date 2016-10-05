@@ -15,19 +15,19 @@ cc_subnet_dhcp_end="${c_subnet_dhcp_end=192.168.46.200}"
 
 # cloud compute node IP addresses
 # might need to get MAC and IP from Nova and use here, TBD
-cc_ip[0]=192.168.46.5
-#cc_ip[1]=192.168.46.6
-#cc_ip[2]=192.168.46.7
+cc_ip[0]=192.168.46.101
+cc_ip[1]=192.168.46.102
+#cc_ip[2]=192.168.46.103
 
 # cloud compute node MAC addreses for provisioning interface
 cc_mac[0]=00:1e:67:43:86:eb
-#cc_mac[1]=00:1e:67:b0:c0:c8
+cc_mac[1]=00:1e:67:b0:c0:c8
 #cc_mac[2]=00:1e:67:43:87:fe
 
 # cloud compute node BMC addresses
-cc_bmc[0]=10.23.182.157
-#cc_bmc[1]=10.23.182.254
-#cc_bmc[2]=10.23.183.32
+cc_bmc[0]=192.168.46.51
+cc_bmc[1]=192.168.46.52
+#cc_bmc[2]=192.168.46.53
 
 # cloud node BMC username and password
 cc_bmc_username="${c_bmc_username=root}"
@@ -42,5 +42,5 @@ ARCH=x86_64
 # Cloud Compute Node Images
 chpc_image_deploy_kernel="${chpc_image_deply=/opt/intel/hpc-orchestrator/admin/images/cloud/ironic-deploy-c7.kernel}"
 chpc_image_deploy_ramdisk="${chpc_image_ramdisk=/opt/intel/hpc-orchestrator/admin/images/cloud/ironic-deploy-c7.initramfs}"
-chpc_image_user="${chpc_image_user=/opt/intel/hpc-orchestrator/admin/images/cloud/icloud-hpc-cent7.qcow2}"
+chpc_image_user="${chpc_image_user=/home/sunil/HPC-Orch/my-cent7-hpc3.qcow2}"
 chpc_create_new_image="${chpc_create_new_image=0}"

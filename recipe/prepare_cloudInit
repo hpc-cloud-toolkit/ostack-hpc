@@ -5,7 +5,7 @@ chpcInitPath=/opt/intel/hpc-orchestrator/admin/CloudHPCInit
 mkdir -p $chpcInitPath
 #copy Cloud HPC files to temp working directory
 sudo cp -fr -L $CHPC_SCRIPTDIR/CloudHPCInit/* $chpcInitPath/
-chpcInit=$chpcInitPath/chpcInit
+export chpcInit=$chpcInitPath/chpcInit
 
 #update sms_ip in cloudInit scripts
 sudo sed -i -e "s/<sms_ip>/${sms_ip}/g" $chpcInit
