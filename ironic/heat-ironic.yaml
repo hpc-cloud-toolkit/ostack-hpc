@@ -2,6 +2,10 @@ heat_template_version: 2013-05-23
 
 description: > 
   This is a sample heat template to create HPC codes
+  http://docs.openstack.org/developer/heat/template_guide/index.html 
+  http://cloudinit.readthedocs.io/en/latest/
+  openstack stack create --template heat-ironic.yaml --parameter "password=password" stack1
+  openstack stack delete stack-name1
 
   #Created by: Dr Yih Leong Sun, 2016-10-05
 
