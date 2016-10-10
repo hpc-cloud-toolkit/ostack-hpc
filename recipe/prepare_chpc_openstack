@@ -25,13 +25,10 @@ role_exists=$?
 if [ "${role_exists}" -ne "0" ]; then 
     openstack role create baremetal_observer
 fi
-
-#Restart the ironic-api service
 systemctl restart openstack-ironic-api
 
 #Ensure the utilities for baremetal are installed
 yum install -y tftp-server syslinux-tftpboot xinetd
-
 #Make the directory for tftp and give it the ironic owner
 mkdir -p /tftpboot
 chown -R ironic /tftpboot
@@ -177,6 +174,6 @@ for ((i=0; i < ${num_ccomputes}; i++)); do
 done
 
 #Boot the node(s) with nova. chpcInit is set from prepare_cloudInit
-for ((i=0; i < ${num_computes}; i++)); do
+for ((i=0; i < ${num_ccomputes}; i++)); do
     nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${USER_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcInit --nic port-id=${NEUTRON_PORT_ID_CC[$i]} ${cnodename_prefix}$((i+1))
 done
