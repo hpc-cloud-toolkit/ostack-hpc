@@ -35,6 +35,8 @@ function prepare_user_image() {
         # for orch define Packge path
         # This file is used to install orch component inside image
         export DIB_HPC_ORCH_PKG=/home/sunil/HPC-Orch/HPC-Orchestrator-rhel7.2u5-16.01.002.beta.iso
+        # path to hpc configuration files i.e. cloud.cfg
+        export DIB_HPC_FILE_PATH=/home/sunil/hpc/dib/hpc/hpc-files
         #Path to HPC base yum repo file
         if [ ${DIB_HPC_BASE} == "orch" ]; then
             export DIB_YUM_REPO_CONF=/etc/yum.repos.d/HPC_Orchestrator.repo

@@ -38,3 +38,7 @@ if [ -e /etc/rsyslog.conf ]; then
     esac
 fi
 
+#configure Cloud-Init
+if [ -f $TMP_HOOKS_PATH/cloud.cfg ]; then
+    sudo cp -L -f $TMP_HOOKS_PATH/cloud.cfg /etc/cloud/
+fi

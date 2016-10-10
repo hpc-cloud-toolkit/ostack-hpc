@@ -6,12 +6,10 @@ fi
 set -eu
 set -o pipefail
 
-#if [[ ${DIB_HPC_KEEP_USERS} -eq 1 ]]; then
-#   # copy temporary files
-#   sudo cp -L -f /etc/group $TMP_HOOKS_PATH/
-#   sudo cp -L -f /etc/passwd $TMP_HOOKS_PATH/
-#   sudo cp -L -f /etc/shadow $TMP_HOOKS_PATH/
-#fi
+# Copy CloudInit configuration file
+if [ ! -z $DIB_HPC_FILE_PATH ]; then
+    sudo cp -L -f $DIB_HPC_FILE_PATH/cloud.cfg $TMP_HOOKS_PATH/
+fi
 case "$DIB_HPC_BASE" in
     orch)
         if [ -e $DIB_HPC_ORCH_PKG ]; then
