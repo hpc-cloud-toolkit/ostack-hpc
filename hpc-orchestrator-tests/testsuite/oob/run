@@ -1,0 +1,17 @@
+#!/bin/bash
+
+cd "$(dirname "$0")"      || exit 1
+
+source ./LOCAL_ENV        || exit 1
+export BATS_JUNIT_CLASS=$TEST_DIR
+
+echo " "
+echo " "
+echo "-------------------------------------------------------"
+echo "OOB Access"
+echo "-------------------------------------------------------"
+
+rm -f *.log *.trs *.xml
+
+./ipmitool
+./conman

@@ -1,0 +1,18 @@
+#!../common/bats/bin/bats
+# -*-sh-*-
+
+load ../common/test_helper_functions || exit 1
+source ../common/functions || exit 1
+
+if [ -s ../TEST_ENV ];then
+    source ../TEST_ENV
+fi
+
+@test "[check_nodes] verify compute nodes access" {
+
+    cn_ref=`nodeattr -n compute | wc -l`
+    cn_ssh=`pdsh -R mrsh -g compute echo 1 | wc -l`
+
+    assert_equal "$cn_ref" "$cn_ssh"
+
+}

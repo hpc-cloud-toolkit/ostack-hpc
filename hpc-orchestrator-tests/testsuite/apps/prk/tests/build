@@ -1,0 +1,9 @@
+#!../../../common/bats/bin/bats
+# -*-sh-*-
+
+@test "[Apps/PRK] build PRK executables ($LMOD_FAMILY_COMPILER/$LMOD_FAMILY_MPI)" {
+ 
+    make -f Makefile.hpc veryclean    >& /dev/null
+    make -f Makefile.hpc -j 4 allohpc >& /dev/null
+
+}

@@ -1,0 +1,48 @@
+#!../common/bats/bin/bats
+# -*-sh-*-
+
+load ../common/test_helper_functions || exit 1
+source ../common/functions || exit 1
+
+if [ -s ../TEST_ENV ];then
+    source ../TEST_ENV
+fi
+
+@test "[cluster-install] Verify ${num_computes} nodes provisioned" {
+
+    which pdsh
+
+    [ ${num_computes} -ge 4 ] || ERROR_RETURN "${num_computes} not >= 4"
+
+    rm -f /tmp/hosts
+    pdsh -g compute  uptime | sed 's|:||' | grep average | tee /tmp/hosts
+    [ -s /tmp/hosts ] || ERROR_RETURN "/tmp/hosts is zero length"
+
+    num_hosts=$(wc -l /tmp/hosts | awk '{print $1}') || exit 1
+
+    [ ${num_hosts} -eq ${num_computes} ] || ERROR_RETURN "${num_hosts} != ${num_computes}"
+}
+
+@test "[cluster-install] Verify ${num_computes} uptimes are reasonable" {
+
+    which pdsh
+    
+    rm -f /tmp/hosts
+    pdsh -g compute cat /proc/uptime | sed 's|:||' | tee /tmp/hosts
+    [ -s /tmp/hosts ] || ERROR_RETURN "/tmp/hosts is zero length"
+
+    THRESHOLD=1500     # time in (seconds)
+
+    while read entry; do
+        host=$(echo $entry | awk '{print $1}')
+        seconds=$(echo $entry | awk '{print $2}' | awk -F . '{print $1}')
+
+        if [ ${seconds} -gt ${THRESHOLD} ]; then
+	    ERROR_RETURN "Host $host up longer than $THRESHOLD seconds"
+	    fi
+
+    done < /tmp/hosts
+
+}
+
+

@@ -1,0 +1,17 @@
+#!./common/bats/bin/bats
+# -*-sh-*-
+
+load ./common/test_helper_functions || exit 1
+source ./common/functions || exit 1
+source ./common/TEST_ENV
+
+if [ -s ./LOCAL_ENV ];then
+    source ./LOCAL_ENV
+else
+    ERROR "missing LOCAL_ENV"
+fi
+
+@test "[$TEST_DIR] Verify permissions of /etc/powerman/powerman.conf" {
+  USER=$(systemctl show -p User powerman | sed 's#^User=##')
+  [ "$(stat -c '%a %U' /etc/powerman/powerman.conf)" == "400 $USER" ]
+}

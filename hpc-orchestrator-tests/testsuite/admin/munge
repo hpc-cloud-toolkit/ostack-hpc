@@ -1,0 +1,29 @@
+#!../common/bats/bin/bats
+# -*-sh-*-
+
+load ../common/test_helper_functions || exit 1
+source ../common/functions || exit 1
+
+if [ -s ../TEST_ENV ];then
+    source ../TEST_ENV
+fi
+
+@test "[munge] check for RPM" {
+    check_if_rpm_installed "munge${DELIM}"
+}
+
+@test "[munge] munge and unmunge payload" {
+    PAYLOAD=$(munge -s "$(hostname)")
+    echo $PAYLOAD | unmunge
+}
+
+@test "[munge] test TTL failure" {
+    export TMP=$(mktemp /tmp/munge-test.XXXXXX)
+    munge -t 1 -s "$(hostname))" -o $TMP
+    sleep 2
+    
+    run unmunge -i $TMP
+    echo "$output"
+    assert_failure
+}
+

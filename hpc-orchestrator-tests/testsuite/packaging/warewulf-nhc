@@ -1,0 +1,46 @@
+#!./common/bats/bin/bats
+# -*-sh-*-
+
+load ./common/test_helper_functions || exit 1
+source ./common/functions || exit 1
+source ./common/TEST_ENV
+
+if [ -s ./LOCAL_ENV ];then
+    source ./LOCAL_ENV
+else
+    ERROR "missing LOCAL_ENV"
+fi
+
+# $ID will be set to sles or centos
+source /etc/os-release
+
+isTested () {
+
+  if [[ "$1" -eq 0 ]]; then return 0
+  else  
+  return 1
+  fi
+
+}
+
+@test "[$TEST_DIR] verify warewulf-nhc installs correctly" {
+
+    tmpdir="/usr/tmp"
+
+    if [ "x$ID" = "xcentos" ] || [ "x$ID" = "xrhel" ]; then
+        yumdownloader warewulf-nhc${DELIM} --destdir=${tmpdir}/
+    elif [ "x$ID" = "xsles" ]; then
+        TEMP=$(mktemp)
+        export XDG_CACHE_HOME="$(mktemp -d)"
+        zypper download warewulf-nhc${DELIM}
+        mv $XDG_CACHE_HOME/zypp/packages/*/noarch/warewulf-nhc-*.rpm ${tmpdir}/.
+    else
+        flunk "test designed for centos or sles."
+    fi
+
+    package=`ls ${tmpdir} | grep warewulf-nhc | sed -n 1p`
+    rpm -U --test --replacepkgs ${tmpdir}/${package}
+    isTested "$?"
+    rm ${tmpdir}/${package}
+
+}

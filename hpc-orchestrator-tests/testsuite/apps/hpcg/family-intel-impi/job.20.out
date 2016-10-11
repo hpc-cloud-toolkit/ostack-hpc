@@ -1,0 +1,2 @@
+[prun] Master compute host = cc1
+[prun] Launch cmd = mpiexec.hydra -bootstrap slurm ./bin/xhpcg.intel.impi 32 32 32 10
