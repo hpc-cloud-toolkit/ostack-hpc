@@ -116,9 +116,10 @@ if [ "${orchestrator_install}" -eq "1" ]; then
 	mount -o loop ${ORCHESTRATOR_LOCATION} /mnt/hpc_orch_iso
 	rpm -Uvh /mnt/hpc_orch_iso/x86_64/Intel_HPC_Orchestrator_release-16.01.002.beta-8.1.x86_64.rpm
 	rpm --import /etc/pki/pgp/HPC-Orchestrator*.asc
+	pushd
 	cd hpc_cent7
 	time source recipe.sh -f
-	cd ${SCRIPTDIR}
+	popd
 fi
 
 if [ "${openhpc_install}" -eq "1" ]; then
@@ -127,9 +128,10 @@ fi
 
 #Run packstack install.
 if [ "${packstack_install}" -eq "1" ]; then
+	pushd
 	cd ../packstack/recipe
 	time source packstack-install.sh -s=${controller_ip} -f=${cc_subnet_cidr}
-	cd ${SCRIPTDIR}
+	popd
 fi
 
 #set up hosts at head node or sms node
