@@ -76,6 +76,10 @@ sed --in-place "s|reserved_host_memory_mb=512|reserved_host_memory_mb=0|" /etc/n
 sed --in-place "s|#scheduler_host_subset_size=1|scheduler_host_subset_size=9999999|" /etc/nova/nova.conf
 sed --in-place "s|#scheduler_use_baremetal_filters=false|scheduler_use_baremetal_filters=true|" /etc/nova/nova.conf
 
+#Edit /etc/neutron/dhcp_agent.ini
+sed --in-place "s|enable_isolated_metadata\ =\ False|enable_isolated_metadata\ =\ True|" /etc/neutron/dhcp_agent.ini
+sed --in-place "s|#force_metadata\ =\ false|force_metadata\ =\ True|" /etc/neutron/dhcp_agent.ini 
+
 #Restart ironic, nova, and ovs to load in the new configuration
 systemctl restart neutron-dhcp-agent
 systemctl restart neutron-openvswitch-agent

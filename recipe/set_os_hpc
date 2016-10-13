@@ -18,19 +18,19 @@ echo "..$CHPC_SCRIPTDIR .."
 # This assumes that HPC head node recipe is installed and SMS_node functionality is already configured. It will get some data from there to prepare cloudInit
 time source prepare_cloudInit
 #
-# ===========================
-# Prepare CloudHPC Image : TODO
-# ===========================
+# ========================
+# Prepare CloudHPC Image :
+# ========================
 # Check if User selected to prepare cloud HPC images
 time source prepare_chpc_image
-# =========================
+# =============================================
 # Prepare OpenStack for HPC baremetal instances
-# ==========================
+# =============================================
 time source prepare_chpc_openstack
 #Wait for CN(s) to come up. TODO: Poll and wait rather than just a set 10 minutes.
 sleep 600
 #Call cloudInit workaround script
-time source c_init_workaround
+#time source c_init_workaround
 #
 # ========================================================
 # Prepare SMS/Service Node. 

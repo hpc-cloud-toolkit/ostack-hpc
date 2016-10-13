@@ -16,6 +16,10 @@ if [[ "${DIB_HPC_BASE}" == "ohpc" ]]; then
     if [[ -n "${DIB_HPC_BASE}" ]]; then
         if install-packages "${DIB_HPC_OHPC_PKG}"; then
             echo ">>-> OpenHPC package present"
+            if [ -e /opt/ohpc/pub ]; then
+                echo ">>-> Deleting /opt/ohpc/pub!"
+                rm -fr /opt/ohpc/pub
+            fi
         else
             echo ">>-> ERROR: OpenHPC package could not be installed!"
             exit 1

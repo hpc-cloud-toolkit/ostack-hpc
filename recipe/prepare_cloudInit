@@ -1,10 +1,18 @@
 #!bin/bash
 # 
-chpcInitPath=/opt/intel/hpc-orchestrator/admin/CloudHPCInit
+if [[ "${chpc_base}" == "orch" ]]; then
+	echo "CloudInit: Intel Orchestrator"
+        chpcInitPath=/opt/intel/hpc-orchestrator/admin/CloudHPCInit
+else
+	echo "CloudInit: OpenHPC - ${chpc_base}"
+        chpcInitPath=/opt/ohpc/admin/CloudHPCInit
+fi
+
 # if directory exists then mv to Old directory. TBD
 mkdir -p $chpcInitPath
 #copy Cloud HPC files to temp working directory
-sudo cp -fr -L $CHPC_SCRIPTDIR/CloudHPCInit/* $chpcInitPath/
+sudo cp -fr -L $CHPC_SCRIPTDIR/CloudHPCInit/${chpc_base}/* $chpcInitPath/
+
 chpcInit=$chpcInitPath/chpcInit
 
 #update sms_ip in cloudInit scripts
@@ -26,3 +34,14 @@ sudo cp -fr /etc/pam.d/slurm $chpcInitPath
 sudo cp -fr /etc/munge/munge.key $chpcInitPath
 #TBD: This is a workaround for now, what we want is nodes to communicate to other nodes and sms node. so need to update cn entries here. might want to generate a script which is executed on compute node, and that updates entries into /etc/hosts of compute node. This workaround will break other functionalities in Cloudburst scenario
 sudo cp -fr /etc/hosts $chpcInitPath
+
+cat /etc/exports | grep "$chpcInitPath"
+chpcInitPath_exported=$?
+
+if [ "${chpcInitPath_exported}" -ne "0" ]; then
+    echo "$chpcInitPath *(rw,no_subtree_check,no_root_squash)" >> /etc/exports
+    exportfs -a
+    systemctl restart nfs
+    systemctl enable nfs-server
+fi
+

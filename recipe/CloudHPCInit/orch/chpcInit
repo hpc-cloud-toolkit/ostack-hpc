@@ -41,10 +41,10 @@ fi
 #mount 
 mount /opt/intel/hpc-orchestrator/pub/tests
 # mount cloudhpcinit
-cat /etc/fstab | grep "192.168.46.2:$chpcInitPath"
+cat /etc/fstab | grep "<sms_ip>:$chpcInitPath"
 CloudHPCInit_exist=$?
 if [ "${CloudHPCInit_exist}" -ne "0" ]; then
-    echo "192.168.46.2:$chpcInitPath $chpcInitPath nfs nfsvers=3 0 0" >> /etc/fstab
+    echo "<sms_ip>:$chpcInitPath $chpcInitPath nfs nfsvers=3 0 0" >> /etc/fstab
 fi 
 mkdir -p $chpcInitPath
 mount $chpcInitPath
