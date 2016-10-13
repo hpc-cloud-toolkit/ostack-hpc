@@ -108,7 +108,7 @@ ORCHESTRATOR_LOCATION=${HOME}/HPC-Orchestrator-rhel7.2u5-16.01.002.beta.iso
 setup_computename
 
 #Set the hostname of the machine
-hostnamect set-hostname ${sms_name}
+hostnamectl set-hostname ${sms_name}
 
 #Install hpc orchestrator OR openhpc
 if [ "${orchestrator_install}" -eq "1" ]; then
