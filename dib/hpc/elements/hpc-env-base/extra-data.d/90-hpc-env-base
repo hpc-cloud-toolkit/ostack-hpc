@@ -50,6 +50,7 @@ case "$DIB_HPC_BASE" in
         fi
         ;;
     ohpc)
+        # Nothing to be done here for OpenHPC
         ;;
     *)
         echo "Error !! no DIB_HPC_BASE available!"

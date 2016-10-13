@@ -7,6 +7,29 @@ fi
 set -eu
 set -o pipefail
 
+if [[ "${DIB_HPC_BASE}" == "ohpc" ]]; then
+    # Check if the OpenHPC repo is installed
+    echo
+    echo ">>--> Checking if the OpenHPC package is installed"
+    echo
+
+    if [[ -n "${DIB_HPC_BASE}" ]]; then
+        if install-packages "${DIB_HPC_OHPC_PKG}"; then
+            echo ">>-> OpenHPC package present"
+            if [ -e /opt/ohpc/pub ]; then
+                echo ">>-> Deleting /opt/ohpc/pub!"
+                rm -fr /opt/ohpc/pub
+            fi
+        else
+            echo ">>-> ERROR: OpenHPC package could not be installed!"
+            exit 1
+        fi
+    else
+        echo ">>-> ERROR: OpenHPC package path is not defined!"
+        exit 1
+    fi
+fi
+
 #install ntp, kernel, lmod and pdsh
 install-packages ntp kernel lmod-$DIB_HPC_BASE pdsh-$DIB_HPC_BASE
 #install infiniband support
@@ -17,28 +40,27 @@ install-packages  infinipath-psm
 # Configure the rsyslog 
 if [ -e /etc/rsyslog.conf ]; then
     #comment out unwanted messages, reduce noice
-    sed -e "s/^\*\.info/\\#\*\.info/" /etc/rsyslog.conf
-    sed -e "s/^authpriv/\\#authpriv/" /etc/rsyslog.conf
-    sed -e "s/^mail/\\#mail/" /etc/rsyslog.conf
-    sed -e "s/^cron/\\#cron/" /etc/rsyslog.conf
-    sed -e "s/^uucp/\\#uucp/" /etc/rsyslog.conf
-    #restart the rsyslog
-    case "$DIB_INIT_SYSTEM" in
-        systemd)
-            systemctl restart rsyslog
-            #enable infiniBand
-            systemctl enable rdma
-            # update mem limit
-            sed -i -- 's/# End of file/\* hard memlock unlimited\n&/' /etc/security/limits.conf
-            ;;
-        *)
-            echo "Unsupported init system"
-            exit 1
-            ;;
-    esac
+    sed -i "s/^\*\.info/\\#\*\.info/" /etc/rsyslog.conf
+    sed -i "s/^authpriv/\\#authpriv/" /etc/rsyslog.conf
+    sed -i "s/^mail/\\#mail/" /etc/rsyslog.conf
+    sed -i "s/^cron/\\#cron/" /etc/rsyslog.conf
+    sed -i "s/^uucp/\\#uucp/" /etc/rsyslog.conf
 fi
 
 #configure Cloud-Init
 if [ -f /tmp/in_target.d/cloud.cfg ]; then
     sudo cp -L -f /tmp/in_target.d/cloud.cfg /etc/cloud/
 fi
+
+case "$DIB_INIT_SYSTEM" in
+    systemd)
+        # Update memlock settings
+        sed -i 's/# End of file/\* soft memlock unlimited\n&/' /etc/security/limits.conf
+        sed -i 's/# End of file/\* hard memlock unlimited\n&/' /etc/security/limits.conf
+        ;;
+    *)
+        echo "Unsupported init system"
+        exit 1
+        ;;
+esac
+

@@ -16,6 +16,6 @@ if [[ -f "/etc/pam.d/mrsh" && -f "etc/pam.d/mrlogin" ]]; then
    echo "account    required     pam_slurm.so" >> /etc/pam.d/mrlogin
 fi
 #update slurm pam module for sshd
-if [[ -f "/etc/pam.d/ssd" ]]; then
+if [[ -f "/etc/pam.d/sshd" ]]; then
    echo "account    required     pam_slurm.so" >> /etc/pam.d/sshd
 fi
