@@ -33,7 +33,7 @@ function prepare_user_image() {
         # define base for image as ohpc or orch.
         export DIB_HPC_BASE=${chpc_base}
         # path to hpc configuration files i.e. cloud.cfg
-        export DIB_HPC_FILE_PATH=/home/sunil/hpc/dib/hpc/hpc-files
+        export DIB_HPC_FILE_PATH=/home/orc/hpc_latest/dib/hpc/hpc-files
 
         #Path to HPC base yum repo file
         # We support either Intel HPC Orchestrator and OpenHPC

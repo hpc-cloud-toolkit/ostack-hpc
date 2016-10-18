@@ -31,7 +31,7 @@ if [[ ${enable_clustershell} -eq 1 ]];then
      #echo "compute: cc[1-${num_ccomputes}]" >> local.cfg
      #echo "all: @adm,@compute" >> local.cfg
      #Update configuration with new nodes
-     sed -i -- 's/all: @adm,@compute/compute: cc[1-${num_ccomputes}]\n&/' /etc/clustershell/group.d/local.cfg
+     sed -i -- 's/all: @adm,@compute/compute: cc[1-${num_ccomputes}]\n&/' /etc/clustershell/groups.d/local.cfg
 fi
 
 
@@ -55,5 +55,6 @@ systemctl restart slurmctld
 #
 #
 # Restart munge and slurmd after they are restarted at HN
+sleep 5
 scontrol update nodename=cc[1-${num_ccomputes}] state=idle
 

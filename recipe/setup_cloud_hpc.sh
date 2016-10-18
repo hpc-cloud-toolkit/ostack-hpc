@@ -116,7 +116,7 @@ if [ "${orchestrator_install}" -eq "1" ]; then
 	mount -o loop ${ORCHESTRATOR_LOCATION} /mnt/hpc_orch_iso
 	rpm -Uvh /mnt/hpc_orch_iso/x86_64/Intel_HPC_Orchestrator_release-16.01.002.beta-8.1.x86_64.rpm
 	rpm --import /etc/pki/pgp/HPC-Orchestrator*.asc
-	pushd hpc_cent7
+	pushd hpc_cent7/intel
 	time source recipe.sh -f
 	popd
 fi
