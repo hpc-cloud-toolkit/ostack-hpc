@@ -16,11 +16,11 @@ cnodename_prefix="${cnodename_prefix:-cc}"
 controller_ip="${controller_ip=192.168.1.4}"
 
 # cloud subnet CIDR
-c_subnet_cidr="${c_subnet_cidr=192.168.1.0/24}"
+cc_subnet_cidr="${c_subnet_cidr=192.168.1.0/24}"
 
 # cloud subnet DHCP range
-c_subnet_dhcp_start="${c_subnet_dhcp_start=192.168.1.5}"
-c_subnet_dhcp_end="${c_subnet_dhcp_end=192.168.1.5}"
+cc_subnet_dhcp_start="${c_subnet_dhcp_start=192.168.1.5}"
+cc_subnet_dhcp_end="${c_subnet_dhcp_end=192.168.1.5}"
 
 # cloud compute node IP addresses
 # might need to get MAC and IP from Nova and use here, TBD
@@ -39,8 +39,8 @@ cc_bmc[1]=192.168.46.52
 #cc_bmc[2]=192.168.46.53
 
 # cloud node BMC username and password
-c_bmc_username="${c_bmc_username=root}"
-c_bmc_password="${c_bmc_password=rootmenow12!}"
+cc_bmc_username="${c_bmc_username=root}"
+cc_bmc_password="${c_bmc_password=rootmenow12!}"
 
 #cloud compute node characterstics (aka nova flavor)
 RAM_MB=24456
