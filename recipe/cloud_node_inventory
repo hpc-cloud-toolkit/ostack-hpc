@@ -49,7 +49,7 @@ DISK_GB=500
 ARCH=x86_64
 
 # Cloud Compute Node Images
-chpc_image_deploy_kernel="${chpc_image_deply=/opt/intel/hpc-orchestrator/admin/images/cloud/ironic-deploy-c7.kernel}"
+chpc_image_deploy_kernel="${chpc_image_deploy=/opt/intel/hpc-orchestrator/admin/images/cloud/ironic-deploy-c7.kernel}"
 chpc_image_deploy_ramdisk="${chpc_image_ramdisk=/opt/intel/hpc-orchestrator/admin/images/cloud/ironic-deploy-c7.initramfs}"
 chpc_image_user="${chpc_image_user=/home/sunil/HPC-Orch/my-cent7-hpc3.qcow2}"
 chpc_create_new_image="${chpc_create_new_image=0}"
