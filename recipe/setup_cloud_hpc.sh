@@ -102,8 +102,6 @@ validateHpcInventory
 # execution on the master SMS host.
 # -----------------------------------------------------------------------------------------
 
-ORCHESTRATOR_LOCATION=${HOME}/HPC-Orchestrator-rhel7.2u5-16.01.002.beta.iso
-
 # Determine number of cloud computes and their hostnames
 setup_computename
 
@@ -113,7 +111,7 @@ hostnamectl set-hostname ${sms_name}
 #Install hpc orchestrator OR openhpc
 if [ "${orchestrator_install}" -eq "1" ]; then
 	mkdir -p /mnt/hpc_orch_iso
-	mount -o loop ${ORCHESTRATOR_LOCATION} /mnt/hpc_orch_iso
+	mount -o loop ${orch_iso_path} /mnt/hpc_orch_iso
 	rpm -Uvh /mnt/hpc_orch_iso/x86_64/Intel_HPC_Orchestrator_release-16.01.002.beta-8.1.x86_64.rpm
 	rpm --import /etc/pki/pgp/HPC-Orchestrator*.asc
 	pushd hpc_cent7/intel
