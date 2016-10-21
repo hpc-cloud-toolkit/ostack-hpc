@@ -138,7 +138,7 @@ FLAVOR_UUID=`nova flavor-list | grep baremetal-flavor | awk '{print $2}'`
 
 #Create a node in the bare metal service
 for ((i=0; i < ${num_ccomputes}; i++)); do
-    ironic node-list | grep ${cnodename_prefix}$((i+1))
+    ironic node-list | awk {'print $4'} | grep ${cnodename_prefix}$((i+1))
     node_exists=$?
     if [ "${node_exists}" -ne "0" ]; then
         ironic node-create -d pxe_ipmitool -i deploy_kernel=${DEPLOY_VMLINUZ_UUID} -i deploy_ramdisk=${DEPLOY_INITRD_UUID} -i ipmi_terminal_port=8023 -i ipmi_address=${cc_bmc[$i]} -i ipmi_username=${cc_bmc_username} -i ipmi_password=${cc_bmc_password} -p cpus=${CPU} -p memory_mb=${RAM_MB} -p local_gb=${DISK_GB} -p cpu_arch=${ARCH} -p capabilities="boot_mode:bios" -n ${cnodename_prefix}$((i+1))
