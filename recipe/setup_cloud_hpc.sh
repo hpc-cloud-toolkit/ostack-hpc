@@ -128,7 +128,7 @@ fi
 #Run packstack install.
 if [ "${packstack_install}" -eq "1" ]; then
 	pushd ../packstack/recipe
-	time source packstack-install.sh -s=${controller_ip} -f=${cc_subnet_cidr}
+	time source packstack-install.sh -s=${controller_ip} -f=${cc_subnet_cidr} -e=${sms_eth_internal}
 	popd
 fi
 
