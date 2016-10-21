@@ -14,7 +14,7 @@
 
 #Read in the command line values
 usage () {
-    echo "USAGE: $0 --sms_ip=<sms_ip> --flat_ip_range=<flat_ip_range>"
+    echo "USAGE: $0 --sms_ip=<sms_ip> --flat_ip_range=<flat_ip_range> --eth_interface=<ethernet interface>"
     echo "-s,--sms_ip           Local (internal) IP address on SMS"
     echo "-f,--flat_ip_range    IP range for flat DHCP for Nova Configuration"
     echo "-h,--help             Print this message"
@@ -43,6 +43,10 @@ else
                 sms_ip="${i#*=}"
                 shift
             ;;
+			-e=*|--eth_interface=*)
+				eth_interface="${i#*=}"
+				shift
+			;;
             -f=*|--flat_ip_range=*)
                 flat_ip_range="${i#*=}"
                 shift
@@ -82,8 +86,9 @@ yum update -y
 yum install -y openstack-packstack
 
 #Edit answer file with parameters passed in from command line
-sed --in-place "s|sms_ip|${sms_ip}|" answer.txt
-sed --in-place "s|flat_ip_range|${flat_ip_range}|" answer.txt
+sed --in-place "s|<sms_ip>|${sms_ip}|" answer.txt
+sed --in-place "s|<flat_ip_range>|${flat_ip_range}|" answer.txt
+sed --in-place "s|<eth_interface>|${sms_eth_internal}|" answer.txt
 
 #Install OpenStack using PackStack according to the answer file in answer.txt This step can take a while.
 packstack --answer-file answer.txt
