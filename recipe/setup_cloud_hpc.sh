@@ -120,7 +120,10 @@ if [ "${orchestrator_install}" -eq "1" ]; then
 fi
 
 if [ "${openhpc_install}" -eq "1" ]; then
-	echo "OpenHPC installation is not supported at this time."
+        export OHPC_INPUT_LOCAL=$(realpath ${INPUT_LOCAL})
+        pushd hpc_cent7/ohpc
+        time source recipe.sh
+        popd
 fi
 
 #Run packstack install.

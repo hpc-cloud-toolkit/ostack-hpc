@@ -76,6 +76,9 @@ systemctl stop NetworkManager
 systemctl enable network
 systemctl start network
 
+# Packages required
+yum -y install policycoreutils httpd
+
 #Install the RDO OpenStack Mitaka release yum repository. This is in the extras repository, which is enabled by default in CentOS 7
 yum install -y centos-release-openstack-mitaka
 
