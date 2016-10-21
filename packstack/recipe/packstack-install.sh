@@ -88,7 +88,7 @@ yum install -y openstack-packstack
 #Edit answer file with parameters passed in from command line
 sed --in-place "s|<sms_ip>|${sms_ip}|" answer.txt
 sed --in-place "s|<flat_ip_range>|${flat_ip_range}|" answer.txt
-sed --in-place "s|<eth_interface>|${sms_eth_internal}|" answer.txt
+sed --in-place "s|<eth_interface>|${eth_interface}|" answer.txt
 
 #Install OpenStack using PackStack according to the answer file in answer.txt This step can take a while.
 packstack --answer-file answer.txt
