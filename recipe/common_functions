@@ -83,7 +83,7 @@ function setup_hosts () {
 function setup_cname () {
     # Determine number of computes and their hostnames
     export num_computes=${num_computes:-${#c_ip[@]}}
-    for((i=0; i<${num_computes}; i++)) ; do
+    for((i=0; i<${num_ccomputes}; i++)) ; do
        c_name[$i]=${nodename_prefix}$((i+1))
     done
     export c_name
