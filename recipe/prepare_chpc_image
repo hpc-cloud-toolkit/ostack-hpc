@@ -111,7 +111,7 @@ function prepare_deploy_image() {
     fi
 }
 
-if [[ "${DIB_HPC_BASE}" == "orch" ]]; then 
+if [[ "${chpc_base}" == "orch" ]]; then 
     CHPC_CLOUD_IMAGE_PATH=/opt/intel/hpc-orchestrator/admin/images/cloud/
 else
     CHPC_CLOUD_IMAGE_PATH=/opt/ohpc/admin/images/cloud/
