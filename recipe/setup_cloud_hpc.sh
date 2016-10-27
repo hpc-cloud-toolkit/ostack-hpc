@@ -30,12 +30,14 @@ pwd
 packstack_install=0
 orchestrator_install=0
 openhpc_install=0
+USECASE=1
 
 # enable common functions
 source common_functions
 
 usage () {
   echo "USAGE: $0 [-f] [-h] [-i=<input.local>] [-n=<cloud_node_inventory>]"
+  echo " -u,--usecase       Select use case, 1 or 2"
   echo " -c,--openhpc       Install OpenHPC using the OpenHPC installation recipe"
   echo " -f,--forced        Forced run, run all sections with no prompt"
   echo " -h,--help          Print this message"
@@ -58,6 +60,15 @@ for i in "$@"; do
       fi
       INPUT_LOCAL="${i#*=}"
       shift # past argument=value
+    ;;
+    -u=*|--usecase=*)
+      export USECASE="${i#*=}"
+
+      # Check if a valid use case
+      if [[ $USECASE != "1" && $USECASE != "2" ]]; then
+        echo "Unsupported usecase"
+        exit 1
+      fi
     ;;
     -f|--forced)
       FORCED=YES
@@ -90,6 +101,12 @@ for i in "$@"; do
     ;;
   esac
 done
+
+# Check if a valid use case is selected
+if [[ $USECASE != "1" && $USECASE != "2" ]]; then
+  echo "Unsupported usecase, select a valid usecase [1,2]"
+  exit 1
+fi
 
 inputFile=${INPUT_LOCAL}
 cloudHpcInventory=${CLOUD_HPC_INVENTORY}
@@ -133,12 +150,21 @@ if [ "${packstack_install}" -eq "1" ]; then
 	popd
 fi
 
-#set up hosts at head node or sms node
-setup_hosts
-
-# extend HPC to cloud
-time source set_os_hpc
-
+case $USECASE in
+  1)
+    time source set_os_hpc
+  ;;
+  2)
+    pushd 2_CloudExtension
+    time source set_os_hpc
+    popd
+  ;;
+  *)
+    echo "ERROR: Unsupported usecase"
+    exit 1
+  ;;
+esac
+    
 true
 
 #Call sinfo and srun to verify slurm's connection to the compute nodes

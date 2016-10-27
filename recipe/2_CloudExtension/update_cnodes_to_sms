@@ -1,0 +1,50 @@
+#!/bin/bash
+#Update the genders at sms with compute node information
+# first check if genders is install TBD
+for ((i=0; i<$num_ccomputes; i++)) ; do
+   cat /etc/genders | grep ${cc_name[$i]}
+   gender_exists=$?
+   if [ "${gender_exists}" -ne "0" ]; then 
+       echo -e "${cc_name[$i]}\tcompute,bmc=${cc_bmc[$i+1]}"
+   fi
+done >> /etc/genders
+
+# configure mrsh at sms
+if [[ ${enable_mrsh} -eq 1 ]];then
+   # check if it is already configured grep mshell /etc/services will return non-zero, else configure"
+   cat /etc/services | grep mshell
+   mshell_exists=$?
+   if [ "${mshell_exists}" -ne "0" ]; then
+       echo "mshell          21212/tcp                  # mrshd" >> /etc/services
+   fi
+   cat /etc/services | grep mlogin
+   mlogin_exists=$?
+   if [ "${mlogin_exists}" -ne "0" ]; then
+       echo "mlogin            541/tcp                  # mrlogind" >> /etc/services
+   fi
+fi
+
+#Update cluster shell
+if [[ ${enable_clustershell} -eq 1 ]];then
+     # TBD check if clustershell is installed
+     #cd /etc/clustershell/groups.d
+     #echo "compute: cc[1-${num_ccomputes}]" >> local.cfg
+     #echo "all: @adm,@compute" >> local.cfg
+     #Update configuration with new nodes
+     sed -i -- 's/all: @adm,@compute/compute: ${cnodename_prefix}[1-${num_ccomputes}]\n&/' /etc/clustershell/groups.d/local.cfg
+fi
+
+# Extend slurm partion to include cloud nodes
+hpc_cluster_nodes=cat /etc/slurm/slurm.conf | grep "PartitionName=${hpc_slurm_partition}" | awk {'print $2'} | sed 's/Nodes=*//'
+cloud_nodes=${cnodename_prefix}[1-${num_ccomputes}] 
+
+if [[ ! -z ${hpc_cluster_nodes} ]] ; then
+	scontrol update PartitionName=${hpc_slurm_partition} Nodes="${hpc_cluster_nodes} ${cloud_nodes}"
+else
+	echo "Error: Could not update HPC partition: ${hpc_slurm_partion}"
+fi
+
+sleep 5
+
+scontrol update nodename="${hpc_cluster_nodes} ${cloud_nodes}" state=idle
+

@@ -36,37 +36,25 @@ fi
 
 
 #on Head node
-#perl -pi -e "s/ControlMachine=\S+/ControlMachine=${sms_name}/" /etc/slurm/slurm.conf
+perl -pi -e "s/ControlMachine=\S+/ControlMachine=${sms_name}/" /etc/slurm/slurm.conf
 #echo "/home *(rw,no_subtree_check,fsid=10,no_root_squash)" >> /etc/exports
 #echo "/opt/intel/hpc-orchestrator/pub *(rw,no_subtree_check,fsid=11,no_root_squash)" >> /etc/export
 # exportfs -a
 # systemctl restart nfs
 # Update slurm configuration on Head node
-#if [ ${num_ccomputes} -gt 4 ];then
-#    perl -pi -e "s/^NodeName=(\S+)/NodeName=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
-#    perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
+if [ ${num_ccomputes} -gt 4 ];then
+    perl -pi -e "s/^NodeName=(\S+)/NodeName=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
+    perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
 #    perl -pi -e "s/^NodeName=(\S+)/NodeName=${cnodename_prefix}[1-${num_ccomputes}]/" $CHROOT/etc/slurm/slurm.conf
 #    perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=${cnodename_prefix}[1-${num_ccomputes}]/" $CHROOT/etc/slurm/slurm.conf
-#fi
-
-systemctl restart slurmctld
-
-# Extend slurm partion to include cloud nodes
-hpc_nodes=cat /etc/slurm/slurm.conf | grep "PartitionName=${hpc_slurm_partition}" | awk {'print $2'} | sed 's/Nodes=*//'
-
-if [[ ! -z ${hpc_nodes} ]] ; then
-	scontrol update PartitionName=${hpc_slurm_partition} Nodes="$hpc_nodes ${cnodename_prefix}[1-${num_ccomputes}]"
-else
-	echo "Error: Could not find the HPC partition: $hpc_slurm_partion to extend"
 fi
-
 #Restart the slurm after above configuration
+systemctl restart slurmctld
 #
 # Power ON the CNs using Nova or Ironic,
 #
 #
 # Restart munge and slurmd after they are restarted at HN
 sleep 5
-
-scontrol update nodename="$hpc_nodes ${cnodename_prefix}[1-${num_ccomputes}]" state=idle
+scontrol update nodename=cc[1-${num_ccomputes}] state=idle
 
