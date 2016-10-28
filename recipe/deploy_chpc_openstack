@@ -3,64 +3,64 @@
 source ${HOME}/keystonerc_admin
 
 #Get the tenant ID for the services tenant
-SERVICES_TENANT_ID=`keystone tenant-list | grep services | awk '{print $2}'`
+SERVICES_TENANT_ID=`keystone tenant-list | grep "|\s*services\s*|" | awk '{print $2}'`
 
 #Create the flat network on which you are going to launch instances
-neutron net-list | grep sharednet1
+neutron net-list | grep "|\s*sharednet1\s*|"
 net_exists=$?
 if [ "${net_exists}" -ne "0" ]; then
     neutron net-create --tenant-id ${SERVICES_TENANT_ID} sharednet1 --shared --provider:network_type flat --provider:physical_network physnet1
 fi
-NEUTRON_NETWORK_UUID=`neutron net-list | grep sharednet1 | awk '{print $2}'`
+NEUTRON_NETWORK_UUID=`neutron net-list | grep "|\s*sharednet1\s*|" | awk '{print $2}'`
 
 #Create the subnet on the newly created network
-neutron subnet-list | grep subnet01
+neutron subnet-list | grep "|\s*subnet01\s*|"
 subnet_exists=$?
 if [ "${subnet_exists}" -ne "0" ]; then
     neutron subnet-create sharednet1 --name subnet01 --ip-version=4 --gateway=${controller_ip} --allocation-pool start=${cc_subnet_dhcp_start},end=${cc_subnet_dhcp_end} --enable-dhcp ${cc_subnet_cidr}
 fi
-NEUTRON_SUBNET_UUID=`neutron subnet-list | grep subnet01 | awk '{print $2}'`
+NEUTRON_SUBNET_UUID=`neutron subnet-list | grep "|\s*subnet01\s*|" | awk '{print $2}'`
 
 #Create the whole-disk-image from the user's qcow2 file
-glance image-list | grep user-image
+glance image-list | grep "|\s*user-image\s*|"
 img_exists=$?
 if [ "${img_exists}" -ne "0" ]; then
     glance image-create --name user-image --visibility public --disk-format qcow2 --container-format bare < ${chpc_image_user}
 fi
-USER_DISK_IMAGE_UUID=`glance image-list | grep user-image | awk '{print $2}'`
+USER_DISK_IMAGE_UUID=`glance image-list | grep "|\s*user-image\s*|" | awk '{print $2}'`
 
 #Create the deploy-kernel and deploy-initrd images
-glance image-list | grep deploy-vmlinuz
+glance image-list | grep "|\s*deploy-vmlinuz\s*|"
 img_exists=$?
 if [ "${img_exists}" -ne "0" ]; then
     glance image-create --name deploy-vmlinuz --visibility public --disk-format aki --container-format aki < ${chpc_image_deploy_kernel}
 fi
-DEPLOY_VMLINUZ_UUID=`glance image-list | grep deploy-vmlinuz | awk '{print $2}'`
+DEPLOY_VMLINUZ_UUID=`glance image-list | grep "|\s*deploy-vmlinuz\s*|" | awk '{print $2}'`
 
-glance image-list | grep deploy-initrd
+glance image-list | grep "|\s*deploy-initrd\s*|"
 img_exists=$?
 if [ "${img_exists}" -ne "0" ]; then
     glance image-create --name deploy-initrd --visibility public --disk-format ari --container-format ari < ${chpc_image_deploy_ramdisk}
 fi
-DEPLOY_INITRD_UUID=`glance image-list | grep deploy-initrd | awk '{print $2}'`
+DEPLOY_INITRD_UUID=`glance image-list | grep "|\s*deploy-initrd\s*|" | awk '{print $2}'`
 
 #Create the baremetal flavor and set the architecture to x86_64
-nova flavor-list | grep baremetal-flavor
+nova flavor-list | grep "|\s*baremetal-flavor\s*|"
 flavor_exists=$?
 if [ "$flavor_exists" -ne "0" ]; then
     nova flavor-create baremetal-flavor baremetal-flavor ${RAM_MB} ${DISK_GB} ${CPU}
     nova flavor-key baremetal-flavor set cpu_arch=$ARCH
 fi
-FLAVOR_UUID=`nova flavor-list | grep baremetal-flavor | awk '{print $2}'`
+FLAVOR_UUID=`nova flavor-list | grep "|\s*baremetal-flavor\s*|" | awk '{print $2}'`
 
 #Create a node in the bare metal service
 for ((i=0; i < ${num_ccomputes}; i++)); do
-    ironic node-list | awk {'print $4'} | grep ${cnodename_prefix}$((i+1))
+    ironic node-list | grep "|\s*${cnodename_prefix}$((i+1))\s*|"
     node_exists=$?
     if [ "${node_exists}" -ne "0" ]; then
         ironic node-create -d pxe_ipmitool -i deploy_kernel=${DEPLOY_VMLINUZ_UUID} -i deploy_ramdisk=${DEPLOY_INITRD_UUID} -i ipmi_terminal_port=8023 -i ipmi_address=${cc_bmc[$i]} -i ipmi_username=${cc_bmc_username} -i ipmi_password=${cc_bmc_password} -p cpus=${CPU} -p memory_mb=${RAM_MB} -p local_gb=${DISK_GB} -p cpu_arch=${ARCH} -p capabilities="boot_mode:bios" -n ${cnodename_prefix}$((i+1))
     fi
-    NODE_UUID_CC[$i]=`ironic node-list | grep ${cnodename_prefix}$((i+1)) | awk '{print $2}'`
+    NODE_UUID_CC[$i]=`ironic node-list | grep "|\s*${cnodename_prefix}$((i+1))\s*|" | awk '{print $2}'`
 done
 
 #Add the associated port(s) MAC address to the created node(s)
@@ -77,7 +77,7 @@ done
 openstack quota set --ram 512000 --cores 1000 --instances 100 admin
 
 #Register SSH keys with Nova
-nova keypair-list | grep ostack_key
+nova keypair-list | grep "|\s*ostack_key\s*|"
 keypair_exists=$?
 if [ "${keypair_exists}" -ne "0" ]; then
     nova keypair-add --pub-key ${HOME}/.ssh/id_rsa.pub ostack_key
@@ -91,7 +91,7 @@ sleep 121
 #Setup neutron port for static IP addressing of compute nodes
 for ((i=0; i < ${num_ccomputes}; i++)); do
     neutron port-create sharednet1 --fixed-ip ip_address=${cc_ip[$i]} --name ${cnodename_prefix}$((i+1)) --mac-address ${cc_mac[$i]}
-    NEUTRON_PORT_ID_CC[$i]=`neutron port-list | grep ${cnodename_prefix}$((i+1)) | awk '{print $2}'`
+    NEUTRON_PORT_ID_CC[$i]=`neutron port-list | grep "|\s*${cnodename_prefix}$((i+1))\s*|" | awk '{print $2}'`
 done
 
 #Boot the node(s) with nova. chpcInit is set from prepare_cloudInit
