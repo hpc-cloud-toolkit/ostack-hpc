@@ -108,8 +108,8 @@ if [[ $USECASE != "1" && $USECASE != "2" ]]; then
   exit 1
 fi
 
-inputFile=${INPUT_LOCAL}
-cloudHpcInventory=${CLOUD_HPC_INVENTORY}
+inputFile=$(readlink -f ${INPUT_LOCAL})
+cloudHpcInventory=$(readlink -f ${CLOUD_HPC_INVENTORY})
 
 validateInputFile
 validateHpcInventory
