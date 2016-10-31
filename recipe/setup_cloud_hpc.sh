@@ -150,6 +150,9 @@ if [ "${packstack_install}" -eq "1" ]; then
 	popd
 fi
 
+#set up hosts at head node or sms node
+setup_hosts
+
 case $USECASE in
   1)
     time source set_os_hpc
