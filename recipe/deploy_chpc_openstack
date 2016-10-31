@@ -97,4 +97,5 @@ done
 #Boot the node(s) with nova. chpcInit is set from prepare_cloudInit
 for ((i=0; i < ${num_ccomputes}; i++)); do
     nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${USER_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcInit --nic port-id=${NEUTRON_PORT_ID_CC[$i]} ${cnodename_prefix}$((i+1))
+	sleep 5
 done
