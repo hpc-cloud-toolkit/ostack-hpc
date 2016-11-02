@@ -1,0 +1,36 @@
+#!/bin/bash
+#This script is intended to be run on the controller node of an OpenStack system. This will boot cloud nodes with the correct cloud-init configuration to be added to the HPC cluster and run jobs on them.
+
+#Ensure you are running commands from the same directory as this script.
+SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P && echo x)"
+SCRIPTDIR="${SCRIPTDIR%x}"
+cd $SCRIPTDIR
+
+#Set the environment by sourcing input.local, cloud_node_inventory, and setup.ini
+if [ ! -f "input.local" ]; then
+    echo "No input.local. Exiting."
+    exit 1
+fi
+source input.local
+
+if [ ! -f "cloud_node_inventory" ]; then
+    echo "No cloud_node_inventory. Exiting."
+    exit 1
+fi
+source cloud_node_inventory
+
+if [ ! -f "setup.ini" ]; then
+    echo "No setup.ini file. Exiting."
+    exit 1
+fi
+source setup.ini
+
+export num_ccomputes=${num_ccomputes:-${#cc_ip[@]}}
+
+#Invoke deploy script
+if [ ! -f "deploy_chpc_openstack" ]; then
+    echo "No deploy_chpc_openstack file. Exiting"
+    exit 1
+fi
+
+time source deploy_chpc_openstack

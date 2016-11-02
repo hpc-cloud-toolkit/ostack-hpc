@@ -22,14 +22,23 @@ time source prepare_cloudInit
 # Prepare CloudHPC Image :
 # ========================
 # Check if User selected to prepare cloud HPC images
-time source prepare_chpc_image
+
+############################################################
+#======== DISABLING PREPARE_CHPC_IMAGE FOR NOW ============#
+############################################################
+#pushd ..
+#time source prepare_chpc_image
+#popd
+
 # =============================================
 # Prepare OpenStack for HPC baremetal instances
 # =============================================
-time source prepare_chpc_openstack
-time source deploy_chpc_openstack
+time source extend_hpc_to_openstack
+
+
 #Wait for CN(s) to come up. TODO: Poll and wait rather than just a set 10 minutes.
 sleep 600
+
 #Call cloudInit workaround script
 #time source c_init_workaround
 #

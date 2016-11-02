@@ -80,7 +80,7 @@ openstack quota set --ram 512000 --cores 1000 --instances 100 admin
 nova keypair-list | grep "|\s*ostack_key\s*|"
 keypair_exists=$?
 if [ "${keypair_exists}" -ne "0" ]; then
-    nova keypair-add --pub-key ${HOME}/.ssh/id_rsa.pub ostack_key
+    nova keypair-add --pub-key ${ostack_key} ostack_key
 fi
 
 KEYPAIR_NAME=ostack_key
@@ -97,5 +97,4 @@ done
 #Boot the node(s) with nova. chpcInit is set from prepare_cloudInit
 for ((i=0; i < ${num_ccomputes}; i++)); do
     nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${USER_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcInit --nic port-id=${NEUTRON_PORT_ID_CC[$i]} ${cnodename_prefix}$((i+1))
-	sleep 5
 done

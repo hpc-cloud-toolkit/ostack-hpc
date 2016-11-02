@@ -1,0 +1,49 @@
+#!/bin/bash
+#------------------------------------------------------------------------------------------------
+#This script should be executed on the HPC Head Node. It copies the files necessary to extend 
+#HPC to the OpenStack controller node.
+#------------------------------------------------------------------------------------------------
+
+set -x
+CloudExtensionImagePath=/opt/intel/hpc-orchestrator/admin/images/cloud/CloudExtension
+
+#Make CloudExtension directory in /opt/intel/hpc-orchestrator/admin/images/
+ssh ${controller_name} mkdir -p ${CloudExtensionImagePath}
+
+#Copy created images to /opt/intel/hpc-orchestrator/admin/images/CloudExtension
+scp -p ${chpc_image_deploy_kernel} ${controller_name}:${CloudExtensionImagePath}
+scp -p ${chpc_image_deploy_ramdisk} ${controller_name}:${CloudExtensionImagePath}
+scp -p ${chpc_image_user} ${controller_name}:${CloudExtensionImagePath}
+
+#Copy cloudInit to /opt/intel/hpc-orchestrator/admin/CloudHPCInit/
+ssh ${controller_name} mkdir -p ${chpcInitPath}
+scp -p $chpcInitPath/* ${controller_name}:${chpcInitPath}
+
+CloudExtensionRecipePath=/opt/intel/hpc-orchestrator/pub/doc/recipes/CloudExtension
+
+#Copy ssh key over for Nova
+scp ${HOME}/.ssh/cluster.pub ${controller_name}:/${CloudExtensionRecipePath}
+
+#Make CloudExtension directory in /opt/intel/hpc-orchestrator/pub/doc/recipes/CloudExtension
+ssh ${controller_name} mkdir -p ${CloudExtensionRecipePath}
+
+#Copy inventory file and input.local to /opt/intel/pub/doc/recipes/CloudExtension
+scp -p ${inputFile} ${controller_name}:${CloudExtensionRecipePath}/input.local
+scp -p ${cloudHpcInventory} ${controller_name}:${CloudExtensionRecipePath}/cloud_node_inventory
+
+#Copy OpenStack deploy script
+scp -p deploy_chpc_openstack ${controller_name}:${CloudExtensionRecipePath}
+
+#Copy Openstack deploy's parent script
+scp -p extend_openstack_to_hpc ${controller_name}:${CloudExtensionRecipePath}
+
+#Generate and copy over setup.ini file for the parent script to read in
+echo "chpcInit=${chpcInitPath}/chpcInit" > setup.ini
+echo "ostack_key=${CloudExtensionRecipePath}/cluster.pub" >> setup.ini
+echo "chpc_image_deploy_kernel=${CloudExtensionImagePath}/$(basename ${chpc_image_deploy_kernel})" >> setup.ini
+echo "chpc_image_deploy_ramdisk=${CloudExtensionImagePath}/$(basename ${chpc_image_deploy_ramdisk})" >> setup.ini
+echo "chpc_image_user=${CloudExtensionImagePath}/$(basename ${chpc_image_user})" >> setup.ini
+scp -p setup.ini ${controller_name}:${CloudExtensionRecipePath}
+
+#Run OpenStack deploy's parent script
+ssh ${controller_name} ${CloudExtensionRecipePath}/extend_openstack_to_hpc

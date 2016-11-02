@@ -24,7 +24,7 @@ set -E # traps on ERR will now be inherited by shell functions,
 SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P && echo x)"
 SCRIPTDIR="${SCRIPTDIR%x}"
 cd $SCRIPTDIR
-
+SCRIPTDIR=$PWD
 pwd
 
 packstack_install=0
