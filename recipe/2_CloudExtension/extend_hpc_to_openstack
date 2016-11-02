@@ -21,11 +21,11 @@ scp -p $chpcInitPath/* ${controller_name}:${chpcInitPath}
 
 CloudExtensionRecipePath=/opt/intel/hpc-orchestrator/pub/doc/recipes/CloudExtension
 
-#Copy ssh key over for Nova
-scp ${HOME}/.ssh/cluster.pub ${controller_name}:/${CloudExtensionRecipePath}
-
 #Make CloudExtension directory in /opt/intel/hpc-orchestrator/pub/doc/recipes/CloudExtension
 ssh ${controller_name} mkdir -p ${CloudExtensionRecipePath}
+
+#Copy ssh key over for Nova
+scp ${HOME}/.ssh/cluster.pub ${controller_name}:/${CloudExtensionRecipePath}
 
 #Copy inventory file and input.local to /opt/intel/pub/doc/recipes/CloudExtension
 scp -p ${inputFile} ${controller_name}:${CloudExtensionRecipePath}/input.local
