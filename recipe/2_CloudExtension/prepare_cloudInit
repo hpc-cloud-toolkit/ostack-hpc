@@ -26,8 +26,12 @@ systemctl restart slurmctld
 # HPC cluster partition with cloud provisioned compute nodes
 #perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
 
-# copy slurm file from sms node to Cloud Comute Nodes
+# copy slurm file from sms node to Cloud Compute Nodes
 cp -fr -L /etc/slurm/slurm.conf $chpcInitPath
+
+#copy slurm file from sms node to hpc nodes
+pdcp -w ${nodename_prefix}[1-${num_computes}] /etc/slurm/slurm.conf /etc/slurm/slurm.conf
+
 #
 ##
 # Copy other files needed for Cloud Init
