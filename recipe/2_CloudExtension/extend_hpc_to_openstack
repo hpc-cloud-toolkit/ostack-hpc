@@ -5,29 +5,37 @@
 #------------------------------------------------------------------------------------------------
 
 set -x
-CloudExtensionImagePath=/opt/intel/hpc-orchestrator/admin/images/cloud/CloudExtension
 
-#Make CloudExtension directory in /opt/intel/hpc-orchestrator/admin/images/
+if [[ "${chpc_base}" == "orch" ]]; then
+	CloudExtensionImagePath=/opt/intel/hpc-orchestrator/admin/images/cloud/CloudExtension
+	CloudExtensionRecipePath=/opt/intel/hpc-orchestrator/pub/doc/recipes/CloudExtension
+else
+	CloudExtensionImagePath=/opt/ohpc/admin/images/cloud/CloudExtension
+	CloudExtensionRecipePath=/opt/ohpc/pub/doc/recipes/CloudExtension
+fi
+
+# In below comments,
+# <*> -> intel/hpc-orchestrator, in case of Intel HPC Orchestrator installation
+#     -> ohpc, in case of OpenHPC installation
+#Create CloudExtension directory in /opt/<*>/admin/images/
 ssh ${controller_name} mkdir -p ${CloudExtensionImagePath}
 
-#Copy created images to /opt/intel/hpc-orchestrator/admin/images/CloudExtension
+#Copy created images to /opt/<*>/admin/images/CloudExtension
 scp -p ${chpc_image_deploy_kernel} ${controller_name}:${CloudExtensionImagePath}
 scp -p ${chpc_image_deploy_ramdisk} ${controller_name}:${CloudExtensionImagePath}
 scp -p ${chpc_image_user} ${controller_name}:${CloudExtensionImagePath}
 
-#Copy cloudInit to /opt/intel/hpc-orchestrator/admin/CloudHPCInit/
+#Copy cloudInit to /opt/<*>/admin/CloudHPCInit/
 ssh ${controller_name} mkdir -p ${chpcInitPath}
 scp -p $chpcInitPath/* ${controller_name}:${chpcInitPath}
 
-CloudExtensionRecipePath=/opt/intel/hpc-orchestrator/pub/doc/recipes/CloudExtension
+#Make CloudExtension directory in /opt/<*>/pub/doc/recipes/CloudExtension
+ssh ${controller_name} mkdir -p ${CloudExtensionRecipePath}
 
 #Copy ssh key over for Nova
 scp ${HOME}/.ssh/cluster.pub ${controller_name}:/${CloudExtensionRecipePath}
 
-#Make CloudExtension directory in /opt/intel/hpc-orchestrator/pub/doc/recipes/CloudExtension
-ssh ${controller_name} mkdir -p ${CloudExtensionRecipePath}
-
-#Copy inventory file and input.local to /opt/intel/pub/doc/recipes/CloudExtension
+#Copy inventory file and input.local to /opt/<*>/pub/doc/recipes/CloudExtension
 scp -p ${inputFile} ${controller_name}:${CloudExtensionRecipePath}/input.local
 scp -p ${cloudHpcInventory} ${controller_name}:${CloudExtensionRecipePath}/cloud_node_inventory
 

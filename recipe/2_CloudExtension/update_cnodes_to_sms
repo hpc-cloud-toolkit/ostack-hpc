@@ -35,7 +35,7 @@ if [[ ${enable_clustershell} -eq 1 ]];then
 fi
 
 # Extend slurm partion to include cloud nodes
-hpc_cluster_nodes=cat /etc/slurm/slurm.conf | grep "PartitionName=${hpc_slurm_partition}" | awk {'print $2'} | sed 's/Nodes=*//'
+hpc_cluster_nodes=$(cat /etc/slurm/slurm.conf | grep "PartitionName=${hpc_slurm_partition}" | awk {'print $2'} | sed 's/Nodes=*//')
 cloud_nodes=${cnodename_prefix}[1-${num_ccomputes}] 
 
 if [[ ! -z ${hpc_cluster_nodes} ]] ; then
@@ -43,8 +43,6 @@ if [[ ! -z ${hpc_cluster_nodes} ]] ; then
 else
 	echo "Error: Could not update HPC partition: ${hpc_slurm_partion}"
 fi
-
-sleep 5
 
 scontrol update nodename="${hpc_cluster_nodes} ${cloud_nodes}" state=idle
 

@@ -26,10 +26,7 @@ time source prepare_cloudInit
 ############################################################
 #======== DISABLING PREPARE_CHPC_IMAGE FOR NOW ============#
 ############################################################
-#pushd ..
-#time source prepare_chpc_image
-#popd
-
+time source prepare_chpc_image
 # =============================================
 # Prepare OpenStack for HPC baremetal instances
 # =============================================

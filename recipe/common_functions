@@ -73,7 +73,7 @@ function setup_hosts () {
     if ! grep -Fq ${sms_name} /etc/hosts; then
         echo -e "${sms_ip}\t${sms_name}" >> /etc/hosts
     fi
-    for ((i=0; i<$num_computes; i++)) ; do
+    for ((i=0; i<$num_ccomputes; i++)) ; do
        if ! grep -Fq "${cc_name[$i]}" /etc/hosts; then
            echo -e "${cc_ip[$i]}\t${cc_name[$i]}"
        fi
