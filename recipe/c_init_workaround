@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+#set -x
 #Possible requirement for this script: Set hostkey checking to no
 sed --in-place "s|#\s*StrictHostKeyChecking\s*ask|StrictHostKeyChecking no|" /etc/ssh/ssh_config
 

@@ -1,5 +1,5 @@
 #!bin/bash
-set -x
+#set -x
 function prepare_user_image() {
     if [[ ${chpc_create_new_image} -ne 1 ]] && [[ -s $chpc_image_user ]]; then
         # No need to create an image, image is provided by user

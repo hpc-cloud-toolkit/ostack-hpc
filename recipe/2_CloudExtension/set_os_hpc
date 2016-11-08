@@ -1,6 +1,6 @@
 #!/bin/bash
 #This script expects compute node ID as an input
-set -x
+#set -x
 # find and setup working directory
 CHPC_SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P )"
 CHPC_SCRIPTDIR="${CHPC_SCRIPTDIR%x}"

@@ -4,7 +4,7 @@
 #HPC to the OpenStack controller node.
 #------------------------------------------------------------------------------------------------
 
-set -x
+#set -x
 
 if [[ "${chpc_base}" == "orch" ]]; then
 	CloudExtensionImagePath=/opt/intel/hpc-orchestrator/admin/images/cloud/CloudExtension
