@@ -160,7 +160,7 @@ case $USECASE in
 	popd
   ;;
   2)
-    pushd 2_CloudExtension
+    pushd 2_cloud_extension
     time source set_os_hpc
     popd
   ;;
