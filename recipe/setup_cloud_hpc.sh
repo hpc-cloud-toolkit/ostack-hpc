@@ -155,7 +155,9 @@ setup_hosts
 
 case $USECASE in
   1)
+	pushd 1_combined_controller
     time source set_os_hpc
+	popd
   ;;
   2)
     pushd 2_CloudExtension

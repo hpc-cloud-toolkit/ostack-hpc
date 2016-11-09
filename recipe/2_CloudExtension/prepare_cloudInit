@@ -60,7 +60,7 @@ systemctl restart slurmctld
 mkdir -p $chpcInitPath
 
 #copy Cloud HPC files to temp working directory
-sudo cp -fr -L ${SCRIPTDIR}/CloudHPCInit/${chpc_base}/* $chpcInitPath/
+sudo cp -fr -L ${SCRIPTDIR}/cloud_hpc_init/${chpc_base}/* $chpcInitPath/
 export chpcInit=$chpcInitPath/chpcInit
 
 #update sms_ip in cloudInit scripts
