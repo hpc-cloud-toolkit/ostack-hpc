@@ -11,79 +11,47 @@ cloud.  Below are the use cases of HPC in cloud
                premise HPC head node is exanded with more nodes from OpenStack 
                cloud. both systems are on premise and physicall conected via 
                ethernet and high speed fabric.
-   use case 3: a VPN tunnel is created between HPC System and OpenStack cloud system.
+   use case 3: A VPN tunnel is created between HPC System and OpenStack cloud system.
 
 Below is the detail on different files and directories in this folder "hpc/recipe"
 
 file: setup_cloud_hpc.sh
 ==================
-this is command line utility written in bash shall script. This is the parent of
+This is command line utility written in bash shall script. This is the parent of
 all other recipe in this folder. This utility takes user input, validate the 
 user input, validates the configuration file supplied by user and then invokes 
 set_os_hpc scripts.  It supports both OpenHPC and HPC Orchestrator.
 
-file: set_os_hpc
-================
-this is the script to setup HPC in OpenStack Cloud. To perform the job it 
-execute other scripts.
-
-file: prepare_cloudInit
-======================
-this sripts generates cloudinit script (chpcInit), which is supplied to Nova to
-boot the baremetal nodes.
-
-file: prepare_chpc_image
-========================
-this generates HPC images for provisioning bare metal cloud nodes. It generates 
-3 images
-     Two deploy images for ironic to use 
-         1. icloud-hpc-deploy-c7.kernel
-         2. icloud-hpc-deply-c7.initramfs
-     One user image
-         3. icloud-hpc-cent7.qcow2
-
-file: prepare_chpc_openstack
-============================
-this script prepares nova, ironic for baremetal provisioning, installs and 
-configure pxe boot, pxe-impmi driver for ironic, and enable cloud init for 
-baremetal nodes.
-
-File: deploy_chpc_openstack
-===========================
-This script deploy baremetal nodes in an openstack using nova, ironic, neutron 
-and glance by using cloudinit recipe (prepare under prepare_cloudInit) and HPC
-images (prepared by prepare_chpc_image).
-
-file: update_cnodes_to_sms
-==========================
-this script perform the post boot configuration including updating SLURM 
-resource manager for new cloud node
-
-file: common_function
+file: common_functions
 =====================
-this is library of common bash functions used by different scripts
+This is library of common bash functions used by different scripts
 
 file: gen_cn_mac
 ================
-this is an script to get the MAC address of compute nodes via IPMI.
+This is an script to get the MAC address of compute nodes via IPMI.
 
-directory: CloudHPCInit
+directory: cloud_hpc_init
 =======================
-maintains the template for cloud-init script, which is updated at run time 
+Maintains the template for cloud-init script, which is updated at run time 
 before supplying to nova as an user data.
 
 directory: hpc_cent7
 ====================
-maintains a copy of recipe for HPC Orchestrator and OpenHPC. warewulf 
+Maintains a copy of recipe for HPC Orchestrator and OpenHPC. warewulf 
 is removed from these recipe to insteall head node functionality on 
 OpenStack controller node.
 
 directory: inventory
 ====================
-maintains configuration files for OpenHPC, HPC Orchestrator and Cloud 
+Maintains configuration files for OpenHPC, HPC Orchestrator and Cloud 
 baremetal node. these configuration files are applicable for development 
 systems used for prototype.
 
-directory 2_cloudExtension
+directory 1_combined_controller
 ==========================
-maintans the recipe for cloud burst use case (user case 2)
+Maintains the recipes for case where OpenStack node and HPC controller node
+are the same. (use case 1)
+
+directory 2_cloud_extension
+==========================
+Maintains the recipe for cloud burst use case (user case 2)
