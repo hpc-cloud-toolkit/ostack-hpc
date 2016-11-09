@@ -12,7 +12,7 @@ fi
 mkdir -p $chpcInitPath
 #copy Cloud HPC files to temp working directory
 sudo cp -fr -L ${SCRIPTDIR}/cloud_hpc_init/${chpc_base}/* $chpcInitPath/
-export chpcInit=$chpcInitPath/chpcInit
+export chpcInit=$chpcInitPath/chpc_init
 
 #update sms_ip in cloudInit scripts
 sudo sed -i -e "s/<sms_ip>/${sms_ip}/g" $chpcInit
