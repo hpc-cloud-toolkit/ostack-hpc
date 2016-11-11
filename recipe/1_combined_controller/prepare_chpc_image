@@ -18,7 +18,7 @@ function prepare_user_image() {
         #install grub dependency
         yum -y install parted
         # copy patch to installed location
-        sudo cp -fr ../dib/dib_patch/* /usr/share/diskimage-builder/
+        sudo cp -fr ../../dib/dib_patch/* /usr/share/diskimage-builder/
         
         # For Debugging enable user
         #export PATH=/home/ppk/PPK/dib/dev/diskimage-builder/bin:/home/ppk/PPK/dib/dev/dib-utils/bin:$PATH
@@ -29,11 +29,11 @@ function prepare_user_image() {
         # For debugging enable DEBUG_TRACE
         #export DIB_DEBUG_TRACE=1
         # Add our custom element path
-        export ELEMENTS_PATH="$(realpath ../dib/hpc/elements)"
+        export ELEMENTS_PATH="$(realpath ../../dib/hpc/elements)"
         # define base for image as ohpc or orch.
         export DIB_HPC_BASE=${chpc_base}
         # path to hpc configuration files i.e. cloud.cfg
-        export DIB_HPC_FILE_PATH="$(realpath ../dib/hpc/hpc-files/)"
+        export DIB_HPC_FILE_PATH="$(realpath ../../dib/hpc/hpc-files/)"
 
         #Path to HPC base yum repo file
         # We support either Intel HPC Orchestrator and OpenHPC
@@ -57,7 +57,7 @@ function prepare_user_image() {
         echo "====================================================================="
         echo "=== Preparing cloud-hpc user image =================================="
         echo "====================================================================="
-        disk-image-create centos7 vm local-config dhcp-all-interfaces devuser $DIB_HPC_ELEMENTS -o icloud-hpc-cent7 
+        disk-image-create centos7 vm local-config dhcp-all-interfaces devuser selinux-permissive $DIB_HPC_ELEMENTS -o icloud-hpc-cent7 
         echo "====================================================================="
         echo "=== User Image Creation complete ===================================="
         echo "====================================================================="
