@@ -5,7 +5,7 @@
 SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P && echo x)"
 SCRIPTDIR="${SCRIPTDIR%x}"
 cd $SCRIPTDIR
-chpcInitPath=/opt/intel/hpc-orchestrator/admin/CloudHPCInit
+chpcInitPath=/opt/intel/hpc-orchestrator/admin/cloud_hpc_init
 
 logger "chpcInit: Updating Compute Node with HPC configuration"
 # Update rsyslog
@@ -41,7 +41,7 @@ fi
 #mount 
 mkdir -p /opt/intel/hpc-orchestrator/pub/tests
 mount /opt/intel/hpc-orchestrator/pub/tests
-# mount cloudhpcinit
+# mount cloud_hpc_init
 cat /etc/fstab | grep "<sms_ip>:$chpcInitPath"
 CloudHPCInit_exist=$?
 if [ "${CloudHPCInit_exist}" -ne "0" ]; then

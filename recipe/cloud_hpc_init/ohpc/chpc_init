@@ -5,7 +5,7 @@
 SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P && echo x)"
 SCRIPTDIR="${SCRIPTDIR%x}"
 cd $SCRIPTDIR
-chpcInitPath=/opt/ohpc/admin/CloudHPCInit
+chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
 
 logger "chpcInit: Updating Compute Node with HPC configuration"
 # Update rsyslog
@@ -39,7 +39,7 @@ mkdir -p /opt/ohpc/pub
 mount /home
 mount /opt/ohpc/pub
 
-# mount cloudhpcinit
+# mount cloud_hpc_init
 cat /etc/fstab | grep "sms_ip:$chpcInitPath"
 CloudHPCInit_exist=$?
 if [ "${CloudHPCInit_exist}" -ne "0" ]; then

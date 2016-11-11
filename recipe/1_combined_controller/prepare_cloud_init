@@ -2,10 +2,10 @@
 # 
 if [[ "${chpc_base}" == "orch" ]]; then
 	echo "CloudInit: Intel Orchestrator"
-        chpcInitPath=/opt/intel/hpc-orchestrator/admin/CloudHPCInit
+        chpcInitPath=/opt/intel/hpc-orchestrator/admin/cloud_hpc_init
 else
 	echo "CloudInit: OpenHPC - ${chpc_base}"
-        chpcInitPath=/opt/ohpc/admin/CloudHPCInit
+        chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
 fi
 
 # if directory exists then mv to Old directory. TBD

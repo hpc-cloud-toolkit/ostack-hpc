@@ -7,10 +7,10 @@ sed --in-place "s|#\s*StrictHostKeyChecking\s*ask|StrictHostKeyChecking no|" /et
 #chmod 600 /etc/ssh/ssh_host_ed*_key.pub
 #chmod 600 /etc/ssh/ssh_host_ecdsa_key.pub
 
-#Copy local CloudHPCInit to all compute nodes. TODO: Call all nodes through a for loop
-#scp -r /tmp/CloudHPCInit/ ${cc_ip[0]}:/root
-scp -r /tmp/CloudHPCInit/ cc1:/root
+#Copy local cloud_hpc_init to all compute nodes. TODO: Call all nodes through a for loop
+#scp -r /tmp/cloud_hpc_init/ ${cc_ip[0]}:/root
+scp -r /tmp/cloud_hpc_init/ cc1:/root
 
-#Execute CloudHPCInit/chpcInit on nodes using pdsh. TODO: Call all nodes through a for loop
-pdsh -w cc1 /root/CloudHPCInit/chpcInit
-set +x
+#Execute cloud_hpc_init/chpc_init on nodes using pdsh. TODO: Call all nodes through a for loop
+pdsh -w cc1 /root/cloud_hpc_init/chpcInit
+#set +x
