@@ -34,3 +34,8 @@ file: update_cnodes_to_sms
 ==========================
 This script perform the post boot configuration including updating SLURM 
 resource manager for new cloud node
+
+directory: ovpn
+==================
+This maintains the openvpn specific files, setup and configuration needed to 
+create vpn tunnel between two system
