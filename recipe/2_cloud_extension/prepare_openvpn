@@ -1,0 +1,16 @@
+# !/bin/bash
+# This file configure and set openvpn server on hpc node and client on cloud 
+# head node
+
+# configure the server.conf file
+#
+# configure networking, ip address for openvpn so that both cloud node and
+# hpc node can talk to each other.
+#
+# This step is optional
+# Find out public IP address of server and client
+# and bind this public IP address to vpn on server and client in conf file
+#
+# update the server configuration with vpn IP Address and range
+#;server 10.8.0.0 255.255.255.0
+echo "server $vpn_ip $vpn_subnet" >> $PWD/ovpn/server.conf
