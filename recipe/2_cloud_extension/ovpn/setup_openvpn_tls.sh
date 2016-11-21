@@ -4,6 +4,7 @@
 # certificates for server and client. By default it setup tls security
 # This script is tested on centos7.2, openvpn version 2.3.12 and
 # easy-rsa version 2.0
+#set -x
 yum -y install openvpn
 yum -y install easy-rsa
 #update easy-rsa vars file
@@ -15,11 +16,11 @@ mkdir -p $openvpn_tls_cert
 cp -f server.conf $openvpn_tls_cert/../
 
 #start the key, certification generation process
+pushd /usr/share/easy-rsa/2.0/
 . ./vars
 ./clean-all
 
 #generate Certificate Authority
-pushd /usr/share/easy-rsa/2.0/
 ./build-ca --batch
 
 # generate certification and private key for the vpn server
