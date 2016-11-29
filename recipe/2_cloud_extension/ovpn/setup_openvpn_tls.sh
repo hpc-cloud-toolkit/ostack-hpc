@@ -24,12 +24,14 @@ pushd /usr/share/easy-rsa/2.0/
 ./build-ca --batch
 
 # generate certification and private key for the vpn server
+export KEY_NAME="sunserver"
 ./build-key-server --batch server
 
 #generate diffie hellman pameters
 ./build-dh 
 
 #generate client certification and keys
+export KEY_NAME="cloudhead"
 ./build-key --batch cloudhead
 
 # cloudhead* files along with ca.crt shall be copied on cloudhead node

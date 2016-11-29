@@ -70,7 +70,7 @@ export KEY_EMAIL="sm@intel.com"
 export KEY_OU=""
 
 # X509 Subject Field
-export KEY_NAME="EasyRSA"
+export KEY_NAME="SunRSA"
 
 # PKCS11 Smart Card
 # export PKCS11_MODULE_PATH="/usr/lib/changeme.so"
