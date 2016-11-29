@@ -14,6 +14,8 @@ export openvpn_tls_cert="/etc/openvpn/keys"
 mkdir -p $openvpn_tls_cert
 # copy server configuration file
 cp -f server.conf $openvpn_tls_cert/../
+#copy client configuration file
+cp -fr ccd $openvpn_tls_cert/../
 
 #start the key, certification generation process
 pushd /usr/share/easy-rsa/2.0/

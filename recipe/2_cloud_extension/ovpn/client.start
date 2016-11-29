@@ -1,0 +1,7 @@
+#cli optin to start
+# remote vpn server ip is 192.168.68.1, its own client ip is 192.168.68.2
+# assuming keys are created and shared correctly
+openvpn --remote sun-dev --dev tun1 --ifconfig 192.168.68.1 192.168.68.2 --tls-client --ca /etc/openvpn/keys/ca.crt --cert /etc/openvpn/keys/cloudhead.crt --key /etc/openvpn/keys/cloudhead.key --reneg-sec 60 --verb 5
+
+# using client profile
+#openvpn --config /etc/openvpn/cloudhead.ovpn
