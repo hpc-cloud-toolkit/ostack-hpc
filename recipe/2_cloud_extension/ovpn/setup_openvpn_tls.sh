@@ -10,12 +10,13 @@ yum -y install easy-rsa
 #update easy-rsa vars file
 cp -f vars /usr/share/easy-rsa/2.0/
 # create directory for keys
+export openvpn_cfg="/etc/openvpn"
 export openvpn_tls_cert="/etc/openvpn/keys"
 mkdir -p $openvpn_tls_cert
 # copy server configuration file
-cp -f server.conf $openvpn_tls_cert/../
+cp -f server.conf $openvpn_cfg/
 #copy client configuration file
-cp -fr ccd $openvpn_tls_cert/../
+cp -fr ccd $openvpn_cfg/
 
 #start the key, certification generation process
 pushd /usr/share/easy-rsa/2.0/
@@ -39,8 +40,3 @@ export KEY_NAME="cloudhead"
 # cloudhead* files along with ca.crt shall be copied on cloudhead node
 
 popd
-
-
-
-
-
