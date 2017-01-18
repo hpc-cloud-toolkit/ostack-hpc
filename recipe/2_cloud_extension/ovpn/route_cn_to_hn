@@ -1,0 +1,10 @@
+# !/bin/bash
+# add this route for each cn. 
+#CN1 IP address is 10.78.6.2, vpn client is installed on 10.78.6.1. CN1 to vpn client are connected via eth0 10.78.6.?
+# vpn client IP address is 192.168.68.2 and server address is 192.168.68.2
+# head node IP Address is 192.168.47.1, which is connected via vpn tunnel
+
+#Add route to access VPN client.
+;ip route add 192.168.68.0 dev eth0
+# Add route to access HN
+;ip route add 192.168.47.0/24 via 10.78.6.1 dev eth0
