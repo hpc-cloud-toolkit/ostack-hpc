@@ -13,4 +13,54 @@
 #
 # update the server configuration with vpn IP Address and range
 #;server 10.8.0.0 255.255.255.0
-echo "server $vpn_ip $vpn_subnet" >> $PWD/ovpn/server.conf
+#echo "server $vpn_ip $vpn_subnet" >> $PWD/ovpn/server.conf
+
+################################################
+#Step 1: Install openvpn and configure tls & keys
+################################################
+source $PWD/ovpn/setup_openvpn_tls.sh
+
+###############################
+# Step 2: configure vpn server
+###############################
+openvpn_server_cfg=$openvpn_cfg/server.conf
+#update vpn tunnel IP Address to vpn server
+sed -i "s/^server .*/server $openvpn_server_ip $openvpn_netmask/g" $openvn_server_cfg
+# add route for cloud
+controller_ipadd="$( get_ip_from_ipcidr $cc_subnet_cidr)"
+controller_netmask="$( get_netmask_from_ipcidr $cc_subnet_cidr)"
+sed -i "s/^route .*/route $controller_ipadd $controller_netmask/g" $openvn_server_cfg
+
+###############################
+#Step 3: configure vpn client
+##############################
+# first store client configuration file on server
+ovpn_client_cfg=$openvpn_cfg/client_cfg
+mkdir -p $ovpn_client_cfg
+ovpn_client_cfg_file=$ovpn_client_cfg/cloudhead.ovpn
+cp -f $PWD/ovpn/cloudhead.ovpn $ovpn_client_cfg_file
+#update the public IP address of head node to vpn configuration
+# this is the ip address used by vpn, vpn tunnel is createad on top of it
+sed -i "s/<sms_pubmic_ip>/$sms_public_up/g" $ovpn_client_cfg_file
+
+
+# Step 4: Update vpn client push configuration used by vpn server
+# Add routing entry to route cloud node IP traffic, via tunnel
+sed -i "s/^iroute .*/route $controller_ipadd $controller_netmask/g" $ovpn_client_cfg_file
+# push tunnel IP address of vpn client
+sed -i "s/^ifconfig-push .*/ifconfig-push $openvpn_client_ip $openvpn_netmask/g" $ovpn_client_cfg_file
+# now push HPC nodes route to cloud controller node
+sed -i "s/^push .*/push \"route $sms_ip $internal_netmask\"/g" $ovpn_client_cfg_file
+
+
+# #########################################
+# step 5: update route at cloud compute nodes to forward hpc traffic towards vpn tunnel 
+# #########################################
+# todo, might need neutron help here
+#
+ 
+# ######################################
+#step 6: route from hpc CN to cloud node
+# #####################################
+# todo; might not need
+#

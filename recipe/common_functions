@@ -101,3 +101,50 @@ function setup_computename() {
     setup_cname
     setup_ccname
 }
+
+function cidr_to_netmask() {
+    cidr=$1
+    value=$(( 0xffffffff ^ ((1 << (32 - $cidr)) - 1) ))
+    netmask="$(( (value >> 24) & 0xff )).$(( (value >> 16) & 0xff )).$(( (value >> 8) & 0xff )).$(( value & 0xff ))"
+    echo $netmask
+}
+
+function netmask_to_cidr() {
+    nmask=$1
+    # To calculate cidr, we just need to calculate number bits in each octets and add them.
+    cidr_bits=0
+    # iterate through each octets
+    # use dot as saperator
+    IFS=.
+    for octs in $nmask ; do
+       # we can only have 8 combinations in cidr 11111111, 11111110, 11111100, 11110000, 11100000,
+       case $octs in
+          0);;
+          128) cidr_bits=$(($cidr_bits + 1));;
+          192) cidr_bits=$(($cidr_bits + 2));;
+          224) cidr_bits=$(($cidr_bits + 3));;
+          240) cidr_bits=$(($cidr_bits + 4));;
+          248) cidr_bits=$(($cidr_bits + 5));;
+          252) cidr_bits=$(($cidr_bits + 6));;
+          254) cidr_bits=$(($cidr_bits + 7));;
+          255) cidr_bits=$(($cidr_bits + 8));;
+          *) echo "Error: wrong netmask octets $octs";
+       esac
+    done
+    echo $cidr_bits
+}
+
+function get_ip_from_ipcidr()
+{
+   ipcidr=$1
+   ipadd=$( echo $ipcidr|awk -F '[/]' '{print $1}')
+   echo $ipadd
+}
+function get_netmask_from_ipcidr()
+{
+   ipcidr=$1
+   cidr=$( echo $ipcidr|awk -F '[/]' '{print $2}')
+   netmask="$( cidr_to_netmask $cidr )"
+   echo $netmask
+}
+
