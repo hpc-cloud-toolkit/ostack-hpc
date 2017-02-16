@@ -8,5 +8,9 @@ set -eu
 set -o pipefail
 
 # install mrsh packages on compute image
-install-packages mrsh-$DIB_HPC_BASE mrsh-rsh-compat-$DIB_HPC_BASE mrsh-server-$DIB_HPC_BASE
+install-packages mrsh-$DIB_HPC_BASE mrsh-rsh-compat-$DIB_HPC_BASE
+#mrsh server is installed on compute nodes
+if [[ $DIB_HPC_IMAGE_TYPE == "compute" ]]; then
+    install-packages mrsh-server-$DIB_HPC_BASE
+fi
 

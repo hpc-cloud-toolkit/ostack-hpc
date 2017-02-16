@@ -8,7 +8,9 @@ set -o pipefail
 
 case "$DIB_INIT_SYSTEM" in
     systemd)
-        systemctl enable xinetd
+        if [[ $DIB_HPC_IMAGE_TYPE == "compute" ]]; then
+           systemctl enable xinetd
+        fi
         ;;
     *)
         echo "Unsupported init system"

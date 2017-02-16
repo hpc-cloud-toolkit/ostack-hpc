@@ -7,7 +7,11 @@ fi
 set -eu
 set -o pipefail
 
-#install slurm
+# Install slurm Server
+if [[ $DIB_HPC_IMAGE_TYPE == "sms" ]]; then
+   install-packages -g $DIB_HPC_BASE-slurm-server
+fi
+#install slurm Client
 install-packages -g $DIB_HPC_BASE-slurm-client
 
 # Update slurm pam module for mrsh and mrlogin

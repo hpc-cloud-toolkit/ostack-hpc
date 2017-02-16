@@ -15,6 +15,20 @@ DIB_HPC_BASE
     for OpenHPC it is OHPC, which installs package lmod-ohpc
     for Orchestrator it is orch, which installs package lmod-orch
 
+DIB_HPC_IMAGE_TYPE
+  :Required: no
+  :Default: compute
+  :Description: Tells diskimage builder type of image to be build, HPC sms node image or
+    compute node image. Element installs different binaries for sms node and compute node. 
+    Valid values are
+    compute: Builds image for HPC compute node
+    sms: Builds image for HPC sms node. 
+
+DIB_NTP_SERVER
+  :Required: no
+  :Default: 
+  :Description: ntp server to be configured on image. default is none.
+
 .. note::
     This element only tested on CentOS7
 

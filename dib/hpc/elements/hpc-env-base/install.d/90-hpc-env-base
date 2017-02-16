@@ -28,8 +28,17 @@ if [[ "${DIB_HPC_BASE}" == "ohpc" ]]; then
     fi
 fi
 
-#install ntp, kernel, lmod and pdsh
-install-packages ntp kernel lmod-$DIB_HPC_BASE pdsh-$DIB_HPC_BASE
+#install sms node components
+if [[ $DIB_HPC_IMAGE_TYPE == "sms" ]]; then
+    install-packages -g $DIB_HPC_BASE-base
+fi
+if [[ $DIB_HPC_IMAGE_TYPE == "compute" ]]; then
+    install-packages lmod-$DIB_HPC_BASE pdsh-$DIB_HPC_BASE
+fi
+
+# Install Common Packages
+#install ntp, kernel
+install-packages ntp kernel 
 #install infiniband support
 # TBD need to try with element mellanox, if that work then need to remove following 2 lines
 install-packages -g "InfiniBand Support"
@@ -37,6 +46,12 @@ install-packages  infinipath-psm
 
 # Configure the rsyslog 
 if [ -e /etc/rsyslog.conf ]; then
+   # Receive rsyslog on sms node
+   if [[ $DIB_HPC_IMAGE_TYPE == "sms" ]]; then
+        # provide UDP Receiption
+        sed -i "s/\#\$ModLoad imudp/\$ModLoad imudp/" /etc/rsyslog.conf
+        sed -i "s/\#\$UDPServerRun 514/\$UDPServerRun 514/" /etc/rsyslog.conf
+   fi
     #comment out unwanted messages, reduce noice
     sed -i "s/^\*\.info/\\#\*\.info/" /etc/rsyslog.conf
     sed -i "s/^authpriv/\\#authpriv/" /etc/rsyslog.conf
@@ -45,7 +60,7 @@ if [ -e /etc/rsyslog.conf ]; then
     sed -i "s/^uucp/\\#uucp/" /etc/rsyslog.conf
 fi
 
-#configure Cloud-Init
+# Configure Cloud-Init
 if [ -f /tmp/in_target.d/cloud.cfg ]; then
     sudo cp -L -f /tmp/in_target.d/cloud.cfg /etc/cloud/
 fi

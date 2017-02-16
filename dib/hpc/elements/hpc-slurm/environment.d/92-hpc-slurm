@@ -1,3 +1,5 @@
 # Base can be ohpc (OpenHPC) or orch (HPC Orchestrator) 
 # Defauilt is ohpc
 export DIB_HPC_BASE=${DIB_HPC_BASE:-ohpc}
+# Are we building image for HPC sms node or compute node. Default is compute node image
+export DIB_HPC_IMAGE_TYPE="${DIB_HPC_IMAGE_TYPE:-compute}"

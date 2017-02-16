@@ -43,6 +43,9 @@ case "$DIB_HPC_BASE" in
         ;;
     ohpc)
 	# Nothing to be done for OpenHPC
+        # Remove OpenHPC repo
+        #install-packages -e $DIB_HPC_OHPC_PKG
+        #yum-config-manager --disable OpenHPC-updates
         ;;
     *)
         echo "Error !! no DIB_HPC_BASE available!"
