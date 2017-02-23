@@ -24,11 +24,6 @@ DIB_HPC_IMAGE_TYPE
     compute: Builds image for HPC compute node
     sms: Builds image for HPC sms node. 
 
-DIB_NTP_SERVER
-  :Required: no
-  :Default: 
-  :Description: ntp server to be configured on image. default is none.
-
 .. note::
     This element only tested on CentOS7
 

@@ -46,18 +46,18 @@ install-packages  infinipath-psm
 
 # Configure the rsyslog 
 if [ -e /etc/rsyslog.conf ]; then
-   # Receive rsyslog on sms node
-   if [[ $DIB_HPC_IMAGE_TYPE == "sms" ]]; then
-        # provide UDP Receiption
+    if [[ $DIB_HPC_IMAGE_TYPE == "sms" ]]; then
+        # provide UDP Receiption at SMS node, to aggregate CNs syslog
         sed -i "s/\#\$ModLoad imudp/\$ModLoad imudp/" /etc/rsyslog.conf
         sed -i "s/\#\$UDPServerRun 514/\$UDPServerRun 514/" /etc/rsyslog.conf
-   fi
-    #comment out unwanted messages, reduce noice
-    sed -i "s/^\*\.info/\\#\*\.info/" /etc/rsyslog.conf
-    sed -i "s/^authpriv/\\#authpriv/" /etc/rsyslog.conf
-    sed -i "s/^mail/\\#mail/" /etc/rsyslog.conf
-    sed -i "s/^cron/\\#cron/" /etc/rsyslog.conf
-    sed -i "s/^uucp/\\#uucp/" /etc/rsyslog.conf
+    else
+        #comment out unwanted messages, reduce noice
+        sed -i "s/^\*\.info/\\#\*\.info/" /etc/rsyslog.conf
+        sed -i "s/^authpriv/\\#authpriv/" /etc/rsyslog.conf
+        sed -i "s/^mail/\\#mail/" /etc/rsyslog.conf
+        sed -i "s/^cron/\\#cron/" /etc/rsyslog.conf
+        sed -i "s/^uucp/\\#uucp/" /etc/rsyslog.conf
+    fi
 fi
 
 # Configure Cloud-Init
