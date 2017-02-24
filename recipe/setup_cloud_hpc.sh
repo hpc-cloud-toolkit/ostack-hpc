@@ -37,7 +37,7 @@ source common_functions
 
 usage () {
   echo "USAGE: $0 [-f] [-h] [-c] [-o] [-p] [-i=<input.local>] [-n=<cloud_node_inventory>] [-u=<use case id>]"
-  echo " -u,--usecase       Select use case, 1 or 2." 
+  echo " -u,--usecase       Select use case, 1, 2 or 3." 
   echo " -c,--openhpc       Install OpenHPC using the OpenHPC installation recipe"
   echo " -f,--forced        Forced run, run all sections with no prompt"
   echo " -h,--help          Print this message"
@@ -65,7 +65,7 @@ for i in "$@"; do
       export USECASE="${i#*=}"
 
       # Check if a valid use case
-      if [[ $USECASE != "1" && $USECASE != "2" ]]; then
+      if [[ $USECASE != "1" && $USECASE != "2" && $USECASE != "3" ]]; then
         echo "Unsupported usecase"
         exit 1
       fi
@@ -82,11 +82,11 @@ for i in "$@"; do
       CLOUD_HPC_INVENTORY="${i#*=}"
       shift # past argument with no value
     ;;
-	-o|--orchestrator)
+    -o|--orchestrator)
       orchestrator_install=1
       shift # past argument with no value
     ;;
-	-p|--packstack)
+    -p|--packstack)
       packstack_install=1
       shift # past argument with no value
     ;;
@@ -103,14 +103,15 @@ for i in "$@"; do
 done
 
 # Check if a valid use case is selected
-if [[ $USECASE != "1" && $USECASE != "2" ]]; then
-  echo "Unsupported usecase, select a valid usecase [1,2]"
+if [[ $USECASE != "1" && $USECASE != "2" && $USECASE != "3" ]]; then
+  echo "Unsupported usecase, select a valid usecase [1,2,3]"
   exit 1
 fi
 
 inputFile=$(readlink -f ${INPUT_LOCAL})
 cloudHpcInventory=$(readlink -f ${CLOUD_HPC_INVENTORY})
 
+set -x
 validateInputFile
 validateHpcInventory
 
@@ -123,44 +124,52 @@ validateHpcInventory
 setup_computename
 
 #Set the hostname of the machine
-hostnamectl set-hostname ${sms_name}
+#hostnamectl set-hostname ${sms_name}
 
+set -x
 #Install hpc orchestrator OR openhpc
-if [ "${orchestrator_install}" -eq "1" ]; then
-	mkdir -p /mnt/hpc_orch_iso
-	mount -o loop ${orch_iso_path} /mnt/hpc_orch_iso
-	rpm -Uvh /mnt/hpc_orch_iso/x86_64/Intel_HPC_Orchestrator_release-16.01.002.beta-8.1.x86_64.rpm
-	rpm --import /etc/pki/pgp/HPC-Orchestrator*.asc
-	pushd hpc_cent7/intel
-	time source recipe.sh -f
-	popd
-fi
+if [ "$USECASE" != "3" ]; then
+    if [ "${orchestrator_install}" -eq "1" ]; then
+        mkdir -p /mnt/hpc_orch_iso
+        mount -o loop ${orch_iso_path} /mnt/hpc_orch_iso
+        rpm -Uvh /mnt/hpc_orch_iso/x86_64/Intel_HPC_Orchestrator_release-16.01.002.beta-8.1.x86_64.rpm
+        rpm --import /etc/pki/pgp/HPC-Orchestrator*.asc
+        pushd hpc_cent7/intel
+        time source recipe.sh -f
+        popd
+    fi
 
-if [ "${openhpc_install}" -eq "1" ]; then
+    if [ "${openhpc_install}" -eq "1" ]; then
         export OHPC_INPUT_LOCAL=$(realpath ${INPUT_LOCAL})
         pushd hpc_cent7/ohpc
         time source recipe.sh
         popd
+    fi
 fi
 
 #Run packstack install.
 if [ "${packstack_install}" -eq "1" ]; then
-	pushd ../packstack/recipe
-	time source packstack-install.sh -s=${controller_ip} -f=${cc_subnet_cidr} -e=${sms_eth_internal}
-	popd
+    pushd ../packstack/recipe
+    time source packstack-install.sh -s=${controller_ip} -f=${cc_subnet_cidr} -e=${sms_eth_internal}
+    popd
 fi
 
 #set up hosts at head node or sms node
-setup_hosts
+#setup_hosts
 
 case $USECASE in
   1)
-	pushd 1_combined_controller
+    pushd 1_combined_controller
     time source set_os_hpc
-	popd
+    popd
   ;;
   2)
     pushd 2_cloud_extension
+    time source set_os_hpc
+    popd
+  ;;
+  3)
+    pushd 3_hpc_as_service
     time source set_os_hpc
     popd
   ;;
@@ -173,7 +182,7 @@ esac
 true
 
 #Call sinfo and srun to verify slurm's connection to the compute nodes
-sinfo
-srun -N ${num_ccomputes} hostname -i
+#sinfo
+#srun -N ${num_ccomputes} hostname -i
 
 # End
