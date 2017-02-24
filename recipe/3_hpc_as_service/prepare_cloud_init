@@ -1,0 +1,55 @@
+#!bin/bash
+# 
+if [[ "${chpc_base}" == "orch" ]]; then
+	echo "CloudInit: Intel Orchestrator"
+        chpcInitPath=/opt/intel/hpc-orchestrator/admin/cloud_hpc_init
+else
+	echo "CloudInit: OpenHPC - ${chpc_base}"
+        chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
+fi
+
+# if directory exists then mv to Old directory. TBD
+mkdir -p $chpcInitPath
+#copy Cloud HPC files to temp working directory
+#copy cloud-init file for compute nodes
+sudo cp -fr -L ${SCRIPTDIR}/cloud_hpc_init/${chpc_base}/* $chpcInitPath/
+export chpcInit=$chpcInitPath/chpc_init
+export chpcSMSInit=$chpcInitPath/chpc_sms_init
+
+#update sms_ip in cloudInit scripts for compute nodes
+sudo sed -i -e "s/<sms_ip>/${sms_ip}/g" $chpcInit
+
+#Update variables to chpc_sms_init
+sudo sed -i -e "s/<update_cnodename_prefix>/${cnodename_prefix}/g" $chpcSMSInit
+sudo sed -i -e "s/<update_num_ccomputes>/${num_ccomputes}/g" $chpcSMSInit
+sudo sed -i -e "s/<update_ntp_server>/${ntp_server}/g" $chpcSMSInit
+sudo sed -i -e "s/<update_sms_name>/${sms_name}/g" $chpcSMSInit
+
+if [[ ${enable_mrsh} -eq 1 ]];then
+   # update mrsh for sms node
+   cat $CHPC_SCRIPTDIR/sms/update_mrsh >> $chpcSMSInit
+fi
+if [[ ${enable_clustershell} -eq 1 ]];then
+   # update clustershell for sms node
+   cat $CHPC_SCRIPTDIR/sms/update_clustershell >> $chpcSMSInit
+fi
+# Internal dns is enabled, So no need to create /etc/hosts file
+# Prepare hosts file for sms & compute nodes
+#export etc_hosts=$chpcInitPath/hosts
+#sms_info="$sms_ip   $sms_name"
+#cat $etc_hosts|grep "$sms_info"
+#sexists=$?
+#if [ "${sexists}" -ne "0" ]; then 
+#   echo "$sms_info" >> $etc_hosts
+#fi
+## Assuming no DNS, So we have to update hosts file so that sms node can communicate to compute node
+## Update CN
+#for ((i=0; i < ${num_ccomputes}; i++)); do
+#    node_info="${cc_ip[$i]}  ${cnodename_prefix}$((i+1))"
+#    cat $etc_hosts|grep "$node_info"
+#    sexists=$?
+#    if [ "${sexists}" -ne "0" ]; then 
+#        echo "$node_info" >> $etc_hosts
+#    fi
+#done
+

@@ -1,0 +1,10 @@
+#Update the genders at sms with compute node information
+# first check if genders is install TBD
+for ((i=0; i<$num_ccomputes; i++)) ; do
+   cat /etc/genders | grep ${cc_name[$i]}
+   gender_exists=$?
+   if [ "${gender_exists}" -ne "0" ]; then 
+       echo -e "${cc_name[$i]}\tcompute,bmc=${cc_bmc[$i+1]}"
+   fi
+done >> /etc/genders
+
