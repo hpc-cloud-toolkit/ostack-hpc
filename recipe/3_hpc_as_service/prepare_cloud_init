@@ -22,7 +22,7 @@ sudo sed -i -e "s/<sms_ip>/${sms_ip}/g" $chpcInit
 #Update variables to chpc_sms_init
 sudo sed -i -e "s/<update_cnodename_prefix>/${cnodename_prefix}/g" $chpcSMSInit
 sudo sed -i -e "s/<update_num_ccomputes>/${num_ccomputes}/g" $chpcSMSInit
-sudo sed -i -e "s/<update_ntp_server>/${ntp_server}/g" $chpcSMSInit
+sudo sed -i -e "s/<update_ntp_server>/${controller_ip}/g" $chpcSMSInit
 sudo sed -i -e "s/<update_sms_name>/${sms_name}/g" $chpcSMSInit
 
 if [[ ${enable_mrsh} -eq 1 ]];then
