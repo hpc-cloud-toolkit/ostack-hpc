@@ -6,6 +6,8 @@ it provides recipe to create HPC head node images as well as hpc
 compute node images.
 for hpc configuration it creates cloud-init script (post boot script)
 for each type of nodes (SMS as well CN)
+This use case can be invoked as below:
+../setup_cloud_hpc.sh -i=inventory/3_hpc_as_service/hn3_has_input.local -u=3 -n=inventory/3_hpc_as_service/hn3_has_inventory
 
 Below are the scripts called to create the environment for use case 1:
 
