@@ -17,16 +17,20 @@ echo "..$CHPC_SCRIPTDIR .."
 # =====================================
 # This assumes that HPC head node recipe is installed and SMS_node functionality is already configured. It will get some data from there to prepare cloudInit
 time source prepare_cloud_init
-#
+
 # ========================
 # Prepare CloudHPC Image :
 # ========================
-# Check if User selected to prepare cloud HPC images
-
-############################################################
-#======== DISABLING PREPARE_CHPC_IMAGE FOR NOW ============#
-############################################################
 time source prepare_chpc_image
+
+# ============================================
+# create vpn tunnel to communication with openstack
+# controller node
+# ============================================-=
+if [[ ${enable_vpn} -eq "1" ]]; then
+    time source $CHPC_SCRIPTDIR/ovpn/setup_vpn_connection
+fi
+#
 # =============================================
 # Prepare OpenStack for HPC baremetal instances
 # =============================================

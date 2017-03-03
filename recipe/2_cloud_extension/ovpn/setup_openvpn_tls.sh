@@ -10,13 +10,15 @@ yum -y install easy-rsa
 #update easy-rsa vars file
 cp -f vars /usr/share/easy-rsa/2.0/
 # create directory for keys
-export openvpn_cfg="/etc/openvpn"
+if [ -z "$openvpn_cfg" ]; then
+    export openvpn_cfg="/etc/openvpn"
+fi
 export openvpn_tls_cert="/etc/openvpn/keys"
 mkdir -p $openvpn_tls_cert
 # copy server configuration file
-cp -f server.conf $openvpn_cfg/
+#cp -f server.conf $openvpn_cfg/
 #copy client configuration file
-cp -fr ccd $openvpn_cfg/
+#cp -fr ccd $openvpn_cfg/
 
 #start the key, certification generation process
 pushd /usr/share/easy-rsa/2.0/
@@ -27,15 +29,17 @@ pushd /usr/share/easy-rsa/2.0/
 ./build-ca --batch
 
 # generate certification and private key for the vpn server
-export KEY_NAME="sunserver"
-./build-key-server --batch server
+#export KEY_NAME="sunserver"
+export KEY_NAME=$OSERVER
+./build-key-server --batch $OSERVER
 
 #generate diffie hellman pameters
 ./build-dh 
 
 #generate client certification and keys
-export KEY_NAME="cloudhead"
-./build-key --batch cloudhead
+#export KEY_NAME="cloudhead"
+export KEY_NAME=$OCLIENT
+./build-key --batch $OCLIENT
 
 # cloudhead* files along with ca.crt shall be copied on cloudhead node
 

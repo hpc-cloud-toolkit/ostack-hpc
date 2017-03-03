@@ -1,0 +1,41 @@
+This directory maintains the template for vpn server configuration, vpn client configuration
+and scripts for setup and configure vpn tunner with TLS security
+
+Below is the detail on files maintained in this directory
+
+file: setup_vpn_connection
+==========================
+script to install, setup and establish vpn tunnel between sms & controller node
+
+file: setup_openvpn_tls.sh
+==========================
+scrit installs openvpn, generate keys, certificates for vpn connection.
+
+file: cloudhead.ovpn
+==========================
+template file for vpn client configuration, this file get copied 
+on vpn client machine
+
+file: ccd/cloudhead
+==========================
+template file for vpn client configuration at server side. this file stays
+at vpn server machine. vpn server uses configration from here to push 
+configuration to vpn client
+
+file: server.conf
+=================
+template file for vpn server configuration. openvpn uses this file to setup tunnel
+as per the configuration specified by this file
+
+file: client.start
+==================
+shall script to start vpn client. mainly used for testing
+
+file: server.start
+=================
+shall script to start vpn server. mainly used for testing
+
+file: route_cn_to_hn
+===================
+example file to setup/configure network routing. It is just an example. 
+

@@ -147,4 +147,3 @@ function get_netmask_from_ipcidr()
    netmask="$( cidr_to_netmask $cidr )"
    echo $netmask
 }
-
