@@ -111,7 +111,6 @@ fi
 inputFile=$(readlink -f ${INPUT_LOCAL})
 cloudHpcInventory=$(readlink -f ${CLOUD_HPC_INVENTORY})
 
-set -x
 validateInputFile
 validateHpcInventory
 
@@ -126,7 +125,6 @@ setup_computename
 #Set the hostname of the machine
 #hostnamectl set-hostname ${sms_name}
 
-set -x
 #Install hpc orchestrator OR openhpc
 if [ "$USECASE" != "3" ]; then
     if [ "${orchestrator_install}" -eq "1" ]; then
