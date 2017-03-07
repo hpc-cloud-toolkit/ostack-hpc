@@ -46,7 +46,7 @@ scp -p deploy_chpc_openstack ${controller_name}:${CloudExtensionRecipePath}
 scp -p extend_openstack_to_hpc ${controller_name}:${CloudExtensionRecipePath}
 
 #Generate and copy over setup.ini file for the parent script to read in
-echo "chpcInit=${chpcInitPath}/chpcInit" > setup.ini
+echo "chpcInit=${chpcInitPath}/chpc_init" > setup.ini
 echo "ostack_key=${CloudExtensionRecipePath}/cluster.pub" >> setup.ini
 echo "chpc_image_deploy_kernel=${CloudExtensionImagePath}/$(basename ${chpc_image_deploy_kernel})" >> setup.ini
 echo "chpc_image_deploy_ramdisk=${CloudExtensionImagePath}/$(basename ${chpc_image_deploy_ramdisk})" >> setup.ini
