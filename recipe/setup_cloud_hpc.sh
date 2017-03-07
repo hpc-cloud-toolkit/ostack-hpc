@@ -153,8 +153,8 @@ if [ "${packstack_install}" -eq "1" ]; then
 fi
 
 #set up hosts at head node or sms node
-#setup_hosts
-
+setup_hosts
+#set -x
 case $USECASE in
   1)
     pushd 1_combined_controller
