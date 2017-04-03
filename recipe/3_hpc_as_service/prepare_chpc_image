@@ -57,6 +57,9 @@ function prepare_sms_image() {
         # First setup diskimage-builder
         setup_dib_hpc_base
 
+        # tell to build sms node image
+        export DIB_HPC_IMAGE_TYPE=sms
+ 
         # enable Resource Manager
         DIB_HPC_ELEMENTS+=" hpc-slurm"
         
@@ -99,6 +102,9 @@ function prepare_user_image() {
         echo "Building new User Image"
         # First setup diskimage-builder
         setup_dib_hpc_base
+
+        # tell to build sms node image
+        export DIB_HPC_IMAGE_TYPE=compute
 
         # enable Resource Manager
         DIB_HPC_ELEMENTS+=" hpc-slurm"
