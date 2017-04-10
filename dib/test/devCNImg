@@ -10,6 +10,8 @@ export DIB_HPC_BASE=ohpc
 export DIB_HPC_FILE_PATH=/home/ppk/dib/dev/hpc/hpc-files
 #Path to HPC base yum repo file
 #export DIB_YUM_REPO_CONF=/etc/yum.repos.d/HPC_Orchestrator.repo
+# path of ssh authorized keys for ssh access
+export DIB_HPC_SSH_PUB_KEY=/root/.ssh/hpcasservice
 
 # tell to build sms node image
 export DIB_HPC_IMAGE_TYPE=compute

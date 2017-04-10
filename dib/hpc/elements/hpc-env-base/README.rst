@@ -24,6 +24,14 @@ DIB_HPC_IMAGE_TYPE
     compute: Builds image for HPC compute node
     sms: Builds image for HPC sms node. 
 
+DIB_HPC_SSH_PUB_KEY
+  :Required: no
+  :Default: /home/.ssh/
+  :Description: for sms node it will generate keys and copy authorized keys to this 
+    path DIB_HPC_SSH_PUB_KEY for compute node, it copies autorized_keys from 
+    DIB_HPC_SSH_PUB_KEY, and copy to /root/.ssh/ 
+
+
 .. note::
     This element only tested on CentOS7
 

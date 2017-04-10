@@ -13,6 +13,9 @@ export DIB_HPC_FILE_PATH=/home/ppk/dib/dev/hpc/hpc-files
 
 # tell to build sms node image
 export DIB_HPC_IMAGE_TYPE=sms
+# temp path for ssh authorized keys
+export DIB_HPC_SSH_PUB_KEY=/root/.ssh/hpcasservice
+
 # sms node specific variables, mainly used by hpc-dev-env elements
 # compiler
 export DIB_HPC_COMPILER="gnu"

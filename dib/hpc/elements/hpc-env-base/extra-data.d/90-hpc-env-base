@@ -10,6 +10,24 @@ set -o pipefail
 if [ ! -z $DIB_HPC_FILE_PATH ]; then
     sudo cp -L -f $DIB_HPC_FILE_PATH/cloud.cfg $TMP_HOOKS_PATH/
 fi
+# for compute node image copy ssh oub keys
+if [[ $DIB_HPC_IMAGE_TYPE == "compute" ]]; then
+    if [ -d $DIB_HPC_SSH_PUB_KEY ] && [ -e $DIB_HPC_SSH_PUB_KEY/authorized_keys ]; then
+        sudo cp -L -f $DIB_HPC_SSH_PUB_KEY/authorized_keys $TMP_HOOKS_PATH/
+    fi
+fi
+#generate ssh keys
+if [[ $DIB_HPC_IMAGE_TYPE == "sms" ]]; then
+    _ssh_path=$TMP_HOOKS_PATH/hpcasservice
+    echo "Configuring SSH for hpc cluster access"
+    install -d -m 700 $_ssh_path
+    ssh-keygen -t dsa -f $_ssh_path/hpcasservice -N '' -C "HPC Cluster key" > /dev/null 2>&1
+    cat $_ssh_path/hpcasservice.pub >> $_ssh_path/authorized_keys
+    chmod 0600 $_ssh_path/authorized_keys
+    # copy authorized key, which we will extract out to share with compute nodes
+    cp -l $_ssh_path/authorized_keys $TMP_HOOKS_PATH/
+fi
+
 case "$DIB_HPC_BASE" in
     orch)
         if [ -e $DIB_HPC_ORCH_PKG ]; then
