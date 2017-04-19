@@ -1,0 +1,3 @@
+export http_proxy=proxy.ra.intel.com:911
+export https_proxy=proxy.ra.intel.com:911
+export no_proxy=.intel.com,172.16.1.12,127.0.0.1,172.16.0.0/32
