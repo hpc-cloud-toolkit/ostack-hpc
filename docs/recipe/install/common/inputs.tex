@@ -1,0 +1,68 @@
+% -*- mode: latex; fill-column: 120; -*- 
+
+\subsection{Inputs} \label{sec:inputs}
+As this recipe details installing a cluster starting from bare-metal, there is a requirement to define IP addresses and
+gather hardware MAC addresses in order to support a controlled provisioning process. These values are necessarily unique
+to the hardware being used, and this document uses variable substitution (\texttt{\$\{variable\}}) in the command-line
+examples that follow to highlight where local site inputs are required. A summary of the required and optional variables
+used throughout this recipe are presented below. Note that while the example definitions above correspond to a small
+4-node compute subsystem, the compute parameters are defined in array format to accommodate logical extension to larger
+node counts. \\
+
+\vspace*{0.2cm}
+\begin{tabular}{@{}>{\textbullet}l p{7cm} l}
+& \texttt{\$\{sms\_name\}} & {\small \# Hostname for SMS server} \\
+& \texttt{\$\{sms\_ip\}} & {\small \# Internal IP address on SMS server}  \\
+& \texttt{\$\{sms\_eth\_internal\}} & {\small \# Internal Ethernet interface on SMS} \\
+& \texttt{\$\{eth\_provision\}} & {\small \# Provisioning interface for computes} \\
+& \texttt{\$\{internal\_netmask\}} & {\small \# Subnet netmask for internal network} \\
+& \texttt{\$\{ntp\_server\}} & {\small \# Local ntp server for time synchronization} \\
+& \texttt{\$\{bmc\_username\}} & {\small \# BMC username for use by IPMI} \\
+& \texttt{\$\{bmc\_password\}} & {\small \# BMC password for use by IPMI} \\
+& \texttt{\$\{num\_computes\}} & {\small \# Total \# of desired compute nodes} \\
+& \texttt{\$\{c\_ip[0]\}}, \, \texttt{\$\{c\_ip[1]\}}, ... & {\small \# Desired compute node addresses} \\
+& \texttt{\$\{c\_bmc[0]\}}, \texttt{\$\{c\_bmc[1]\}}, ... & {\small \# BMC addresses for computes} \\
+& \texttt{\$\{c\_mac[0]\}}, \texttt{\$\{c\_mac[1]\}}, ... & {\small \# MAC addresses for computes} \\
+& \texttt{\$\{compute\_regex\}} & {\small \# Regex matching all compute node names (e.g. ``c*'')} \\
+& \texttt{\$\{compute\_prefix\}} & {\small \# Prefix for compute node names (e.g. ``c'')} \\
+\end{tabular}
+
+\vspace*{0.2cm}
+\noindent {Optional:} 
+\vspace*{0.1cm}
+
+\begin{tabular}{@{}>{\textbullet}l p{7cm} l}
+& \texttt{\$\{mgs\_fs\_name\}} & {\small \# Lustre MGS mount name} \\
+& \texttt{\$\{sms\_ipoib\}} & {\small \# IPoIB address for SMS server} \\
+& \texttt{\$\{ipoib\_netmask\}} & {\small \# Subnet netmask for internal IPoIB} \\
+& \texttt{\$\{c\_ipoib[0]\}}, \texttt{\$\{c\_ipoib[1]\}}, ... & {\small \# IPoIB addresses for computes} \\
+& \texttt{\$\{kargs\}} & {\small \# Kernel boot arguments} \\  
+\end{tabular}
+
+\begin{server_config}
+///////Stoppping pomt ////////
+
+ohpc_pkg="${ohpc_pkg:-https://github.com/openhpc/ohpc/releases/download/v1.1.GA/ohpc-release-centos7.2-1.1-1.x86_64.rpm}"
+nodename_prefix="${nodename_prefix:-c}"
+chpc_base=”ohpc”
+hpc_slurm_partition=normal
+# Prefix for compute node hostnames
+cnodename_prefix= "${cnodename_prefix:-cc}"
+# Local (internal) hostname on SMS
+controller_name="${controller_name=sun-hn3}"
+# Local (internal) IP address on SMS
+controller_ip="${controller_ip=192.168.46.13}"
+# cloud subnet CIDR
+cc_subnet_cidr="${cc_subnet_cidr=192.168.46.0/24}"
+# cloud subnet DHCP range
+cc_subnet_dhcp_start="${cc_subnet_dhcp_start=192.168.46.130}"
+cc_subnet_dhcp_end="${cc_subnet_dhcp_end=192.168.46.135}"
+sms_mac=a4:bf:01:0c:e1:42
+sms_bmc=192.168.46.58
+# BMC user credentials for use by IPMI
+sms_bmc_username="${sms_bmc_username:-root}"
+sms_bmc_password="${sms_bmc_password:-root}"
+cloud compute node characterstics (aka nova flavor)
+SMS_RAM_MB=24456
+SMS_CPU=16
+\end{server_config}
