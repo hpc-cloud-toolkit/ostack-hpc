@@ -18,15 +18,19 @@ Base Linux Edition: this edition of the guide highlights installation without th
 \subsection*{TargetAudience}
 This guide is targeted at experienced Linux system administrators for HPC environments. Knowledge of
 software package management, system networking, PXE booting and OpenStack system software is assumed. Command-line input examples are highlighted throughout this guide via the following syntax:
-[sms]# echo "OpenHPC hello world"
+\begin{quote} 
+[sms]\# echo "OpenHPC hello world"
+
+\end{quote}
 Unless specified otherwise, the examples presented are executed with elevated (root) privileges. The
 examples also presume use of the BASH login shell, though the equivalent commands in other shells can
 be substituted. In addition to specific command-line instructions called out in this guide, an alternate
 convention is used to highlight potentially useful tips or optional configuration options. These tips are
 highlighted via the following format:
 
-\small{Tip}
-Tip: The solution is to increase the size of the manuals. \{Mark V. Shaney\}
+\begin{quote}	content...
+\small Tip: The solution is to increase the size of the manuals. \{Mark V. Shaney\ 
+\end{quote}
 
 
 \subsection*{RequirementAssumption}
@@ -36,10 +40,13 @@ This recipe is tested with OpenStack Mitaka release with CentOS 7.2. This docume
 For power management, we assume that the bare metal node baseboard management controllers (BMCs) are available via IPMI from the chosen controller host. For file systems, we assume that the master server (instantiated during provisioning “HPC as a service”) will host an NFS file system that is made available to the HPC compute nodes.
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{HPCaas-diagram.png}
-  \caption{Example of node deployment for HPCaaS using Openstack}
-  \label{fig:HPCaaS-diagram}
+	\centering
+	\includegraphics[width=0.7\linewidth]{manifest/figures/HPCaaS-diagram}
+	\caption[Openstack node example]{}
+	\caption{}
+	\label{fig:hpcaas-diagram}
 \end{figure}
+
 
 An outline of the physical architecture discussed is shown in Figure 1 and highlights the high-level
 networking configuration. The Controller node requires at least two Ethernet interfaces with eth0 connected to
@@ -61,7 +68,7 @@ A summary of the required and optional variables used throughout this recipe are
 that while the example definitions above correspond to a small 4-node compute subsystem, the compute
 parameters are defined in array format to accommodate logical extension to larger node counts.
 6 Rev: ac5491c
-\small{Tip}Install Guide (v1.2.1): CentOS7.2/x86 64 + OpenStack + SLURM
-
+\begin{quote}\small Install Guide (v1.2.1): CentOS7.2/x86 64 + OpenStack + SLURM
+\end{quote}
 
 \end{document}
