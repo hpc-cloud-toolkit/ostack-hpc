@@ -1,40 +1,37 @@
-%  Manifest file - OHPC-HPC_aaS-OS 
-%  HPC as a Service on Openstack
-%  Version 0.1 
-% James C. Kling jamesx.kling@intel.com
+\documentclass[12pt]{article}
+\usepackage{graphicx}
 
-\input{manifest/Introduction.tex}
+\begin{document}
+
 
 % Introduction
 
-%\begin{table}
-%\caption{\bf Introduction to HPC on Openstack} \vspace*{\captionSpace{}} \label{table:admin}
-%\input manifest/Introduction
-%\end{table}
-%\vspace*{0.5cm}
+\begin{table}{
+\caption{\bf Introduction to HPC on Openstack} \label{table:admin}
+\input{manifest/Introduction}
+}
+\end{table}
+\vspace*{0.5cm}
 
 
 %% BareMetal Prep
-%\begin{table}[h!]
-%\caption{\bf Bare Metal Preparation } \vspace*{\captionSpace{}} \label{table:provisioning}
-%\input manifest/BareMetalPrep
-%\vspace*{\tabSpaceBot{}}
-%\end{table} 
+\begin{table}[h!]
+\caption{\bf Bare Metal Preparation } \label{table:provisioning}
+\input manifest/BareMetalPrep
+\end{table} 
 
 
 %% CloudInit Prep
-%\begin{table}[h!]
-%\caption{\bf Cloud Init Preparation } \vspace*{\captionSpace{}} \label{table:provisioning}
-%\input manifest/CloudInitPrep
-%\vspace*{\tabSpaceBot{}}
-%\end{table} 
+\begin{table}[h!]
+\caption{\bf Cloud Init Preparation } \label{table:provisioning}
+\input manifest/CloudInitPrep
+\end{table} 
 
 %% Instantiating
-%\begin{table}[h!]
-%\caption{\bf Instantiation} \vspace*{\captionSpace{}} \label{table:provisioning}
-%\input manifest/Instantiating
-%\vspace*{\tabSpaceBot{}}
-%\end{table} 
+\begin{table}[h!]
+\caption{\bf Instantiation} \label{table:provisioning}
+\input manifest/Instantiating
+\end{table} 
 %
 
 %% Image Customizing
@@ -58,3 +55,4 @@
 %\input manifest/HPCCLoudburst
 %\end{table}
 %%\vspace*{0.5cm}
+\end{document}

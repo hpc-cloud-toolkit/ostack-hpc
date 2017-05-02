@@ -1,11 +1,18 @@
-\documentclass[12pt]{article}
-\usepackage{graphicx}
+%\documentclass[12pt]{article}
+%\usepackage{graphicx}
 
 
-\begin{document}
+%\begin{document}
+\begin{section}{
+	
+\newenvironment{bash}
+{\begin{quote}
+		}
+		{ 
+	\end{quote}
+}
 
-
-\section*{Introduction}
+\section[]{Introduction}
 
 Term “HPC as a Service” refers to an on demand instantiation of HPC Service in a Cloud. This guide presents a simple “HPC cluster” instantiation procedures in an existing OpenStack based System. “HPC as a service” relies on two main principals to instantiate HPC service 1. Providing pre-build OS images for compute nodes with HPC optimized software and 2. Uses of Cloud-Init to configure and tune HCP services. This recipe provides a simple guides to build HPC optimized OS images, prepare cloud-init recipes and finally instantiate fully functional HPC System using HPC optimized image and cloud-init. For HPC System recipe instantiate HPC master node (aka sms node) and HPC compute nodes using pre-configured OS images. The terms master and SMS are used interchangeably in this guide
 OS Images are build using components from OpenHPC software stack. OpenHPC represents an aggregation of a number of common ingredients required to deploy and manage an HPC Linux* cluster including resource management, I/O clients, development tools, and a variety of scientific libraries. These packages have been pre-built with HPC integration in mind using a mix of open-source components. The documentation herein is intended to be reasonably generic,
@@ -18,18 +25,18 @@ Base Linux Edition: this edition of the guide highlights installation without th
 \subsection*{TargetAudience}
 This guide is targeted at experienced Linux system administrators for HPC environments. Knowledge of
 software package management, system networking, PXE booting and OpenStack system software is assumed. Command-line input examples are highlighted throughout this guide via the following syntax:
-\begin{quote} 
-[sms]\# echo "OpenHPC hello world"
+\begin{bash}[sms] 
+\texttt{\# echo "OpenHPC hello world"}
+\end{bash}
 
-\end{quote}
 Unless specified otherwise, the examples presented are executed with elevated (root) privileges. The
 examples also presume use of the BASH login shell, though the equivalent commands in other shells can
 be substituted. In addition to specific command-line instructions called out in this guide, an alternate
 convention is used to highlight potentially useful tips or optional configuration options. These tips are
 highlighted via the following format:
 
-\begin{quote}	content...
-\small Tip: The solution is to increase the size of the manuals. \{Mark V. Shaney\ 
+\begin{quote}Tip:
+\small{The solution is to increase the size of the manuals. \{Mark V. Shaney\}} 
 \end{quote}
 
 
@@ -41,7 +48,7 @@ For power management, we assume that the bare metal node baseboard management co
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.7\linewidth]{manifest/figures/HPCaaS-diagram}
+	\includegraphics{./manifest/figures/HPCaaS-diagram}
 	\caption[Openstack node example]{}
 	\caption{}
 	\label{fig:hpcaas-diagram}
@@ -61,14 +68,16 @@ connected to each of the hosts. This high speed network is used for application 
 for Lustre connectivity as well.
 
 \subsection*{Input}
-iAs this recipe details installing a cluster starting from bare-metal, there is a requirement to define IP addresses and gather hardware MAC addresses in order to support a controlled provisioning process. These
+As this recipe details installing a cluster starting from bare-metal, there is a requirement to define IP addresses and gather hardware MAC addresses in order to support a controlled provisioning process. These
 values are necessarily unique to the hardware being used, and this document uses variable substitution 
 (\$fvariableg) in the command-line examples that follow to highlight where local site inputs are required.
 A summary of the required and optional variables used throughout this recipe are presented below. Note
 that while the example definitions above correspond to a small 4-node compute subsystem, the compute
 parameters are defined in array format to accommodate logical extension to larger node counts.
 6 Rev: ac5491c
-\begin{quote}\small Install Guide (v1.2.1): CentOS7.2/x86 64 + OpenStack + SLURM
+\begin{quote}\small{Install Guide (v1.2.1): CentOS7.2/x86 64 + OpenStack + SLURM}
 \end{quote}
 
-\end{document}
+%\end{document}
+}
+\end{section}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2017.4.26)  26 APR 2017 17:33
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2017.4.26)  1 MAY 2017 18:07
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -7,7 +7,6 @@ entering extended mode
 LaTeX2e <2011/06/27>
 Babel <v3.8m> and hyphenation patterns for english, dumylang, nohyphenation, lo
 aded.
-(./manifest/Introduction.tex
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
 (/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo
@@ -60,18 +59,18 @@ Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 (./manifest.aux)
 \openout1 = `manifest.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 5.
-LaTeX Font Info:    ... okay on input line 5.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 5.
-LaTeX Font Info:    ... okay on input line 5.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 5.
-LaTeX Font Info:    ... okay on input line 5.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 5.
-LaTeX Font Info:    ... okay on input line 5.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 5.
-LaTeX Font Info:    ... okay on input line 5.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 5.
-LaTeX Font Info:    ... okay on input line 5.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
  (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count88
@@ -133,6 +132,18 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
+(./manifest/Introduction.tex
+Runaway argument?
+{ 
+! Paragraph ended before \@sect was complete.
+<to be read again> 
+                   \par 
+l.82 }
+      
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
 Missing character: There is no ‚ in font cmr12!
 Missing character: There is no Ä in font cmr12!
 Missing character: There is no ú in font cmr12!
@@ -151,17 +162,12 @@ Missing character: There is no ú in font cmr12!
 Missing character: There is no ‚ in font cmr12!
 Missing character: There is no Ä in font cmr12!
 Missing character: There is no ù in font cmr12!
-
-[1
-
-{/usr/share/texlive/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 32.
-
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 82.
 (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 32.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 82.
 Missing character: There is no ¬ in font cmr12!
 Missing character: There is no Æ in font cmr12!
 Missing character: There is no ‚ in font cmr12!
@@ -171,39 +177,2732 @@ Missing character: There is no ‚ in font cmr12!
 Missing character: There is no Ä in font cmr12!
 Missing character: There is no ù in font cmr12!
 
-Overfull \hbox (51.2732pt too wide) in paragraph at lines 38--41
-\OT1/cmr/m/n/12 de-tail on us-ing pack-stack can be found https://www.rdoprojec
-t.org/install/quickstart/.
+
+! LaTeX Error: Not in outer par mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.82 }
+      
+You've lost some text.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+<./manifest/figures/HPCaaS-diagram.png, id=1, 481.3182pt x 248.6088pt>
+File: ./manifest/figures/HPCaaS-diagram.png Graphic file (type png)
+
+<use ./manifest/figures/HPCaaS-diagram.png>
+Package pdftex.def Info: ./manifest/figures/HPCaaS-diagram.png used on input li
+ne 82.
+(pdftex.def)             Requested size: 481.31703pt x 248.60817pt.
+
+Overfull \hbox (91.31703pt too wide) in paragraph at lines 82--82
+ [][] 
  []
 
-<manifest/figures/HPCaaS-diagram.png, id=8, 481.3182pt x 248.6088pt>
-File: manifest/figures/HPCaaS-diagram.png Graphic file (type png)
-
-<use manifest/figures/HPCaaS-diagram.png>
-Package pdftex.def Info: manifest/figures/HPCaaS-diagram.png used on input line
- 44.
-(pdftex.def)             Requested size: 272.99881pt x 141.00668pt.
 Missing character: There is no ‚ in font cmr12!
 Missing character: There is no Ä in font cmr12!
 Missing character: There is no ô in font cmr12!
- [2] [3 <./manifest/figures/HPCaaS-diagram.png>] (./manifest.aux) ) ) 
+! Extra }, or forgotten \endgroup.
+\@xdblarg #1#2->#1[{#2}
+                       ]{#2}
+l.82 }
+      
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+
+! LaTeX Error: Command \bash already defined.
+               Or name \end... illegal, see p.192 of the manual.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.82 }
+      
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no ¬ in font cmr12!
+Missing character: There is no Æ in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+
+! LaTeX Error: Not in outer par mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.82 }
+      
+You've lost some text.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+File: ./manifest/figures/HPCaaS-diagram.png Graphic file (type png)
+<use ./manifest/figures/HPCaaS-diagram.png>
+Package pdftex.def Info: ./manifest/figures/HPCaaS-diagram.png used on input li
+ne 82.
+(pdftex.def)             Requested size: 481.31703pt x 248.60817pt.
+
+Overfull \hbox (91.31703pt too wide) in paragraph at lines 82--82
+ [][] 
+ []
+
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ô in font cmr12!
+)
+
+LaTeX Warning: Float too large for page by 2353.85425pt on input line 13.
+
+(./manifest/BareMetalPrep.tex
+Runaway argument?
+{ \newenvironment {bash} {\begin {quote} } { \end {quote} } \section \ETC.
+! Paragraph ended before \@sect was complete.
+<to be read again> 
+                   \par 
+l.202 }
+       
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+Missing character: There is no ‚ in font cmtt10!
+Missing character: There is no Ä in font cmtt10!
+Missing character: There is no ì in font cmtt10!
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+Missing character: There is no ‚ in font cmtt10!
+Missing character: There is no Ä in font cmtt10!
+Missing character: There is no ì in font cmtt10!
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+Missing character: There is no ‚ in font cmtt10!
+Missing character: There is no Ä in font cmtt10!
+Missing character: There is no ì in font cmtt10!
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 export DIB[]DEV[]USER[]USERNAME=
+chpc \OT1/cmr/m/n/12 [ctrlr]#
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+\OT1/cmtt/m/n/10.95 export DIB[]DEV[]USER[]PASSWORD=intel8086 \OT1/cmr/m/n/12 [
+ctrlr]# \OT1/cmtt/m/n/10.95 export
+ []
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 export DIB[]HPC[]FILE[]PATH="$(r
+ealpath
+ []
+
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+Missing character: There is no ‚ in font cmtt10!
+Missing character: There is no Ä in font cmtt10!
+Missing character: There is no ù in font cmtt10!
+Missing character: There is no ‚ in font cmtt10!
+Missing character: There is no Ä in font cmtt10!
+Missing character: There is no ù in font cmtt10!
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 202
+.
+LaTeX Font Info:    No file OMScmtt.fd. on input line 202.
+
+LaTeX Font Warning: Font shape `OMS/cmtt/m/n' undefined
+(Font)              using `OMS/cmsy/m/n' instead
+(Font)              for symbol `textbraceleft' on input line 202.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 disk-image-create ironic-agent c
+entos7 -o
+ []
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 chpc[]image[]deploy[]kernel="$( 
+realpath
+ []
+
+
+Underfull \hbox (badness 5667) in paragraph at lines 202--202
+\OT1/cmtt/m/n/10.95 icloud-hpc-deploy-c7.kernel)" \OT1/cmr/m/n/12 [ctrlr]# \OT1
+/cmtt/m/n/10.95 chpc[]image[]deploy[]ramdisk="$(
+ []
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]#  \OT1/cmtt/m/n/10.95 mkdir -p $CHPC[]CLOUD[]IMAGE[]P
+ATH/ \OT1/cmr/m/n/12 [ctrlr]#  \OT1/cmtt/m/n/10.95 sudo mv
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+\OT1/cmtt/m/n/10.95 -f $chpc[]image[]deploy[]kernel $CHPC[]CLOUD[]IMAGE[]PATH/ 
+\OT1/cmr/m/n/12 [ctrlr]#
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+\OT1/cmtt/m/n/10.95 chpc[]image[]deploy[]kernel=$CHPC[]CLOUD[]IMAGE[]PATH/$(bas
+ename
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+\OT1/cmtt/m/n/10.95 $chpc[]image[]deploy[]kernel) \OT1/cmr/m/n/12 [ctrlr]#  \OT
+1/cmtt/m/n/10.95 sudo mv -f
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+\OT1/cmtt/m/n/10.95 $chpc[]image[]deploy[]ramdisk $CHPC[]CLOUD[]IMAGE[]PATH/ \O
+T1/cmr/m/n/12 [ctrlr]#
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+\OT1/cmtt/m/n/10.95 chpc[]image[]deploy[]ramdisk=$CHPC[]CLOUD[]IMAGE[]PATH/$(ba
+sename
+ []
+
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 export DIB[]HPC[]3RD[]LIBS="seri
+al-libs parallel-libs io-libs
+ []
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 disk-image-create centos7 vm loc
+al-config
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+\OT1/cmtt/m/n/10.95 dhcp-all-interfaces devuser selinux-permissive $DIB[]HPC[]E
+LEMENTS
+ []
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 chpc[]image[]sms="$(realpath icl
+oud-hpc-cent7.qcow2)"
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+\OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 mkdir -p $CHPC[]CLOUD[]IMAGE[]PATH
+ \OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 mv
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+\OT1/cmtt/m/n/10.95 -f $chpc[]image[]sms $CHPC[]CLOUD[]IMAGE[]PATH \OT1/cmr/m/n
+/12 [ctrlr]#
+ []
+
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 disk-image-create centos7 vm loc
+al-config
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+\OT1/cmtt/m/n/10.95 dhcp-all-interfaces devuser selinux-permissive $DIB[]HPC[]E
+LEMENTS
+ []
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment bash undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{section} on input line 4 ended by \end{bash}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.202 }
+       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 chpc[]image[]sms="$( realpath ic
+loud-hpc-cent7.qcow2)"
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+\OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 mkdir -p $CHPC[]CLOUD[]IMAGE[]PATH
+ \OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 mv
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+\OT1/cmtt/m/n/10.95 -f $chpc[]image[]user$CHPC[]CLOUD[]IMAGE[]PATH \OT1/cmr/m/n
+/12 [ctrlr]#
+ []
+
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no Ô in font cmr12!
+Missing character: There is no É in font cmr12!
+Missing character: There is no ∞ in font cmr12!
+Missing character: There is no Ô in font cmr12!
+Missing character: There is no É in font cmr12!
+Missing character: There is no ∞ in font cmr12!
+Missing character: There is no Ô in font cmr12!
+Missing character: There is no É in font cmr12!
+Missing character: There is no ∞ in font cmr12!
+! Extra }, or forgotten \endgroup.
+\@xdblarg #1#2->#1[{#2}
+                       ]{#2}
+l.202 }
+       
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmtt10!
+Missing character: There is no Ä in font cmtt10!
+Missing character: There is no ì in font cmtt10!
+Missing character: There is no ‚ in font cmtt10!
+Missing character: There is no Ä in font cmtt10!
+Missing character: There is no ì in font cmtt10!
+Missing character: There is no ‚ in font cmtt10!
+Missing character: There is no Ä in font cmtt10!
+Missing character: There is no ì in font cmtt10!
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 export ELEMENTS[]PATH="$(realpat
+h
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 export DIB[]HPC[]FILE[]PATH="$(r
+ealpath
+ []
+
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no ‚ in font cmtt10!
+Missing character: There is no Ä in font cmtt10!
+Missing character: There is no ù in font cmtt10!
+Missing character: There is no ‚ in font cmtt10!
+Missing character: There is no Ä in font cmtt10!
+Missing character: There is no ù in font cmtt10!
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 disk-image-create ironic-agent c
+entos7 -o
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 chpc[]image[]deploy[]kernel="$( 
+realpath
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 chpc[]image[]deploy[]ramdisk="$(
+ realpath
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]#  \OT1/cmtt/m/n/10.95 sudo mv -f $chpc[]image[]deploy
+[]kernel
+ []
+
+
+Overfull \hbox (39.38873pt too wide) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]#  \OT1/cmtt/m/n/10.95 chpc[]image[]deploy[]kernel=$CH
+PC[]CLOUD[]IMAGE[]PATH/$(basename
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]#  \OT1/cmtt/m/n/10.95 sudo mv -f $chpc[]image[]deploy
+[]ramdisk
+ []
+
+
+Overfull \hbox (45.13742pt too wide) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]#  \OT1/cmtt/m/n/10.95 chpc[]image[]deploy[]ramdisk=$C
+HPC[]CLOUD[]IMAGE[]PATH/$(basename
+ []
+
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+
+Underfull \hbox (badness 3189) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 export DIB[]HPC[]3RD[]LIBS="seri
+al-libs parallel-libs
+ []
+
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 disk-image-create centos7 vm loc
+al-config
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+\OT1/cmtt/m/n/10.95 dhcp-all-interfaces devuser selinux-permissive
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 chpc[]image[]sms=$CHPC[]CLOUD[]I
+MAGE[]PATH/$(basename
+ []
+
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 disk-image-create centos7 vm loc
+al-config
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+\OT1/cmtt/m/n/10.95 dhcp-all-interfaces devuser selinux-permissive
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 chpc[]image[]sms="$( realpath
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+[]\OT1/cmr/m/n/12 [ctrlr]# \OT1/cmtt/m/n/10.95 chpc[]image[]user=$CHPC[]CLOUD[]
+IMAGE[]PATH/$(basename
+ []
+
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no Ô in font cmr12!
+Missing character: There is no É in font cmr12!
+Missing character: There is no ∞ in font cmr12!
+Missing character: There is no Ô in font cmr12!
+Missing character: There is no É in font cmr12!
+Missing character: There is no ∞ in font cmr12!
+Missing character: There is no Ô in font cmr12!
+Missing character: There is no É in font cmr12!
+Missing character: There is no ∞ in font cmr12!
+)
+
+LaTeX Warning: Float too large for page by 5309.88335pt on input line 21.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+(./manifest/CloudInitPrep.tex
+
+! LaTeX Error: Can be used only in preamble.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1 \documentclass
+                  [12pt]{article}
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Can be used only in preamble.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.2 \usepackage
+               {graphicx}
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Can be used only in preamble.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.4 \begin{document}
+                    
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 21--21
+[] \OT1/cmtt/m/n/10.95 logger "chpcInit: Updating Compute Node with HPC
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 32--32
+[] \OT1/cmtt/m/n/10.95 logger "chpcInit: rsyslog configuration complete,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 34--35
+[]\OT1/cmr/m/n/12 Assuming sms node nfs share /home, /opt/ohpc/pub,
+ []
+
+
+Overfull \hbox (52.30183pt too wide) in paragraph at lines 40--40
+[] \OT1/cmtt/m/n/10.95 echo "<sms[]ip>:/home /home nfs nfsvers=3,rsize=1024,wsi
+ze=1024,cto
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 46--46
+[] \OT1/cmtt/m/n/10.95 echo "<sms[]ip>:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=
+3
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 50--50
+[] \OT1/cmtt/m/n/10.95 echo "chpcInit: [WARNING] /opt/ohpc/pub already
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 61--61
+[] \OT1/cmtt/m/n/10.95 echo "<sms[]ip>:$chpcInitPath $chpcInitPath nfs nfsvers=
+3
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 98--98
+[] \OT1/cmtt/m/n/10.95 # make sure that hostname mentioned into /etc/hosts
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 105--105
+[] \OT1/cmtt/m/n/10.95 logger "chpcInit:ERROR: cannot stat nfs shared /opt
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 111--111
+[] \OT1/cmtt/m/n/10.95 #Find the hostname of this machine from the copied over
+ []
+
+LaTeX Font Info:    Try loading font information for OML+cmtt on input line 117
+.
+LaTeX Font Info:    No file OMLcmtt.fd. on input line 117.
+
+LaTeX Font Warning: Font shape `OML/cmtt/m/n' undefined
+(Font)              using `OML/cmm/m/it' instead on input line 117.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 117--117
+[] \OT1/cmtt/m/n/10.95 cc[]hostname=`cat /etc/hosts | grep $cc[]ipaddr | cut -d
+$'[]'
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 123--123
+[] \OT1/cmtt/m/n/10.95 logger "chpcInit:ERROR: No resolved hostname found for
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 142--142
+[] \OT1/cmtt/m/n/10.95 #Change file permissions in /etc/ssh to fix ssh into
+ []
+
+
+Underfull \hbox (badness 4024) in paragraph at lines 147--147
+[]\OT1/cmr/bx/n/14.4 Preparing tem-plate for sms node cloud-init
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 155--155
+[] \OT1/cmtt/m/n/10.95 # Get the Compute node prefix and number of compute
+ []
+
+
+Overfull \hbox (1.48343pt too wide) in paragraph at lines 183--183
+[] \OT1/cmtt/m/n/10.95 echo "$chpcInitPath *(rw,no[]subtree[]check,no[]root[]sq
+uash)"
+ []
+
+
+Overfull \hbox (1.48343pt too wide) in paragraph at lines 187--187
+[] \OT1/cmtt/m/n/10.95 echo "/home *(rw,no[]subtree[]check,fsid=10,no[]root[]sq
+uash)"
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 191--191
+[] \OT1/cmtt/m/n/10.95 echo "/opt/ohpc/pub *(ro,no[]subtree[]check,fsid=11)" >>
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 197--197
+[] \OT1/cmtt/m/n/10.95 logger "chpcInit: nfs configuration complete, updating
+ []
+
+
+Overfull \hbox (11.17902pt too wide) in paragraph at lines 216--216
+[] \OT1/cmtt/m/n/10.95 perl -pi -e "s/ControlMachine=\OMS/cmtt/m/n/10.95 x\OT1/
+cmtt/m/n/10.95 +/ControlMachine=$sms[]name/"
+ []
+
+
+Overfull \hbox (101.54839pt too wide) in paragraph at lines 217--217
+[] \OT1/cmtt/m/n/10.95 perl -pi -e "s/[]NodeName=(\OMS/cmtt/m/n/10.95 x\OT1/cmt
+t/m/n/10.95 +)/NodeName=$cnodename[]prefix[1-$num[]ccomputes]/"
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 218--218
+[] \OT1/cmtt/m/n/10.95 perl -pi -e "s/[]PartitionName=normal
+ []
+
+
+Overfull \hbox (95.7997pt too wide) in paragraph at lines 218--218
+\OT1/cmtt/m/n/10.95 Nodes=(\OMS/cmtt/m/n/10.95 x\OT1/cmtt/m/n/10.95 +)/Partitio
+nName=normal Nodes=$cnodename[]prefix[1-$num[]ccomputes]/"
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 234--234
+[] \OT1/cmtt/m/n/10.95 #Change file permissions in /etc/ssh to fix ssh into
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 247--247
+[] \OT1/cmtt/m/n/10.95 # check if it is already configured grep mshell
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 263--263
+[] \OT1/cmtt/m/n/10.95 sed -i -- 's/all: @adm,@compute/compute:
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 276--276
+[] \OT1/cmtt/m/n/10.95 sudo cp -fr -L < $SCRIPTDIR >/
+ []
+
+
+Overfull \hbox (37.58519pt too wide) in paragraph at lines 286--286
+[] \OT1/cmtt/m/n/10.95 sudo sed -i -e "s/<update[]cnodename[]prefix>/$cnodename
+[]prefix/g"
+ []
+
+
+Overfull \hbox (3.09306pt too wide) in paragraph at lines 287--287
+[] \OT1/cmtt/m/n/10.95 sudo sed -i -e "s/<update[]num[]ccomputes>/$num[]ccomput
+es/g"
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 291--291
+[] \OT1/cmtt/m/n/10.95 sudo sed -i -e "s/<update[]ntp[]server>/$controller[]ip/
+g"
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 292--292
+[] \OT1/cmtt/m/n/10.95 sudo sed -i -e "s/<update[]sms[]name>/$sms[]name/g"
+ []
+
+(./manifest.aux)
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+! You can't use `\end' in internal vertical mode.
+\enddocument ... \endgroup \deadcycles \z@ \@@end 
+                                                  
+l.306 \end{document}
+                    
+Sorry, but I'm not programmed to handle this case;
+I'll just pretend that you didn't ask for it.
+If you're in the wrong mode, you might be able to
+return to the right one by typing `I}' or `I$' or `I\par'.
+
+)
+
+LaTeX Warning: Float too large for page by 6847.84167pt on input line 28.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+(./manifest/Instantiating.tex
+
+! LaTeX Error: Can be used only in preamble.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1 \documentclass
+                  [12pt]{article}
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Can be used only in preamble.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.2 \usepackage
+               {graphicx}
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Can be used only in preamble.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.4 \begin{document}
+                    
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 18--35
+[]\OT1/cmr/m/n/12 +----------------------------------+-----------+-------------
+--+---------------+
+ []
+
+
+Underfull \hbox (badness 7291) in paragraph at lines 18--35
+\OT1/cmr/m/n/12 | ID | Re-gion | Ser-vice Name | Ser-vice Type | +---
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 18--35
+\OT1/cmr/m/n/12 -------------------------------+-----------+---------------+---
+------------+ |
+ []
+
+
+Underfull \hbox (badness 1478) in paragraph at lines 18--35
+\OT1/cmr/m/n/12 | alarm-ing | | 2531392e2d084b4582b364572e79a7b5 | Re-gionOne
+ []
+
+
+Underfull \hbox (badness 6625) in paragraph at lines 18--35
+\OT1/cmr/m/n/12 | heat | or-ches-tra-tion | | c183b73f654e454eaf5784c4b98149d8
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 18--35
+\OT1/cmr/m/n/12 | Re-gionOne | Im-age Ser-vice | im-age | |
+ []
+
+
+Underfull \hbox (badness 1242) in paragraph at lines 18--35
+\OT1/cmr/m/n/12 850b3c2943df4dca99338ff2013f657b | Re-gionOne | cin-der | vol-u
+me
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 104--104
+[] \OT1/cmtt/m/n/10.95 echo " server = /usr/sbin/in.tftpd" >>
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 105--105
+[] \OT1/cmtt/m/n/10.95 echo " server[]args = -v -v -v -v -v --map-file
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 107--107
+[] \OT1/cmtt/m/n/10.95 echo " # This is a workaround for Fedora, where TFTP
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 108--108
+[] \OT1/cmtt/m/n/10.95 echo " # IPv6 endpoint, if IPv4 flag is not used." >>
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 115--115
+[] \OT1/cmtt/m/n/10.95 #Copy the PXE linux files to the tftpboot directory we
+ []
+
+
+Overfull \hbox (47.47293pt too wide) in paragraph at lines 127--127
+[] \OT1/cmtt/m/n/10.95 sed --in-place "s|#tftp[]server=$my[]ip|tftp[]server=$co
+ntroller[]ip|"
+ []
+
+
+Overfull \hbox (16.20007pt too wide) in paragraph at lines 131--131
+[] \OT1/cmtt/m/n/10.95 sed --in-place "s|#tftp[]root=/tftpboot|tftp[]root=/tftp
+boot|"
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 132--132
+[] \OT1/cmtt/m/n/10.95 sed --in-place "s|#ip[]version=4|ip[]version=4|"
+ []
+
+
+Overfull \hbox (33.44614pt too wide) in paragraph at lines 133--133
+[] \OT1/cmtt/m/n/10.95 sed --in-place "s|#automated[]clean=true|automated[]clea
+n=false|"
+ []
+
+
+Overfull \hbox (210.9656pt too wide) in paragraph at lines 137--137
+[] \OT1/cmtt/m/n/10.95 sed --in-place "s|#scheduler[]use[]baremetal[]filters=fa
+lse|scheduler[]use[]baremetal[]filters=true|"
+ []
+
+
+Overfull \hbox (84.49448pt too wide) in paragraph at lines 141--141
+[] \OT1/cmtt/m/n/10.95 sed --in-place "s|reserved[]host[]memory[]mb=512|reserve
+d[]host[]memory[]mb=0|"
+ []
+
+
+Overfull \hbox (147.73004pt too wide) in paragraph at lines 142--142
+[] \OT1/cmtt/m/n/10.95 sed --in-place "s|#scheduler[]host[]subset[]size=1|sched
+uler[]host[]subset[]size=9999999|"
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 148--148
+[] \OT1/cmtt/m/n/10.95 sed --in-place "s|enable[]isolated[]metadata
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 148--148
+\OT1/cmtt/m/n/10.95 = False|enable[]isolated[]metadata = True|"
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 149--149
+[] \OT1/cmtt/m/n/10.95 sed --in-place "s|#force[]metadata = false|force[]metada
+ta
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 154--154
+[] \OT1/cmtt/m/n/10.95 # Enable internal dns for hostname resolution, if it
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 155--155
+[] \OT1/cmtt/m/n/10.95 # manipulating configuration file via shell, alternate
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 158--158
+[] \OT1/cmtt/m/n/10.95 if grep -q "[]dns[]domain.*openstacklocal$"
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 159--159
+[] \OT1/cmtt/m/n/10.95 sed -in-place "s|[]dns[]domain.*|dns[]domain = oslocal|"
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 162--162
+[] \OT1/cmtt/m/n/10.95 sed -in-place "s|[]#dns[]domain = openstacklocal$|dns[]d
+omain
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 168--168
+[] \OT1/cmtt/m/n/10.95 # Assuming there is a place holder in comments, replace
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 169--169
+[] \OT1/cmtt/m/n/10.95 sed -in-place "s|[]#extension[]drivers.*|extension[]driv
+ers =
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 171--171
+[] \OT1/cmtt/m/n/10.95 # Entry is present, check if dns is already present, if
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 172--172
+[] \OT1/cmtt/m/n/10.95 if ! grep "^extension[]drivers" $ml2file|grep -q dns;
+ []
+
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ô in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+
+Underfull \hbox (badness 10000) in paragraph at lines 203--203
+[] \OT1/cmtt/m/n/10.95 #Create the flat network on which you are going to
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 207--207
+[] \OT1/cmtt/m/n/10.95 neutron net-create --tenant-id $SERVICES[]TENANT[]ID
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 207--207
+\OT1/cmtt/m/n/10.95 sharednet1 --shared --provider:network[]type flat
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 217--217
+[] \OT1/cmtt/m/n/10.95 neutron subnet-create sharednet1 --name subnet01
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 217--217
+\OT1/cmtt/m/n/10.95 --ip-version=4 --gateway=$controller[]ip --allocation-pool
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 217--217
+\OT1/cmtt/m/n/10.95 start=$cc[]subnet[]dhcp[]start,end=$cc[]subnet[]dhcp[]end
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 227--227
+[] \OT1/cmtt/m/n/10.95 glance image-create --name deploy-vmlinuz --visibility
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 227--227
+\OT1/cmtt/m/n/10.95 public --disk-format aki --container-format aki <
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 234--234
+[] \OT1/cmtt/m/n/10.95 glance image-create --name deploy-initrd --visibility
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 234--234
+\OT1/cmtt/m/n/10.95 public --disk-format ari --container-format ari <
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 240--240
+[] \OT1/cmtt/m/n/10.95 #Create the baremetal flavor and set the architecture to
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 241--241
+[] \OT1/cmtt/m/n/10.95 # This will create common baremetal flavor, if SMS node
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 242--242
+[] \OT1/cmtt/m/n/10.95 # characteristic than user shall create multiple flavor
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 246--246
+[] \OT1/cmtt/m/n/10.95 nova flavor-create baremetal-flavor baremetal-flavor
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 251--251
+[] \OT1/cmtt/m/n/10.95 openstack quota set --ram 512000 --cores 1000
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 259--259
+[] \OT1/cmtt/m/n/10.95 nova keypair-add --pub-key $HOME/.ssh/id[]rsa.pub
+ []
+
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ô in font cmr12!
+
+Underfull \hbox (badness 10000) in paragraph at lines 275--275
+[] \OT1/cmtt/m/n/10.95 glance image-create --name sms-image --visibility
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 275--275
+\OT1/cmtt/m/n/10.95 public --disk-format qcow2 --container-format bare <
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 285--285
+[] \OT1/cmtt/m/n/10.95 ironic node-create -d pxe[]ipmitool -i
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 285--285
+\OT1/cmtt/m/n/10.95 deploy[]kernel=$DEPLOY[]VMLINUZ[]UUID -i
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 285--285
+\OT1/cmtt/m/n/10.95 deploy[]ramdisk=$DEPLOY[]INITRD[]UUID -i
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 285--285
+\OT1/cmtt/m/n/10.95 ipmi[]terminal[]port=8023 -i ipmi[]address=$sms[]bmc
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 285--285
+\OT1/cmtt/m/n/10.95 -i ipmi[]username=$sms[]bmc[]username -i
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 285--285
+\OT1/cmtt/m/n/10.95 ipmi[]password=$sms[]bmc[]password -p cpus=$CPU -p
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 285--285
+\OT1/cmtt/m/n/10.95 memory[]mb=$RAM[]MB -p local[]gb=$DISK[]GB -p cpu[]arch=$AR
+CH -p
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 291--291
+[] \OT1/cmtt/m/n/10.95 #Add the associated port(s) MAC address to the created
+ []
+
+
+Underfull \hbox (badness 8151) in paragraph at lines 294--296
+[]\OT1/cmr/m/n/12 Add the in-stance info and disk space for root Add the in-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 297--297
+[] \OT1/cmtt/m/n/10.95 ironic node-update $SMS[]UUID add
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 297--297
+\OT1/cmtt/m/n/10.95 instance[]info/image[]source=$SMS[]DISK[]IMAGE[]UUID
+ []
+
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ô in font cmr12!
+
+Underfull \hbox (badness 10000) in paragraph at lines 301--301
+[] \OT1/cmtt/m/n/10.95 #Setup neutron port for static IP addressing of sms
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 302--302
+[] \OT1/cmtt/m/n/10.95 neutron port-create sharednet1 --dns[]name $sms[]name
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 302--302
+\OT1/cmtt/m/n/10.95 --fixed-ip ip[]address=$sms[]ip --name $sms[]name
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 314--314
+[] \OT1/cmtt/m/n/10.95 glance image-create --name user-image --visibility
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 314--314
+\OT1/cmtt/m/n/10.95 public --disk-format qcow2 --container-format bare <
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 326--326
+[] \OT1/cmtt/m/n/10.95 ironic node-create -d pxe[]ipmitool -i
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 326--326
+\OT1/cmtt/m/n/10.95 deploy[]kernel=$DEPLOY[]VMLINUZ[]UUID -i
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 326--326
+\OT1/cmtt/m/n/10.95 deploy[]ramdisk=$DEPLOY[]INITRD[]UUID -i
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 326--326
+\OT1/cmtt/m/n/10.95 ipmi[]terminal[]port=8023 -i ipmi[]address=$cc[]bmc[$i]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 326--326
+\OT1/cmtt/m/n/10.95 -i ipmi[]username=$cc[]bmc[]username -i
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 326--326
+\OT1/cmtt/m/n/10.95 ipmi[]password=$cc[]bmc[]password -p cpus=$CPU -p
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 326--326
+\OT1/cmtt/m/n/10.95 memory[]mb=$RAM[]MB -p local[]gb=$DISK[]GB -p cpu[]arch=$AR
+CH -p
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 333--333
+[] \OT1/cmtt/m/n/10.95 #Add the instance[]info/image[]source and
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 334--334
+[] \OT1/cmtt/m/n/10.95 ironic node-update $NODE[]UUID[]CC[$i] add
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 334--334
+\OT1/cmtt/m/n/10.95 instance[]info/image[]source=$USER[]DISK[]IMAGE[]UUID
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 336--336
+[] \OT1/cmtt/m/n/10.95 #Setup neutron port for static IP addressing of compute
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 338--338
+[] \OT1/cmtt/m/n/10.95 neutron port-create sharednet1 --dns[]name $cn[]name
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 338--338
+\OT1/cmtt/m/n/10.95 --fixed-ip ip[]address=$cc[]ip[$i] --name $cn[]name
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 344--344
+[] \OT1/cmtt/m/n/10.95 # Wait for the Nova hypervisor-stats to sync with
+ []
+
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ì in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ì in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ì in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ú in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no î in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+
+Underfull \hbox (badness 10000) in paragraph at lines 352--352
+[] \OT1/cmtt/m/n/10.95 #Boot the sms node with nova. chpcInit is set from
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 353--353
+[] \OT1/cmtt/m/n/10.95 echo "nova boot --config-drive true --flavor
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 353--353
+\OT1/cmtt/m/n/10.95 $FLAVOR[]UUID --image $SMS[]DISK[]IMAGE[]UUID
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 353--353
+\OT1/cmtt/m/n/10.95 --key-name $KEYPAIR[]NAME --meta role=webservers
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 353--353
+\OT1/cmtt/m/n/10.95 --user-data=$chpcSMSInit --nic port-id=$SMS[]PORT[]ID
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 357--357
+[] \OT1/cmtt/m/n/10.95 nova boot --config-drive true --flavor $FLAVOR[]UUID
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 357--357
+\OT1/cmtt/m/n/10.95 --image $SMS[]DISK[]IMAGE[]UUID --key-name $KEYPAIR[]NAME
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 357--357
+\OT1/cmtt/m/n/10.95 --meta role=webservers --user-data=$chpcSMSInit --nic
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 368--368
+[] \OT1/cmtt/m/n/10.95 echo "nova boot --config-drive
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 368--368
+\OT1/cmtt/m/n/10.95 true --flavor $FLAVOR[]UUID --image
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 368--368
+\OT1/cmtt/m/n/10.95 $USER[]DISK[]IMAGE[]UUID --key-name $KEYPAIR[]NAME
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 368--368
+\OT1/cmtt/m/n/10.95 --meta role=webservers --user-data=$chpcInit --nic
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 368--368
+\OT1/cmtt/m/n/10.95 port-id=$NEUTRON[]PORT[]ID[]CC[$i] $cnodename[]prefix$((i+1
+))"
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 369--369
+[] \OT1/cmtt/m/n/10.95 nova boot --config-drive true --flavor $FLAVOR[]UUID
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 369--369
+\OT1/cmtt/m/n/10.95 --image $USER[]DISK[]IMAGE[]UUID --key-name $KEYPAIR[]NAME
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 369--369
+\OT1/cmtt/m/n/10.95 --meta role=webservers --user-data=$chpcInit --nic
+ []
+
+(./manifest.aux)
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+! You can't use `\end' in internal vertical mode.
+\enddocument ... \endgroup \deadcycles \z@ \@@end 
+                                                  
+l.375 \end{document}
+                    
+Sorry, but I'm not programmed to handle this case;
+I'll just pretend that you didn't ask for it.
+If you're in the wrong mode, you might be able to
+return to the right one by typing `I}' or `I$' or `I\par'.
+
+)
+
+LaTeX Warning: Float too large for page by 9701.8pt on input line 34.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[1
+
+{/usr/share/texlive/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces \bf  Intro
+duction to HPC on Openstack}}{2}}
+\newlabel{table:admin}{{1}{2}}
+\@writefile{toc}{\contentsline {section}{\numberline {1}}{2}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}}{2}}
+] [3
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces \bf  Bare 
+Metal Preparation }}{3}}
+\newlabel{table:provisioning}{{2}{3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Install and Setup 
+disimage-builder}{3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Introduction to di
+skimage-builder}{3}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}}{3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Install and Setup 
+disimage-builder}{3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Introduction to di
+skimage-builder}{3}}
+] [4
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces \bf  Cloud
+ Init Preparation }}{4}}
+\newlabel{table:provisioning}{{3}{4}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}}{4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}}{4}}
+
+] [5
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces \bf  Insta
+ntiation}}{5}}
+\newlabel{table:provisioning}{{4}{5}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}}{5}}
+
+] (./manifest.aux)
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+ ) 
 Here is how much of TeX's memory you used:
- 1496 strings out of 495063
- 21559 string characters out of 3182201
- 75324 words of memory out of 3000000
- 4688 multiletter control sequences out of 15000+200000
- 5706 words of font info for 21 fonts, out of 3000000 for 9000
+ 1538 strings out of 495063
+ 22125 string characters out of 3182201
+ 276505 words of memory out of 3000000
+ 4711 multiletter control sequences out of 15000+200000
+ 6709 words of font info for 25 fonts, out of 3000000 for 9000
  14 hyphenation exceptions out of 8191
- 39i,5n,23p,847b,227s stack positions out of 5000i,500n,10000p,200000b,50000s
-</usr/shar
-e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texl
-ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on manifest.pdf (3 pages, 167318 bytes).
+ 37i,6n,23p,1148b,359s stack positions out of 5000i,500n,10000p,200000b,50000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/shar
+e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmtt12.pfb>
+Output written on manifest.pdf (5 pages, 144480 bytes).
 PDF statistics:
- 33 PDF objects out of 1000 (max. 8388607)
- 21 compressed objects within 1 object stream
+ 50 PDF objects out of 1000 (max. 8388607)
+ 33 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
 

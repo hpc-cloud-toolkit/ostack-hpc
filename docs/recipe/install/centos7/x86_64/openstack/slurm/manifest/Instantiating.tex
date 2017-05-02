@@ -1,0 +1,375 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx}
+
+\begin{document}
+\newenvironment{bash}
+{\begin{quote}
+	}
+	{ 
+	\end{quote}
+}
+\section[]{Instantiating}
+
+To instantiate OpenHPC system, we will first prepare openstack components with HPC images, networking and other relevant configurations. After the configuration we will instantiate HPC head node and HPC compute node using nova. 
+It is assumed that system admin has installed OpenStack controller services and OpenStack network services (i.e. keystone, nova, ironic, glance, neutron, mongodb, rabbitmq server, heat etc). Controller node is configured with Openvswith Bridge on internal network port. Two tenant name admin and services are created in keystone to manage the services. All the services are created by system admin. Below is expected endpoint list.
+
+\begin{bash}\texttt{\small{ openstack service list}}\end{bash}
+
++----------------------------------+-----------+---------------+---------------+
+| ID                               | Region    | Service Name  | Service Type  |
++----------------------------------+-----------+---------------+---------------+
+| d5aeeb54713745c29ed3c2e4a97f59bd | RegionOne | ironic        | baremetal     |
+| 86c71badbf8b4446a1b699eef05f3f41 | RegionOne | nova          | compute       |
+| 70d138db26214d0bbc6b3ade8bf6f6f8 | RegionOne | gnocchi       | metric        |
+| f34c3a58b9c648aaacabeeefd589a0d2 | RegionOne | neutron       | network       |
+| 789c3fb6f9ae4e249ee4023484ccb5fc | RegionOne | aodh          | alarming      |
+| 2531392e2d084b4582b364572e79a7b5 | RegionOne | heat          | orchestration |
+| c183b73f654e454eaf5784c4b98149d8 | RegionOne | Image Service | image         |
+| 850b3c2943df4dca99338ff2013f657b | RegionOne | cinder        | volume        |
+| 81cefa79212a4780abe5a1da281a0172 | RegionOne | novav3        | computev3     |
+| 36a6a7c7968a4a94bea07c8e30fa5c4b | RegionOne | keystone      | identity      |
+| db70a8676dd44dd09b3ada7475e67383 | RegionOne | cinderv3      | volumev3      |
+| c4161d4c9c6b4080b2cb66c2f580853d | RegionOne | ceilometer    | metering      |
+| d5714e8adb094671ad0388d04214c44d | RegionOne | cinderv2      | volumev2      |
++----------------------------------+-----------+---------------+---------------+
+
+\begin{bash}\texttt{\small{ openstack project list}}\end{bash}
+
++----------------------------------+----------+
+| ID                               | Name     |
++----------------------------------+----------+
+| 7464fcc8f1b34048bd09fe165d18647b | admin    |
+| b1ed7efb53cc44c8b06daaee15b6a296 | services |
++----------------------------------+----------+
+
+Recipe below is tested with controller node installed and configured using packstack. Reference section provide more detail on packstack installation of OpenStack.
+
+Before starting with HPC instantiation, please export openstack credential as a root or system admin, we will be using them during openstack configuration. 
+
+
+\begin{bash}\texttt{\small{ unset OS\_SERVICE\_TOKEN}}\end{bash}
+\begin{bash}\texttt{\small{ export OS\_USERNAME=admin}}\end{bash}
+\begin{bash}\texttt{\small{ export OS\_PASSWORD=<>}}\end{bash}
+\begin{bash}\texttt{\small{ export OS\_AUTH\_URL=<>}}\end{bash}
+\begin{bash}\texttt{\small{ export PS1='[\u\@\\h \\W(keystone\_admin)]\\\$ '}}\end{bash}
+\begin{bash}\texttt{\small{ }}\end{bash}
+\begin{bash}\texttt{\small{ export OS\_TENANT\_NAME=admin}}\end{bash}
+\begin{bash}\texttt{\small{ export OS\_REGION\_NAME=<>  }}\end{bash}
+
+Prepare OpenStack for bare metal provisioning with ironinc
+
+This section we will create generic configuration, required for baremetal provisioning. We will use ironic as a provisioner and nova as a scheduler.
+
+Have selinux in permissive mode
+
+\begin{bash}\texttt{\small{ setenforce 0}}\end{bash}
+
+Create baremetal admin and baremetal observer role, and restart ironic API
+
+\begin{bash}\texttt{\small{ openstack role list | grep -i baremetal\_admin}}\end{bash}
+\begin{bash}\texttt{\small{ role\_exists=\$?}}\end{bash}
+\begin{bash}\texttt{\small{ if [ "\${role\_exists}" -ne "0" ]; then }}\end{bash}
+\begin{bash}\texttt{\small{     openstack role create baremetal\_admin}}\end{bash}
+\begin{bash}\texttt{\small{ fi}}\end{bash}
+\begin{bash}\texttt{\small{ }}\end{bash}
+\begin{bash}\texttt{\small{ openstack role list | grep -i baremetal\_observer }}\end{bash}
+\begin{bash}\texttt{\small{ role\_exists=\$?}}\end{bash}
+\begin{bash}\texttt{\small{ if [ "\${role\_exists}" -ne "0" ]; then}}\end{bash}
+\begin{bash}\texttt{\small{     openstack role create baremetal\_observer}}\end{bash}
+\begin{bash}\texttt{\small{ fi}}\end{bash}
+\begin{bash}\texttt{\small{ systemctl restart openstack-ironic-api}}\end{bash}
+
+Install tftp and other packages required for pxe boot via ironinc
+Ensure the utilities for baremetal are installed
+
+\begin{bash}\texttt{\small{ yum install -y tftp-server syslinux-tftpboot xinetd}}\end{bash}
+
+Make the directory for tftp and give it the ironic owner
+
+\begin{bash}\texttt{\small{ mkdir -p /tftpboot}}\end{bash}
+\begin{bash}\texttt{\small{ chown -R ironic /tftpboot}}\end{bash}
+
+Configure tfpt server
+
+Configure tftp 
+
+\begin{bash}\texttt{\small{ \#Configure /etc/xinet.d/tftp}}\end{bash}
+\begin{bash}\texttt{\small{ echo "service tftp" > /etc/xinetd.d/tftp}}\end{bash}
+\begin{bash}\texttt{\small{ echo "\{" >> /etc/xinetd.d/tftp}}\end{bash}
+\begin{bash}\texttt{\small{ echo "  protocol        = udp" >> /etc/xinetd.d/tftp}}\end{bash}
+\begin{bash}\texttt{\small{ echo "  port            = 69" >> /etc/xinetd.d/tftp}}\end{bash}
+\begin{bash}\texttt{\small{ echo "  socket\_type     = dgram" >> /etc/xinetd.d/tftp}}\end{bash}
+\begin{bash}\texttt{\small{ echo "  wait            = yes" >> /etc/xinetd.d/tftp}}\end{bash}
+\begin{bash}\texttt{\small{ echo "  user            = root" >> /etc/xinetd.d/tftp}}\end{bash}
+\begin{bash}\texttt{\small{ echo "  server          = /usr/sbin/in.tftpd" >> /etc/xinetd.d/tftp}}\end{bash}
+\begin{bash}\texttt{\small{ echo "  server\_args     = -v -v -v -v -v --map-file /tftpboot/map-file /tftpboot" >> /etc/xinetd.d/tftp}}\end{bash}
+\begin{bash}\texttt{\small{ echo "  disable         = no" >> /etc/xinetd.d/tftp}}\end{bash}
+\begin{bash}\texttt{\small{ echo "  \# This is a workaround for Fedora, where TFTP will listen only on" >> /etc/xinetd.d/tftp}}\end{bash}
+\begin{bash}\texttt{\small{ echo "  \# IPv6 endpoint, if IPv4 flag is not used." >> /etc/xinetd.d/tftp}}\end{bash}
+\begin{bash}\texttt{\small{ echo "  flags           = IPv4" >> /etc/xinetd.d/tftp}}\end{bash}
+\begin{bash}\texttt{\small{ echo "\}" >> /etc/xinetd.d/tftp}}\end{bash}
+\begin{bash}\texttt{\small{ }}\end{bash}
+\begin{bash}\texttt{\small{ \#Restart the xinetd service}}\end{bash}
+\begin{bash}\texttt{\small{ systemctl restart xinetd}}\end{bash}
+\begin{bash}\texttt{\small{     }}\end{bash}
+\begin{bash}\texttt{\small{ \#Copy the PXE linux files to the tftpboot directory we created}}\end{bash}
+\begin{bash}\texttt{\small{ cp /var/lib/tftpboot/pxelinux.0 /tftpboot}}\end{bash}
+\begin{bash}\texttt{\small{ cp /var/lib/tftpboot/chain.c32 /tftpboot}}\end{bash}
+\begin{bash}\texttt{\small{     }}\end{bash}
+\begin{bash}\texttt{\small{ \#Generate a map file for the PXE files}}\end{bash}
+\begin{bash}\texttt{\small{ echo 're \^(/tftpboot/) /tftpboot\\2' > /tftpboot/map-file}}\end{bash}
+\begin{bash}\texttt{\small{ echo 're \^/tftpboot/ /tftpboot/' >> /tftpboot/map-file}}\end{bash}
+\begin{bash}\texttt{\small{ echo 're \^(\^/) /tftpboot/\\1' >> /tftpboot/map-file}}\end{bash}
+\begin{bash}\texttt{\small{ echo 're \^([\^/]) /tftpboot/\\1' >> /tftpboot/map-file}}\end{bash}
+
+Update Ironic configuration with tftp information. First update controller IP address for tftp server in ironic configuration.
+
+\begin{bash}\texttt{\small{ sed --in-place "s|\#tftp\_server=\$my\_ip|tftp\_server=\${controller\_ip}|" /etc/ironic/ironic.conf}}\end{bash}
+
+Update other additional tftp settings in ironic configuration file:
+
+\begin{bash}\texttt{\small{ sed --in-place "s|\#tftp\_root=/tftpboot|tftp\_root=/tftpboot|" /etc/ironic/ironic.conf}}\end{bash}
+\begin{bash}\texttt{\small{ sed --in-place "s|\#ip\_version=4|ip\_version=4|" /etc/ironic/ironic.conf}}\end{bash}
+\begin{bash}\texttt{\small{ sed --in-place "s|\#automated\_clean=true|automated\_clean=false|" /etc/ironic/ironic.conf}}\end{bash}
+
+Now inform Nova to use ironic for bare metal provisioning, by configuring NOVA.conf
+
+\begin{bash}\texttt{\small{ sed --in-place "s|\#scheduler\_use\_baremetal\_filters=false|scheduler\_use\_baremetal\_filters=true|" /etc/nova/nova.conf}}\end{bash}
+
+In our sample, we will not use controller node for any compute resource so, lets mark reserved host memory as 0.
+
+\begin{bash}\texttt{\small{ sed --in-place "s|reserved\_host\_memory\_mb=512|reserved\_host\_memory\_mb=0|" /etc/nova/nova.conf}}\end{bash}
+\begin{bash}\texttt{\small{ sed --in-place "s|\#scheduler\_host\_subset\_size=1|scheduler\_host\_subset\_size=9999999|" /etc/nova/nova.conf}}\end{bash}
+
+For cloud-init we need to enable meta data server, which is done via neutron configuration.
+
+\begin{bash}\texttt{\small{ \# Enable meta data}}\end{bash}
+\begin{bash}\texttt{\small{ \# Edit /etc/neutron/dhcp\_agent.ini}}\end{bash}
+\begin{bash}\texttt{\small{ sed --in-place "s|enable\_isolated\_metadata\ =\ False|enable\_isolated\_metadata\ =\ True|" /etc/neutron/dhcp\_agent.ini}}\end{bash}
+\begin{bash}\texttt{\small{ sed --in-place "s|\#force\_metadata\ =\ false|force\_metadata\ =\ True|" /etc/neutron/dhcp\_agent.ini}}\end{bash}
+
+We will enable internal dns server to assign host name to the instances as requested by user. 
+
+\begin{bash}\texttt{\small{ \#\#\#\#\#}}\end{bash}
+\begin{bash}\texttt{\small{ \# Enable internal dns for hostname resolution, if it already not set}}\end{bash}
+\begin{bash}\texttt{\small{ \# manipulating configuration file via shell, alternate is to use openstack-config (TODO)}}\end{bash}
+\begin{bash}\texttt{\small{ \#\#\#\#}}\end{bash}
+\begin{bash}\texttt{\small{ \# setup dns domain first}}\end{bash}
+\begin{bash}\texttt{\small{ if grep -q "\^dns\_domain.*openstacklocal\$" /etc/neutron/neutron.conf; then}}\end{bash}
+\begin{bash}\texttt{\small{    sed -in-place  "s|\^dns\_domain.*|dns\_domain = oslocal|" /etc/neutron/neutron.conf}}\end{bash}
+\begin{bash}\texttt{\small{ else}}\end{bash}
+\begin{bash}\texttt{\small{    if ! grep -q "\^dns\_domain" neutron.conf; then}}\end{bash}
+\begin{bash}\texttt{\small{        sed -in-place  "s|\^\#dns\_domain = openstacklocal\$|dns\_domain = oslocal|" /etc/neutron/neutron.conf}}\end{bash}
+\begin{bash}\texttt{\small{    fi}}\end{bash}
+\begin{bash}\texttt{\small{ fi}}\end{bash}
+\begin{bash}\texttt{\small{ \# configure ml2 dns driver for neutron}}\end{bash}
+\begin{bash}\texttt{\small{ ml2file=/etc/neutron/plugins/ml2/ml2\_conf.ini}}\end{bash}
+\begin{bash}\texttt{\small{ if ! grep -q "\^extension\_drivers" \$ml2file; then}}\end{bash}
+\begin{bash}\texttt{\small{     \# Assuming there is a place holder in comments, replace that string}}\end{bash}
+\begin{bash}\texttt{\small{     sed -in-place  "s|\^\#extension\_drivers.*|extension\_drivers = port\_security,dns|" \$ml2file}}\end{bash}
+\begin{bash}\texttt{\small{ else}}\end{bash}
+\begin{bash}\texttt{\small{     \# Entry is present, check if dns is already present, if not then enable}}\end{bash}
+\begin{bash}\texttt{\small{     if ! grep "\^extension\_drivers" \$ml2file|grep -q dns; then}}\end{bash}
+\begin{bash}\texttt{\small{         current\_dns=`grep "\^extension\_drivers" \$ml2file`}}\end{bash}
+\begin{bash}\texttt{\small{         new\_dns="\$current\_dns,dns"}}\end{bash}
+\begin{bash}\texttt{\small{         sed -in-place  "s|\^extension\_drivers.*|\$new\_dns|" \$ml2file}}\end{bash}
+\begin{bash}\texttt{\small{     fi}}\end{bash}
+\begin{bash}\texttt{\small{ fi}}\end{bash}
+
+We are pretty much done with initial configuration, so let’s restart all the services at controller node.
+
+\begin{bash}\texttt{\small{ systemctl restart neutron-dhcp-agent}}\end{bash}
+\begin{bash}\texttt{\small{ systemctl restart neutron-openvswitch-agent}}\end{bash}
+\begin{bash}\texttt{\small{ systemctl restart neutron-metadata-agent}}\end{bash}
+\begin{bash}\texttt{\small{ systemctl restart neutron-server}}\end{bash}
+\begin{bash}\texttt{\small{ systemctl restart openstack-nova-scheduler}}\end{bash}
+\begin{bash}\texttt{\small{ systemctl restart openstack-nova-compute}}\end{bash}
+\begin{bash}\texttt{\small{ systemctl restart openstack-ironic-conductor}}\end{bash}
+
+
+Instantiate bare metal nodes
+This section configure open stack for bare metal instance according to HPC images and user inputs. Before starting this it is assumed that system administrator has installed openstack and its services and has done appropriate configuration for bare metal provisioning, which includes installing ironinc, keystone, nova, neutron, glance. It is assumed that keystone is configured with 
+
+Before instantiating bare metal nodes with HPC, we need to do little bit more configuration. 
+Setup generic bare metal instance
+
+This section configures the network for “HPC as a services”, upload compute OS images to glance, create a flavor for beremtal and upload public keys for ssh session.
+
+First create a generic network for “HPC as a service” with a name “sharednet1”.
+
+\begin{bash}\texttt{\small{ \#Get the tenant ID for the services tenant}}\end{bash}
+\begin{bash}\texttt{\small{     SERVICES\_TENANT\_ID=`keystone tenant-list | grep "|\\s*services\\s*|" | awk '{print \$2}'`}}\end{bash}
+\begin{bash}\texttt{\small{ }}\end{bash}
+\begin{bash}\texttt{\small{     \#Create the flat network on which you are going to launch instances}}\end{bash}
+\begin{bash}\texttt{\small{     neutron net-list | grep "|\\s*sharednet1\\s*|"}}\end{bash}
+\begin{bash}\texttt{\small{     net\_exists=\$?}}\end{bash}
+\begin{bash}\texttt{\small{     if [ "\${net\_exists}" -ne "0" ]; then}}\end{bash}
+\begin{bash}\texttt{\small{         neutron net-create --tenant-id \${SERVICES\_TENANT\_ID} sharednet1 --shared --provider:network\_type flat --provider:physical\_network physnet1}}\end{bash}
+\begin{bash}\texttt{\small{     fi}}\end{bash}
+\begin{bash}\texttt{\small{     NEUTRON\_NETWORK\_UUID=`neutron net-list | grep "|\\s*sharednet1\\s*|" | awk '{print \$2}'`}}\end{bash}
+
+Create a subnet for our cluster with user defined start and end IP addresses. make controller as a gateway for our instances.
+
+\begin{bash}\texttt{\small{ \#Create the subnet on the newly created network}}\end{bash}
+\begin{bash}\texttt{\small{     neutron subnet-list | grep "|\\s*subnet01\\s*|"}}\end{bash}
+\begin{bash}\texttt{\small{     subnet\_exists=\$?}}\end{bash}
+\begin{bash}\texttt{\small{     if [ "\${subnet\_exists}" -ne "0" ]; then}}\end{bash}
+\begin{bash}\texttt{\small{         neutron subnet-create sharednet1 --name subnet01 --ip-version=4 --gateway=\${controller\_ip} --allocation-pool start=\${cc\_subnet\_dhcp\_start},end=\${cc\_subnet\_dhcp\_end} --enable-dhcp \${cc\_subnet\_cidr}}}\end{bash}
+\begin{bash}\texttt{\small{     fi}}\end{bash}
+\begin{bash}\texttt{\small{     NEUTRON\_SUBNET\_UUID=`neutron subnet-list | grep "|\\s*subnet01\\s*|" | awk '{print \$2}'`}}\end{bash}
+
+Upload kernel and initrd images to glance service so that they are available to ironic while deploying node.
+
+\begin{bash}\texttt{\small{ \#Create the deploy-kernel and deploy-initrd images}}\end{bash}
+\begin{bash}\texttt{\small{     glance image-list | grep "|\\s*deploy-vmlinuz\\s*|"}}\end{bash}
+\begin{bash}\texttt{\small{     img\_exists=\$?}}\end{bash}
+\begin{bash}\texttt{\small{     if [ "\${img\_exists}" -ne "0" ]; then}}\end{bash}
+\begin{bash}\texttt{\small{         glance image-create --name deploy-vmlinuz --visibility public --disk-format aki --container-format aki < \${chpc\_image\_deploy\_kernel}}}\end{bash}
+\begin{bash}\texttt{\small{     fi}}\end{bash}
+\begin{bash}\texttt{\small{     DEPLOY\_VMLINUZ\_UUID=`glance image-list | grep "|\\s*deploy-vmlinuz\\s*|" | awk '{print \$2}'`}}\end{bash}
+\begin{bash}\texttt{\small{ }}\end{bash}
+\begin{bash}\texttt{\small{     glance image-list | grep "|\\s*deploy-initrd\\s*|"}}\end{bash}
+\begin{bash}\texttt{\small{     img\_exists=\$?}}\end{bash}
+\begin{bash}\texttt{\small{     if [ "\${img\_exists}" -ne "0" ]; then}}\end{bash}
+\begin{bash}\texttt{\small{         glance image-create --name deploy-initrd --visibility public --disk-format ari --container-format ari < \${chpc\_image\_deploy\_ramdisk}}}\end{bash}
+\begin{bash}\texttt{\small{     fi}}\end{bash}
+\begin{bash}\texttt{\small{     DEPLOY\_INITRD\_UUID=`glance image-list | grep "|\\s*deploy-initrd\\s*|" | awk '{print \$2}}}\end{bash}
+
+Create a bare metal flavor with nova.
+
+\begin{bash}\texttt{\small{ \#Create the baremetal flavor and set the architecture to x86\_64}}\end{bash}
+\begin{bash}\texttt{\small{     \# This will create common baremetal flavor, if SMS node \& compute has different}}\end{bash}
+\begin{bash}\texttt{\small{     \# characteristic than user shall create multiple flavor one each characterisitc}}\end{bash}
+\begin{bash}\texttt{\small{     nova flavor-list | grep "|\\s*baremetal-flavor\\s*|"}}\end{bash}
+\begin{bash}\texttt{\small{     flavor\_exists=\$?}}\end{bash}
+\begin{bash}\texttt{\small{     if [ "\$flavor\_exists" -ne "0" ]; then}}\end{bash}
+\begin{bash}\texttt{\small{         nova flavor-create baremetal-flavor baremetal-flavor \${RAM\_MB} \${DISK\_GB} \${CPU}}}\end{bash}
+\begin{bash}\texttt{\small{         nova flavor-key baremetal-flavor set cpu\_arch=\$ARCH}}\end{bash}
+\begin{bash}\texttt{\small{     fi}}\end{bash}
+\begin{bash}\texttt{\small{     FLAVOR\_UUID=`nova flavor-list | grep "|\\s*baremetal-flavor\\s*|" | awk '{print \$2}'`}}\end{bash}
+\begin{bash}\texttt{\small{ \#Increase the Quota limit for admin to allow nova boot}}\end{bash}
+\begin{bash}\texttt{\small{     openstack quota set --ram 512000 --cores 1000 --instances 100 admin}}\end{bash}
+
+Finally register public ssh keys with nova, so that admin can ssh to the node.
+
+\begin{bash}\texttt{\small{ \#Register SSH keys with Nova}}\end{bash}
+\begin{bash}\texttt{\small{  nova keypair-list | grep "|\\s*ostack\_key\\s*|"}}\end{bash}
+\begin{bash}\texttt{\small{  keypair\_exists=\$?}}\end{bash}
+\begin{bash}\texttt{\small{  if [ "\${keypair\_exists}" -ne "0" ]; then}}\end{bash}
+\begin{bash}\texttt{\small{     nova keypair-add --pub-key \${HOME}/.ssh/id\_rsa.pub ostack\_key}}\end{bash}
+\begin{bash}\texttt{\small{  fi}}\end{bash}
+
+Export keypay name for use it later in other sections
+
+\begin{bash}\texttt{\small{     KEYPAIR\_NAME=ostack\_key}}\end{bash}
+
+Setup HPC head node
+
+Previous section we created generic bare metal setup. In this section we will create configuration for HPC head node in an OpenStack cloud.
+We created HPC head node OS images in previous sections, let’s upload this image to glance, and store IMAGE id in environment variable SMS\_DISK\_IMAGE\_UUID, to be used during boot. 
+
+\begin{bash}\texttt{\small{ \# Create sms node image}}\end{bash}
+\begin{bash}\texttt{\small{    glance image-list | grep "|\\s*sms-image\\s*|"}}\end{bash}
+\begin{bash}\texttt{\small{    img\_exists=\$?}}\end{bash}
+\begin{bash}\texttt{\small{    if [ "\${img\_exists}" -ne "0" ]; then}}\end{bash}
+\begin{bash}\texttt{\small{        glance image-create --name sms-image --visibility public --disk-format qcow2 --container-format bare < \${chpc\_image\_sms}}}\end{bash}
+\begin{bash}\texttt{\small{    fi}}\end{bash}
+\begin{bash}\texttt{\small{    SMS\_DISK\_IMAGE\_UUID=`glance image-list | grep "|\\s*sms-image\\s*|" | awk '{print \$2}'`}}\end{bash}
+
+For provisioning sms node with ironic, we need to register node with ironic. This is done by registering node;s BMC, node characteristic (aka flavor) like memory, cpu, disk space and node architecture. And registering kernel boot images. We will use pxe\_ipmitool as a provisioning driver in ironicn with a boot mode as bios.
+
+\begin{bash}\texttt{\small{ \#Create a sms node in the bare metal service ironic.}}\end{bash}
+\begin{bash}\texttt{\small{     ironic node-list | grep "|\\s*\${sms\_name}\$\\s*|"}}\end{bash}
+\begin{bash}\texttt{\small{     node\_exists=\$?}}\end{bash}
+\begin{bash}\texttt{\small{     if [ "\${node\_exists}" -ne "0" ]; then}}\end{bash}
+\begin{bash}\texttt{\small{         ironic node-create -d pxe\_ipmitool -i deploy\_kernel=\${DEPLOY\_VMLINUZ\_UUID} -i deploy\_ramdisk=\${DEPLOY\_INITRD\_UUID} -i ipmi\_terminal\_port=8023 -i ipmi\_address=\${sms\_bmc} -i ipmi\_username=\${sms\_bmc\_username} -i ipmi\_password=\${sms\_bmc\_password} -p cpus=\${CPU} -p memory\_mb=\${RAM\_MB} -p local\_gb=\${DISK\_GB} -p cpu\_arch=\${ARCH} -p capabilities="boot\_mode:bios" -n \${sms\_name}}}\end{bash}
+\begin{bash}\texttt{\small{     fi}}\end{bash}
+\begin{bash}\texttt{\small{     SMS\_UUID=`ironic node-list | grep "|\\s*\${sms\_name}\\s*|" | awk '{print \$2}'`}}\end{bash}
+
+Now we need tell ironic about the network port on which node will perform pxe boot by configuring MAC Address. 
+
+\begin{bash}\texttt{\small{     \#Add the associated port(s) MAC address to the created node(s)}}\end{bash}
+\begin{bash}\texttt{\small{     ironic port-create -n \${SMS\_UUID} -a \${sms\_mac}}}\end{bash}
+
+Add the instance info and disk space for root 
+Add the instance\_info/image\_source and instance\_info/root\_gb
+
+\begin{bash}\texttt{\small{     ironic node-update \$SMS\_UUID add instance\_info/image\_source=\${SMS\_DISK\_IMAGE\_UUID} instance\_info/root\_gb=50}}\end{bash}
+
+We will assign a fixed IP address to sms node. This is done by associating sms node’s MAC address with neutron port. We will store this information in the neutron with sms\_name. we will also set environment SMS\_PORT\_ID variable with this port id, to be used during boot.
+
+\begin{bash}\texttt{\small{     \#Setup neutron port for static IP addressing of sms node, this is an optional part}}\end{bash}
+\begin{bash}\texttt{\small{     neutron port-create sharednet1 --dns\_name \$sms\_name --fixed-ip ip\_address=\$sms\_ip --name \$sms\_name --mac-address \$sms\_mac}}\end{bash}
+\begin{bash}\texttt{\small{     SMS\_PORT\_ID=`neutron port-list | grep "|\\s*\$sms\_name\\s*|" | awk '{print \$2}'`}}\end{bash}
+
+Setup HPC compute nodes
+
+In previous section we configured Openstack to instantiate sms node. In this section we will be configuring openstack to instantiate HPC compute nodes.
+For HPC compute nodes, we created compute node images, upload hpc compute node image to glance as a user image, and store IMAGE id in environment variable USER\_DISK\_IMAGE\_UUID, to be used during boot.
+
+\begin{bash}\texttt{\small{ \#Create the whole-disk-image from the user's qcow2 file}}\end{bash}
+\begin{bash}\texttt{\small{     glance image-list | grep "|\\s*user-image\\s*|"}}\end{bash}
+\begin{bash}\texttt{\small{     img\_exists=\$?}}\end{bash}
+\begin{bash}\texttt{\small{     if [ "\${img\_exists}" -ne "0" ]; then}}\end{bash}
+\begin{bash}\texttt{\small{         glance image-create --name user-image --visibility public --disk-format qcow2 --container-format bare < \${chpc\_image\_user}}}\end{bash}
+\begin{bash}\texttt{\small{     fi}}\end{bash}
+\begin{bash}\texttt{\small{     USER\_DISK\_IMAGE\_UUID=`glance image-list | grep "|\\s*user-image\\s*|" | awk '{print \$2}'`}}\end{bash}
+
+Similar to sms node, create setup for all compute nodes including creating ironic node, associating node MAC address, adding instance information and assigning fix IP address. In our example we used 4 hpc compute nodes. to store the information in each OpenStack component we will assign compute node host name as a name, which is host name prefix (as chosen by user in inputs), followed by a node counter. 
+
+\begin{bash}\texttt{\small{ \# Setup Compute nodes}}\end{bash}
+\begin{bash}\texttt{\small{     for ((i=0; i < \${num\_ccomputes}; i++)); do}}\end{bash}
+\begin{bash}\texttt{\small{         \#\#Create compute nodes in the bare metal service}}\end{bash}
+\begin{bash}\texttt{\small{         ironic node-list | grep "|\\s*\${cnodename\_prefix}\$((i+1))\\s*|"}}\end{bash}
+\begin{bash}\texttt{\small{         node\_exists=\$?}}\end{bash}
+\begin{bash}\texttt{\small{         if [ "\${node\_exists}" -ne "0" ]; then}}\end{bash}
+\begin{bash}\texttt{\small{             ironic node-create -d pxe\_ipmitool -i deploy\_kernel=\${DEPLOY\_VMLINUZ\_UUID} -i deploy\_ramdisk=\${DEPLOY\_INITRD\_UUID} -i ipmi\_terminal\_port=8023 -i ipmi\_address=\${cc\_bmc[\$i]} -i ipmi\_username=\${cc\_bmc\_username} -i ipmi\_password=\${cc\_bmc\_password} -p cpus=\${CPU} -p memory\_mb=\${RAM\_MB} -p local\_gb=\${DISK\_GB} -p cpu\_arch=\${ARCH} -p capabilities="boot\_mode:bios" -n \${cnodename\_prefix}\$((i+1))}}\end{bash}
+\begin{bash}\texttt{\small{         fi}}\end{bash}
+\begin{bash}\texttt{\small{         NODE\_UUID\_CC[\$i]=`ironic node-list | grep "|\\s*\${cnodename\_prefix}\$((i+1))\\s*|" | awk '{print \$2}'`}}\end{bash}
+\begin{bash}\texttt{\small{ }}\end{bash}
+\begin{bash}\texttt{\small{         \# update for compute nodes node MAC}}\end{bash}
+\begin{bash}\texttt{\small{         ironic port-create -n \${NODE\_UUID\_CC[\$i]} -a \${cc\_mac[\$i]}}}\end{bash}
+\begin{bash}\texttt{\small{ }}\end{bash}
+\begin{bash}\texttt{\small{         \#Add the instance\_info/image\_source and instance\_info/root\_gb}}\end{bash}
+\begin{bash}\texttt{\small{         ironic node-update \${NODE\_UUID\_CC[\$i]} add instance\_info/image\_source=\${USER\_DISK\_IMAGE\_UUID} instance\_info/root\_gb=50}}\end{bash}
+\begin{bash}\texttt{\small{ }}\end{bash}
+\begin{bash}\texttt{\small{         \#Setup neutron port for static IP addressing of compute nodes}}\end{bash}
+\begin{bash}\texttt{\small{         cn\_name=\${cnodename\_prefix}\$((i+1))}}\end{bash}
+\begin{bash}\texttt{\small{         neutron port-create sharednet1 --dns\_name \$cn\_name --fixed-ip ip\_address=\${cc\_ip[\$i]} --name \$cn\_name --mac-address \${cc\_mac[\$i]}}}\end{bash}
+\begin{bash}\texttt{\small{         NEUTRON\_PORT\_ID\_CC[\$i]=`neutron port-list | grep "|\\s*\${cnodename\_prefix}\$((i+1))\\s*|" | awk '{print \$2}'`}}\end{bash}
+\begin{bash}\texttt{\small{     Done}}\end{bash}
+
+ Ironic periodically sync with Nova with available nodes. Nova then updates its record for all available hosts. So before booting the node with Nova allow some time to sync ironic with it. 
+
+\begin{bash}\texttt{\small{ \# Wait for the Nova hypervisor-stats to sync with available Ironic resources}}\end{bash}
+\begin{bash}\texttt{\small{ sleep 121}}\end{bash}
+
+Boot SMS nodes
+
+In previous section we completed the bare metal configuration. User can request any available baremetal nodes by specifying the flavor they want and image they want to boot node with. For bare metal we created a flavor with name baremetal-flavor, we will provide this to nova with a CLI option –flavor. In our situation we will request 1 bare metal node with a baremetal flavor (--flavor) and SMS node image to boot (--image).  We also would like to reserve the IP address of this node. In previous section (setup sms) we associated one of the nodes MAC address with IP address, we will request this from nova by indicating port-id we created earlier (port-id=\${SMS\_PORT\_ID}). In previous section we created cloud-init script for sms nodes. We will provide cloud-init script (chpcSMSInit) to nova CLI option –user-data. For cloud init we will use metadata server, which will be provided by “–meta role= option”. We will provide sms public key with “—key-name” option. At the end we will give our node a name. This name will be a host name of booted bare metal node.
+Bofore booting, save boot command to a script, which will useful later on if user wants to re-instantiate same node.
+
+\begin{bash}\texttt{\small{ \#Boot the sms node with nova. chpcInit is set from prepare\_cloudInit}}\end{bash}
+\begin{bash}\texttt{\small{     echo "nova boot --config-drive true --flavor \${FLAVOR\_UUID} --image \${SMS\_DISK\_IMAGE\_UUID} --key-name \${KEYPAIR\_NAME} --meta role=webservers --user-data=\$chpcSMSInit --nic port-id=\${SMS\_PORT\_ID} \${sms\_name}" > boot\_sms}}\end{bash}
+
+Issue a boot command to nova to boot a SMS node:
+
+\begin{bash}\texttt{\small{ nova boot --config-drive true --flavor \${FLAVOR\_UUID} --image \${SMS\_DISK\_IMAGE\_UUID} --key-name \${KEYPAIR\_NAME} --meta role=webservers --user-data=\$chpcSMSInit --nic port-id=\${SMS\_PORT\_ID} \${sms\_name}}}\end{bash}
+
+Wait around 15 seconds before we boot compute nodes. This will allow enough time to boot SMS node before compute nodes starts. 
+
+\begin{bash}\texttt{\small{ sleep 15}}\end{bash}
+
+Boot compute nodes
+Booting compute nodes are very similar to SMS nodes. In our case we will boot 4 compute nodes (as specified in user inputs. Host name of compute node will use prefix defined by cnodename\_prefix variable, followed by node counter. For compute node we will use compute node image (USER\_DISK\_IMAGE\_UUID) and compute node cloud-init script (chpcInit). 
+
+\begin{bash}\texttt{\small{ for ((i=0; i < \${num\_ccomputes}; i++)); do}}\end{bash}
+\begin{bash}\texttt{\small{         filename="cn\$((i+1))"}}\end{bash}
+\begin{bash}\texttt{\small{         echo "nova boot --config-drive true --flavor \${FLAVOR\_UUID} --image \${USER\_DISK\_IMAGE\_UUID} --key-name \${KEYPAIR\_NAME} --meta role=webservers --user-data=\$chpcInit --nic port-id=\${NEUTRON\_PORT\_ID\_CC[\$i]} \${cnodename\_prefix}\$((i+1))" > boot\_\$filename}}\end{bash}
+\begin{bash}\texttt{\small{         nova boot --config-drive true --flavor \${FLAVOR\_UUID} --image \${USER\_DISK\_IMAGE\_UUID} --key-name \${KEYPAIR\_NAME} --meta role=webservers --user-data=\$chpcInit --nic port-id=\${NEUTRON\_PORT\_ID\_CC[\$i]} \${cnodename\_prefix}\$((i+1))}}\end{bash}
+\begin{bash}\texttt{\small{         \#wait for 5 sec before booting other compute node}}\end{bash}
+\begin{bash}\texttt{\small{         sleep 5}}\end{bash}
+\begin{bash}\texttt{\small{     done}}\end{bash}
+
+
+\end{document}
