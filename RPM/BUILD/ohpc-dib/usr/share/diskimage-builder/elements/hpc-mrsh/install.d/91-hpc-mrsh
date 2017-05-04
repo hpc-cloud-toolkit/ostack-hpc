@@ -1,0 +1,16 @@
+#!/bin/bash
+# It installs lmod
+
+if [ ${DIB_DEBUG_TRACE:-0} -gt 0 ]; then
+    set -x
+fi
+set -eu
+set -o pipefail
+
+# install mrsh packages on compute image
+install-packages mrsh-$DIB_HPC_BASE mrsh-rsh-compat-$DIB_HPC_BASE
+#mrsh server is installed on compute nodes
+if [[ $DIB_HPC_IMAGE_TYPE == "compute" ]]; then
+    install-packages mrsh-server-$DIB_HPC_BASE
+fi
+
