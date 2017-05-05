@@ -29,11 +29,29 @@ if [[ "${DIB_HPC_BASE}" == "ohpc" ]]; then
 fi
 
 #install sms node components
+if [ ! -d "/root/.ssh" ]; then
+    install -d -m 700 /root/.ssh
+fi
 if [[ $DIB_HPC_IMAGE_TYPE == "sms" ]]; then
     install-packages -g $DIB_HPC_BASE-base
+    #generate ssh keys
+    if [ ! -f "/root/.ssh/config" -a ! -f "/root/.ssh/hpcasservice" ]; then
+        #copy ssh keys, created during extra-data phase
+        cp -fr /tmp/in_target.d/hpcasservice/hpcasservice* /root/.ssh/
+        cat /tmp/in_target.d/authorized_keys >> /root/.ssh/authorized_keys
+        echo "# Added by hpcasservice  `date +%Y-%m-%d 2>/dev/null`" >> /root/.ssh/config
+        echo "Host *" >> /root/.ssh/config
+        echo "   IdentityFile ~/.ssh/hpcasservice" >> /root/.ssh/config
+        echo "   StrictHostKeyChecking=no" >> /root/.ssh/config
+        chmod 0600 /root/.ssh/config
+    fi
 fi
 if [[ $DIB_HPC_IMAGE_TYPE == "compute" ]]; then
     install-packages lmod-$DIB_HPC_BASE pdsh-$DIB_HPC_BASE
+    #copy ssh keys to the image
+    if [ ! -z /tmp/in_target.d/authorized_keys ]; then
+        cat /tmp/in_target.d/authorized_keys >> /root/.ssh/authorized_keys
+    fi
 fi
 
 # Install Common Packages
@@ -64,6 +82,8 @@ fi
 if [ -f /tmp/in_target.d/cloud.cfg ]; then
     sudo cp -L -f /tmp/in_target.d/cloud.cfg /etc/cloud/
 fi
+
+
 
 case "$DIB_INIT_SYSTEM" in
     systemd)
