@@ -68,9 +68,11 @@ if [ -d $chpcInitPath ]; then
     # Update the slurm file
     cp -f -L $chpcInitPath/slurm.conf /etc/slurm/slurm.conf
     # Sync head node configuration with Compute Node
-    cp -f -L $chpcInitPath/passwd /etc/passwd
-    cp -f -L $chpcInitPath/group /etc/group
-    cp -f -L $chpcInitPath/shadow /etc/shadow 
+    #cp -f -L $chpcInitPath/passwd /etc/passwd
+    #cp -f -L $chpcInitPath/group /etc/group
+    #cp -f -L $chpcInitPath/shadow /etc/shadow 
+    # Copy public keys
+    cp -f -L $chpcInitPath/authorized_keys /root/.ssh/
     cp -f -L $chpcInitPath/slurm.conf /etc/slurm/slurm.conf
     cp -f -L $chpcInitPath/slurm /etc/pam.d/slurm
     cp -f -L $chpcInitPath/munge.key /etc/munge/munge.key
