@@ -13,6 +13,7 @@ Release:        %{release}
 Version:	%{version}
 Source:         %{name}-%{version}.tar.gz
 Group:          Development/Tools
+Requires:	diskimage-builder >= 1.14
 
 %description
 OpenHPC on Openstack uses Disk Image Builder to create Openstack images for components of OpenHPC. 
@@ -62,7 +63,7 @@ cp -r * %{buildroot}
 
 %post
 
-if [ -e /usr/share/diskimage-builder/elements/yum/bin/install-packages-new]
+if [ -e /usr/share/diskimage-builder/elements/yum/bin/install-packages-new ]
 	then
 		mv /usr/share/diskimage-builder/elements/yum/bin/install-packages /usr/share/diskimage-builder/elements/yum/bin/install-packages-ORIG-ohpc-dib
 		mv /usr/share/diskimage-builder/elements/yum/bin/install-packages-new /usr/share/diskimage-builder/elements/yum/bin/install-packages

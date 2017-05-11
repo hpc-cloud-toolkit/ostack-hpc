@@ -1,0 +1,79 @@
+#!/bin/bash
+# It installs lmod
+
+if [ ${DIB_DEBUG_TRACE:-0} -gt 0 ]; then
+    set -x
+fi
+set -eu
+set -o pipefail
+
+if [[ "${DIB_HPC_BASE}" == "ohpc" ]]; then
+    # Check if the OpenHPC repo is installed
+    echo
+    echo ">>--> Checking if the OpenHPC package is installed"
+    echo
+
+    if [[ -n "${DIB_HPC_BASE}" ]]; then
+        if install-packages "${DIB_HPC_OHPC_PKG}"; then
+            echo ">>-> OpenHPC package present"
+            echo ">>-> Deleting /opt/ohpc/pub!"
+            rm -fr /opt/ohpc/pub
+        else
+            echo ">>-> ERROR: OpenHPC package could not be installed!"
+            exit 1
+        fi
+    else
+        echo ">>-> ERROR: OpenHPC package path is not defined!"
+        exit 1
+    fi
+fi
+
+#install sms node components
+if [[ $DIB_HPC_IMAGE_TYPE == "sms" ]]; then
+    install-packages -g $DIB_HPC_BASE-base
+fi
+if [[ $DIB_HPC_IMAGE_TYPE == "compute" ]]; then
+    install-packages lmod-$DIB_HPC_BASE pdsh-$DIB_HPC_BASE
+fi
+
+# Install Common Packages
+#install ntp, kernel
+install-packages ntp kernel 
+#install infiniband support
+# TBD need to try with element mellanox, if that work then need to remove following 2 lines
+install-packages -g "InfiniBand Support"
+install-packages  infinipath-psm
+
+# Configure the rsyslog 
+if [ -e /etc/rsyslog.conf ]; then
+    if [[ $DIB_HPC_IMAGE_TYPE == "sms" ]]; then
+        # provide UDP Receiption at SMS node, to aggregate CNs syslog
+        sed -i "s/\#\$ModLoad imudp/\$ModLoad imudp/" /etc/rsyslog.conf
+        sed -i "s/\#\$UDPServerRun 514/\$UDPServerRun 514/" /etc/rsyslog.conf
+    else
+        #comment out unwanted messages, reduce noice
+        sed -i "s/^\*\.info/\\#\*\.info/" /etc/rsyslog.conf
+        sed -i "s/^authpriv/\\#authpriv/" /etc/rsyslog.conf
+        sed -i "s/^mail/\\#mail/" /etc/rsyslog.conf
+        sed -i "s/^cron/\\#cron/" /etc/rsyslog.conf
+        sed -i "s/^uucp/\\#uucp/" /etc/rsyslog.conf
+    fi
+fi
+
+# Configure Cloud-Init
+if [ -f /tmp/in_target.d/cloud.cfg ]; then
+    sudo cp -L -f /tmp/in_target.d/cloud.cfg /etc/cloud/
+fi
+
+case "$DIB_INIT_SYSTEM" in
+    systemd)
+        # Update memlock settings
+        sed -i 's/# End of file/\* soft memlock unlimited\n&/' /etc/security/limits.conf
+        sed -i 's/# End of file/\* hard memlock unlimited\n&/' /etc/security/limits.conf
+        ;;
+    *)
+        echo "Unsupported init system"
+        exit 1
+        ;;
+esac
+
