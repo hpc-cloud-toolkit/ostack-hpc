@@ -1,0 +1,12 @@
+   This guide uses diskimage-builder utility to build and configure OS images 
+for the sms (controller) node as well as compute nodes.  Preparing images is 
+an optional part of the overall recipe. If user has predefined images, then 
+environment variable "chpc\_create\_new\_image" must be reset and 
+path to images must be provided using environment variable "chpc\_image\_deploy\_kernel", "chpc\_image\_deploy\_ramdisk",
+"chpc\_image\_user", and "chpc\_image\_sms". 
+
+In this example cloud images are built on controller node ("[ctrlr]\# "). Once images are built, they are stored in the standard openHPC Path.
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) CHPC_CLOUD_IMAGE_PATH=/opt/ohpc/admin/images/cloud/
+\end{lstlisting}

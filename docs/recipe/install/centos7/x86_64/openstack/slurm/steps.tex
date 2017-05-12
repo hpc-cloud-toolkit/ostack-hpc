@@ -1,0 +1,205 @@
+\documentclass[letterpaper]{article}
+\usepackage{./common/ohpc-doc}
+\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{5}
+
+% Include git variables
+\input{vc.tex}
+
+% Define Base OS and other local macros
+\newcommand{\baseOS}{CentOS7.3}
+\newcommand{\OSRepo}{CentOS\_7.3}
+\newcommand{\OSTree}{CentOS\_7}
+\newcommand{\OSTag}{el7}
+\newcommand{\baseos}{centos7.3}
+\newcommand{\provisioner}{Openstack}
+\newcommand{\rms}{SLURM}
+\newcommand{\arch}{x86\_64}
+\newcommand{\clean}{yum clean expire-cache}
+\newcommand{\chrootclean}{yum --installroot=\$CHROOT clean expire-cache}
+\newcommand{\install}{yum -y install}
+\newcommand{\chrootinstall}{yum -y --installroot=\$CHROOT install}
+\newcommand{\groupinstall}{yum -y groupinstall}
+\newcommand{\groupchrootinstall}{yum -y --installroot=\$CHROOT groupinstall}
+\newcommand{\upgrade}{yum -y upgrade}
+\newcommand{\chrootupgrade}{yum -y --installroot=\$CHROOT upgrade}
+
+% boolean for os-specific formatting
+\toggletrue{isCentOS}
+\toggletrue{isCentOS_ww_slurm_x86}
+\toggletrue{isx86}
+
+\begin{document}
+\graphicspath{{common/figures/}}
+\thispagestyle{empty}
+
+% Title Page
+\input{common/title}
+% Disclaimer 
+\input{common/legal} 
+
+\newpage
+\tableofcontents
+\newpage
+
+% Introduction  --------------------------------------------------
+
+\section{Introduction} \label{sec:introduction}
+\input{common/install_header}
+\input{common/intro} \\
+
+\input{common/base_edition/edition}
+\input{common/audience}
+\input{common/requirements}
+\input{common/inputs}
+
+%%% DO I STILL NEED THIS ??? %%%
+% begin_ohpc_run
+% ohpc_validation_newline
+% ohpc_validation_comment Verify OpenHPC repository has been enabled before proceeding
+% ohpc_validation_newline
+% ohpc_command yum repolist | grep -q OpenHPC
+% ohpc_command if [ $? -ne 0 ];then
+% ohpc_command    echo "Error: OpenHPC repository must be enabled locally"
+% ohpc_command    exit 1
+% ohpc_command fi
+% end_ohpc_run
+%%%     ?   ?   ?     %%%
+
+
+% Bare Metal Node Operating System --------------------------------------------
+\clearpage
+\section{Preparing Bare Metal Node Operating System}\label{sec:baremetalprep}
+\input{common/bmnos}
+
+\subsection{Install and Setup diskimage-builder}\label{sec:dib_install}
+\input{common/bmnos-dibinstall}
+
+\subsection{Setup common environment for diskimage-builder}\label{sec:dib_environment}
+\input{common/bmnos-dibenv}
+
+\subsection{Preparing ironic deploy images}\label{sec:ironic_deploy_images}
+\input{common/bmnos-ironicdeploy}
+
+\subsection{Preparing user images for bare metal instances}\label{sec:bare_metal_user_images}
+\input{common/bmnos-userimages}
+
+\subsubsection{Preparing user image for head node OS}\label{sec:head_node_images}
+\input{common/bmnos-headnodeimage}
+
+\subsubsection{Preparing user image for compute node OS}\label{sec:compute_node_images}
+\input{common/bmnos-computenodeimage}
+
+\subsection{Introduction to diskimage-builder}\label{sec:din_intro}
+\input{common/bmnos-dibintro}
+
+% ------------------------------------------------------------------
+\clearpage
+
+\section{Preparing Cloud-Init} \label{sec:cloud-init_prep}
+\input{common/cloud-init-prep.tex}
+
+
+\subsection{Preparing template for compute node cloud-init} \label{sec:c_i-template_compute_node}
+\input{common/ci-template-compute}
+
+%%% DO I STILL NEED THIS ??? %%%
+%%%In addition to the \OHPC{} package repository, the {\em master} host also
+%%%requires access to the standard base OS distro repositories in order to resolve
+%%%necessary dependencies. For \baseOS{}, the requirements are to have access to
+%%%both the base OS and EPEL repositories for which mirrors are freely available online:
+%%%
+%%%\begin{itemize*}
+%%%\item CentOS-7 - Base 7.3.1611
+%%%  (e.g. \href{http://mirror.centos.org/centos-7/7/os/x86\_64}
+%%%             {\color{blue}{http://mirror.centos.org/centos-7/7/os/x86\_64}} )
+%%%\item EPEL 7 (e.g. \href{http://download.fedoraproject.org/pub/epel/7/x86\_64}
+%%%                       {\color{blue}{http://download.fedoraproject.org/pub/epel/7/x86\_64}} )
+%%%\end{itemize*}
+%%%
+%%%\noindent The public EPEL repository will be enabled automatically upon installation of the 
+%%%\texttt{ohpc-release} package. Note that this requires the CentOS Extras
+%%%repository, which is shipped with CentOS and is enabled by default.
+
+
+
+\subsection{Preparing template for sms node cloud-init} \label{sec:c_i-template-sms-node}
+\input{common/c_i-template-sms}
+	
+
+\subsection{Prepare optional part of cloud-init} \label{sec:c_i-optional}
+
+\input{common/c_i-optional}
+
+\subsection{Configuring overall cloud-init} \label{sec:c_i-config}
+
+\input{common/c_i-config}
+
+
+%%% DO I STILL NEED THIS ??? %%%
+%%% The following command adds OFED and PSM support using base distro-provided drivers
+%%% to the chosen {\em master} host.
+%%% 
+%%% % begin_ohpc_run
+%%% % ohpc_comment_header Add InfiniBand support services on master node \ref{sec:add_ofed}
+%%% \begin{lstlisting}[language=bash,keywords={}]
+%%% [sms](*\#*) (*\groupinstall*) "InfiniBand Support"
+%%% [sms](*\#*) (*\install*) infinipath-psm
+%%% 
+%%% # Load IB drivers
+%%% [sms](*\#*) systemctl start rdma
+%%% \end{lstlisting}
+%%% % end_ohpc_run
+%%% 
+%%% With the \InfiniBand{} drivers included, you can also enable (optional) IPoIB functionality
+%%% which provides a mechanism to send IP packets over the IB network. If you plan
+%%% to mount a \Lustre{} file system over \InfiniBand{} (see \S\ref{sec:lustre_client}
+%%% for additional details), then having IPoIB enabled is a requirement for the
+%%% \Lustre{} client. \OHPC{} provides a template configuration file to aid in setting up
+%%% an {\em ib0} interface on the {\em master} host. To use, copy the template
+%%% provided and update the \texttt{\$\{sms\_ipoib\}} and
+%%% \texttt{\$\{ipoib\_netmask\}} entries to match local desired settings (alter ib0
+%%% naming as appropriate if system contains dual-ported or multiple HCAs). 
+%%% 
+%%% % begin_ohpc_run
+%%% % ohpc_validation_newline
+%%% % ohpc_command if [[ ${enable_ipoib} -eq 1 ]];then
+%%% % ohpc_indent 5
+%%% % ohpc_validation_comment Enable ib0
+%%% \begin{lstlisting}[language=bash,literate={-}{-}1,keywords={},upquote=true]
+%%% [sms](*\#*) cp /opt/ohpc/pub/examples/network/centos/ifcfg-ib0 /etc/sysconfig/network-scripts
+%%% 
+%%% # Define local IPoIB address and netmask
+%%% [sms](*\#*) perl -pi -e "s/master_ipoib/${sms_ipoib}/" /etc/sysconfig/network-scripts/ifcfg-ib0
+%%% [sms](*\#*) perl -pi -e "s/ipoib_netmask/${ipoib_netmask}/" /etc/sysconfig/network-scripts/ifcfg-ib0
+%%% 
+%%% # Initiate ib0
+%%% [sms](*\#*) ifup ib0
+%%% \end{lstlisting}
+%%% % ohpc_indent 0
+%%% % ohpc_command fi
+%%% % end_ohpc_run
+
+
+
+\vspace*{-0.15cm}
+\vspace*{-0.50cm}
+
+\clearpage
+\section{Instantiating OpenHPC System in OpenStack Cloud}
+\input{common/instantiate.tex}
+	
+\clearpage
+\subsection{Prepare OpenStack for bare metal provisioning with ironic} \label{sec:o-s_prep-ironic}
+\input{common/o-s_prep-ironic}
+
+\vspace*{-0.15cm}
+\subsection{Instantiate bare metal nodes} \label{sec:instantiate-bare-metal}
+\input{common/inst-bare-metal}
+
+
+
+
+
+\end{document}
+

@@ -1,0 +1,18 @@
+
+Images can be built on any supported OS. In this example we will install and build images on controller node, user can do same on a system independent of their production cluster. Install diskimage-builder and its dependencies from base OS distro
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) yum -y install diskimage-builder PyYAML
+\end{lstlisting}
+
+Install grub dependency
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) yum -y install parted
+\end{lstlisting}
+
+Diskimage-builder installed from base distro does not have group install feature. So add a patch (Note: this probably will be included into RPM and will be part of that rpm installation)
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) yum -y install <DIB patch>
+\end{lstlisting}

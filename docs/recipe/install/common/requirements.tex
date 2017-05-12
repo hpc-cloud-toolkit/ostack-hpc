@@ -1,21 +1,29 @@
 %\noindent {\bf Requirements/Assumptions}: 
 \subsection{Requirements/Assumptions}
-This installation recipe assumes the availability of a single head node {\em
- master}, and four {\em compute} nodes. The {\em master} node serves as the
-overall system management server (SMS) and is provisioned with \baseOS{} and is
-subsequently configured to provision the remaining {\em compute} nodes with
-\Warewulf{} in a stateless configuration. The terms {\em master} and SMS are
-used interchangeably in this guide. For power management, we assume that
-the compute node baseboard management controllers (BMCs) are available via IPMI
-from the chosen master host. For file systems, we assume that the chosen master
-server will host an \NFS{} file system that is made available to the compute
-nodes. Installation information is also discussed to optionally include a
-\Lustre{} file system mount and in this case, the \Lustre{} file system is
-assumed to exist previously.
+
+This installation recipe assumes the availability of an OpenStack controller 
+(+ network) node four bare metal nodess. The Controller node serve as central 
+controller for OpenStack services and has all the required OpenStack services 
+installed and configured (i.e. keystone, nova, neutron, ironic along with their 
+dependent services) to provision bare metal nodes with CentOS7.2 in a statefull 
+configuration. 
+
+This recipe is tested with OpenStack Mitaka release with CentOS 7.2. This 
+document provides some examples for installing and configuring OpenStack using 
+Mitaka release of packstack from RedHat®. More detail on using packstack can be 
+found https://www.rdoproject.org/install/quickstart/. 
+
+For power management, we assume that the bare metal node baseboard management 
+controllers (BMCs) are available via IPMI from the chosen controller host. For 
+file systems, we assume that the master server (instantiated during provisioning 
+“HPC as a service”) will host an NFS file system that is made available to the 
+HPC compute nodes.
+
+
 
 \begin{figure}[hbt]
 \center
-\includegraphics[width=0.85\linewidth]{ohpc-arch-small2.pdf}
+\includegraphics[width=0.85\linewidth]{HPCaaS-diagram.png}
 \vspace*{-0.2cm}
 \caption{Overview of physical cluster architecture.} \label{fig:physical_arch}
 \end{figure}
@@ -42,4 +50,9 @@ management packets between the host and BMC.
 (\InfiniBand{} in this recipe) that is also connected to each of the
 hosts. This high speed network is used for application message passing and
 optionally for \Lustre{} connectivity as well.
+
+NOTE: This recipe sets various environment variables in one section and use them 
+in other section. So users are expected to use single shell session for successful 
+execution of this recipe. Appendix A provides reference to prebuilt recipe, and 
+useful for users who wants to try out with minimum human interactions.
 

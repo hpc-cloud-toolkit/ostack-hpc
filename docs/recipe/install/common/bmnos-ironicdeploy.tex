@@ -1,0 +1,31 @@
+Ironic uses deploy images (aka kernel) to bootstrap the provisioning of user images. 
+Unset any previous environment flag
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) DIB_YUM_REPO_CONF
+\end{lstlisting}
+
+Git is used by some of the elements in diskimage-builder. 
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) yum -y install git
+\end{lstlisting}
+
+Create deploy images using disk-image-create cli. This will download base centos image from distro, install ironic-agent on it and create kernel and initiramfs images.
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) disk-image-create ironic-agent centos7 -o icloud-hpc-deploy-c7
+\end{lstlisting}
+
+Move deploy images to ohpc standard path.
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) chpc_image_deploy_kernel="$( realpath icloud-hpc-deploy-c7.kernel)"
+[ctrlr](*\#*) chpc_image_deploy_ramdisk="$( realpath icloud-hpc-deploy-c7.initramfs)"
+ (*\#*)Store Images file
+[ctrlr](*\#*) mkdir -p $CHPC_CLOUD_IMAGE_PATH/
+[ctrlr](*\#*) sudo mv -f $chpc_image_deploy_kernel $CHPC_CLOUD_IMAGE_PATH/
+[ctrlr](*\#*) chpc_image_deploy_kernel=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_deploy_kernel)
+[ctrlr](*\#*) sudo mv -f $chpc_image_deploy_ramdisk $CHPC_CLOUD_IMAGE_PATH/
+[ctrlr](*\#*) chpc_image_deploy_ramdisk=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_deploy_ramdisk)
+\end{lstlisting}

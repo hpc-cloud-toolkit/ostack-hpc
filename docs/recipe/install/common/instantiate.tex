@@ -1,0 +1,52 @@
+To instantiate OpenHPC system, we will first prepare openstack components with HPC images, networking and other relevant configurations. After the configuration we will instantiate HPC head node and HPC compute node using nova. 
+
+It is assumed that system admin has installed OpenStack controller services and OpenStack network services (i.e. keystone, nova, ironic, glance, neutron, mongodb, rabbitmq server, heat etc). 
+Controller node is configured with OpenVSwitch Bridge on internal network port. 
+Two tenants, named \texttt{admin} and \texttt{services} are created in keystone to manage the services. All the services are created by system admin. 
+
+Below is expected endpoint list.
+
+\begin{lstlisting}[language=bash,keywords={}]
+Openstack service list
++----------------------------------+-----------+---------------+---------------+
+| ID                                         | Region    | Service Name  | Service Type  |
++----------------------------------+-----------+---------------+---------------+
+| d5aeeb54713745c29ed3c2e4a97f59bd | RegionOne | ironic        | baremetal     |
+| 86c71badbf8b4446a1b699eef05f3f41 | RegionOne | nova          | compute       |
+| 70d138db26214d0bbc6b3ade8bf6f6f8 | RegionOne | gnocchi       | metric        |
+| f34c3a58b9c648aaacabeeefd589a0d2 | RegionOne | neutron       | network       |
+| 789c3fb6f9ae4e249ee4023484ccb5fc | RegionOne | aodh          | alarming      |
+| 2531392e2d084b4582b364572e79a7b5 | RegionOne | heat          | orchestration |
+| c183b73f654e454eaf5784c4b98149d8 | RegionOne | Image Service | image         |
+| 850b3c2943df4dca99338ff2013f657b | RegionOne | cinder        | volume        |
+| 81cefa79212a4780abe5a1da281a0172 | RegionOne | novav3        | computev3     |
+| 36a6a7c7968a4a94bea07c8e30fa5c4b | RegionOne | keystone      | identity      |
+| db70a8676dd44dd09b3ada7475e67383 | RegionOne | cinderv3      | volumev3      |
+| c4161d4c9c6b4080b2cb66c2f580853d | RegionOne | ceilometer    | metering      |
+| d5714e8adb094671ad0388d04214c44d | RegionOne | cinderv2      | volumev2      |
++----------------------------------+-----------+---------------+---------------+
+
+openstack project list
++----------------------------------+----------+
+| ID                                          | Name     |
++----------------------------------+----------+
+| 7464fcc8f1b34048bd09fe165d18647b | admin    |
+| b1ed7efb53cc44c8b06daaee15b6a296 | services |
++----------------------------------+----------+
+\end{lstlisting}
+
+
+Recipe below is tested with controller node installed and configured using packstack.
+Reference section provide more detail on packstack installation of OpenStack.
+Before starting with HPC instantiation, please export openstack credential as a root or system admin, we will be using them during openstack configuration. 
+
+\begin{lstlisting}[language=bash,keywords={}]
+unset OS_SERVICE_TOKEN
+export OS_USERNAME=admin
+export OS_PASSWORD=<>
+export OS_AUTH_URL=<>
+export PS1='[\u@\h \W(keystone_admin)]\$ '
+
+export OS_TENANT_NAME=admin
+export OS_REGION_NAME=<>  
+\end{lstlisting}

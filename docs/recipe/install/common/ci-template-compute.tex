@@ -1,0 +1,143 @@
+Create an empty chpc\_init file and open for editing. You can also use existing template and modify.
+
+Start editing by adding some environment variable, first one is to set path to shared folder for cloud-init
+
+\begin{lstlisting}[language=bash,keywords={}]
+chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
+logger "chpcInit: Updating Compute Node with HPC configuration"
+\end{lstlisting}
+
+Update rsyslog configuration file to send all the syslog to sms. sms\_ip is the tag used here is updated with IP of SMS node just before provisioning.
+
+\begin{lstlisting}[language=bash,keywords={}]
+(*\#*) Update rsyslog
+cat /etc/rsyslog.conf | grep "<sms_ip>:514"
+rsyslog_set=$?
+if [ "${rsyslog_set}" -ne "0" ]; then
+    echo "*.* @<sms_ip>:514" >> /etc/rsyslog.conf
+fi
+systemctl restart rsyslog
+logger "chpcInit: rsyslog configuration complete, updating remaining HPC configuration"
+\end{lstlisting}
+
+Assuming sms node nfs share /home, /opt/ohpc/pub, =/opt/ohpc/admin/cloud\_hpc\_init lets mount them during boot
+
+\begin{lstlisting}[language=bash,keywords={}]
+(*\#*) nfs mount directory from SMS head node to Compute Node
+cat /etc/fstab | grep "<sms_ip>:/home"
+home_exists=$?
+if [ "${home_exists}" -ne "0" ]; then
+    echo "<sms_ip>:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" >> /etc/fstab
+fi
+cat /etc/fstab | grep "<sms_ip>:/opt/ohpc/pub"
+ohpc_pub_exists=$?
+
+if [ "${ohpc_pub_exists}" -ne "0" ]; then
+    echo "<sms_ip>:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0" >> /etc/fstab
+    (*\#*) Make sure we have directory to mount
+    (*\#*) Clean up if required
+    if [ -e /opt/ohpc/pub ]; then
+        echo "chpcInit: [WARNING] /opt/ohpc/pub already exists!!"
+    fi
+fi
+mkdir -p /opt/ohpc/pub
+mount /home
+mount /opt/ohpc/pub
+
+(*\#*) mount cloud_hpc_init
+cat /etc/fstab | grep "sms_ip:$chpcInitPath"
+CloudHPCInit_exist=$?
+if [ "${CloudHPCInit_exist}" -ne "0" ]; then
+    echo "<sms_ip>:$chpcInitPath $chpcInitPath nfs nfsvers=3 0 0" >> /etc/fstab
+fi
+mkdir -p $chpcInitPath
+mount $chpcInitPath
+(*\#*) Restart nfs
+systemctl restart nfs
+
+have ntp sync with sms node. 
+(*\#*) Restart ntp at CN
+systemctl enable ntpd
+(*\#*) Update ntp server
+cat /etc/ntp.conf | grep "server <sms_ip>"
+ntp_server_exists=$?
+if [ "${ntp_server_exists}" -ne "0" ]; then
+    echo "server <sms_ip>" >> /etc/ntp.conf
+fi
+systemctl restart ntpd
+(*\#*) time sync
+Ntpstat
+Sync sms node with compute nodes. sync users, slurm and enable munge by copying munge keys
+(*\#*) Sync following files to compute node
+(*\#*) Assuming nfs is setup properly
+if [ -d $chpcInitPath ]; then
+    (*\#*) Update the slurm file
+    cp -f -L $chpcInitPath/slurm.conf /etc/slurm/slurm.conf
+    (*\#*) Sync head node configuration with Compute Node
+    cp -f -L $chpcInitPath/passwd /etc/passwd
+    cp -f -L $chpcInitPath/group /etc/group
+    cp -f -L $chpcInitPath/shadow /etc/shadow
+    cp -f -L $chpcInitPath/slurm.conf /etc/slurm/slurm.conf
+    cp -f -L $chpcInitPath/slurm /etc/pam.d/slurm
+    cp -f -L $chpcInitPath/munge.key /etc/munge/munge.key
+    (*\#*) For hostname resolution
+    cp -f -L $chpcInitPath/hosts /etc/hosts
+    (*\#*) make sure that hostname mentioned into /etc/hosts matches machine hostname. TBD
+    (*\#*) Start slurm and munge 
+    systemctl enable munge
+    systemctl restart munge
+    systemctl enable slurmd
+    systemctl restart slurmd
+else
+    logger "chpcInit:ERROR: cannot stat nfs shared /opt directory, cannot copy HPC system files"
+fi
+\end{lstlisting}
+
+Update the hostname as per sms node.
+
+\begin{lstlisting}[language=bash,keywords={}]
+(*\#*) Setup hostname as per the head node
+(*\#*)Find the hostname of this machine from the copied over /etc/hosts file
+cc_ipaddrs=(`hostname -I`)
+for cc_ipaddr in ${cc_ipaddrs[@]}; do
+    cat /etc/hosts | grep ${cc_ipaddr} > /dev/null
+    result=$?
+    if [ "$result" -eq "0" ]; then
+        cc_hostname=`cat /etc/hosts | grep ${cc_ipaddr} | cut -d$'\t' -f2`
+        break
+    fi
+done
+
+if [ -z "${cc_hostname}" ]; then
+    logger "chpcInit:ERROR: No resolved hostname found for any IP address in /etc/hosts"
+    exit 1
+fi
+
+(*\#*)set the hostname
+if [ $(hostname) != ${cc_hostname} ]; then
+    hostnamectl set-hostname ${cc_hostname}
+fi
+\end{lstlisting}
+
+
+By now all pre-requisite for slurm is taken care, lets start slurm daemon.
+
+\begin{lstlisting}[language=bash,keywords={}]
+(*\#*) Start slurm and munge 
+systemctl enable munge
+systemctl restart munge
+systemctl enable slurmd
+systemctl restart slurmd
+\end{lstlisting}
+
+One last step to make sure ssh is working and enabled on compute nodes. Update the permissions 
+of ssh.
+
+
+\begin{lstlisting}[language=bash,keywords={}]
+(*\#*)Change file permissions in /etc/ssh to fix ssh into compute node
+chmod 0600 /etc/ssh/ssh_host_*_key
+\end{lstlisting}
+
+Save the file with name chp\_cinit, we will use this file during baremetal node instance creation.
+

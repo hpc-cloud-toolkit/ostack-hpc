@@ -1,0 +1,135 @@
+Cloud init script for sms node is little different than compute node. Sms node, when instantiated within openstack, serve as a head node for HPC as a service and hosts all the services as a sms node in an independent hpc clusters. This will host server side of applications, resource manager, and share users. For more detail on sms node functionality please refer to OpenHPC documentation.
+
+In this recipe, we will prepare cloud-init template script for sms node, which than is updated with compute node IP, ntp server and other environmental variables, just before provisioning. 
+Create an empty chpc\_init file and open for editing. You can also use existing template and modify. Start editing by adding some environment variable, which will be updated later, just before provisioning.
+
+
+\begin{lstlisting}[language=bash,keywords={}]
+(*\#*) Get the Compute node prefix and number of compute nodes
+cnodename_prefix=<update_cnodename_prefix>
+num_ccomputes=<update_num_ccomputes>
+ntp_server=<update_ntp_server>
+sms_name=<update_sms_name>
+\end{lstlisting}
+
+Now setup nfs share for cloud-init and files which want to send to compute nodes.
+
+
+\begin{lstlisting}[language=bash,keywords={}]
+(*\#*) setup cloudinit directory
+chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
+(*\#*) create directory of not exists
+mkdir -p $chpcInitPath
+chmod 700 $chpcInitPath
+To create same user environment, copy user files 
+(*\#*) Copy other files needed for Cloud Init
+sudo cp -fpr /etc/passwd $chpcInitPath
+sudo cp -fpr /etc/shadow $chpcInitPath
+sudo cp -fpr /etc/group $chpcInitPath
+\end{lstlisting}
+
+Share /home, /opt/ohpc/pub and /opt/ohpc/admin/cloud\_hpc\_init over nfs
+
+\begin{lstlisting}[language=bash,keywords={}]
+(*\#*) export CloudInit Path to nfs share
+cat /etc/exports | grep "$chpcInitPath"
+chpcInitPath_exported=$?
+
+if [ "${chpcInitPath_exported}" -ne "0" ]; then
+    echo "$chpcInitPath *(rw,no_subtree_check,no_root_squash)" >> /etc/exports
+fi
+(*\#*) share /home from HN
+if ! grep "^/home" /etc/exports; then
+    echo "/home *(rw,no_subtree_check,fsid=10,no_root_squash)" >> /etc/exports
+fi
+(*\#*) share /opt/ from HN
+if ! grep "^/opt/ohpc/pub" /etc/exports; then
+    echo "/opt/ohpc/pub *(ro,no_subtree_check,fsid=11)" >> /etc/exports
+fi
+exportfs -a
+(*\#*) Restart nfs
+systemctl restart nfs
+systemctl enable nfs-server
+logger "chpcInit: nfs configuration complete, updating remaining HPC configuration" 
+\end{lstlisting}
+
+Configure ntp sever on sms node, as per the site setting.
+
+
+\begin{lstlisting}[language=bash,keywords={}]
+(*\#*) configure NTP
+systemctl enable ntpd
+if [[ ! -z "$ntp_server" ]]; then
+   echo "server ${ntp_server}" >> /etc/ntp.conf
+fi
+systemctl restart ntpd
+systemctl enable ntpd.service
+(*\#*) time sync
+ntpstat
+logger "chpcInit:ntp configuration done"
+\end{lstlisting}
+
+Distribute munge keys with compute nodes and then Update SLURM resource manager with hpc compute nodes.
+
+
+\begin{lstlisting}[language=bash,keywords={}]
+(*\#*)(*\#*)(*\#*) Update Resource manager configuration (*\#*)(*\#*)(*\#*)
+(*\#*) Update basic slurm configuration at sms node
+perl -pi -e "s/ControlMachine=\S+/ControlMachine=${sms_name}/" /etc/slurm/slurm.conf
+perl -pi -e "s/^NodeName=(\S+)/NodeName=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
+perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal \
+Nodes=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
+(*\#*) copy slurm file from sms node to Cloud Comute Nodes
+cp -fpr -L /etc/slurm/slurm.conf $chpcInitPath
+cp -fpr -L /etc/pam.d/slurm $chpcInitPath
+cp -fpr -L /etc/munge/munge.key $chpcInitPath
+(*\#*) Start slurm and munge 
+systemctl enable munge
+systemctl restart munge
+systemctl enable slurmctld
+systemctl restart slurmctld
+(*\#*)systemctl enable slurmd
+(*\#*)systemctl restart slurmd
+logger "chpcInit:slurm configuration done"
+\end{lstlisting}
+
+
+One last step to make sure ssh is working and enabled on compute nodes. Update the permissions of ssh.
+
+
+\begin{lstlisting}[language=bash,keywords={}]
+(*\#*)Change file permissions in /etc/ssh to fix ssh into compute node
+chmod 0600 /etc/ssh/ssh_host_*_key
+\end{lstlisting}
+
+Save the file with name chp\_sms\_cinit, we will use this file during sms node instance creation.
+Prepare optional part of cloud-init
+Update mrsh during cloud-init 
+Create a new file sms/update\_mrsh and add mrsh configuration to enable mrsh on sms node. And save it. 
+
+
+\begin{lstlisting}[language=bash,keywords={}]
+(*\#*) Update mrsh
+(*\#*) check if it is already configured grep mshell /etc/services will return non-zero, else configure"
+cat /etc/services | grep mshell
+mshell_exists=$?
+if [ "${mshell_exists}" -ne "0" ]; then \
+    echo "mshell          21212/tcp     \             
+    (*\#*) mrshd" >> /etc/services
+fi
+cat /etc/services | grep mlogin
+mlogin_exists=$?
+if [ "${mlogin_exists}" -ne "0" ]; then \
+    echo "mlogin            541/tcp     \
+    (*\#*) mrlogind" >> /etc/services
+fi
+\end{lstlisting}
+
+
+Updating cluster shell during cloud -init
+Create a new file sms/update\_clustershell and add configuration to enable clustershell on sms node. And save it. 
+
+
+\begin{lstlisting}[language=bash,keywords={}]
+sed -i -- 's/all: @adm,@compute/compute: cc[1-${num_ccomputes}]\n&/' /etc/clustershell/groups.d/local.cfg
+\end{lstlisting}

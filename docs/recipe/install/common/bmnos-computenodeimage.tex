@@ -1,0 +1,36 @@
+To build compute node images, we need to install client packages of HPC components. This is accomplished by setting image type to compute. Default image type in hpc elements is "compute".
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) export DIB_HPC_IMAGE_TYPE=compute
+\end{lstlisting}
+
+Now enable SLURM resource manager for compute node.
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) DIB_HPC_ELEMENTS+=" hpc-slurm"
+\end{lstlisting}
+
+Add optional OpenHPC Components
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)  if [[ ${enable_mrsh} -eq 1 ]];then
+[ctrlr](*\#*)         DIB_HPC_ELEMENTS+=" hpc-mrsh"
+[ctrlr](*\#*)  fi
+\end{lstlisting}
+
+Now create a compute node image with element local-config, dhcp-all-interfaces, devuser, selinux-permisive and all hpc specific elements. Element local-config copies your local environment into image, which is the local users, their password and permissions. Element devuser will create new user specified by environment variable "DIB\_DEV\_USER\_USERNAME". 
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) disk-image-create centos7 vm local-config dhcp-all-interfaces devuser \
+ selinux-permissive $DIB_HPC_ELEMENTS -o icloud-hpc-cent7-sms
+\end{lstlisting}
+
+It will take a while to build an image. Once image is built, copy it to standard OpenHPC path.
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) chpc_image_sms="$( realpath icloud-hpc-cent7.qcow2)"
+[ctrlr](*\#*) mkdir -p $CHPC_CLOUD_IMAGE_PATH
+[ctrlr](*\#*) mv -f $chpc_image_user$CHPC_CLOUD_IMAGE_PATH
+[ctrlr](*\#*) chpc_image_user=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_sms)
+\end{lstlisting}
+

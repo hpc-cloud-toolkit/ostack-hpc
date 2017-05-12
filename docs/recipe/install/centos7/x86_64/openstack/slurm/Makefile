@@ -1,11 +1,11 @@
-PAPER    := manifest.pdf
+PAPER    := steps.pdf
 TEX_SUFS := .aux .log .nav .out .snm .toc .vrb .fdb_latexmk .bbl .blg .fls
-GITID    := GENERIC_ID_PLACEHOLDER
+GITID    := $(shell git describe 2> /dev/null)
 
 #$(info $$GITID is [${GITID}])                                                                                                              
 
 
-%.pdf:%.tex manifest.tex $(wildcard common/*.tex common/figures/*.pdf manifest/*.tex)
+%.pdf:%.tex steps.tex manifest.tex $(wildcard common/*.tex common/ohpc-doc.sty common/base_edition/*.tex common/figures/*.pdf manifest/*.tex)
 ifdef GITID
 	common/vc
 else

@@ -1,14 +1,10 @@
-%\documentclass[12pt]{article}
-%\usepackage{graphicx}
-
-
-%\begin{document}
-\begin{section}{
-	
+\documentclass[12pt]{article}
+\usepackage{graphicx}
+\begin{document}
 \newenvironment{bash}
 {\begin{quote}
-		}
-		{ 
+	}
+	{ 
 	\end{quote}
 }
 
@@ -48,7 +44,7 @@ For power management, we assume that the bare metal node baseboard management co
 
 \begin{figure}
 	\centering
-	\includegraphics{./manifest/figures/HPCaaS-diagram}
+	\includegraphics{./figures/HPCaaS-diagram}
 	\caption[Openstack node example]{}
 	\caption{}
 	\label{fig:hpcaas-diagram}
@@ -75,9 +71,8 @@ A summary of the required and optional variables used throughout this recipe are
 that while the example definitions above correspond to a small 4-node compute subsystem, the compute
 parameters are defined in array format to accommodate logical extension to larger node counts.
 6 Rev: ac5491c
-\begin{quote}\small{Install Guide (v1.2.1): CentOS7.2/x86 64 + OpenStack + SLURM}
-\end{quote}
 
-%\end{document}
-}
-\end{section}
+\begin{bash}{Install Guide (v1.2.1): CentOS7.2/x86 64 + OpenStack + SLURM}
+\end{bash}
+
+\end{document}
