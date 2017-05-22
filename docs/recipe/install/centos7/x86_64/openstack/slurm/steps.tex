@@ -46,7 +46,7 @@
 
 \section{Introduction} \label{sec:introduction}
 \input{common/install_header}
-\input{common/intro} \\
+\input{common/intro} 
 
 \input{common/base_edition/edition}
 \input{common/audience}
@@ -197,9 +197,560 @@
 \subsection{Instantiate bare metal nodes} \label{sec:instantiate-bare-metal}
 \input{common/inst-bare-metal}
 
-
-
-
+% begin_ohpc_run
+% #  XFILEX deploy_chpc_openstack
+% #!/bin/bash
+% 
+% 
+% source ${HOME}/keystonerc_admin
+% 
+% # Function for common common configuration
+% function setup_baremetal() {
+%     #Get the tenant ID for the services tenant
+%     SERVICES_TENANT_ID=`keystone tenant-list | grep "|\s*services\s*|" | awk '{print $2}'`
+%     
+%     #Create the flat network on which you are going to launch instances
+%     neutron net-list | grep "|\s*sharednet1\s*|"
+%     net_exists=$?
+%     if [ "${net_exists}" -ne "0" ]; then
+%         neutron net-create --tenant-id ${SERVICES_TENANT_ID} sharednet1 --shared --provider:network_type flat --provider:physical_network physnet1
+%     fi
+%     NEUTRON_NETWORK_UUID=`neutron net-list | grep "|\s*sharednet1\s*|" | awk '{print $2}'`
+%     
+%     #Create the subnet on the newly created network
+%     neutron subnet-list | grep "|\s*subnet01\s*|"
+%     subnet_exists=$?
+%     if [ "${subnet_exists}" -ne "0" ]; then
+%         neutron subnet-create sharednet1 --name subnet01 --ip-version=4 --gateway=${controller_ip} --allocation-pool start=${cc_subnet_dhcp_start},end=${cc_subnet_dhcp_end} --enable-dhcp ${cc_subnet_cidr}
+%     fi
+%     NEUTRON_SUBNET_UUID=`neutron subnet-list | grep "|\s*subnet01\s*|" | awk '{print $2}'`
+%     #Create the deploy-kernel and deploy-initrd images
+%     glance image-list | grep "|\s*deploy-vmlinuz\s*|"
+%     img_exists=$?
+%     if [ "${img_exists}" -ne "0" ]; then
+%         glance image-create --name deploy-vmlinuz --visibility public --disk-format aki --container-format aki < ${chpc_image_deploy_kernel}
+%     fi
+%     DEPLOY_VMLINUZ_UUID=`glance image-list | grep "|\s*deploy-vmlinuz\s*|" | awk '{print $2}'`
+%     
+%     glance image-list | grep "|\s*deploy-initrd\s*|"
+%     img_exists=$?
+%     if [ "${img_exists}" -ne "0" ]; then
+%         glance image-create --name deploy-initrd --visibility public --disk-format ari --container-format ari < ${chpc_image_deploy_ramdisk}
+%     fi
+%     DEPLOY_INITRD_UUID=`glance image-list | grep "|\s*deploy-initrd\s*|" | awk '{print $2}'`
+%     
+%     #Create the baremetal flavor and set the architecture to x86_64
+%     # This will create common baremetal flavor, if SMS node & compute has different
+%     # characteristic than user shall create multiple flavor one each characterisitc
+%     nova flavor-list | grep "|\s*baremetal-flavor\s*|"
+%     flavor_exists=$?
+%     if [ "$flavor_exists" -ne "0" ]; then
+%         nova flavor-create baremetal-flavor baremetal-flavor ${RAM_MB} ${DISK_GB} ${CPU}
+%         nova flavor-key baremetal-flavor set cpu_arch=$ARCH
+%     fi
+%     FLAVOR_UUID=`nova flavor-list | grep "|\s*baremetal-flavor\s*|" | awk '{print $2}'`
+%     #Increase the Quota limit for admin to allow nova boot
+%     openstack quota set --ram 512000 --cores 1000 --instances 100 admin
+%     
+%     #Register SSH keys with Nova
+%     nova keypair-list | grep "|\s*ostack_key\s*|"
+%     keypair_exists=$?
+%     if [ "${keypair_exists}" -ne "0" ]; then
+%     nova keypair-add --pub-key ${HOME}/.ssh/id_rsa.pub ostack_key
+%     fi
+%     
+%     KEYPAIR_NAME=ostack_key
+% }
+% 
+% # Configure SMS Node
+% function setup_sms() {
+%    # Create sms node image
+%    glance image-list | grep "|\s*sms-image\s*|"
+%    img_exists=$?
+%    if [ "${img_exists}" -ne "0" ]; then
+%        glance image-create --name sms-image --visibility public --disk-format qcow2 --container-format bare < ${chpc_image_sms}
+%    fi
+%    SMS_DISK_IMAGE_UUID=`glance image-list | grep "|\s*sms-image\s*|" | awk '{print $2}'`
+% 
+%     #Create a sms node in the bare metal service ironic.
+%     ironic node-list | grep "|\s*${sms_name}$\s*|"
+%     node_exists=$?
+%     if [ "${node_exists}" -ne "0" ]; then
+%         ironic node-create -d pxe_ipmitool -i deploy_kernel=${DEPLOY_VMLINUZ_UUID} -i deploy_ramdisk=${DEPLOY_INITRD_UUID} -i ipmi_terminal_port=8023 -i ipmi_address=${sms_bmc} -i ipmi_username=${sms_bmc_username} -i ipmi_password=${sms_bmc_password} -p cpus=${CPU} -p memory_mb=${RAM_MB} -p local_gb=${DISK_GB} -p cpu_arch=${ARCH} -p capabilities="boot_mode:bios" -n ${sms_name}
+%     fi
+%     SMS_UUID=`ironic node-list | grep "|\s*${sms_name}\s*|" | awk '{print $2}'`
+% 
+%     #Add the associated port(s) MAC address to the created node(s)
+%     ironic port-create -n ${SMS_UUID} -a ${sms_mac}
+% 
+%     #Add the instance_info/image_source and instance_info/root_gb
+%     ironic node-update $SMS_UUID add instance_info/image_source=${SMS_DISK_IMAGE_UUID} instance_info/root_gb=50
+% 
+%     #Setup neutron port for static IP addressing of sms node, this is an optional part
+%     neutron port-create sharednet1 --dns_name $sms_name --fixed-ip ip_address=$sms_ip --name $sms_name --mac-address $sms_mac
+%     SMS_PORT_ID=`neutron port-list | grep "|\s*$sms_name\s*|" | awk '{print $2}'`
+% }
+% 
+% #Configure Compute Nodes
+% function setup_cn() {
+%     #Create the whole-disk-image from the user's qcow2 file
+%     glance image-list | grep "|\s*user-image\s*|"
+%     img_exists=$?
+%     if [ "${img_exists}" -ne "0" ]; then% 
+%         glance image-create --name user-image --visibility public --disk-format qcow2 --container-format bare < ${chpc_image_user}
+%     fi
+%     USER_DISK_IMAGE_UUID=`glance image-list | grep "|\s*user-image\s*|" | awk '{print $2}'`
+% 
+%     # Setup Compute nodes
+%     for ((i=0; i < ${num_ccomputes}; i++)); do
+%         ##Create compute nodes in the bare metal service
+%         ironic node-list | grep "|\s*${cnodename_prefix}$((i+1))\s*|"
+%         node_exists=$?
+%         if [ "${node_exists}" -ne "0" ]; then
+%             ironic node-create -d pxe_ipmitool -i deploy_kernel=${DEPLOY_VMLINUZ_UUID} -i deploy_ramdisk=${DEPLOY_INITRD_UUID} -i ipmi_terminal_port=8023 -i ipmi_address=${cc_bmc[$i]} -i ipmi_username=${cc_bmc_username} -i ipmi_password=${cc_bmc_password} -p cpus=${CPU} -p memory_mb=${RAM_MB} -p local_gb=${DISK_GB} -p cpu_arch=${ARCH} -p capabilities="boot_mode:bios" -n ${cnodename_prefix}$((i+1))
+%         fi
+%         NODE_UUID_CC[$i]=`ironic node-list | grep "|\s*${cnodename_prefix}$((i+1))\s*|" | awk '{print $2}'`
+% 
+%         # update for compute nodes node MAC
+%         ironic port-create -n ${NODE_UUID_CC[$i]} -a ${cc_mac[$i]}
+% 
+%         #Add the instance_info/image_source and instance_info/root_gb
+%         ironic node-update ${NODE_UUID_CC[$i]} add instance_info/image_source=${USER_DISK_IMAGE_UUID} instance_info/root_gb=50
+% 
+%         #Setup neutron port for static IP addressing of compute nodes
+%         cn_name=${cnodename_prefix}$((i+1))
+%         neutron port-create sharednet1 --dns_name $cn_name --fixed-ip ip_address=${cc_ip[$i]} --name $cn_name --mac-address ${cc_mac[$i]}
+%         NEUTRON_PORT_ID_CC[$i]=`neutron port-list | grep "|\s*${cnodename_prefix}$((i+1))\s*|" | awk '{print $2}'`
+%     done
+% }
+% 
+% 
+% function boot_sms() {
+%     #Boot the sms node with nova. chpcInit is set from prepare_cloudInit
+%     echo "nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${SMS_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcSMSInit --nic port-id=${SMS_PORT_ID} ${sms_name}" > boot_sms
+%     nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${SMS_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcSMSInit --nic port-id=${SMS_PORT_ID} ${sms_name}
+% }
+% 
+% function boot_cn() {
+%     for ((i=0; i < ${num_ccomputes}; i++)); do
+%         filename="cn$((i+1))"
+%         echo "nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${USER_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcInit --nic port-id=${NEUTRON_PORT_ID_CC[$i]} ${cnodename_prefix}$((i+1))" > boot_$filename
+%         nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${USER_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcInit --nic port-id=${NEUTRON_PORT_ID_CC[$i]} ${cnodename_prefix}$((i+1))
+%         #wait for 5 sec 
+%         sleep 5
+%     done
+% }
+% 
+% 
+% 
+% ##Create a sms node in the bare metal service
+% #ironic node-list | grep "|\s*${sms_name}$\s*|"
+% #node_exists=$?
+% #if [ "${node_exists}" -ne "0" ]; then
+% #    ironic node-create -d pxe_ipmitool -i deploy_kernel=${DEPLOY_VMLINUZ_UUID} -i deploy_ramdisk=${DEPLOY_INITRD_UUID} -i ipmi_terminal_port=8023 -i ipmi_address=${sms_bmc} -i ipmi_username=${sms_bmc_username} -i ipmi_password=${sms_bmc_password} -p cpus=${CPU} -p memory_mb=${RAM_MB} -p local_gb=${DISK_GB} -p cpu_arch=${ARCH} -p capabilities="boot_mode:bios" -n ${sms_name}
+% #fi
+% #SMS_UUID=`ironic node-list | grep "|\s*${sms_name}\s*|" | awk '{print $2}'`
+% 
+% 
+% #### main
+% # First setup baremetnal environment
+% setup_baremetal
+% # Setup sms node first
+% setup_sms
+% # Setup Compute nodes
+% setup_cn
+% # Wait for the Nova hypervisor-stats to sync with available Ironic resources
+% sleep 121
+% # Now start booting the nodes
+% # Boot sms node first
+% boot_sms
+% # wait for 15 sec before starting to boot compute nodes. TBD need to tune this time
+% # SMS node should be booted before compute nodes starts booting. At minimum
+% # sms node shall have cloud init executed before CN's cloud init
+% sleep 15
+% # Now boot compute nodes
+% boot_cn
+% 
+% #nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${USER_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcSMSInit --nic port-id=${SMS_PORT_ID} ${sms_name}
+% sleep 5
+% # Boot CNs
+% #  XFILEX prepare_chpc_image
+% #!bin/bash
+% set -x
+% function setup_dib() {
+%         #enable local disk-image-builder
+%         # Check if disk-image-builder is installed
+%         yum -y install diskimage-builder PyYAML
+%         #install grub dependency
+%         yum -y install parted
+%         # copy patch to installed location
+%         sudo cp -fr ../../dib/dib_patch/* /usr/share/diskimage-builder/
+% }
+% function setup_dib_hpc_base() {
+%         # Install dib if it is not already installed
+%         setup_dib
+%         # For Debugging enable user
+%         #export PATH=/home/ppk/PPK/dib/dev/diskimage-builder/bin:/home/ppk/PPK/dib/dev/dib-utils/bin:$PATH
+%         # if cloudinit does not work then we will use this user for debugging
+%         export DIB_DEV_USER_USERNAME=chpc
+%         export DIB_DEV_USER_PASSWORD=intel8086
+%         export DIB_DEV_USER_PWDLESS_SUDO=1
+%         # For debugging enable DEBUG_TRACE
+%         #export DIB_DEBUG_TRACE=1
+%         # Add our custom element path
+%         export ELEMENTS_PATH="$(realpath ../../dib/hpc/elements)"
+%         # path to hpc configuration files i.e. cloud.cfg
+%         export DIB_HPC_FILE_PATH="$(realpath ../../dib/hpc/hpc-files/)"
+%         # define base for image as ohpc or orch.
+%         export DIB_HPC_BASE=${chpc_base}
+% 
+%         #Path to HPC base yum repo file
+%         # We support either Intel HPC Orchestrator and OpenHPC
+%         if [[ "${DIB_HPC_BASE}" == "orch" ]]; then
+%             export DIB_YUM_REPO_CONF=/etc/yum.repos.d/HPC_Orchestrator.repo
+%             # for orch define Packge path
+%             # This file is used to install orch component inside image
+%             export DIB_HPC_ORCH_PKG=${orch_iso_path}
+%         else
+%             # Install the OpenHPC rpm
+%             yum -y install ${ohpc_pkg}	
+%             export DIB_HPC_OHPC_PKG=${ohpc_pkg}
+%         fi
+%         DIB_HPC_ELEMENTS="hpc-env-base"
+% }
+% 
+% function prepare_sms_image() {
+%     if [[ ${chpc_create_new_image} -ne 1 ]] && [[ -s $chpc_image_sms ]]; then
+%         # No need to create an image, image is provided by user
+%         echo -n "Skiping cloud sms-image build, Image provided:"
+%         echo "$chpc_image_sms"
+%         CHPC_IMAGE_DEST=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_sms)
+%         if [[ ! -e $CHPC_IMAGE_DEST ]]; then
+%             sudo cp $chpc_image_sms $CHPC_CLOUD_IMAGE_PATH
+%         fi
+%         chpc_image_sms=$CHPC_IMAGE_DEST
+%     else
+%         echo "Building new User Image"
+%         # First setup diskimage-builder
+%         setup_dib_hpc_base
+% 
+%         # tell to build sms node image
+%         export DIB_HPC_IMAGE_TYPE=sms
+%  
+%         # enable Resource Manager
+%         DIB_HPC_ELEMENTS+=" hpc-slurm"
+%         
+%         #add mrsh if it is enabled
+%         if [[ ${enable_mrsh} -eq 1 ]];then
+%            DIB_HPC_ELEMENTS+=" hpc-mrsh"
+%         fi
+%         # for sms node setup dev environment
+%         export DIB_HPC_COMPILER="gnu"
+%         export DIB_HPC_MPI="openmpi mvapich2"
+%         export DIB_HPC_PERF_TOOLS="perf-tools"
+%         export DIB_HPC_3RD_LIBS="serial-libs parallel-libs io-libs python-libs runtimes"
+%         DIB_HPC_ELEMENTS+=" hpc-dev-env"
+%         # build an image
+%         echo "====================================================================="
+%         echo "=== Preparing cloud-hpc user image =================================="
+%         echo "====================================================================="
+%         disk-image-create centos7 vm local-config dhcp-all-interfaces devuser selinux-permissive $DIB_HPC_ELEMENTS -o icloud-hpc-cent7-sms 
+%         echo "====================================================================="
+%         echo "=== User Image Creation complete ===================================="
+%         echo "====================================================================="
+%         # User Image is reday
+%         chpc_image_sms="$( realpath icloud-hpc-cent7.qcow2)"
+%         mkdir -p $CHPC_CLOUD_IMAGE_PATH 
+%         mv -f $chpc_image_sms $CHPC_CLOUD_IMAGE_PATH 
+%         chpc_image_sms=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_sms)
+%     fi 
+% }
+% function prepare_user_image() {
+%     if [[ ${chpc_create_new_image} -ne 1 ]] && [[ -s $chpc_image_user ]]; then
+%         # No need to create an image, image is provided by user
+%         echo -n "Skiping cloud user-image build, Image provided:"
+%         echo "$chpc_image_user"
+%         CHPC_IMAGE_DEST=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_user)
+%         if [[ ! -e $CHPC_IMAGE_DEST ]]; then
+%             sudo cp $chpc_image_user $CHPC_CLOUD_IMAGE_PATH
+%         fi
+%         chpc_image_user=$CHPC_IMAGE_DEST
+%     else
+%         echo "Building new User Image"
+%         # First setup diskimage-builder
+%         setup_dib_hpc_base
+% 
+%         # tell to build sms node image
+%         export DIB_HPC_IMAGE_TYPE=compute
+% 
+%         # enable Resource Manager
+%         DIB_HPC_ELEMENTS+=" hpc-slurm"
+%         
+%         # add mrsh if it is enabled
+%         if [[ ${enable_mrsh} -eq 1 ]];then
+%            DIB_HPC_ELEMENTS+=" hpc-mrsh"
+%         fi
+%         # build an image
+%         echo "====================================================================="
+%         echo "=== Preparing cloud-hpc user image =================================="
+%         echo "====================================================================="
+%         disk-image-create centos7 vm local-config dhcp-all-interfaces devuser selinux-permissive $DIB_HPC_ELEMENTS -o icloud-hpc-cent7 
+%         echo "====================================================================="
+%         echo "=== User Image Creation complete ===================================="
+%         echo "====================================================================="
+%         # User Image is reday
+%         chpc_image_user="$( realpath icloud-hpc-cent7.qcow2)"
+%         mkdir -p $CHPC_CLOUD_IMAGE_PATH 
+%         mv -f $chpc_image_user $CHPC_CLOUD_IMAGE_PATH 
+%         chpc_image_user=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_user)
+%     fi 
+% }
+% 
+% function prepare_deploy_image() {
+%     if [[ ${chpc_create_new_image} -ne 1 ]] && [[ -s $chpc_image_deploy_kernel ]] && [[ -s $chpc_image_deploy_ramdisk ]]; then
+%         # No need to create an image, image is provided by user
+%         echo "Skiping cloud deploy-image build, Image provided:"
+%         echo "Deploy kernel Image:$chpc_image_deploy_kernel"
+%         echo "Deploy ramdisk Image:$chpc_image_deploy_ramdisk"
+%         #Store Images file
+%         CHPC_IMAGE_DEST=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_deploy_kernel)
+%         if [[ ! -e $CHPC_IMAGE_DEST ]]; then
+%             sudo cp -f $chpc_image_deploy_kernel $CHPC_CLOUD_IMAGE_PATH/
+%         fi
+%         chpc_image_deploy_kernel=$CHPC_IMAGE_DEST
+%         CHPC_IMAGE_DEST=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_deploy_ramdisk)
+%         if [[ ! -e $CHPC_IMAGE_DEST ]]; then
+%             sudo cp -f $chpc_image_deploy_ramdisk $CHPC_CLOUD_IMAGE_PATH/
+%         fi
+%         chpc_image_deploy_ramdisk=$CHPC_IMAGE_DEST
+%     else
+%         echo "Building new Cloud Deploy Image"
+%         echo "====================================================================="
+%         echo "=== Preparing cloud-hpc deploy images for ironic====================="
+%         echo "====================================================================="
+%         #prepare deploy images
+%         # Install dib if it is not already installed
+%         setup_dib
+%         # Unset any previos envirnment flag
+%         unset DIB_YUM_REPO_CONF
+%         #Install git if it is not already installed
+%         yum -y install git
+%         disk-image-create ironic-agent centos7 -o icloud-hpc-deploy-c7
+%         echo "====================================================================="
+%         echo "=== cloud-hpc deploy images Complete ================================"
+%         echo "====================================================================="
+%         chpc_image_deploy_kernel="$( realpath icloud-hpc-deploy-c7.kernel)"
+%         chpc_image_deploy_ramdisk="$( realpath icloud-hpc-deploy-c7.initramfs)"
+%         #Store Images file
+%         mkdir -p $CHPC_CLOUD_IMAGE_PATH/
+%         sudo mv -f $chpc_image_deploy_kernel $CHPC_CLOUD_IMAGE_PATH/
+%         chpc_image_deploy_kernel=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_deploy_kernel)
+%         sudo mv -f $chpc_image_deploy_ramdisk $CHPC_CLOUD_IMAGE_PATH/
+%         chpc_image_deploy_ramdisk=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_deploy_ramdisk)
+%     fi
+% }
+% 
+% if [[ "${chpc_base}" == "orch" ]]; then 
+%     CHPC_CLOUD_IMAGE_PATH=/opt/intel/hpc-orchestrator/admin/images/cloud/
+% else
+%     CHPC_CLOUD_IMAGE_PATH=/opt/ohpc/admin/images/cloud/
+% fi
+% 
+% mkdir -p $CHPC_CLOUD_IMAGE_PATH
+% ### Build HPC user image
+% echo "########################################################################"
+% echo "########################### Starting Image   ###########################"
+% echo "########################################################################"
+% prepare_sms_image
+% echo $chpc_image_sms
+% echo "########################################################################"
+% echo "########################### sms image is done ##########################"
+% echo "########################################################################"
+% prepare_user_image
+% echo $chpc_image_user
+% echo "########################################################################"
+% echo "########################### user image is done #########################"
+% echo "########################################################################"
+% #### Build hpc deploy image
+% prepare_deploy_image
+% echo $chpc_image_deploy_kernel
+% echo $chpc_image_deploy_ramdisk
+% echo "########################################################################"
+% echo "########################### deploy image is done #######################"
+% echo "########################################################################"
+% #  XFILEX prepare_chpc_openstack
+% #!/bin/bash
+% #---------------------------------------------------------------------------------
+% #This script installs and configures ironic for baremetal provisioning on CentOS 7
+% #Using the OpenStack-Mitaka release.
+% #This relies on the packstack installation to happen first and the keystonerc_admin
+% #file being in the user's home directory. It is assumed this script is run with
+% #sudo permissions.
+% #---------------------------------------------------------------------------------
+% 
+% #Set SELinux to permissive
+% setenforce 0
+% 
+% #Source the keystonerc_admin file
+% source ${HOME}/keystonerc_admin
+% 
+% #Create roles for the baremetal service. These can be used later to give special permissions to baremetal. This script will be using the defaults.
+% openstack role list | grep -i baremetal_admin
+% role_exists=$?
+% if [ "${role_exists}" -ne "0" ]; then 
+%     openstack role create baremetal_admin
+% fi
+% 
+% openstack role list | grep -i baremetal_observer
+% role_exists=$?
+% if [ "${role_exists}" -ne "0" ]; then 
+%     openstack role create baremetal_observer
+% fi
+% systemctl restart openstack-ironic-api
+% 
+% #Ensure the utilities for baremetal are installed
+% yum install -y tftp-server syslinux-tftpboot xinetd
+% #Make the directory for tftp and give it the ironic owner
+% mkdir -p /tftpboot
+% chown -R ironic /tftpboot
+% 
+% #Configure /etc/xinet.d/tftp
+% echo "service tftp" > /etc/xinetd.d/tftp
+% echo "{" >> /etc/xinetd.d/tftp
+% echo "  protocol        = udp" >> /etc/xinetd.d/tftp
+% echo "  port            = 69" >> /etc/xinetd.d/tftp
+% echo "  socket_type     = dgram" >> /etc/xinetd.d/tftp
+% echo "  wait            = yes" >> /etc/xinetd.d/tftp
+% echo "  user            = root" >> /etc/xinetd.d/tftp
+% echo "  server          = /usr/sbin/in.tftpd" >> /etc/xinetd.d/tftp
+% echo "  server_args     = -v -v -v -v -v --map-file /tftpboot/map-file /tftpboot" >> /etc/xinetd.d/tftp
+% echo "  disable         = no" >> /etc/xinetd.d/tftp
+% echo "  # This is a workaround for Fedora, where TFTP will listen only on" >> /etc/xinetd.d/tftp
+% echo "  # IPv6 endpoint, if IPv4 flag is not used." >> /etc/xinetd.d/tftp
+% echo "  flags           = IPv4" >> /etc/xinetd.d/tftp
+% echo "}" >> /etc/xinetd.d/tftp
+% 
+% #Restart the xinetd service
+% systemctl restart xinetd
+% 
+% #Copy the PXE linux files to the tftpboot directory we created
+% cp /var/lib/tftpboot/pxelinux.0 /tftpboot
+% cp /var/lib/tftpboot/chain.c32 /tftpboot
+% 
+% #Generate a map file for the PXE files
+% echo 're ^(/tftpboot/) /tftpboot/\2' > /tftpboot/map-file
+% echo 're ^/tftpboot/ /tftpboot/' >> /tftpboot/map-file
+% echo 're ^(^/) /tftpboot/\1' >> /tftpboot/map-file
+% echo 're ^([^/]) /tftpboot/\1' >> /tftpboot/map-file
+% 
+% #Edit /etc/ironic/ironic.conf file with the <controller_ip> variable's value
+% sed --in-place "s|#tftp_server=\$my_ip|tftp_server=${controller_ip}|" /etc/ironic/ironic.conf
+% sed --in-place "s|#tftp_root=/tftpboot|tftp_root=/tftpboot|" /etc/ironic/ironic.conf
+% sed --in-place "s|#ip_version=4|ip_version=4|" /etc/ironic/ironic.conf
+% sed --in-place "s|#automated_clean=true|automated_clean=false|" /etc/ironic/ironic.conf
+% 
+% #Edit /etc/nova/nova.conf file
+% sed --in-place "s|reserved_host_memory_mb=512|reserved_host_memory_mb=0|" /etc/nova/nova.conf
+% sed --in-place "s|#scheduler_host_subset_size=1|scheduler_host_subset_size=9999999|" /etc/nova/nova.conf
+% sed --in-place "s|#scheduler_use_baremetal_filters=false|scheduler_use_baremetal_filters=true|" /etc/nova/nova.conf
+% 
+% # Enable meta data
+% # Edit /etc/neutron/dhcp_agent.ini
+% sed --in-place "s|enable_isolated_metadata\ =\ False|enable_isolated_metadata\ =\ True|" /etc/neutron/dhcp_agent.ini
+% sed --in-place "s|#force_metadata\ =\ false|force_metadata\ =\ True|" /etc/neutron/dhcp_agent.ini
+% 
+% #####
+% # Enable internal dns for hostname resolution, if it already not set
+% # manipulating configuration file via shell, alternate is to use openstack-config (TODO)
+% ####
+% # setup dns domain first
+% if grep -q "^dns_domain.*openstacklocal$" /etc/neutron/neutron.conf; then
+%    sed -in-place  "s|^dns_domain.*|dns_domain = oslocal|" /etc/neutron/neutron.conf
+% else
+%    if ! grep -q "^dns_domain" neutron.conf; then
+%        sed -in-place  "s|^#dns_domain = openstacklocal$|dns_domain = oslocal|" /etc/neutron/neutron.conf
+%    fi
+% fi
+% # configure ml2 dns driver for neutron
+% ml2file=/etc/neutron/plugins/ml2/ml2_conf.ini
+% if ! grep -q "^extension_drivers" $ml2file; then
+%     # Assuming there is a place holder in comments, replace that string
+%     sed -in-place  "s|^#extension_drivers.*|extension_drivers = port_security,dns|" $ml2file
+% else
+%     # Entry is present, check if dns is already present, if not then enable
+%     if ! grep "^extension_drivers" $ml2file|grep -q dns; then
+%         current_dns=`grep "^extension_drivers" $ml2file`
+%         new_dns="$current_dns,dns"
+%         sed -in-place  "s|^extension_drivers.*|$new_dns|" $ml2file
+%     fi 
+% fi
+% #------
+% 
+% # Now restart the services
+% #Restart ironic, nova, neutron, and ovs to load in the new configuration
+% systemctl restart neutron-dhcp-agent
+% systemctl restart neutron-openvswitch-agent
+% systemctl restart neutron-metadata-agent
+% systemctl restart neutron-server
+% systemctl restart openstack-nova-scheduler
+% systemctl restart openstack-nova-compute
+% systemctl restart openstack-ironic-conductor
+% #  XFILEX prepare_cloud_init
+% #!bin/bash
+% # 
+% if [[ "${chpc_base}" == "orch" ]]; then
+% 	echo "CloudInit: Intel Orchestrator"
+%         chpcInitPath=/opt/intel/hpc-orchestrator/admin/cloud_hpc_init
+% else
+% 	echo "CloudInit: OpenHPC - ${chpc_base}"
+%         chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
+% fi
+% 
+% # if directory exists then mv to Old directory. TBD
+% mkdir -p $chpcInitPath
+% #copy Cloud HPC files to temp working directory
+% #copy cloud-init file for compute nodes
+% sudo cp -fr -L ${SCRIPTDIR}/cloud_hpc_init/${chpc_base}/* $chpcInitPath/
+% export chpcInit=$chpcInitPath/chpc_init
+% export chpcSMSInit=$chpcInitPath/chpc_sms_init
+% 
+% #update sms_ip in cloudInit scripts for compute nodes
+% sudo sed -i -e "s/<sms_ip>/${sms_ip}/g" $chpcInit
+% 
+% #Update variables to chpc_sms_init
+% sudo sed -i -e "s/<update_cnodename_prefix>/${cnodename_prefix}/g" $chpcSMSInit
+% sudo sed -i -e "s/<update_num_ccomputes>/${num_ccomputes}/g" $chpcSMSInit
+% sudo sed -i -e "s/<update_ntp_server>/${controller_ip}/g" $chpcSMSInit
+% sudo sed -i -e "s/<update_sms_name>/${sms_name}/g" $chpcSMSInit
+% 
+% if [[ ${enable_mrsh} -eq 1 ]];then
+%    # update mrsh for sms node
+%    cat $CHPC_SCRIPTDIR/sms/update_mrsh >> $chpcSMSInit
+% fi
+% if [[ ${enable_clustershell} -eq 1 ]];then
+%    # update clustershell for sms node
+%    cat $CHPC_SCRIPTDIR/sms/update_clustershell >> $chpcSMSInit
+% fi
+% # Internal dns is enabled, So no need to create /etc/hosts file
+% # Prepare hosts file for sms & compute nodes
+% #export etc_hosts=$chpcInitPath/hosts
+% #sms_info="$sms_ip   $sms_name"
+% #cat $etc_hosts|grep "$sms_info"
+% #sexists=$?
+% #if [ "${sexists}" -ne "0" ]; then 
+% #   echo "$sms_info" >> $etc_hosts
+% #fi
+% ## Assuming no DNS, So we have to update hosts file so that sms node can communicate to compute node
+% ## Update CN
+% #for ((i=0; i < ${num_ccomputes}; i++)); do
+% #    node_info="${cc_ip[$i]}  ${cnodename_prefix}$((i+1))"
+% #    cat $etc_hosts|grep "$node_info"
+% #    sexists=$?
+% #    if [ "${sexists}" -ne "0" ]; then 
+% #        echo "$node_info" >> $etc_hosts
+% #    fi
+% #done
+% 
+% end_ohpc_run
 
 \end{document}
-
