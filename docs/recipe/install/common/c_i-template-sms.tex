@@ -3,6 +3,8 @@ Cloud init script for sms node is little different than compute node. Sms node, 
 In this recipe, we will prepare cloud-init template script for sms node, which than is updated with compute node IP, ntp server and other environmental variables, just before provisioning. 
 Create an empty chpc\_init file and open for editing. You can also use existing template and modify. Start editing by adding some environment variable, which will be updated later, just before provisioning.
 
+% begin_ohpc_run
+% ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) (*\#*) Get the Compute node prefix and number of compute nodes
@@ -10,10 +12,13 @@ Create an empty chpc\_init file and open for editing. You can also use existing 
 [ctrlr](*\#*) num_ccomputes=<update_num_ccomputes>
 [ctrlr](*\#*) ntp_server=<update_ntp_server>
 [ctrlr](*\#*) sms_name=<update_sms_name>
-\end{lstlisting}
+\end{lstlisting} 
+ % end_ohpc_run
 
 Now setup nfs share for cloud-init and files which want to send to compute nodes.
 
+% begin_ohpc_run
+% ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) (*\#*) setup cloudinit directory
@@ -26,9 +31,13 @@ Now setup nfs share for cloud-init and files which want to send to compute nodes
 [ctrlr](*\#*) sudo cp -fpr /etc/passwd $chpcInitPath
 [ctrlr](*\#*) sudo cp -fpr /etc/shadow $chpcInitPath
 [ctrlr](*\#*) sudo cp -fpr /etc/group $chpcInitPath
-\end{lstlisting}
+\end{lstlisting} 
+ % end_ohpc_run
 
 Share /home, /opt/ohpc/pub and /opt/ohpc/admin/cloud\_hpc\_init over nfs
+
+% begin_ohpc_run
+% ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) (*\#*) export CloudInit Path to nfs share
@@ -51,10 +60,13 @@ Share /home, /opt/ohpc/pub and /opt/ohpc/admin/cloud\_hpc\_init over nfs
 [ctrlr](*\#*) systemctl restart nfs
 [ctrlr](*\#*) systemctl enable nfs-server
 [ctrlr](*\#*) logger "chpcInit: nfs configuration complete, updating remaining HPC configuration" 
-\end{lstlisting}
+\end{lstlisting} 
+ % end_ohpc_run
 
 Configure ntp sever on sms node, as per the site setting.
 
+% begin_ohpc_run
+% ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) (*\#*) configure NTP
@@ -67,10 +79,14 @@ Configure ntp sever on sms node, as per the site setting.
 [ctrlr](*\#*) (*\#*) time sync
 [ctrlr](*\#*) ntpstat
 [ctrlr](*\#*) logger "chpcInit:ntp configuration done"
-\end{lstlisting}
+\end{lstlisting} 
+ % end_ohpc_run
 
 Distribute munge keys with compute nodes and then Update SLURM resource manager with hpc compute nodes.
 
+
+% begin_ohpc_run
+% ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) (*\#*)(*\#*)(*\#*) Update Resource manager configuration (*\#*)(*\#*)(*\#*)
@@ -90,21 +106,28 @@ Distribute munge keys with compute nodes and then Update SLURM resource manager 
 [ctrlr](*\#*) (*\#*)systemctl enable slurmd
 [ctrlr](*\#*) (*\#*)systemctl restart slurmd
 [ctrlr](*\#*) logger "chpcInit:slurm configuration done"
-\end{lstlisting}
+\end{lstlisting} 
+ % end_ohpc_run
 
 
 One last step to make sure ssh is working and enabled on compute nodes. Update the permissions of ssh.
 
+% begin_ohpc_run
+% ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) (*\#*)Change file permissions in /etc/ssh to fix ssh into compute node
 [ctrlr](*\#*) chmod 0600 /etc/ssh/ssh_host_*_key
-\end{lstlisting}
+\end{lstlisting} 
+ % end_ohpc_run
 
 Save the file with name chp\_sms\_cinit, we will use this file during sms node instance creation.
 Prepare optional part of cloud-init
 Update mrsh during cloud-init 
 Create a new file sms/update\_mrsh and add mrsh configuration to enable mrsh on sms node. And save it. 
+
+% begin_ohpc_run
+% ohpc_validation_newline
 
 
 \begin{lstlisting}[language=bash,keywords={}]
@@ -122,13 +145,17 @@ Create a new file sms/update\_mrsh and add mrsh configuration to enable mrsh on 
 [ctrlr](*\#*)     echo "mlogin            541/tcp     \
 [ctrlr](*\#*)     (*\#*) mrlogind" >> /etc/services
 [ctrlr](*\#*) fi
-\end{lstlisting}
+\end{lstlisting} 
+ % end_ohpc_run
 
 
 Updating cluster shell during cloud -init
 Create a new file sms/update\_clustershell and add configuration to enable clustershell on sms node. And save it. 
 
+% begin_ohpc_run
+% ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) sed -i -- 's/all: @adm,@compute/compute: cc[1-${num_ccomputes}]\n&/' /etc/clustershell/groups.d/local.cfg
-\end{lstlisting}
+\end{lstlisting} 
+ % end_ohpc_run

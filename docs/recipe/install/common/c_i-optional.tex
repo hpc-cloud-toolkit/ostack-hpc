@@ -2,6 +2,9 @@
  
 Create a new file sms/update\_mrsh and add mrsh configuration to enable mrsh on sms node. And save it. 
 
+% begin_ohpc_run
+% ohpc_validation_newline
+
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) (*\#*) Update mrsh
 [ctrlr](*\#*) (*\#*) check if it is already configured grep mshell /etc/services will return non-zero, else configure"
@@ -15,12 +18,18 @@ Create a new file sms/update\_mrsh and add mrsh configuration to enable mrsh on 
 [ctrlr](*\#*) if [ "${mlogin_exists}" -ne "0" ]; then
 [ctrlr](*\#*)     echo "mlogin            541/tcp                  (*\#*) mrlogind" >> /etc/services
 [ctrlr](*\#*) fi
-\end{lstlisting}
+\end{lstlisting} 
+ % end_ohpc_run
 
 
 \subsubsection{Updating cluster shell during cloud -init}
 Create a new file sms/update\_clustershell and add configuration to enable clustershell on sms node. And save it. 
 
+% begin_ohpc_run
+% ohpc_validation_newline
+
+
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) sed -i -- 's/all: @adm,@compute/compute: cc[1-${num_ccomputes}]\n&/' /etc/clustershell/groups.d/local.cfg
-\end{lstlisting}
+\end{lstlisting} 
+ % end_ohpc_run

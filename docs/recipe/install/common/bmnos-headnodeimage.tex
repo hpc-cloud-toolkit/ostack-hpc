@@ -1,66 +1,106 @@
 To build head node (aka sms) images, we need to install server packages of HPC components. This is accomplished by setting image type to sms. Default image type in hpc elements is “compute”.
 
+% begin_ohpc_run
+% ohpc_validation_newline
+
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) export DIB\_HPC\_IMAGE\_TYPE=sms
-\end{lstlisting}
+\end{lstlisting} 
+ % end_ohpc_run
 
 Now enable SLURM resource manager for head node.
 
+% begin_ohpc_run
+% ohpc_validation_newline
+
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) DIB\_HPC\_ELEMENTS+=" hpc-slurm"
-\end{lstlisting}
+\end{lstlisting} 
+ % end_ohpc_run
 
 Add optional OpenHPC Components
+
+% begin_ohpc_run
+% ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*)  if [[ \$\{enable\_mrsh\} -eq 1 ]];then
 [ctrlr](*\#*)         DIB\_HPC\_ELEMENTS+=" hpc-mrsh"
 [ctrlr](*\#*)  fi
-\end{lstlisting}
+\end{lstlisting} 
+ % end_ohpc_run
 
 We will also setup HPC development environment on HPC head node. 
 Enable gnu compiler
 
+% begin_ohpc_run
+% ohpc_validation_newline
+
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*)  export DIB\_HPC\_COMPILER="gnu"
-\end{lstlisting}
+\end{lstlisting} 
+ % end_ohpc_run
 
 Enable openmpi \& mvapich2
 
+% begin_ohpc_run
+% ohpc_validation_newline
+
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) export DIB\_HPC\_MPI="openmpi mvapich2"
-\end{lstlisting}
+\end{lstlisting} 
+ % end_ohpc_run
 
 Enable performance tools
 
+% begin_ohpc_run
+% ohpc_validation_newline
+
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) export DIB\_HPC\_PERF\_TOOLS="perf-tools"
-\end{lstlisting}
+\end{lstlisting} 
+ % end_ohpc_run
 
 Enable 3rd party libraries serial-libs, parallel-libs, io-libs, python-libs and runtimes
 
+% begin_ohpc_run
+% ohpc_validation_newline
+
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) export DIB\_HPC\_3RD\_LIBS="serial-libs parallel-libs io-libs python-libs runtimes"
-\end{lstlisting}
+\end{lstlisting} 
+ % end_ohpc_run
 
 Add hpc development environment element to list of elements
 
+% begin_ohpc_run
+% ohpc_validation_newline
+
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) DIB\_HPC\_ELEMENTS+=" hpc-dev-env"
-\end{lstlisting}
+\end{lstlisting} 
+ % end_ohpc_run
 
 Now create a sms image with element local-config, dhcp-all-interfaces, devuser, selinux-permisive and all hpc specific elements. Element local-config copies your local environment into image, which is the local users, their password and permissions. Element devuser will create new user specified by environment variable "DIB\_DEV\_USER\_USERNAME". 
+
+% begin_ohpc_run
+% ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) disk-image-create centos7 vm local-config dhcp-all-interfaces devuser \
  selinux-permissive \$DIB\_HPC\_ELEMENTS -o icloud-hpc-cent7-sms
-\end{lstlisting}
+\end{lstlisting} 
+ % end_ohpc_run
 
 It will take a while to build an image. Once image is built copy it to standard openHPC path.
+
+% begin_ohpc_run
+% ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) chpc_image_sms="$( realpath icloud-hpc-cent7.qcow2)"
 [ctrlr](*\#*) mkdir -p $CHPC_CLOUD_IMAGE_PATH
 [ctrlr](*\#*) mv -f \$chpc\_image\_sms \$CHPC\_CLOUD\_IMAGE\_PATH
 [ctrlr](*\#*) chpc\_image\_sms=\$CHPC\_CLOUD\_IMAGE\_PATH/\$(basename \$chpc\_image\_sms)
-\end{lstlisting}
+\end{lstlisting} 
+ % end_ohpc_run
