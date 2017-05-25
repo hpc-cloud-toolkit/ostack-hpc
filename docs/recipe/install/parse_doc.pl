@@ -92,6 +92,7 @@ open( IN, "<$tmpfile_aggr_steps" ) || die __LINE__ . ": Cannot open file -> $fil
 my $begin_delim   = "% begin_ohpc_run";
 my $end_delim     = "% end_ohpc_run";
 my $prompt        = quotemeta "\[sms\]\(\*\\\#\*\)";
+my $ctrlr_prompt        = quotemeta "\[ctrlr\]\(\*\\\#\*\)";
 my $psql_prompt   = quotemeta "\[postgres\]\$";
 my $disable_delim = "^%%";
 my $indent        = 0;
@@ -180,6 +181,13 @@ while( <IN> ) {
 
         # normal single line command
         } elsif( $_ =~ /$prompt (.+)$/ ) {
+            my $cmd = update_cmd($1);
+            # commands that begin with a % are for CI only
+            next if( $_ =~ /^%/ && !$ci_run );
+            print $fh ' ' x $indent . "$cmd\n";
+
+        # normal single line controller command
+        } elsif( $_ =~ /$ctrlr_prompt (.+)$/ ) {
             my $cmd = update_cmd($1);
             # commands that begin with a % are for CI only
             next if( $_ =~ /^%/ && !$ci_run );
