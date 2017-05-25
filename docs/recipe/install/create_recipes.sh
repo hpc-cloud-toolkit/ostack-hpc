@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-input_file="/home/jkling/Projects/IntelOHPC/hpc/docs/recipe/install/centos7/x86_64/openstack/slurm/steps.tex"
+input_file="./centos7/x86_64/openstack/slurm/steps.tex"
 recipe2="prepare_chpc_image"
 recipe3="prepare_cloud_init"
 recipe4="deploy_chpc_openstack"

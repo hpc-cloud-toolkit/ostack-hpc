@@ -1,0 +1,16 @@
+This README covers generating recipe scripts from the HPCaaS documentation.
+
+To generate scripts-
+
+	1.) Make sure the input file in create_recipes.sh is correct.
+	2.) ./create_recipes.sh
+
+At current, this will publish the 4 recipes the docs generate.
+
+prepare_chpc_image
+prepare_cloud_init
+deploy_chpc_openstack 
+prepare_chpc_openstack
+
+
+More will be added as necessary
