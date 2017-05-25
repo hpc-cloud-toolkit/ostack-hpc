@@ -5,92 +5,91 @@ Create an empty chpc\_init file and open for editing. You can also use existing 
 
 
 \begin{lstlisting}[language=bash,keywords={}]
-(*\#*) Get the Compute node prefix and number of compute nodes
-cnodename_prefix=<update_cnodename_prefix>
-num_ccomputes=<update_num_ccomputes>
-ntp_server=<update_ntp_server>
-sms_name=<update_sms_name>
+[ctrlr](*\#*) (*\#*) Get the Compute node prefix and number of compute nodes
+[ctrlr](*\#*) cnodename_prefix=<update_cnodename_prefix>
+[ctrlr](*\#*) num_ccomputes=<update_num_ccomputes>
+[ctrlr](*\#*) ntp_server=<update_ntp_server>
+[ctrlr](*\#*) sms_name=<update_sms_name>
 \end{lstlisting}
 
 Now setup nfs share for cloud-init and files which want to send to compute nodes.
 
 
 \begin{lstlisting}[language=bash,keywords={}]
-(*\#*) setup cloudinit directory
-chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
-(*\#*) create directory of not exists
-mkdir -p $chpcInitPath
-chmod 700 $chpcInitPath
-To create same user environment, copy user files 
-(*\#*) Copy other files needed for Cloud Init
-sudo cp -fpr /etc/passwd $chpcInitPath
-sudo cp -fpr /etc/shadow $chpcInitPath
-sudo cp -fpr /etc/group $chpcInitPath
+[ctrlr](*\#*) (*\#*) setup cloudinit directory
+[ctrlr](*\#*) chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
+[ctrlr](*\#*) (*\#*) create directory of not exists
+[ctrlr](*\#*) mkdir -p $chpcInitPath
+[ctrlr](*\#*) chmod 700 $chpcInitPath
+[ctrlr](*\#*) # To create same user environment, copy user files 
+[ctrlr](*\#*) (*\#*) Copy other files needed for Cloud Init
+[ctrlr](*\#*) sudo cp -fpr /etc/passwd $chpcInitPath
+[ctrlr](*\#*) sudo cp -fpr /etc/shadow $chpcInitPath
+[ctrlr](*\#*) sudo cp -fpr /etc/group $chpcInitPath
 \end{lstlisting}
 
 Share /home, /opt/ohpc/pub and /opt/ohpc/admin/cloud\_hpc\_init over nfs
 
 \begin{lstlisting}[language=bash,keywords={}]
-(*\#*) export CloudInit Path to nfs share
-cat /etc/exports | grep "$chpcInitPath"
-chpcInitPath_exported=$?
-
-if [ "${chpcInitPath_exported}" -ne "0" ]; then
-    echo "$chpcInitPath *(rw,no_subtree_check,no_root_squash)" >> /etc/exports
-fi
-(*\#*) share /home from HN
-if ! grep "^/home" /etc/exports; then
-    echo "/home *(rw,no_subtree_check,fsid=10,no_root_squash)" >> /etc/exports
-fi
-(*\#*) share /opt/ from HN
-if ! grep "^/opt/ohpc/pub" /etc/exports; then
-    echo "/opt/ohpc/pub *(ro,no_subtree_check,fsid=11)" >> /etc/exports
-fi
-exportfs -a
-(*\#*) Restart nfs
-systemctl restart nfs
-systemctl enable nfs-server
-logger "chpcInit: nfs configuration complete, updating remaining HPC configuration" 
+[ctrlr](*\#*) (*\#*) export CloudInit Path to nfs share
+[ctrlr](*\#*) cat /etc/exports | grep "$chpcInitPath"
+[ctrlr](*\#*) chpcInitPath_exported=$?
+[ctrlr](*\#*) 
+[ctrlr](*\#*) if [ "${chpcInitPath_exported}" -ne "0" ]; then
+[ctrlr](*\#*)    echo "$chpcInitPath *(rw,no_subtree_check,no_root_squash)" >> /etc/exports
+[ctrlr](*\#*) fi
+[ctrlr](*\#*) (*\#*) share /home from HN
+[ctrlr](*\#*) if ! grep "^/home" /etc/exports; then
+[ctrlr](*\#*)     echo "/home *(rw,no_subtree_check,fsid=10,no_root_squash)" >> /etc/exports
+[ctrlr](*\#*) fi
+[ctrlr](*\#*) (*\#*) share /opt/ from HN
+[ctrlr](*\#*) if ! grep "^/opt/ohpc/pub" /etc/exports; then
+[ctrlr](*\#*)     echo "/opt/ohpc/pub *(ro,no_subtree_check,fsid=11)" >> /etc/exports
+[ctrlr](*\#*) fi
+[ctrlr](*\#*) exportfs -a
+[ctrlr](*\#*) (*\#*) Restart nfs
+[ctrlr](*\#*) systemctl restart nfs
+[ctrlr](*\#*) systemctl enable nfs-server
+[ctrlr](*\#*) logger "chpcInit: nfs configuration complete, updating remaining HPC configuration" 
 \end{lstlisting}
 
 Configure ntp sever on sms node, as per the site setting.
 
 
 \begin{lstlisting}[language=bash,keywords={}]
-(*\#*) configure NTP
-systemctl enable ntpd
-if [[ ! -z "$ntp_server" ]]; then
-   echo "server ${ntp_server}" >> /etc/ntp.conf
-fi
-systemctl restart ntpd
-systemctl enable ntpd.service
-(*\#*) time sync
-ntpstat
-logger "chpcInit:ntp configuration done"
+[ctrlr](*\#*) (*\#*) configure NTP
+[ctrlr](*\#*) systemctl enable ntpd
+[ctrlr](*\#*) if [[ ! -z "$ntp_server" ]]; then
+[ctrlr](*\#*)    echo "server ${ntp_server}" >> /etc/ntp.conf
+[ctrlr](*\#*) fi
+[ctrlr](*\#*) systemctl restart ntpd
+[ctrlr](*\#*) systemctl enable ntpd.service
+[ctrlr](*\#*) (*\#*) time sync
+[ctrlr](*\#*) ntpstat
+[ctrlr](*\#*) logger "chpcInit:ntp configuration done"
 \end{lstlisting}
 
 Distribute munge keys with compute nodes and then Update SLURM resource manager with hpc compute nodes.
 
 
 \begin{lstlisting}[language=bash,keywords={}]
-(*\#*)(*\#*)(*\#*) Update Resource manager configuration (*\#*)(*\#*)(*\#*)
-(*\#*) Update basic slurm configuration at sms node
-perl -pi -e "s/ControlMachine=\S+/ControlMachine=${sms_name}/" /etc/slurm/slurm.conf
-perl -pi -e "s/^NodeName=(\S+)/NodeName=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
-perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal \
-Nodes=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
-(*\#*) copy slurm file from sms node to Cloud Comute Nodes
-cp -fpr -L /etc/slurm/slurm.conf $chpcInitPath
-cp -fpr -L /etc/pam.d/slurm $chpcInitPath
-cp -fpr -L /etc/munge/munge.key $chpcInitPath
-(*\#*) Start slurm and munge 
-systemctl enable munge
-systemctl restart munge
-systemctl enable slurmctld
-systemctl restart slurmctld
-(*\#*)systemctl enable slurmd
-(*\#*)systemctl restart slurmd
-logger "chpcInit:slurm configuration done"
+[ctrlr](*\#*) (*\#*)(*\#*)(*\#*) Update Resource manager configuration (*\#*)(*\#*)(*\#*)
+[ctrlr](*\#*) (*\#*) Update basic slurm configuration at sms node
+[ctrlr](*\#*) perl -pi -e "s/ControlMachine=\S+/ControlMachine=${sms_name}/" /etc/slurm/slurm.conf
+[ctrlr](*\#*) perl -pi -e "s/^NodeName=(\S+)/NodeName=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
+[ctrlr](*\#*) perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
+[ctrlr](*\#*) (*\#*) copy slurm file from sms node to Cloud Comute Nodes
+[ctrlr](*\#*) cp -fpr -L /etc/slurm/slurm.conf $chpcInitPath
+[ctrlr](*\#*) cp -fpr -L /etc/pam.d/slurm $chpcInitPath
+[ctrlr](*\#*) cp -fpr -L /etc/munge/munge.key $chpcInitPath
+[ctrlr](*\#*) (*\#*) Start slurm and munge 
+[ctrlr](*\#*) systemctl enable munge
+[ctrlr](*\#*) systemctl restart munge
+[ctrlr](*\#*) systemctl enable slurmctld
+[ctrlr](*\#*) systemctl restart slurmctld
+[ctrlr](*\#*) (*\#*)systemctl enable slurmd
+[ctrlr](*\#*) (*\#*)systemctl restart slurmd
+[ctrlr](*\#*) logger "chpcInit:slurm configuration done"
 \end{lstlisting}
 
 
@@ -98,8 +97,8 @@ One last step to make sure ssh is working and enabled on compute nodes. Update t
 
 
 \begin{lstlisting}[language=bash,keywords={}]
-(*\#*)Change file permissions in /etc/ssh to fix ssh into compute node
-chmod 0600 /etc/ssh/ssh_host_*_key
+[ctrlr](*\#*) (*\#*)Change file permissions in /etc/ssh to fix ssh into compute node
+[ctrlr](*\#*) chmod 0600 /etc/ssh/ssh_host_*_key
 \end{lstlisting}
 
 Save the file with name chp\_sms\_cinit, we will use this file during sms node instance creation.
@@ -109,20 +108,20 @@ Create a new file sms/update\_mrsh and add mrsh configuration to enable mrsh on 
 
 
 \begin{lstlisting}[language=bash,keywords={}]
-(*\#*) Update mrsh
-(*\#*) check if it is already configured grep mshell /etc/services will return non-zero, else configure"
-cat /etc/services | grep mshell
-mshell_exists=$?
-if [ "${mshell_exists}" -ne "0" ]; then \
-    echo "mshell          21212/tcp     \             
-    (*\#*) mrshd" >> /etc/services
-fi
-cat /etc/services | grep mlogin
-mlogin_exists=$?
-if [ "${mlogin_exists}" -ne "0" ]; then \
-    echo "mlogin            541/tcp     \
-    (*\#*) mrlogind" >> /etc/services
-fi
+[ctrlr](*\#*) (*\#*) Update mrsh
+[ctrlr](*\#*) (*\#*) check if it is already configured grep mshell /etc/services will [ctrlr](*\#*) return non-zero, else configure"
+[ctrlr](*\#*) cat /etc/services | grep mshell
+[ctrlr](*\#*) mshell_exists=$?
+[ctrlr](*\#*) if [ "${mshell_exists}" -ne "0" ]; then \
+[ctrlr](*\#*)     echo "mshell          21212/tcp     \             
+[ctrlr](*\#*)     (*\#*) mrshd" >> /etc/services
+[ctrlr](*\#*) fi
+[ctrlr](*\#*) cat /etc/services | grep mlogin
+[ctrlr](*\#*) mlogin_exists=$?
+[ctrlr](*\#*) if [ "${mlogin_exists}" -ne "0" ]; then \
+[ctrlr](*\#*)     echo "mlogin            541/tcp     \
+[ctrlr](*\#*)     (*\#*) mrlogind" >> /etc/services
+[ctrlr](*\#*) fi
 \end{lstlisting}
 
 
@@ -131,5 +130,5 @@ Create a new file sms/update\_clustershell and add configuration to enable clust
 
 
 \begin{lstlisting}[language=bash,keywords={}]
-sed -i -- 's/all: @adm,@compute/compute: cc[1-${num_ccomputes}]\n&/' /etc/clustershell/groups.d/local.cfg
+[ctrlr](*\#*) sed -i -- 's/all: @adm,@compute/compute: cc[1-${num_ccomputes}]\n&/' /etc/clustershell/groups.d/local.cfg
 \end{lstlisting}

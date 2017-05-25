@@ -6,8 +6,12 @@ Two tenants, named \texttt{admin} and \texttt{services} are created in keystone 
 
 Below is expected endpoint list.
 
+% begin_ohpc_run
+% ohpc_validation_comment #   XFILEX deploy_chpc_openstack
+
 \begin{lstlisting}[language=bash,keywords={}]
-openstack service list
+
+[ctrlr](*\#*) openstack service list
 
 #Expected Output#
 +----------------------------------+-----------+---------------+---------------+
@@ -28,7 +32,7 @@ openstack service list
 | d5714e8adb094671ad0388d04214c44d | RegionOne | cinderv2      | volumev2      |
 +----------------------------------+-----------+---------------+---------------+
 
-openstack project list
+[ctrlr](*\#*) openstack project list
 
 #Expected Output#
 +----------------------------------+----------+
@@ -38,19 +42,21 @@ openstack project list
 | b1ed7efb53cc44c8b06daaee15b6a296 | services |
 +----------------------------------+----------+
 \end{lstlisting}
-
+% end_ohpc_run
 
 Recipe below is tested with controller node installed and configured using packstack.
 Reference section provide more detail on packstack installation of OpenStack.
 Before starting with HPC instantiation, please export openstack credential as a root or system admin, we will be using them during openstack configuration. 
 
+% begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
-unset OS_SERVICE_TOKEN
-export OS_USERNAME=admin
-export OS_PASSWORD=<>
-export OS_AUTH_URL=<>
-export PS1='[\u@\h \W(keystone_admin)]\$ '
-
-export OS_TENANT_NAME=admin
-export OS_REGION_NAME=<>  
+[ctrlr](*\#*) unset OS_SERVICE_TOKEN
+[ctrlr](*\#*) export OS_USERNAME=admin
+[ctrlr](*\#*) export OS_PASSWORD=<>
+[ctrlr](*\#*) export OS_AUTH_URL=<>
+[ctrlr](*\#*) export PS1='[\u@\h \W(keystone_admin)]\$ '
+[ctrlr](*\#*) 
+[ctrlr](*\#*) export OS_TENANT_NAME=admin
+[ctrlr](*\#*) export OS_REGION_NAME=<>  
 \end{lstlisting}
+% end_ohpc_run

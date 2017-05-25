@@ -3,18 +3,18 @@
 Create a new file sms/update\_mrsh and add mrsh configuration to enable mrsh on sms node. And save it. 
 
 \begin{lstlisting}[language=bash,keywords={}]
-(*\#*) Update mrsh
-(*\#*) check if it is already configured grep mshell /etc/services will return non-zero, else configure"
-cat /etc/services | grep mshell
-mshell_exists=$?
-if [ "${mshell_exists}" -ne "0" ]; then
-    echo "mshell          21212/tcp                  (*\#*) mrshd" >> /etc/services
-fi
-cat /etc/services | grep mlogin
-mlogin_exists=$?
-if [ "${mlogin_exists}" -ne "0" ]; then
-    echo "mlogin            541/tcp                  (*\#*) mrlogind" >> /etc/services
-fi
+[ctrlr](*\#*) (*\#*) Update mrsh
+[ctrlr](*\#*) (*\#*) check if it is already configured grep mshell /etc/services will return non-zero, else configure"
+[ctrlr](*\#*) cat /etc/services | grep mshell
+[ctrlr](*\#*) mshell_exists=$?
+[ctrlr](*\#*) if [ "${mshell_exists}" -ne "0" ]; then
+[ctrlr](*\#*)     echo "mshell          21212/tcp                  (*\#*) mrshd" >> /etc/services
+[ctrlr](*\#*) fi
+[ctrlr](*\#*) cat /etc/services | grep mlogin
+[ctrlr](*\#*) mlogin_exists=$?
+[ctrlr](*\#*) if [ "${mlogin_exists}" -ne "0" ]; then
+[ctrlr](*\#*)     echo "mlogin            541/tcp                  (*\#*) mrlogind" >> /etc/services
+[ctrlr](*\#*) fi
 \end{lstlisting}
 
 
@@ -22,5 +22,5 @@ fi
 Create a new file sms/update\_clustershell and add configuration to enable clustershell on sms node. And save it. 
 
 \begin{lstlisting}[language=bash,keywords={}]
-sed -i -- 's/all: @adm,@compute/compute: cc[1-${num_ccomputes}]\n&/' /etc/clustershell/groups.d/local.cfg
+[ctrlr](*\#*) sed -i -- 's/all: @adm,@compute/compute: cc[1-${num_ccomputes}]\n&/' /etc/clustershell/groups.d/local.cfg
 \end{lstlisting}

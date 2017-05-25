@@ -34,7 +34,7 @@ Enable openmpi \& mvapich2
 Enable performance tools
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*(*\#*)*) export DIB\_HPC\_PERF\_TOOLS="perf-tools"
+[ctrlr](*\#*) export DIB\_HPC\_PERF\_TOOLS="perf-tools"
 \end{lstlisting}
 
 Enable 3rd party libraries serial-libs, parallel-libs, io-libs, python-libs and runtimes
@@ -59,8 +59,8 @@ Now create a sms image with element local-config, dhcp-all-interfaces, devuser, 
 It will take a while to build an image. Once image is built copy it to standard openHPC path.
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) chpc\_image\_sms="\$( realpath icloud-hpc-cent7.qcow2)"
-[ctrlr](*\#*) mkdir -p \$CHPC\_CLOUD\_IMAGE\_PATH
+[ctrlr](*\#*) chpc_image_sms="$( realpath icloud-hpc-cent7.qcow2)"
+[ctrlr](*\#*) mkdir -p $CHPC_CLOUD_IMAGE_PATH
 [ctrlr](*\#*) mv -f \$chpc\_image\_sms \$CHPC\_CLOUD\_IMAGE\_PATH
 [ctrlr](*\#*) chpc\_image\_sms=\$CHPC\_CLOUD\_IMAGE\_PATH/\$(basename \$chpc\_image\_sms)
 \end{lstlisting}

@@ -11,11 +11,14 @@ In this example cloud images are built on controller node ("[ctrlr]\# "). Once i
 
 % begin_ohpc_run
 % ohpc_validation_newline
-% ohpc_validation_comment # SECTION BMNOS
+% ohpc_validation_comment #   XFILEX chpc_prepare_image
+% ohpc_validation_comment # SECTION BMNOS 
 % ohpc_validation_comment # Set cloud image path 
 % ohpc_validation_comment
-\begin{lstlisting}[language=bash,keywords={}]
-%[ctrlr](*\#*) CHPC_CLOUD_IMAGE_PATH=/opt/ohpc/admin/images/cloud/
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[ctrlr](*\#*) CHPC_CLOUD_IMAGE_PATH=/opt/ohpc/admin/images/cloud/
 \end{lstlisting}
-%end_ohpc_run
+% end_ohpc_run
+
+
 

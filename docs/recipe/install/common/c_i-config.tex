@@ -2,43 +2,48 @@ In previous section we created template for cloud-init for hpc head node and hpc
 
 Copy cloud-init template to working folder
 
+%begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
-chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
-# if directory exists then mv to Old directory. TBD
-mkdir -p $chpcInitPath
-#copy Cloud HPC files to temp working directory
-sudo cp -fr -L < ${SCRIPTDIR} >/ cloud_hpc_init/${chpc_base}/* $chpcInitPath/
-export chpcInit=$chpcInitPath/chpc_init
-export chpcSMSInit=$chpcInitPath/chpc_sms_init
+[ctrlr](*\#*) chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
+[ctrlr](*\#*) # if directory exists then mv to Old directory. TBD
+[ctrlr](*\#*) mkdir -p $chpcInitPath
+[ctrlr](*\#*) #copy Cloud HPC files to temp working directory
+[ctrlr](*\#*) sudo cp -fr -L < ${SCRIPTDIR} >/ cloud_hpc_init/${chpc_base}/* $chpcInitPath/
+[ctrlr](*\#*) export chpcInit=$chpcInitPath/chpc_init
+[ctrlr](*\#*) export chpcSMSInit=$chpcInitPath/chpc_sms_init
 \end{lstlisting}
-
+% end_ohpc_run
 
 Update sms\_ip in compute node cloud-init template with HPC head node. 
 
 \begin{lstlisting}[language=bash,keywords={}]
-sudo sed -i -e "s/<sms_ip>/${sms_ip}/g" $chpcInit
+[ctrlr](*\#*) sudo sed -i -e "s/<sms_ip>/${sms_ip}/g" $chpcInit
 \end{lstlisting}
 
 
 Update HPC head node cloud-init template with compute name prefix as defined by user
 
+%begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
-sudo sed -i -e "s/<update_cnodename_prefix>/${cnodename_prefix}/g" $chpcSMSInit
-sudo sed -i -e "s/<update_num_ccomputes>/${num_ccomputes}/g" $chpcSMSInit
-Update hostname of HPC head node & NTP server information
-sudo sed -i -e "s/<update_ntp_server>/${controller_ip}/g" $chpcSMSInit
-sudo sed -i -e "s/<update_sms_name>/${sms_name}/g" $chpcSMSInit
+[ctrlr](*\#*) sudo sed -i -e "s/<update_cnodename_prefix>/${cnodename_prefix}/g" $chpcSMSInit
+[ctrlr](*\#*) sudo sed -i -e "s/<update_num_ccomputes>/${num_ccomputes}/g" $chpcSMSInit
+[ctrlr](*\#*) # Update hostname of HPC head node & NTP server information
+[ctrlr](*\#*) sudo sed -i -e "s/<update_ntp_server>/${controller_ip}/g" $chpcSMSInit
+[ctrlr](*\#*) sudo sed -i -e "s/<update_sms_name>/${sms_name}/g" $chpcSMSInit
 \end{lstlisting}
+%end_ohpc_run
 
 Optionally if user enabled mrsh or clusteshell, then update cloud-init accordingly
 
+%begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
-if [[ ${enable_mrsh} -eq 1 ]];then
-   # update mrsh for sms node
-   cat $CHPC_SCRIPTDIR/sms/update_mrsh >> $chpcSMSInit
-fi
-if [[ ${enable_clustershell} -eq 1 ]];then
-   # update clustershell for sms node
-   cat $CHPC_SCRIPTDIR/sms/update_clustershell >> $chpcSMSInit
-fi
+[ctrlr](*\#*) if [[ ${enable_mrsh} -eq 1 ]];then
+[ctrlr](*\#*)    # update mrsh for sms node
+[ctrlr](*\#*)    cat $CHPC_SCRIPTDIR/sms/update_mrsh >> $chpcSMSInit
+[ctrlr](*\#*) fi
+[ctrlr](*\#*) if [[ ${enable_clustershell} -eq 1 ]];then
+[ctrlr](*\#*)    # update clustershell for sms node
+[ctrlr](*\#*)    cat $CHPC_SCRIPTDIR/sms/update_clustershell >> $chpcSMSInit
+[ctrlr](*\#*) fi
 \end{lstlisting}
+%end_ophc_run
