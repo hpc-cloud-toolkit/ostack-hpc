@@ -176,6 +176,8 @@ Similar to sms node, create setup for all compute nodes including creating ironi
 
 \begin{lstlisting}[language=bash,keywords={}]
 (*\#*) Setup Compute nodes
+(*\#*) Note: if installed from the rpm, the following script is installed as setup_compute_nodes.sh 
+
     for ((i=0; i < ${num_ccomputes}; i++)); do
         (*\#*)(*\#*)Create compute nodes in the bare metal service
         ironic node-list | grep "|\s*${cnodename_prefix}$((i+1))\s*|"

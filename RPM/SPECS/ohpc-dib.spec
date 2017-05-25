@@ -57,13 +57,13 @@ cp -r * %{buildroot}
    /usr/share/diskimage-builder/elements/hpc-slurm/install.d/92-hpc-slurm
    /usr/share/diskimage-builder/elements/hpc-slurm/post-install.d/92-hpc-slurm
    /usr/share/diskimage-builder/elements/yum/bin/install-packages-new
-
+   /opt/ohpc/admin/cloud_hpc_init	
  
 #%doc %attr(0444,root,root) /
 
 %post
 
-if [ -e /usr/share/diskimage-builder/elements/yum/bin/install-packages-new ]
+if [ -e /usr/share/diskimage-builder/elements/yum/bin/install-packages-new]
 	then
 		mv /usr/share/diskimage-builder/elements/yum/bin/install-packages /usr/share/diskimage-builder/elements/yum/bin/install-packages-ORIG-ohpc-dib
 		mv /usr/share/diskimage-builder/elements/yum/bin/install-packages-new /usr/share/diskimage-builder/elements/yum/bin/install-packages

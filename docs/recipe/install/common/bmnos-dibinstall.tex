@@ -1,18 +1,37 @@
 
 Images can be built on any supported OS. In this example we will install and build images on controller node, user can do same on a system independent of their production cluster. Install diskimage-builder and its dependencies from base OS distro
 
+% begin_ohpc_run
+% ohpc_validation_newline
+% ohpc_validation_comment # SECTION BMNOS
+% ohpc_validation_comment # Install diskimage-builder 
+% ohpc_validation_comment
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) yum -y install diskimage-builder PyYAML
+
 \end{lstlisting}
+% end_phpc_run
 
 Install grub dependency
 
+% begin_ohpc_run
+% ohpc_validation_newline
+% ohpc_validation_comment # SECTION BMNOS
+% ohpc_validation_comment # Install grub dependency 
+% ohpc_validation_comment
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) yum -y install parted
 \end{lstlisting}
+% end_phpc_run
 
 Diskimage-builder installed from base distro does not have group install feature. So add a patch (Note: this probably will be included into RPM and will be part of that rpm installation)
 
+% begin_ohpc_run
+% ohpc_validation_newline
+% ohpc_validation_comment # SECTION BMNOS
+% ohpc_validation_comment # Fix for group install
+% ohpc_validation_comment
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) yum -y install <DIB patch>
 \end{lstlisting}
+% end_phpc_run

@@ -24,6 +24,238 @@
 \newcommand{\upgrade}{yum -y upgrade}
 \newcommand{\chrootupgrade}{yum -y --installroot=\$CHROOT upgrade}
 
+\newcommand{\ChTwoCMDOne}{CHPC\_CLOUD\_IMAGE\_PATH=/opt/ohpc/admin/images/cloud/ }
+\newcommand{\ChTwoOneCMDOne}{yum -y install diskimage-builder PyYAML }
+\newcommand{\ChTwoOneCMDTwo}{yum -y install parted }
+%\newcommand{Ch2.1-CMD3}{ yum -y install <DIB patch> }
+%\newcommand{Ch2.2-CMD1}{ export DIB\_DEV\_USER\_USERNAME=chpc }
+%\newcommand{Ch2.2-CMD2}{ export DIB\_DEV\_USER\_PASSWORD=intel8086 }
+%\newcommand{Ch2.2-CMD3}{ export DIB\_DEV\_USER\_PWDLESS\_SUDO=1 }
+%\newcommand{Ch2.2-CMD4}{ export ELEMENTS_PATH="\$(realpath ../../dib/hpc/elements)" }
+%\newcommand{Ch2.2-CMD5}{ export DIB\_HPC\_FILE\_PATH="\$(realpath ../../dib/hpc/hpc-files/)" }
+%\newcommand{Ch2.2-CMD6}{ export DIB\_HPC\_BASE=\"ohpc" }
+%\newcommand{Ch2.2-CMD7}{ yum -y install \${ohpc_pkg} }
+%\newcommand{Ch2.2-CMD8}{ export DIB\_HPC\_OHPC\_PKG=\${ohpc_pkg} }
+%\newcommand{Ch2.2-CMD9}{ DIB\_HPC\_ELEMENTS="hpc-env-base" }
+%\newcommand{Ch2.3-CMD1}{ DIB\_YUM\_REPO\_CONF }
+%\newcommand{Ch2.3-CMD2}{ yum -y install git }
+%\newcommand{Ch2.3-CMD3}{ disk-image-create ironic-agent centos7 -o icloud-hpc-deploy-c7 }
+%\newcommand{Ch2.3-CMD4}{ chpc\_image\_deploy\_kernel="\$( realpath icloud-hpc-depl\oy-c7.kernel)" }
+%\newcommand{Ch2.3-CMD5}{ chpc\_image\_deploy\_ramdisk="\$( realpath icloud-hpc-deploy-c7.initramfs)" }
+%\newcommand{Ch2.3-CMD6}{ mkdir -p \$CHPC\_CLOUD\_IMAGE\_PATH/ }
+%\newcommand{Ch2.3-CMD7}{ sudo mv -f \$chpc\_image\_deploy\_kernel \$CHP\_CLOUD\_IMAGE\_PATH/ }
+%\newcommand{Ch2.3-CMD8}{ chpc\_image\_deploy\_kernel=\$CHPC\_CLOUD\_IMAGE\_PATH/\$(basename \$chpc\_image\_deploy\_kernel) }
+%\newcommand{Ch2.3-CMD9}{ sudo mv -f \$chpc\_image\_deploy\_ramdisk \$CHPC\_CLOUD\_IMAGE\_PATH/ }
+%\newcommand{Ch2.3-CMD10}{ chpc\_image\_deploy\_ramdisk=\$CHPC\_CLOUD\_IMAGE\_PATH/\$(basename \$chpc\_image\_deploy\_ramdisk) }
+%\newcommand{Ch2.4.1-CMD1}{ export DIB\_HPC\_IMAGE\_TYPE=sms }
+%\newcommand{Ch2.4.1-CMD2}{ DIB\_HPC\_ELEMENTS+=" hpc-slurm" }
+%\newcommand{Ch2.4.1-CMD3}{ if [[ \$\{enable\_mrsh\} -eq 1 ]];then DIB\_HPC\_ELEMENTS+=" hpc-mrsh"; fi }
+%\newcommand{Ch2.4.1-CMD4}{ export DIB\_HPC\_COMPILER="gnu" }
+%\newcommand{Ch2.4.1-CMD5}{ export DIB\_HPC\_MPI="openmpi mvapich2" }
+%\newcommand{Ch2.4.1-CMD6}{ export DIB\_HPC\_PERF\_TOOLS="perftools" }
+%\newcommand{Ch2.4.1-CMD7}{ export DIB\_HPC\_3RD\_LIBS="serial-libs parallel-libs io-libs python-libs runtimes" }
+%\newcommand{Ch2.4.1-CMD8}{ DIB\_HPC\_ELEMENTS+=" hpc-dev-env" }
+%\newcommand{Ch2.4.1-CMD9}{ disk-image-create centos7 vm local-config dhcp-all-interfaces devuser selinux-permissive \$DIB\_HPC\_ELEMENTS -o icloud-hpc-cent7-sms }
+%\newcommand{Ch2.4.1-CMD10}{ chpc\_image\_sms="\$( realpath icloud-hpc-cent7.qcow2)" }
+%\newcommand{Ch2.4.1-CMD11}{ mkdir -p \$CHPC\_CLOUD\_IMAGE\_PATH }
+%\newcommand{Ch2.4.1-CMD12}{ mv -f \$chpc\_image\_sms \$CHPC\_CLOUD\_IMAGE\_PATH }
+%\newcommand{Ch2.4.1-CMD13}{ chpc\_image\_sms=\$CHPC\_CLOUD\_IMAGE\_PATH/\$(basename \$chpc\_image\_sms) }
+%\newcommand{Ch2.4.2-CMD1}{ export DIB\_HPC\_IMAGE\_TYPE=compute }
+%\newcommand{Ch2.4.2-CMD2}{ DIB\_HPC\_ELEMENTS+=" hpc-slurm" }
+%\newcommand{Ch2.4.2-CMD3}{ if [[ \${enable\_mrsh} -eq 1 ]];then DIB\_HPC\_ELEMENTS+=" hpc-mrsh"; fi }
+%\newcommand{Ch2.4.2-CMD4}{ disk-image-create centos7 vm local-config dhcp-all-interfaces devuser selinux-permissive \$DIB\_HPC\_ELEMENTS -o icloud-hpc-cent7-sms }
+%\newcommand{Ch2.4.2-CMD5}{ chpc\_image\_sms="\$( realpath icloud-hpc-cent7.qcow2)" }
+%\newcommand{Ch2.4.2-CMD6}{ mkdir -p \$CHPC\_CLOUD\_IMAGE\_PATH }
+%\newcommand{Ch2.4.2-CMD7}{ mv -f \$chpc\_image\_user \$CHPC\_CLOUD\_IMAGE\_PATH }
+%\newcommand{Ch2.4.2-CMD8}{ chpc\_image\_user=\$CHPC\_CLOUD\_IMAGE\_PATH/\$(basename \$chpc_image_sms) }
+%\newcommand{Ch3.1-CMD1}{ chpcInitPath=/opt/ohpc/admin/cloud_hpc_init }
+%\newcommand{Ch3.1-CMD2}{ logger "chpcInit: Updating Compute Node with HPC configuration" }
+%\newcommand{Ch3.1-CMD3}{ cat /etc/rsyslog.conf | grep "<sms_ip>:514" }
+%\newcommand{Ch3.1-CMD4}{ rsyslog_set=\$? }
+%\newcommand{Ch3.1-CMD5}{ if [ "\${rsyslog_set}" -ne "0" ]; then echo "*.* @<sms_ip>:514" >> /etc/rsyslog.conf; fi }
+%\newcommand{Ch3.1-CMD6}{ systemctl restart rsyslog }
+%\newcommand{Ch3.1-CMD7}{ logger "chpcInit: rsyslog configuration complete, updating remaining HPC configuration" }
+%\newcommand{Ch3.1-CMD8}{ cat /etc/fstab | grep "<sms_ip>:/home" }
+%\newcommand{Ch3.1-CMD9}{ home\_exists=\$? }
+%\newcommand{Ch3.1-CMD10}{ if [ "\${home\_exists}" -ne "0" ]; then echo "<sms\_ip>:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" >> /etc/fstab; fi }
+%\newcommand{Ch3.1-CMD11}{ cat /etc/fstab | grep "<sms\_ip>:/opt/ohpc/pub" }
+%\newcommand{Ch3.1-CMD12}{ ohpc\_pub\_exists=\$? }
+%\newcommand{Ch3.1-CMD13}{ if [ "\${ohpc\_pub\_exists}" -ne "0" ]; then echo "<sms\_ip>:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0" >> /etc/fstab; if [ -e /opt/ohpc/pub ]; then echo "chpcInit: [WARNING] /opt/ohpc/pub already exists!!"; fi; fi }
+%\newcommand{Ch3.1-CMD14}{ mkdir -p /opt/ohpc/pub }
+%\newcommand{Ch3.1-CMD15}{ mount /home }
+%\newcommand{Ch3.1-CMD16}{ mount /opt/ohpc/pub }
+%\newcommand{Ch3.1-CMD17}{ cat /etc/fstab | grep "sms\_ip:\$chpcInitPath" }
+%\newcommand{Ch3.1-CMD18}{ CloudHPCInit\_exist=\$? }
+%\newcommand{Ch3.1-CMD19}{ if [ "\${CloudHPCInit_exist}" -ne "0" ]; then echo "<sms\_ip>:\$chpcInitPath \$chpcInitPath nfs nfsvers=3 0 0" >> /etc/fstab; fi }
+%\newcommand{Ch3.1-CMD20}{ mkdir -p \$chpcInitPath }
+%\newcommand{Ch3.1-CMD21}{ mount \$chpcInitPath }
+%\newcommand{Ch3.1-CMD22}{ systemctl restart nfs }
+%\newcommand{Ch3.1-CMD23}{ have ntp sync with sms node.  }
+%\newcommand{Ch3.1-CMD24}{ systemctl enable ntpd }
+%\newcommand{Ch3.1-CMD25}{ cat /etc/ntp.conf | grep "server <sms_ip>" }
+%\newcommand{Ch3.1-CMD26}{ ntp_server\_exists=\$? }
+%\newcommand{Ch3.1-CMD27}{ if [ "\${ntp\_server\_exists}" -ne "0" ]; then echo "server <sms\_ip>" >> /etc/ntp.conf; fi }
+%\newcommand{Ch3.1-CMD28}{ systemctl restart ntpd }
+%\newcommand{Ch3.1-CMD29}{ if [ -d \$chpcInitPath ]; then cp -f -L \$chpcInitPath/slurm.conf /etc/slurm/slurm.conf; cp -f -L \$chpcInitPath/passwd /etc/passwd; cp -f -L \$chpcInitPath/group /etc/group; cp -f -L \$chpcInitPath/shadow /etc/shadow; cp -f -L \$chpcInitPath/slurm.conf /etc/slurm/slurm.conf; cp -f -L \$chpcInitPath/slurm /etc/pam.d/slurm; cp -f -L \$chpcInitPath/munge.key /etc/munge/munge.key; cp -f -L \$chpcInitPath/hosts /etc/hosts; systemctl enable munge; systemctl restart munge; systemctl enable slurmd; systemctl restart slurmd; else logger "chpcInit:ERROR: cannot stat nfs shared /opt directory, cannot copy HPC system files"; fi }
+%\newcommand{Ch3.1-CMD30}{ cc\_ipaddrs=(`hostname -I`) }
+%\newcommand{Ch3.1-CMD31}{ for cc\_ipaddr in \${cc\_ipaddrs[@]}; do cat /etc/hosts | grep \${cc\_ipaddr} > /dev/null; result=\$?; if [ "\$result" -eq "0" ]; then cc\_hostname=`cat /etc/hosts | grep \${cc\_ipaddr} | cut -d\$'\t' -f2`; break; fi; done }
+%\newcommand{Ch3.1-CMD32}{ if [ -z "\${cc\_hostname}" ]; then logger "chpcInit:ERROR: No resolved hostname found for any IP address in /etc/hosts"; exit 1; fi }
+%\newcommand{Ch3.1-CMD33}{ if [ \$(hostname) != \${cc\_hostname} ]; then hostnamectl set-hostname \${cc\_hostname}; fi }
+%\newcommand{Ch3.1-CMD34}{ systemctl enable munge }
+%\newcommand{Ch3.1-CMD35}{ systemctl restart munge }
+%\newcommand{Ch3.1-CMD36}{ systemctl enable slurmd }
+%\newcommand{Ch3.1-CMD37}{ systemctl restart slurmd }
+%\newcommand{Ch3.1-CMD38}{ chmod 0600 /etc/ssh/ssh\_host\_*\_key }
+%\newcommand{Ch3.2-CMD1}{ cnodename\_prefix=<update\_cnodename\_prefix> }
+%\newcommand{Ch3.2-CMD2}{ num\_ccomputes=<update\_num\_ccomputes> }
+%\newcommand{Ch3.2-CMD3}{ ntp\_server=<update\_ntp\_server> }
+%\newcommand{Ch3.2-CMD4}{ sms\_name=<update\_sms\_name> }
+%\newcommand{Ch3.2-CMD5}{ chpcInitPath=/opt/ohpc/admin/cloud\_hpc\_init }
+%\newcommand{Ch3.2-CMD6}{ mkdir -p \$chpcInitPath }
+%\newcommand{Ch3.2-CMD7}{ chmod 700 \$chpcInitPath }
+%\newcommand{Ch3.2-CMD8}{ sudo cp -fpr /etc/passwd \$chpcInitPath }
+%\newcommand{Ch3.2-CMD9}{ sudo cp -fpr /etc/shadow \$chpcInitPath }
+%\newcommand{Ch3.2-CMD10}{ sudo cp -fpr /etc/group \$chpcInitPath }
+%\newcommand{Ch3.2-CMD11}{ cat /etc/exports | grep "\$chpcInitPath" }
+%\newcommand{Ch3.2-CMD12}{ chpcInitPath_exported=\$? }
+%\newcommand{Ch3.2-CMD13}{ if [ "\${chpcInitPath\_exported}" -ne "0" ]; then echo "\$chpcInitPath *(rw,no\_subtree\_check,no\_root\_squash)" >> /etc/exports; fi }
+%\newcommand{Ch3.2-CMD14}{ if ! grep "^/home" /etc/exports; then echo "/home *(rw,no\_subtree\_check,fsid=10,no\_root\_squash)" >> /etc/exports; fi }
+%\newcommand{Ch3.2-CMD15}{ if ! grep "^/opt/ohpc/pub" /etc/exports; then echo "/opt/ohpc/pub *(ro,no\_subtree\_check,fsid=11)" >> /etc/exports; fi }
+%\newcommand{Ch3.2-CMD16}{ exportfs -a }
+%\newcommand{Ch3.2-CMD17}{ systemctl restart nfs }
+%\newcommand{Ch3.2-CMD18}{ systemctl enable nfs-server }
+%\newcommand{Ch3.2-CMD19}{ logger "chpcInit: nfs configuration complete, updating remaining HPC configuration" }
+%\newcommand{Ch3.2-CMD20}{ systemctl enable ntpd }
+%\newcommand{Ch3.2-CMD21}{ if [[ ! -z "\$ntp\_server" ]]; then echo "server \${ntp\_server}" >> /etc/ntp.conf; fi }
+%\newcommand{Ch3.2-CMD22}{ systemctl restart ntpd }
+%\newcommand{Ch3.2-CMD23}{ systemctl enable ntpd.service }
+%\newcommand{Ch3.2-CMD24}{ ntpstat }
+%\newcommand{Ch3.2-CMD25}{ logger "chpcInit:ntp configuration done" }
+%\newcommand{Ch3.2-CMD26}{ perl -pi -e "s/ControlMachine=\\S+/ControlMachine=\${sms\_name}/" /etc/slurm/slurm.conf }
+%\newcommand{Ch3.2-CMD27}{ perl -pi -e "s/^NodeName=(\\S+)/NodeName=\${cnodename\_prefix}[1-\${num\_ccomputes}]/" /etc/slurm/slurm.conf }
+%\newcommand{Ch3.2-CMD28}{ perl -pi -e "s/^PartitionName=normal Nodes=(\\S+)/PartitionName=normal Nodes=\${cnodename\_prefix}[1-\${num\_ccomputes}]/" /etc/slurm/slurm.conf }
+%\newcommand{Ch3.2-CMD29}{ cp -fpr -L /etc/slurm/slurm.conf \$chpcInitPath }
+%\newcommand{Ch3.2-CMD30}{ cp -fpr -L /etc/pam.d/slurm \$chpcInitPath }
+%\newcommand{Ch3.2-CMD31}{ cp -fpr -L /etc/munge/munge.key \$chpcInitPath }
+%\newcommand{Ch3.2-CMD32}{ systemctl enable munge }
+%\newcommand{Ch3.2-CMD33}{ systemctl restart munge }
+%\newcommand{Ch3.2-CMD34}{ systemctl enable slurmctld }
+%\newcommand{Ch3.2-CMD35}{ systemctl restart slurmctld }
+%\newcommand{Ch3.2-CMD36}{ logger "chpcInit:slurm configuration done" }
+%\newcommand{Ch3.2-CMD37}{ chmod 0600 /etc/ssh/ssh\_host\_*\_key }
+%\newcommand{Ch3.2-CMD38}{ cat /etc/services | grep mshell }
+%\newcommand{Ch3.2-CMD39}{ mshell_exists=\$? }
+%\newcommand{Ch3.2-CMD40}{ if [ "\${mshell\_exists}" -ne "0" ]; then echo "mshell          21212/tcp   (*\#*) mrshd" >> /etc/services; fi }
+%\newcommand{Ch3.2-CMD41}{ cat /etc/services | grep mlogin }
+%\newcommand{Ch3.2-CMD42}{ mlogin\_exists=\$? }
+%\newcommand{Ch3.2-CMD43}{ if [ "\${mlogin\_exists}" -ne "0" ]; then  echo "mlogin         541/tcp    (*\#*) mrlogind" >> /etc/services; fi }
+%\newcommand{Ch3.2-CMD44}{ sed -i -- 's/all: @adm,@compute/compute: cc[1-\${num\_ccomputes}]\\n&/' /etc/clustershell/groups.d/local.cfg }
+%\newcommand{Ch3.3.1-CMD1}{ cat /etc/services | grep mshell }
+%\newcommand{Ch3.3.1-CMD2}{ mshell_exists=\$? }
+%\newcommand{Ch3.3.1-CMD3}{ if [ "\${mshell\_exists}" -ne "0" ]; then echo "mshell          21212/tcp                  (*\#*) mrshd" >> /etc/services; fi }
+%\newcommand{Ch3.3.1-CMD4}{ cat /etc/services | grep mlogin }
+%\newcommand{Ch3.3.1-CMD5}{ mlogin\_exists=\$? }
+%\newcommand{Ch3.3.1-CMD6}{ if [ "\${mlogin\_exists}" -ne "0" ]; then echo "mlogin            541/tcp                  (*\#*) mrlogind" >> /etc/services; fi }
+%\newcommand{Ch3.3.2-CMD1}{ sed -i -- 's/all: @adm,@compute/compute: cc[1-\${num\_ccomputes}]\\n&/' /etc/cluste\rshell/groups.d/local.cfg }
+%\newcommand{Ch3.4-CMD1}{chpcInitPath=/opt/ohpc/admin/cloud\_hpc\_init}
+%\newcommand{Ch3.4-CMD2}{ mkdir -p \$chpcInitPath}
+%\newcommand{Ch3.4-CMD3}{ sudo cp -fr -L < \${SCRIPTDIR} >/ cloud\_hpc\_init/\${chpc\_base}/* \$chpcInitPath/}
+%\newcommand{Ch3.4-CMD4}{ export chpcInit=\$chpcInitPath/chpc\_init}
+%\newcommand{Ch3.4-CMD5}{ export chpcSMSInit=\$chpcInitPath/chpc\_sms\_init}
+%\newcommand{Ch3.4-CMD6}{ sudo sed -i -e "s/<sms_ip>/\${sms\_ip}/g" \$chpcInit}
+%\newcommand{Ch3.4-CMD7}{ sudo sed -i -e "s/<update\_cnodename\_prefix>/\${cnodename\_prefix}/g" \$chpcSMSInit}
+%\newcommand{Ch3.4-CMD8}{ sudo sed -i -e "s/<update\_num\_ccomputes>/\${num\_ccomputes}/g" \$chpcSMSInit}
+%\newcommand{Ch3.4-CMD9}{ sudo sed -i -e "s/<update\_ntp\_server>/\${controller\_ip}/g" \$chpcSMSInit}
+%\newcommand{Ch3.4-CMD10}{ sudo sed -i -e "s/<update\_sms\_name>/\${sms\_name}/g" \$chpcSMSInit}
+%\newcommand{Ch3.4-CMD11}{ if [[ \${enable\_mrsh} -eq 1 ]];then cat \$CHPC\_SCRIPTDIR/sms/update\_mrsh >> \$chpcSMSInit; fi}
+%\newcommand{Ch3.4-CMD12}{ if [[ \${enable\_clustershell} -eq 1 ]];then cat \$CHPC\_SCRIPTDIR/sms/update\_clustershell >> \$chpcSMSInit; fi}
+%\newcommand{Ch4.0-CMD1}{ openstack service list}
+%\newcommand{Ch4.0-CMD2}{ openstack project list}
+%\newcommand{Ch4.0-CMD2}{unset OS\_SERVICE_TOKEN}
+%\newcommand{Ch4.0-CMD2}{export OS\_USERNAME=admin}
+%\newcommand{Ch4.0-CMD2}{export OS\_PASSWORD=<>}
+%\newcommand{Ch4.0-CMD2}{export OS\_AUTH\_URL=<>}
+%\newcommand{Ch4.0-CMD2}{export PS1='[\\u@\\h \\W(keystoane_admin\)]\$ '}
+%\newcommand{Ch4.0-CMD2}{export OS\_TENANT\_NAME=admin}
+%\newcommand{Ch4.0-CMD2}{export OS\_REGION\_NAME=<> }
+%\newcommand{Ch4.1-CMD1}{openstack role list | grep -i baremetal\_admin}
+%\newcommand{Ch4.1-CMD2}{role\_exists=\$?}
+%\newcommand{Ch4.1-CMD3}{if [ "\${role\_exists}" -ne "0" ]; then openstack role create baremetal\_admin; fi }
+%\newcommand{Ch4.1-CMD4}{openstack role list | grep -i baremetal\_observer}
+%\newcommand{Ch4.1-CMD5}{role\_exists=\$?}
+%\newcommand{Ch4.1-CMD6}{if [ "\${role\_exists}" -ne "0" ]; then openstack role create baremetal\_observer; fi}
+%\newcommand{Ch4.1-CMD7}{systemctl restart openstack-ironic-api}
+%\newcommand{Ch4.1-CMD8}{yum install -y tftp-server syslinux-tftpboot xinetd}
+%\newcommand{Ch4.1-CMD9}{mkdir -p /tftpboot}
+%\newcommand{Ch4.1-CMD10}{chown -R ironic /tftpboot}
+%\newcommand{Ch4.1-CMD11}{echo "service tftp" > /etc/xinetd.d/tftp; echo "{" >> /etc/xinetd.d/tftp; echo "  protocol        = udp" >> /etc/xinetd.d/tftp; echo "  port            = 69" >> /etc/xinetd.d/tftp; echo "  socket_type     = dgram" >> /etc/xinetd.d/tftp; echo "  wait            = yes" >> /etc/xinetd.d/tftp; echo "  user            = root" >> /etc/xinetd.d/tftp; echo "  server          = /usr/sbin/in.tftpd" >> /etc/xinetd.d/tftp; echo "  server_args     = -v -v -v -v -v --map-file /tftpboot/map-file /tftpboot" >> /etc/xinetd.d/tftp; echo "  disable         = no" >> /etc/xinetd.d/tftp; echo "  (*\#*) This is a workaround for Fedora, where TFTP will listen only on" >> /etc/xinetd.d/tftp; echo "  (*\#*) IPv6 endpoint, if IPv4 flag is not used." >> /etc/xinetd.d/tftp; echo "  flags           = IPv4" >> /etc/xinetd.d/tftp; echo "}" >> /etc/xinetd.d/tftp}
+%\newcommand{Ch4.1-CMD12}{systemctl restart xinetd}
+%\newcommand{Ch4.1-CMD13}{cp /var/lib/tftpboot/pxelinux.0 /tftpboot}
+%\newcommand{Ch4.1-CMD14}{cp /var/lib/tftpboot/chain.c32 /tftpboot}
+%\newcommand{Ch4.1-CMD15}{echo 're ^(/tftpboot/) /tftpboot/\2' > /tftpboot/map-file; echo 're ^/tftpboot/ /tftpboot/' >> /tftpboot/map-file; echo 're ^(^/) /tftpboot/\1' >> /tftpboot/map-file; echo 're ^([^/]) /tftpboot/\1' >> /tftpboot/map-file}
+%\newcommand{Ch4.1-CMD16}{sed --in-place "s|(*\#*)tftp\_server=\\\$my\_ip|tftp\_server=\${controller\_ip}|" /etc/ironic/ironic.conf}
+%\newcommand{Ch4.1-CMD17}{sed --in-place "s|(*\#*)tftp\_root=/tftpboot|tftp\_root=/tftpboot|" /etc/ironic/ironic.conf}
+%\newcommand{Ch4.1-CMD18}{sed --in-place "s|(*\#*)ip\_version=4|ip\_version=4|" /etc/ironic/ironic.conf}
+%\newcommand{Ch4.1-CMD19}{sed --in-place "s|(*\#*)automated\_clean=true|automated\_clean=false|" /etc/ironic/ironic.conf}
+%\newcommand{Ch4.1-CMD20}{sed --in-place "s|(*\#*)scheduler\_use\_baremetal\_filters=false|scheduler\_use\_baremetal\_filters=true|" /etc/nova/nova.conf}
+%\newcommand{Ch4.1-CMD21}{sed --in-place "s|reserved\_host\_memory\_mb=512|reserved\_host\_memory\_mb=0|" /etc/nova/nova.conf}
+%\newcommand{Ch4.1-CMD22}{sed --in-place "s|(*\#*)scheduler\_host\_subset\_size=1|scheduler\_host\_subset\_size=9999999|" /etc/nova/nova.conf}
+%\newcommand{Ch4.1-CMD23}{sed --in-place "s|enable\_isolated\_metadata\ =\ False|enable\_isolated\_metadata\ =\ True|" /etc/neutron/dhcp\_agent.ini}
+%\newcommand{Ch4.1-CMD24}{sed --in-place "s|(*\#*)force\_metadata\ =\ false|force\_metadata\ =\ True|" \ /etc/neutron/dhcp_agent.ini}
+%\newcommand{Ch4.1-CMD25}{if grep -q "^dns\_domain.*openstacklocal\$" /etc/neutron/neutron.conf; then sed -in-place  "s|^dns\_domain.*|dns\_domain = oslocal|" /etc/neutron/neutron.conf; else ; if ! grep -q "^dns\_domain" neutron.conf; then sed -in-place  "s|^(*\#*)dns\_domain = openstacklocal\$|dns\_domain = oslocal|" /etc/neutron/neutron.conf; fi; fi}
+%\newcommand{Ch4.1-CMD26}{ml2file=/etc/neutron/plugins/ml2/ml2\_conf.ini}
+%\newcommand{Ch4.1-CMD27}{if ! grep -q "^extension\_drivers" \$ml2file; then sed -in-place  "s|^(*\#*)extension\_drivers.*|extension\_drivers = port\_security,dns|" \$ml2file; else; if ! grep "^extension\_drivers" \$ml2file|grep -q dns; then current\_dns=`grep "^extension\_drivers" \$ml2file`; new\_dns="\$current_dns,dns"; sed -in-place  "s|^extension_drivers.*|\$new\_dns|" \$ml2file; fi; fi}
+%\newcommand{Ch4.1-CMD28}{for i in neutron-dhcp-agent neutron-openvswitch-agent neutron-metadata-agent neutron-server openstack-nova-scheduler openstack-nova-compute openstack-ironic-conductor; do systemctl restart \$i; done}
+%\newcommand{Ch4.2.1-CMD1}{  SERVICES\_TENANT\_ID=`keystone tenant-list | grep "|\\s*services\\s*|" | awk '{print \$2}'`}
+%\newcommand{Ch4.2.1-CMD2}{neutron net-list | grep "|\\s*sharednet1\\s*|"}
+%\newcommand{Ch4.2.1-CMD3}{net\_exists=\$?}
+%\newcommand{Ch4.2.1-CMD4}{if [ "\${net\_exists}" -ne "0" ]; then neutron net-create --tenant-id \${SERVICES\_TENANT\_ID} sharednet1 --shared --provider:network\_type flat --provider:physical\_network physnet1; fi}
+%\newcommand{Ch4.2.1-CMD5}{NEUTRON\_NETWORK\_UUID=`neutron net-list | grep "|\\s*sharednet1\\s*|" | awk '{print \$2}'`}
+%\newcommand{Ch4.2.1-CMD6}{neutron subnet-list | grep "|\\s*subnet01\\s*|"}
+%\newcommand{Ch4.2.1-CMD7}{subnet\_exists=\$?}
+%\newcommand{Ch4.2.1-CMD8}{if [ "\${subnet\_exists}" -ne "0" ]; then neutron subnet-create sharednet1 --name subnet01 --ip-version=4 --gateway=\${controller\_ip} --allocation-pool start=\${cc_subnet\_dhcp\_start},end=\${cc\_subnet\_dhcp\_end} --enable-dhcp \${cc\_subnet\_cidr}; fi}
+%\newcommand{Ch4.2.1-CMD9}{NEUTRON\_SUBNET\_UUID=`neutron subnet-list | grep "|\\s*subnet01\\s*|" | awk '{print \$2}'`}
+%\newcommand{Ch4.2.1-CMD10}{glance image-list | grep "|\\s*deploy-vmlinuz\\s*|"}
+%\newcommand{Ch4.2.1-CMD11}{img\_exists=\$?}
+%\newcommand{Ch4.2.1-CMD12}{if [ "\${img\_exists}" -ne "0" ]; then glance image-create --name deploy-vmlinuz --visibility public --disk-format aki --container-format aki < \${chpc\_image\_deploy\_kernel}; fi}
+%\newcommand{Ch4.2.1-CMD13}{DEPLOY\_VMLINUZ\_UUID=`glance image-list | grep "|\\s*deploy-vmlinuz\\s*|" | awk '{print \$2}'`}
+%\newcommand{Ch4.2.1-CMD14}{glance image-list | grep "|\\s*deploy-initrd\\s*|"}
+%\newcommand{Ch4.2.1-CMD15}{img\_exists=\$?}
+%\newcommand{Ch4.2.1-CMD16}{if [ "\${img\_exists}" -ne "0" ]; then glance image-create --name deploy-initrd --visibility public --disk-format ari --container-format ari < \${chpc\_image\\_deploy\_ramdisk}; fi}
+%\newcommand{Ch4.2.1-CMD17}{DEPLOY\_INITRD\_UUID=\`glance image-list | grep "|\\s*deploy-initrd\\s*|" | awk '{print \$2}}
+%\newcommand{Ch4.2.1-CMD18}{nova flavor-list | grep "|\\s*baremetal-flavor\\s*|"}
+%\newcommand{Ch4.2.1-CMD19}{flavor\_exists=\$?}
+%\newcommand{Ch4.2.1-CMD20}{if [ "\$flavor\_exists" -ne "0" ]; then nova flavor-create baremetal-flavor baremetal-flavor \${RAM_MB} \${DISK_GB} \${CPU}; nova flavor-key baremetal-flavor set cpu_arch=\$ARCH; fi}
+%\newcommand{Ch4.2.1-CMD21}{FLAVOR_UUID=`nova flavor-list | grep "|\\s*baremetal-flavor\\s*|" | awk '{print \$2}'`}
+%\newcommand{Ch4.2.1-CMD22}{openstack quota set --ram 512000 --cores 1000 --instances 100 admin}
+%\newcommand{Ch4.2.1-CMD23}{nova keypair-list | grep "|\\s*ostack_key\\s*|"}
+%\newcommand{Ch4.2.1-CMD24}{keypair\_exists=\$?}
+%\newcommand{Ch4.2.1-CMD25}{if [ "\${keypair\_exists}" -ne "0" ]; then nova keypair-add --pub-key \${HOME}/.ssh/id_rsa.pub ostack_key; fi}
+%\newcommand{Ch4.2.1-CMD26}{KEYPAIR\_NAME=ostack\_key}
+%\newcommand{Ch4.2.2-CMD1}{glance image-list | grep "|\\s*sms-image\\s*|"}
+%\newcommand{Ch4.2.2-CMD2}{img\_exists=\$?}
+%\newcommand{Ch4.2.2-CMD3}{if [ "\${img\_exists}" -ne "0" ]; then glance image-create --name sms-image --visibility public --disk-format qcow2 --container-format bare < \${chpc\_image\_sms}; fi}
+%\newcommand{Ch4.2.2-CMD4}{SMS\_DISK\_IMAGE\_UUID=`glance image-list | grep "|\\s*sms-image\\s*|" | awk '{print \$2}'`}
+%\newcommand{Ch4.2.2-CMD5}{ironic node-list | grep "|\\s*\${sms_name}\$\\s*|"}
+%\newcommand{Ch4.2.2-CMD6}{node\_exists=\$?}
+%\newcommand{Ch4.2.2-CMD7}{if [ "\${node\_exists}" -ne "0" ]; then ironic node-create -d pxe\_ipmitool -i deploy\_kernel=\${DEPLOY\_VMLINUZ\_UUID} -i deploy\_ramdisk=\${DEPLOY\_INITRD\_UUID} -i ipmi\_terminal\_port=8023 -i ipmi\_address=\${sms\_bmc} -i ipmi\_username=\${sms\_bmc\_username} -i ipmi\_password=\${sms\_bmc\_password} -p cpus=\${CPU} -p memory\_mb=\${RAM_MB} -p local\_gb=\${DISK\_GB} -p cpu\_arch=\${ARCH} -p capabilities="boot_mode:bios" -n \${sms\_name}; fi}
+%\newcommand{Ch4.2.2-CMD8}{SMS\_UUID=`ironic node-list | grep "|\\s*\${sms_name}\\s*|" | awk '{print \$2}'`}
+%\newcommand{Ch4.2.2-CMD9}{ironic port-create -n \${SMS\_UUID} -a \${sms\_mac}}
+%\newcommand{Ch4.2.2-CMD10}{ironic node-update \$SMS\_UUID add instance\_info/image\_source=\${SMS\_DISK\_IMAGE\_UUID} instance\_info/root\_gb=50}
+%\newcommand{Ch4.2.2-CMD11}{neutron port-create sharednet1 --dns\_name \$sms\_name --fixed-ip ip\_address=\$sms\_ip --name \$sms\_name --mac-address \$sms\_mac}
+%\newcommand{Ch4.2.2-CMD12}{SMS\_PORT\_ID=`neutron port-list | grep "|\\s*\$sms\_name\\s*|" | awk '{print \$2}'`}
+%\newcommand{Ch4.2.3-CMD1}{glance image-list | grep "|\\s*user-image\\s*|"}
+%\newcommand{Ch4.2.3-CMD2}{img\_exists=\$?}
+%\newcommand{Ch4.2.3-CMD3}{if [ "\${img\_exists}" -ne "0" ]; then glance image-create --name user-image --visibility public --disk-format qcow2 --container-format bare < \${chpc\_image\_user}; fi}
+%\newcommand{Ch4.2.3-CMD4}{USER\_DISK\_IMAGE\_UUID=`glance image-list | grep "|\\s*user-image\\s*|" | awk '{print \$2}'`}
+%\newcommand{Ch4.2.3-CMD5}{sleep 121}
+%\newcommand{Ch4.2.4-CMD1}{echo "nova boot --config-drive true --flavor \${FLAVOR\_UUID} --image \${SMS\_DISK\_IMAGE\_UUID} --key-name \${KEYPAIR\_NAME} --meta role=webservers --user-data=\$chpcSMSInit --nic port-id=\${SMS\_PORT\_ID} \${sms\_name}" > boot\_sms}
+%newcommand{Ch4.2.4-CMD2}{nova boot --config-drive true --flavor \${FLAVOR\_UUID} --image \${SMS\_DISK\_IMAGE\_UUID} --key-name \${KEYPAIR\_NAME} --meta role=webservers --user-data=\$chpcSMSInit --nic port-id=\${SMS\_PORT\_ID} \${sms\_name}}
+%\newcommand{Ch4.2.4-CMD3}{sleep 15}
+%\newcommand{Ch4.2.5-CMD1}{for ((i=0; i < \${num_ccomputes}; i++)); do}
+%filename="cn\$((i+1))"; echo "nova boot --config-drive true --flavor \${FLAVOR\_UUID} --image \${USER\_DISK\_IMAGE\_UUID} --key-name \${KEYPAIR\_NAME} --meta role=webservers --user-data=\$chpcInit --nic port-id=\${NEUTRON\_PORT\_ID\_CC[\$i]} \${cnodename\_prefix}\$((i+1))" > boot\_\$filename; nova boot --config-drive true --flavor \${FLAVOR\_UUID} --image \${USER\_DISK\_IMAGE\_UUID} --key-name \${KEYPAIR\_NAME} --meta role=webservers --user-data=\$chpcInit --nic port-id=\${NEUTRON\_PORT\_ID\_CC[\$i]} \${cnodename\_prefix}\$((i+1)); sleep 5; done}
+
+
 % boolean for os-specific formatting
 \toggletrue{isCentOS}
 \toggletrue{isCentOS_ww_slurm_x86}
@@ -52,20 +284,6 @@
 \input{common/audience}
 \input{common/requirements}
 \input{common/inputs}
-
-%%% DO I STILL NEED THIS ??? %%%
-% begin_ohpc_run
-% ohpc_validation_newline
-% ohpc_validation_comment Verify OpenHPC repository has been enabled before proceeding
-% ohpc_validation_newline
-% ohpc_command yum repolist | grep -q OpenHPC
-% ohpc_command if [ $? -ne 0 ];then
-% ohpc_command    echo "Error: OpenHPC repository must be enabled locally"
-% ohpc_command    exit 1
-% ohpc_command fi
-% end_ohpc_run
-%%%     ?   ?   ?     %%%
-
 
 % Bare Metal Node Operating System --------------------------------------------
 \clearpage
@@ -136,10 +354,7 @@
 \input{common/c_i-config}
 
 
-%%% DO I STILL NEED THIS ??? %%%
-%%% The following command adds OFED and PSM support using base distro-provided drivers
-%%% to the chosen {\em master} host.
-%%% 
+
 %%% % begin_ohpc_run
 %%% % ohpc_comment_header Add InfiniBand support services on master node \ref{sec:add_ofed}
 %%% \begin{lstlisting}[language=bash,keywords={}]
@@ -198,182 +413,126 @@
 \input{common/inst-bare-metal}
 
 % begin_ohpc_run
-% #  XFILEX deploy_chpc_openstack
+
+% #  XFILEX prepare_chpc_openstack
 % #!/bin/bash
+% #---------------------------------------------------------------------------------
+% #This script installs and configures ironic for baremetal provisioning on CentOS 7
+% #Using the OpenStack-Mitaka release.
+% #This relies on the packstack installation to happen first and the keystonerc_admin
+% #file being in the user's home directory. It is assumed this script is run with
+% #sudo permissions.
+% #---------------------------------------------------------------------------------
 % 
+% #Set SELinux to permissive
+% setenforce 0
 % 
+% #Source the keystonerc_admin file
 % source ${HOME}/keystonerc_admin
 % 
-% # Function for common common configuration
-% function setup_baremetal() {
-%     #Get the tenant ID for the services tenant
-%     SERVICES_TENANT_ID=`keystone tenant-list | grep "|\s*services\s*|" | awk '{print $2}'`
-%     
-%     #Create the flat network on which you are going to launch instances
-%     neutron net-list | grep "|\s*sharednet1\s*|"
-%     net_exists=$?
-%     if [ "${net_exists}" -ne "0" ]; then
-%         neutron net-create --tenant-id ${SERVICES_TENANT_ID} sharednet1 --shared --provider:network_type flat --provider:physical_network physnet1
-%     fi
-%     NEUTRON_NETWORK_UUID=`neutron net-list | grep "|\s*sharednet1\s*|" | awk '{print $2}'`
-%     
-%     #Create the subnet on the newly created network
-%     neutron subnet-list | grep "|\s*subnet01\s*|"
-%     subnet_exists=$?
-%     if [ "${subnet_exists}" -ne "0" ]; then
-%         neutron subnet-create sharednet1 --name subnet01 --ip-version=4 --gateway=${controller_ip} --allocation-pool start=${cc_subnet_dhcp_start},end=${cc_subnet_dhcp_end} --enable-dhcp ${cc_subnet_cidr}
-%     fi
-%     NEUTRON_SUBNET_UUID=`neutron subnet-list | grep "|\s*subnet01\s*|" | awk '{print $2}'`
-%     #Create the deploy-kernel and deploy-initrd images
-%     glance image-list | grep "|\s*deploy-vmlinuz\s*|"
-%     img_exists=$?
-%     if [ "${img_exists}" -ne "0" ]; then
-%         glance image-create --name deploy-vmlinuz --visibility public --disk-format aki --container-format aki < ${chpc_image_deploy_kernel}
-%     fi
-%     DEPLOY_VMLINUZ_UUID=`glance image-list | grep "|\s*deploy-vmlinuz\s*|" | awk '{print $2}'`
-%     
-%     glance image-list | grep "|\s*deploy-initrd\s*|"
-%     img_exists=$?
-%     if [ "${img_exists}" -ne "0" ]; then
-%         glance image-create --name deploy-initrd --visibility public --disk-format ari --container-format ari < ${chpc_image_deploy_ramdisk}
-%     fi
-%     DEPLOY_INITRD_UUID=`glance image-list | grep "|\s*deploy-initrd\s*|" | awk '{print $2}'`
-%     
-%     #Create the baremetal flavor and set the architecture to x86_64
-%     # This will create common baremetal flavor, if SMS node & compute has different
-%     # characteristic than user shall create multiple flavor one each characterisitc
-%     nova flavor-list | grep "|\s*baremetal-flavor\s*|"
-%     flavor_exists=$?
-%     if [ "$flavor_exists" -ne "0" ]; then
-%         nova flavor-create baremetal-flavor baremetal-flavor ${RAM_MB} ${DISK_GB} ${CPU}
-%         nova flavor-key baremetal-flavor set cpu_arch=$ARCH
-%     fi
-%     FLAVOR_UUID=`nova flavor-list | grep "|\s*baremetal-flavor\s*|" | awk '{print $2}'`
-%     #Increase the Quota limit for admin to allow nova boot
-%     openstack quota set --ram 512000 --cores 1000 --instances 100 admin
-%     
-%     #Register SSH keys with Nova
-%     nova keypair-list | grep "|\s*ostack_key\s*|"
-%     keypair_exists=$?
-%     if [ "${keypair_exists}" -ne "0" ]; then
-%     nova keypair-add --pub-key ${HOME}/.ssh/id_rsa.pub ostack_key
-%     fi
-%     
-%     KEYPAIR_NAME=ostack_key
-% }
+% #Create roles for the baremetal service. These can be used later to give special permissions to baremetal. This script will be using the defaults.
+% openstack role list | grep -i baremetal_admin
+% role_exists=$?
+% if [ "${role_exists}" -ne "0" ]; then 
+%     openstack role create baremetal_admin
+% fi
 % 
-% # Configure SMS Node
-% function setup_sms() {
-%    # Create sms node image
-%    glance image-list | grep "|\s*sms-image\s*|"
-%    img_exists=$?
-%    if [ "${img_exists}" -ne "0" ]; then
-%        glance image-create --name sms-image --visibility public --disk-format qcow2 --container-format bare < ${chpc_image_sms}
+% openstack role list | grep -i baremetal_observer
+% role_exists=$?
+% if [ "${role_exists}" -ne "0" ]; then 
+%     openstack role create baremetal_observer
+% fi
+% systemctl restart openstack-ironic-api
+% 
+% #Ensure the utilities for baremetal are installed
+% yum install -y tftp-server syslinux-tftpboot xinetd
+% #Make the directory for tftp and give it the ironic owner
+% mkdir -p /tftpboot
+% chown -R ironic /tftpboot
+% 
+% #Configure /etc/xinet.d/tftp
+% echo "service tftp" > /etc/xinetd.d/tftp
+% echo "{" >> /etc/xinetd.d/tftp
+% echo "  protocol        = udp" >> /etc/xinetd.d/tftp
+% echo "  port            = 69" >> /etc/xinetd.d/tftp
+% echo "  socket_type     = dgram" >> /etc/xinetd.d/tftp
+% echo "  wait            = yes" >> /etc/xinetd.d/tftp
+% echo "  user            = root" >> /etc/xinetd.d/tftp
+% echo "  server          = /usr/sbin/in.tftpd" >> /etc/xinetd.d/tftp
+% echo "  server_args     = -v -v -v -v -v --map-file /tftpboot/map-file /tftpboot" >> /etc/xinetd.d/tftp
+% echo "  disable         = no" >> /etc/xinetd.d/tftp
+% echo "  # This is a workaround for Fedora, where TFTP will listen only on" >> /etc/xinetd.d/tftp
+% echo "  # IPv6 endpoint, if IPv4 flag is not used." >> /etc/xinetd.d/tftp
+% echo "  flags           = IPv4" >> /etc/xinetd.d/tftp
+% echo "}" >> /etc/xinetd.d/tftp
+% 
+% #Restart the xinetd service
+% systemctl restart xinetd
+% 
+% #Copy the PXE linux files to the tftpboot directory we created
+% cp /var/lib/tftpboot/pxelinux.0 /tftpboot
+% cp /var/lib/tftpboot/chain.c32 /tftpboot
+% 
+% #Generate a map file for the PXE files
+% echo 're ^(/tftpboot/) /tftpboot/\2' > /tftpboot/map-file
+% echo 're ^/tftpboot/ /tftpboot/' >> /tftpboot/map-file
+% echo 're ^(^/) /tftpboot/\1' >> /tftpboot/map-file
+% echo 're ^([^/]) /tftpboot/\1' >> /tftpboot/map-file
+% 
+% #Edit /etc/ironic/ironic.conf file with the <controller_ip> variable's value
+% sed --in-place "s|#tftp_server=\$my_ip|tftp_server=${controller_ip}|" /etc/ironic/ironic.conf
+% sed --in-place "s|#tftp_root=/tftpboot|tftp_root=/tftpboot|" /etc/ironic/ironic.conf
+% sed --in-place "s|#ip_version=4|ip_version=4|" /etc/ironic/ironic.conf
+% sed --in-place "s|#automated_clean=true|automated_clean=false|" /etc/ironic/ironic.conf
+% 
+% #Edit /etc/nova/nova.conf file
+% sed --in-place "s|reserved_host_memory_mb=512|reserved_host_memory_mb=0|" /etc/nova/nova.conf
+% sed --in-place "s|#scheduler_host_subset_size=1|scheduler_host_subset_size=9999999|" /etc/nova/nova.conf
+% sed --in-place "s|#scheduler_use_baremetal_filters=false|scheduler_use_baremetal_filters=true|" /etc/nova/nova.conf
+% 
+% # Enable meta data
+% # Edit /etc/neutron/dhcp_agent.ini
+% sed --in-place "s|enable_isolated_metadata\ =\ False|enable_isolated_metadata\ =\ True|" /etc/neutron/dhcp_agent.ini
+% sed --in-place "s|#force_metadata\ =\ false|force_metadata\ =\ True|" /etc/neutron/dhcp_agent.ini
+% 
+% #####
+% # Enable internal dns for hostname resolution, if it already not set
+% # manipulating configuration file via shell, alternate is to use openstack-config (TODO)
+% ####
+% # setup dns domain first
+% if grep -q "^dns_domain.*openstacklocal$" /etc/neutron/neutron.conf; then
+%    sed -in-place  "s|^dns_domain.*|dns_domain = oslocal|" /etc/neutron/neutron.conf
+% else
+%    if ! grep -q "^dns_domain" neutron.conf; then
+%        sed -in-place  "s|^#dns_domain = openstacklocal$|dns_domain = oslocal|" /etc/neutron/neutron.conf
 %    fi
-%    SMS_DISK_IMAGE_UUID=`glance image-list | grep "|\s*sms-image\s*|" | awk '{print $2}'`
+% fi
+% # configure ml2 dns driver for neutron
+% ml2file=/etc/neutron/plugins/ml2/ml2_conf.ini
+% if ! grep -q "^extension_drivers" $ml2file; then
+%     # Assuming there is a place holder in comments, replace that string
+%     sed -in-place  "s|^#extension_drivers.*|extension_drivers = port_security,dns|" $ml2file
+% else
+%     # Entry is present, check if dns is already present, if not then enable
+%     if ! grep "^extension_drivers" $ml2file|grep -q dns; then
+%         current_dns=`grep "^extension_drivers" $ml2file`
+%         new_dns="$current_dns,dns"
+%         sed -in-place  "s|^extension_drivers.*|$new_dns|" $ml2file
+%     fi 
+% fi
+% #------
 % 
-%     #Create a sms node in the bare metal service ironic.
-%     ironic node-list | grep "|\s*${sms_name}$\s*|"
-%     node_exists=$?
-%     if [ "${node_exists}" -ne "0" ]; then
-%         ironic node-create -d pxe_ipmitool -i deploy_kernel=${DEPLOY_VMLINUZ_UUID} -i deploy_ramdisk=${DEPLOY_INITRD_UUID} -i ipmi_terminal_port=8023 -i ipmi_address=${sms_bmc} -i ipmi_username=${sms_bmc_username} -i ipmi_password=${sms_bmc_password} -p cpus=${CPU} -p memory_mb=${RAM_MB} -p local_gb=${DISK_GB} -p cpu_arch=${ARCH} -p capabilities="boot_mode:bios" -n ${sms_name}
-%     fi
-%     SMS_UUID=`ironic node-list | grep "|\s*${sms_name}\s*|" | awk '{print $2}'`
-% 
-%     #Add the associated port(s) MAC address to the created node(s)
-%     ironic port-create -n ${SMS_UUID} -a ${sms_mac}
-% 
-%     #Add the instance_info/image_source and instance_info/root_gb
-%     ironic node-update $SMS_UUID add instance_info/image_source=${SMS_DISK_IMAGE_UUID} instance_info/root_gb=50
-% 
-%     #Setup neutron port for static IP addressing of sms node, this is an optional part
-%     neutron port-create sharednet1 --dns_name $sms_name --fixed-ip ip_address=$sms_ip --name $sms_name --mac-address $sms_mac
-%     SMS_PORT_ID=`neutron port-list | grep "|\s*$sms_name\s*|" | awk '{print $2}'`
-% }
-% 
-% #Configure Compute Nodes
-% function setup_cn() {
-%     #Create the whole-disk-image from the user's qcow2 file
-%     glance image-list | grep "|\s*user-image\s*|"
-%     img_exists=$?
-%     if [ "${img_exists}" -ne "0" ]; then% 
-%         glance image-create --name user-image --visibility public --disk-format qcow2 --container-format bare < ${chpc_image_user}
-%     fi
-%     USER_DISK_IMAGE_UUID=`glance image-list | grep "|\s*user-image\s*|" | awk '{print $2}'`
-% 
-%     # Setup Compute nodes
-%     for ((i=0; i < ${num_ccomputes}; i++)); do
-%         ##Create compute nodes in the bare metal service
-%         ironic node-list | grep "|\s*${cnodename_prefix}$((i+1))\s*|"
-%         node_exists=$?
-%         if [ "${node_exists}" -ne "0" ]; then
-%             ironic node-create -d pxe_ipmitool -i deploy_kernel=${DEPLOY_VMLINUZ_UUID} -i deploy_ramdisk=${DEPLOY_INITRD_UUID} -i ipmi_terminal_port=8023 -i ipmi_address=${cc_bmc[$i]} -i ipmi_username=${cc_bmc_username} -i ipmi_password=${cc_bmc_password} -p cpus=${CPU} -p memory_mb=${RAM_MB} -p local_gb=${DISK_GB} -p cpu_arch=${ARCH} -p capabilities="boot_mode:bios" -n ${cnodename_prefix}$((i+1))
-%         fi
-%         NODE_UUID_CC[$i]=`ironic node-list | grep "|\s*${cnodename_prefix}$((i+1))\s*|" | awk '{print $2}'`
-% 
-%         # update for compute nodes node MAC
-%         ironic port-create -n ${NODE_UUID_CC[$i]} -a ${cc_mac[$i]}
-% 
-%         #Add the instance_info/image_source and instance_info/root_gb
-%         ironic node-update ${NODE_UUID_CC[$i]} add instance_info/image_source=${USER_DISK_IMAGE_UUID} instance_info/root_gb=50
-% 
-%         #Setup neutron port for static IP addressing of compute nodes
-%         cn_name=${cnodename_prefix}$((i+1))
-%         neutron port-create sharednet1 --dns_name $cn_name --fixed-ip ip_address=${cc_ip[$i]} --name $cn_name --mac-address ${cc_mac[$i]}
-%         NEUTRON_PORT_ID_CC[$i]=`neutron port-list | grep "|\s*${cnodename_prefix}$((i+1))\s*|" | awk '{print $2}'`
-%     done
-% }
-% 
-% 
-% function boot_sms() {
-%     #Boot the sms node with nova. chpcInit is set from prepare_cloudInit
-%     echo "nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${SMS_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcSMSInit --nic port-id=${SMS_PORT_ID} ${sms_name}" > boot_sms
-%     nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${SMS_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcSMSInit --nic port-id=${SMS_PORT_ID} ${sms_name}
-% }
-% 
-% function boot_cn() {
-%     for ((i=0; i < ${num_ccomputes}; i++)); do
-%         filename="cn$((i+1))"
-%         echo "nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${USER_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcInit --nic port-id=${NEUTRON_PORT_ID_CC[$i]} ${cnodename_prefix}$((i+1))" > boot_$filename
-%         nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${USER_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcInit --nic port-id=${NEUTRON_PORT_ID_CC[$i]} ${cnodename_prefix}$((i+1))
-%         #wait for 5 sec 
-%         sleep 5
-%     done
-% }
-% 
-% 
-% 
-% ##Create a sms node in the bare metal service
-% #ironic node-list | grep "|\s*${sms_name}$\s*|"
-% #node_exists=$?
-% #if [ "${node_exists}" -ne "0" ]; then
-% #    ironic node-create -d pxe_ipmitool -i deploy_kernel=${DEPLOY_VMLINUZ_UUID} -i deploy_ramdisk=${DEPLOY_INITRD_UUID} -i ipmi_terminal_port=8023 -i ipmi_address=${sms_bmc} -i ipmi_username=${sms_bmc_username} -i ipmi_password=${sms_bmc_password} -p cpus=${CPU} -p memory_mb=${RAM_MB} -p local_gb=${DISK_GB} -p cpu_arch=${ARCH} -p capabilities="boot_mode:bios" -n ${sms_name}
-% #fi
-% #SMS_UUID=`ironic node-list | grep "|\s*${sms_name}\s*|" | awk '{print $2}'`
-% 
-% 
-% #### main
-% # First setup baremetnal environment
-% setup_baremetal
-% # Setup sms node first
-% setup_sms
-% # Setup Compute nodes
-% setup_cn
-% # Wait for the Nova hypervisor-stats to sync with available Ironic resources
-% sleep 121
-% # Now start booting the nodes
-% # Boot sms node first
-% boot_sms
-% # wait for 15 sec before starting to boot compute nodes. TBD need to tune this time
-% # SMS node should be booted before compute nodes starts booting. At minimum
-% # sms node shall have cloud init executed before CN's cloud init
-% sleep 15
-% # Now boot compute nodes
-% boot_cn
-% 
-% #nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${USER_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcSMSInit --nic port-id=${SMS_PORT_ID} ${sms_name}
-% sleep 5
-% # Boot CNs
+% # Now restart the services
+% #Restart ironic, nova, neutron, and ovs to load in the new configuration
+% systemctl restart neutron-dhcp-agent
+% systemctl restart neutron-openvswitch-agent
+% systemctl restart neutron-metadata-agent
+% systemctl restart neutron-server
+% systemctl restart openstack-nova-scheduler
+% systemctl restart openstack-nova-compute
+% systemctl restart openstack-ironic-conductor
+
+
 % #  XFILEX prepare_chpc_image
 % #!bin/bash
 % set -x
@@ -578,123 +737,7 @@
 % echo "########################################################################"
 % echo "########################### deploy image is done #######################"
 % echo "########################################################################"
-% #  XFILEX prepare_chpc_openstack
-% #!/bin/bash
-% #---------------------------------------------------------------------------------
-% #This script installs and configures ironic for baremetal provisioning on CentOS 7
-% #Using the OpenStack-Mitaka release.
-% #This relies on the packstack installation to happen first and the keystonerc_admin
-% #file being in the user's home directory. It is assumed this script is run with
-% #sudo permissions.
-% #---------------------------------------------------------------------------------
-% 
-% #Set SELinux to permissive
-% setenforce 0
-% 
-% #Source the keystonerc_admin file
-% source ${HOME}/keystonerc_admin
-% 
-% #Create roles for the baremetal service. These can be used later to give special permissions to baremetal. This script will be using the defaults.
-% openstack role list | grep -i baremetal_admin
-% role_exists=$?
-% if [ "${role_exists}" -ne "0" ]; then 
-%     openstack role create baremetal_admin
-% fi
-% 
-% openstack role list | grep -i baremetal_observer
-% role_exists=$?
-% if [ "${role_exists}" -ne "0" ]; then 
-%     openstack role create baremetal_observer
-% fi
-% systemctl restart openstack-ironic-api
-% 
-% #Ensure the utilities for baremetal are installed
-% yum install -y tftp-server syslinux-tftpboot xinetd
-% #Make the directory for tftp and give it the ironic owner
-% mkdir -p /tftpboot
-% chown -R ironic /tftpboot
-% 
-% #Configure /etc/xinet.d/tftp
-% echo "service tftp" > /etc/xinetd.d/tftp
-% echo "{" >> /etc/xinetd.d/tftp
-% echo "  protocol        = udp" >> /etc/xinetd.d/tftp
-% echo "  port            = 69" >> /etc/xinetd.d/tftp
-% echo "  socket_type     = dgram" >> /etc/xinetd.d/tftp
-% echo "  wait            = yes" >> /etc/xinetd.d/tftp
-% echo "  user            = root" >> /etc/xinetd.d/tftp
-% echo "  server          = /usr/sbin/in.tftpd" >> /etc/xinetd.d/tftp
-% echo "  server_args     = -v -v -v -v -v --map-file /tftpboot/map-file /tftpboot" >> /etc/xinetd.d/tftp
-% echo "  disable         = no" >> /etc/xinetd.d/tftp
-% echo "  # This is a workaround for Fedora, where TFTP will listen only on" >> /etc/xinetd.d/tftp
-% echo "  # IPv6 endpoint, if IPv4 flag is not used." >> /etc/xinetd.d/tftp
-% echo "  flags           = IPv4" >> /etc/xinetd.d/tftp
-% echo "}" >> /etc/xinetd.d/tftp
-% 
-% #Restart the xinetd service
-% systemctl restart xinetd
-% 
-% #Copy the PXE linux files to the tftpboot directory we created
-% cp /var/lib/tftpboot/pxelinux.0 /tftpboot
-% cp /var/lib/tftpboot/chain.c32 /tftpboot
-% 
-% #Generate a map file for the PXE files
-% echo 're ^(/tftpboot/) /tftpboot/\2' > /tftpboot/map-file
-% echo 're ^/tftpboot/ /tftpboot/' >> /tftpboot/map-file
-% echo 're ^(^/) /tftpboot/\1' >> /tftpboot/map-file
-% echo 're ^([^/]) /tftpboot/\1' >> /tftpboot/map-file
-% 
-% #Edit /etc/ironic/ironic.conf file with the <controller_ip> variable's value
-% sed --in-place "s|#tftp_server=\$my_ip|tftp_server=${controller_ip}|" /etc/ironic/ironic.conf
-% sed --in-place "s|#tftp_root=/tftpboot|tftp_root=/tftpboot|" /etc/ironic/ironic.conf
-% sed --in-place "s|#ip_version=4|ip_version=4|" /etc/ironic/ironic.conf
-% sed --in-place "s|#automated_clean=true|automated_clean=false|" /etc/ironic/ironic.conf
-% 
-% #Edit /etc/nova/nova.conf file
-% sed --in-place "s|reserved_host_memory_mb=512|reserved_host_memory_mb=0|" /etc/nova/nova.conf
-% sed --in-place "s|#scheduler_host_subset_size=1|scheduler_host_subset_size=9999999|" /etc/nova/nova.conf
-% sed --in-place "s|#scheduler_use_baremetal_filters=false|scheduler_use_baremetal_filters=true|" /etc/nova/nova.conf
-% 
-% # Enable meta data
-% # Edit /etc/neutron/dhcp_agent.ini
-% sed --in-place "s|enable_isolated_metadata\ =\ False|enable_isolated_metadata\ =\ True|" /etc/neutron/dhcp_agent.ini
-% sed --in-place "s|#force_metadata\ =\ false|force_metadata\ =\ True|" /etc/neutron/dhcp_agent.ini
-% 
-% #####
-% # Enable internal dns for hostname resolution, if it already not set
-% # manipulating configuration file via shell, alternate is to use openstack-config (TODO)
-% ####
-% # setup dns domain first
-% if grep -q "^dns_domain.*openstacklocal$" /etc/neutron/neutron.conf; then
-%    sed -in-place  "s|^dns_domain.*|dns_domain = oslocal|" /etc/neutron/neutron.conf
-% else
-%    if ! grep -q "^dns_domain" neutron.conf; then
-%        sed -in-place  "s|^#dns_domain = openstacklocal$|dns_domain = oslocal|" /etc/neutron/neutron.conf
-%    fi
-% fi
-% # configure ml2 dns driver for neutron
-% ml2file=/etc/neutron/plugins/ml2/ml2_conf.ini
-% if ! grep -q "^extension_drivers" $ml2file; then
-%     # Assuming there is a place holder in comments, replace that string
-%     sed -in-place  "s|^#extension_drivers.*|extension_drivers = port_security,dns|" $ml2file
-% else
-%     # Entry is present, check if dns is already present, if not then enable
-%     if ! grep "^extension_drivers" $ml2file|grep -q dns; then
-%         current_dns=`grep "^extension_drivers" $ml2file`
-%         new_dns="$current_dns,dns"
-%         sed -in-place  "s|^extension_drivers.*|$new_dns|" $ml2file
-%     fi 
-% fi
-% #------
-% 
-% # Now restart the services
-% #Restart ironic, nova, neutron, and ovs to load in the new configuration
-% systemctl restart neutron-dhcp-agent
-% systemctl restart neutron-openvswitch-agent
-% systemctl restart neutron-metadata-agent
-% systemctl restart neutron-server
-% systemctl restart openstack-nova-scheduler
-% systemctl restart openstack-nova-compute
-% systemctl restart openstack-ironic-conductor
+
 % #  XFILEX prepare_cloud_init
 % #!bin/bash
 % # 
@@ -750,6 +793,193 @@
 % #        echo "$node_info" >> $etc_hosts
 % #    fi
 % #done
+
+
+% #  XFILEX deploy_chpc_openstack
+% #!/bin/bash
+% 
+% 
+% source ${HOME}/keystonerc_admin
+% 
+% # Function for common common configuration
+% function setup_baremetal() {
+%     #Get the tenant ID for the services tenant
+%     SERVICES_TENANT_ID=`keystone tenant-list | grep "|\s*services\s*|" | awk '{print $2}'`
+%     
+%     #Create the flat network on which you are going to launch instances
+%     neutron net-list | grep "|\s*sharednet1\s*|"
+%     net_exists=$?
+%     if [ "${net_exists}" -ne "0" ]; then
+%         neutron net-create --tenant-id ${SERVICES_TENANT_ID} sharednet1 --shared --provider:network_type flat --provider:physical_network physnet1
+%     fi
+%     NEUTRON_NETWORK_UUID=`neutron net-list | grep "|\s*sharednet1\s*|" | awk '{print $2}'`
+%     
+%     #Create the subnet on the newly created network
+%     neutron subnet-list | grep "|\s*subnet01\s*|"
+%     subnet_exists=$?
+%     if [ "${subnet_exists}" -ne "0" ]; then
+%         neutron subnet-create sharednet1 --name subnet01 --ip-version=4 --gateway=${controller_ip} --allocation-pool start=${cc_subnet_dhcp_start},end=${cc_subnet_dhcp_end} --enable-dhcp ${cc_subnet_cidr}
+%     fi
+%     NEUTRON_SUBNET_UUID=`neutron subnet-list | grep "|\s*subnet01\s*|" | awk '{print $2}'`
+%     #Create the deploy-kernel and deploy-initrd images
+%     glance image-list | grep "|\s*deploy-vmlinuz\s*|"
+%     img_exists=$?
+%     if [ "${img_exists}" -ne "0" ]; then
+%         glance image-create --name deploy-vmlinuz --visibility public --disk-format aki --container-format aki < ${chpc_image_deploy_kernel}
+%     fi
+%     DEPLOY_VMLINUZ_UUID=`glance image-list | grep "|\s*deploy-vmlinuz\s*|" | awk '{print $2}'`
+%     
+%     glance image-list | grep "|\s*deploy-initrd\s*|"
+%     img_exists=$?
+%     if [ "${img_exists}" -ne "0" ]; then
+%         glance image-create --name deploy-initrd --visibility public --disk-format ari --container-format ari < ${chpc_image_deploy_ramdisk}
+%     fi
+%     DEPLOY_INITRD_UUID=`glance image-list | grep "|\s*deploy-initrd\s*|" | awk '{print $2}'`
+%     
+%     #Create the baremetal flavor and set the architecture to x86_64
+%     # This will create common baremetal flavor, if SMS node & compute has different
+%     # characteristic than user shall create multiple flavor one each characterisitc
+%     nova flavor-list | grep "|\s*baremetal-flavor\s*|"
+%     flavor_exists=$?
+%     if [ "$flavor_exists" -ne "0" ]; then
+%         nova flavor-create baremetal-flavor baremetal-flavor ${RAM_MB} ${DISK_GB} ${CPU}
+%         nova flavor-key baremetal-flavor set cpu_arch=$ARCH
+%     fi
+%     FLAVOR_UUID=`nova flavor-list | grep "|\s*baremetal-flavor\s*|" | awk '{print $2}'`
+%     #Increase the Quota limit for admin to allow nova boot
+%     openstack quota set --ram 512000 --cores 1000 --instances 100 admin
+%     
+%     #Register SSH keys with Nova
+%     nova keypair-list | grep "|\s*ostack_key\s*|"
+%     keypair_exists=$?
+%     if [ "${keypair_exists}" -ne "0" ]; then
+%     nova keypair-add --pub-key ${HOME}/.ssh/id_rsa.pub ostack_key
+%     fi
+%     
+%     KEYPAIR_NAME=ostack_key
+% }
+% 
+% # Configure SMS Node
+% function setup_sms() {
+%    # Create sms node image
+%    glance image-list | grep "|\s*sms-image\s*|"
+%    img_exists=$?
+%    if [ "${img_exists}" -ne "0" ]; then
+%        glance image-create --name sms-image --visibility public --disk-format qcow2 --container-format bare < ${chpc_image_sms}
+%    fi
+%    SMS_DISK_IMAGE_UUID=`glance image-list | grep "|\s*sms-image\s*|" | awk '{print $2}'`
+% 
+%     #Create a sms node in the bare metal service ironic.
+%     ironic node-list | grep "|\s*${sms_name}$\s*|"
+%     node_exists=$?
+%     if [ "${node_exists}" -ne "0" ]; then
+%         ironic node-create -d pxe_ipmitool -i deploy_kernel=${DEPLOY_VMLINUZ_UUID} -i deploy_ramdisk=${DEPLOY_INITRD_UUID} -i ipmi_terminal_port=8023 -i ipmi_address=${sms_bmc} -i ipmi_username=${sms_bmc_username} -i ipmi_password=${sms_bmc_password} -p cpus=${CPU} -p memory_mb=${RAM_MB} -p local_gb=${DISK_GB} -p cpu_arch=${ARCH} -p capabilities="boot_mode:bios" -n ${sms_name}
+%     fi
+%     SMS_UUID=`ironic node-list | grep "|\s*${sms_name}\s*|" | awk '{print $2}'`
+% 
+%     #Add the associated port(s) MAC address to the created node(s)
+%     ironic port-create -n ${SMS_UUID} -a ${sms_mac}
+% 
+%     #Add the instance_info/image_source and instance_info/root_gb
+%     ironic node-update $SMS_UUID add instance_info/image_source=${SMS_DISK_IMAGE_UUID} instance_info/root_gb=50
+% 
+%     #Setup neutron port for static IP addressing of sms node, this is an optional part
+%     neutron port-create sharednet1 --dns_name $sms_name --fixed-ip ip_address=$sms_ip --name $sms_name --mac-address $sms_mac
+%     SMS_PORT_ID=`neutron port-list | grep "|\s*$sms_name\s*|" | awk '{print $2}'`
+% }
+% 
+% #Configure Compute Nodes
+% function setup_cn() {
+%     #Create the whole-disk-image from the user's qcow2 file
+%     glance image-list | grep "|\s*user-image\s*|"
+%     img_exists=$?
+%     if [ "${img_exists}" -ne "0" ]; then% 
+%         glance image-create --name user-image --visibility public --disk-format qcow2 --container-format bare < ${chpc_image_user}
+%     fi
+%     USER_DISK_IMAGE_UUID=`glance image-list | grep "|\s*user-image\s*|" | awk '{print $2}'`
+% 
+%     # Setup Compute nodes
+%     for ((i=0; i < ${num_ccomputes}; i++)); do
+%         ##Create compute nodes in the bare metal service
+%         ironic node-list | grep "|\s*${cnodename_prefix}$((i+1))\s*|"
+%         node_exists=$?
+%         if [ "${node_exists}" -ne "0" ]; then
+%             ironic node-create -d pxe_ipmitool -i deploy_kernel=${DEPLOY_VMLINUZ_UUID} -i deploy_ramdisk=${DEPLOY_INITRD_UUID} -i ipmi_terminal_port=8023 -i ipmi_address=${cc_bmc[$i]} -i ipmi_username=${cc_bmc_username} -i ipmi_password=${cc_bmc_password} -p cpus=${CPU} -p memory_mb=${RAM_MB} -p local_gb=${DISK_GB} -p cpu_arch=${ARCH} -p capabilities="boot_mode:bios" -n ${cnodename_prefix}$((i+1))
+%         fi
+%         NODE_UUID_CC[$i]=`ironic node-list | grep "|\s*${cnodename_prefix}$((i+1))\s*|" | awk '{print $2}'`
+% 
+%         # update for compute nodes node MAC
+%         ironic port-create -n ${NODE_UUID_CC[$i]} -a ${cc_mac[$i]}
+% 
+%         #Add the instance_info/image_source and instance_info/root_gb
+%         ironic node-update ${NODE_UUID_CC[$i]} add instance_info/image_source=${USER_DISK_IMAGE_UUID} instance_info/root_gb=50
+% 
+%         #Setup neutron port for static IP addressing of compute nodes
+%         cn_name=${cnodename_prefix}$((i+1))
+%         neutron port-create sharednet1 --dns_name $cn_name --fixed-ip ip_address=${cc_ip[$i]} --name $cn_name --mac-address ${cc_mac[$i]}
+%         NEUTRON_PORT_ID_CC[$i]=`neutron port-list | grep "|\s*${cnodename_prefix}$((i+1))\s*|" | awk '{print $2}'`
+%     done
+% }
+% 
+% 
+% function boot_sms() {
+%     #Boot the sms node with nova. chpcInit is set from prepare_cloudInit
+%     echo "nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${SMS_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcSMSInit --nic port-id=${SMS_PORT_ID} ${sms_name}" > boot_sms
+%     nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${SMS_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcSMSInit --nic port-id=${SMS_PORT_ID} ${sms_name}
+% }
+% 
+% function boot_cn() {
+%     for ((i=0; i < ${num_ccomputes}; i++)); do
+%         filename="cn$((i+1))"
+%         echo "nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${USER_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcInit --nic port-id=${NEUTRON_PORT_ID_CC[$i]} ${cnodename_prefix}$((i+1))" > boot_$filename
+%         nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${USER_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcInit --nic port-id=${NEUTRON_PORT_ID_CC[$i]} ${cnodename_prefix}$((i+1))
+%         #wait for 5 sec 
+%         sleep 5
+%     done
+% }
+% 
+% 
+% 
+% ##Create a sms node in the bare metal service
+% #ironic node-list | grep "|\s*${sms_name}$\s*|"
+% #node_exists=$?
+% #if [ "${node_exists}" -ne "0" ]; then
+% #    ironic node-create -d pxe_ipmitool -i deploy_kernel=${DEPLOY_VMLINUZ_UUID} -i deploy_ramdisk=${DEPLOY_INITRD_UUID} -i ipmi_terminal_port=8023 -i ipmi_address=${sms_bmc} -i ipmi_username=${sms_bmc_username} -i ipmi_password=${sms_bmc_password} -p cpus=${CPU} -p memory_mb=${RAM_MB} -p local_gb=${DISK_GB} -p cpu_arch=${ARCH} -p capabilities="boot_mode:bios" -n ${sms_name}
+% #fi
+% #SMS_UUID=`ironic node-list | grep "|\s*${sms_name}\s*|" | awk '{print $2}'`
+% 
+% 
+% #### main
+% # First setup baremetnal environment
+% setup_baremetal
+% # Setup sms node first
+% setup_sms
+% # Setup Compute nodes
+% setup_cn
+% # Wait for the Nova hypervisor-stats to sync with available Ironic resources
+% sleep 121
+% # Now start booting the nodes
+% # Boot sms node first
+% boot_sms
+% # wait for 15 sec before starting to boot compute nodes. TBD need to tune this time
+% # SMS node should be booted before compute nodes starts booting. At minimum
+% # sms node shall have cloud init executed before CN's cloud init
+% sleep 15
+% # Now boot compute nodes
+% boot_cn
+% 
+% #nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${USER_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcSMSInit --nic port-id=${SMS_PORT_ID} ${sms_name}
+% sleep 5
+% # Boot CNs
+
+
+
+
+
+
+
+
+
 % 
 % end_ohpc_run
 
