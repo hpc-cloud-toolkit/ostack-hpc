@@ -6,8 +6,8 @@ Create a new file sms/update\_mrsh and add mrsh configuration to enable mrsh on 
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) (*\#*) Update mrsh
-[ctrlr](*\#*) (*\#*) check if it is already configured grep mshell /etc/services will return non-zero, else configure"
+[ctrlr](*\#*) # Update mrsh
+[ctrlr](*\#*) # check if it is already configured grep mshell /etc/services will return non-zero, else configure"
 [ctrlr](*\#*) cat /etc/services | grep mshell
 [ctrlr](*\#*) mshell_exists=$?
 [ctrlr](*\#*) if [ "${mshell_exists}" -ne "0" ]; then

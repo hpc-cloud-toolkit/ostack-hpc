@@ -7,7 +7,7 @@ Create an empty chpc\_init file and open for editing. You can also use existing 
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) (*\#*) Get the Compute node prefix and number of compute nodes
+[ctrlr](*\#*) # Get the Compute node prefix and number of compute nodes
 [ctrlr](*\#*) cnodename_prefix=<update_cnodename_prefix>
 [ctrlr](*\#*) num_ccomputes=<update_num_ccomputes>
 [ctrlr](*\#*) ntp_server=<update_ntp_server>
@@ -21,13 +21,13 @@ Now setup nfs share for cloud-init and files which want to send to compute nodes
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) (*\#*) setup cloudinit directory
+[ctrlr](*\#*) # setup cloudinit directory
 [ctrlr](*\#*) chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
-[ctrlr](*\#*) (*\#*) create directory of not exists
+[ctrlr](*\#*) # create directory of not exists
 [ctrlr](*\#*) mkdir -p $chpcInitPath
 [ctrlr](*\#*) chmod 700 $chpcInitPath
 [ctrlr](*\#*) # To create same user environment, copy user files 
-[ctrlr](*\#*) (*\#*) Copy other files needed for Cloud Init
+[ctrlr](*\#*) # Copy other files needed for Cloud Init
 [ctrlr](*\#*) sudo cp -fpr /etc/passwd $chpcInitPath
 [ctrlr](*\#*) sudo cp -fpr /etc/shadow $chpcInitPath
 [ctrlr](*\#*) sudo cp -fpr /etc/group $chpcInitPath
@@ -40,23 +40,23 @@ Share /home, /opt/ohpc/pub and /opt/ohpc/admin/cloud\_hpc\_init over nfs
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) (*\#*) export CloudInit Path to nfs share
+[ctrlr](*\#*) # export CloudInit Path to nfs share
 [ctrlr](*\#*) cat /etc/exports | grep "$chpcInitPath"
 [ctrlr](*\#*) chpcInitPath_exported=$?
 [ctrlr](*\#*) 
 [ctrlr](*\#*) if [ "${chpcInitPath_exported}" -ne "0" ]; then
 [ctrlr](*\#*)    echo "$chpcInitPath *(rw,no_subtree_check,no_root_squash)" >> /etc/exports
 [ctrlr](*\#*) fi
-[ctrlr](*\#*) (*\#*) share /home from HN
+[ctrlr](*\#*) # share /home from HN
 [ctrlr](*\#*) if ! grep "^/home" /etc/exports; then
 [ctrlr](*\#*)     echo "/home *(rw,no_subtree_check,fsid=10,no_root_squash)" >> /etc/exports
 [ctrlr](*\#*) fi
-[ctrlr](*\#*) (*\#*) share /opt/ from HN
+[ctrlr](*\#*) # share /opt/ from HN
 [ctrlr](*\#*) if ! grep "^/opt/ohpc/pub" /etc/exports; then
 [ctrlr](*\#*)     echo "/opt/ohpc/pub *(ro,no_subtree_check,fsid=11)" >> /etc/exports
 [ctrlr](*\#*) fi
 [ctrlr](*\#*) exportfs -a
-[ctrlr](*\#*) (*\#*) Restart nfs
+[ctrlr](*\#*) # Restart nfs
 [ctrlr](*\#*) systemctl restart nfs
 [ctrlr](*\#*) systemctl enable nfs-server
 [ctrlr](*\#*) logger "chpcInit: nfs configuration complete, updating remaining HPC configuration" 
@@ -69,14 +69,14 @@ Configure ntp sever on sms node, as per the site setting.
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) (*\#*) configure NTP
+[ctrlr](*\#*) # configure NTP
 [ctrlr](*\#*) systemctl enable ntpd
 [ctrlr](*\#*) if [[ ! -z "$ntp_server" ]]; then
 [ctrlr](*\#*)    echo "server ${ntp_server}" >> /etc/ntp.conf
 [ctrlr](*\#*) fi
 [ctrlr](*\#*) systemctl restart ntpd
 [ctrlr](*\#*) systemctl enable ntpd.service
-[ctrlr](*\#*) (*\#*) time sync
+[ctrlr](*\#*) # time sync
 [ctrlr](*\#*) ntpstat
 [ctrlr](*\#*) logger "chpcInit:ntp configuration done"
 \end{lstlisting} 
@@ -89,22 +89,22 @@ Distribute munge keys with compute nodes and then Update SLURM resource manager 
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) (*\#*)(*\#*)(*\#*) Update Resource manager configuration (*\#*)(*\#*)(*\#*)
-[ctrlr](*\#*) (*\#*) Update basic slurm configuration at sms node
+[ctrlr](*\#*) #(*\#*)(*\#*) Update Resource manager configuration (*\#*)(*\#*)(*\#*)
+[ctrlr](*\#*) # Update basic slurm configuration at sms node
 [ctrlr](*\#*) perl -pi -e "s/ControlMachine=\S+/ControlMachine=${sms_name}/" /etc/slurm/slurm.conf
 [ctrlr](*\#*) perl -pi -e "s/^NodeName=(\S+)/NodeName=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
 [ctrlr](*\#*) perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
-[ctrlr](*\#*) (*\#*) copy slurm file from sms node to Cloud Comute Nodes
+[ctrlr](*\#*) # copy slurm file from sms node to Cloud Comute Nodes
 [ctrlr](*\#*) cp -fpr -L /etc/slurm/slurm.conf $chpcInitPath
 [ctrlr](*\#*) cp -fpr -L /etc/pam.d/slurm $chpcInitPath
 [ctrlr](*\#*) cp -fpr -L /etc/munge/munge.key $chpcInitPath
-[ctrlr](*\#*) (*\#*) Start slurm and munge 
+[ctrlr](*\#*) # Start slurm and munge 
 [ctrlr](*\#*) systemctl enable munge
 [ctrlr](*\#*) systemctl restart munge
 [ctrlr](*\#*) systemctl enable slurmctld
 [ctrlr](*\#*) systemctl restart slurmctld
-[ctrlr](*\#*) (*\#*)systemctl enable slurmd
-[ctrlr](*\#*) (*\#*)systemctl restart slurmd
+[ctrlr](*\#*) #systemctl enable slurmd
+[ctrlr](*\#*) #systemctl restart slurmd
 [ctrlr](*\#*) logger "chpcInit:slurm configuration done"
 \end{lstlisting} 
  % end_ohpc_run
@@ -116,7 +116,7 @@ One last step to make sure ssh is working and enabled on compute nodes. Update t
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) (*\#*)Change file permissions in /etc/ssh to fix ssh into compute node
+[ctrlr](*\#*) #Change file permissions in /etc/ssh to fix ssh into compute node
 [ctrlr](*\#*) chmod 0600 /etc/ssh/ssh_host_*_key
 \end{lstlisting} 
  % end_ohpc_run
@@ -131,8 +131,8 @@ Create a new file sms/update\_mrsh and add mrsh configuration to enable mrsh on 
 
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) (*\#*) Update mrsh
-[ctrlr](*\#*) (*\#*) check if it is already configured grep mshell /etc/services will [ctrlr](*\#*) return non-zero, else configure"
+[ctrlr](*\#*) # Update mrsh
+[ctrlr](*\#*) # check if it is already configured grep mshell /etc/services will [ctrlr](*\#*) return non-zero, else configure"
 [ctrlr](*\#*) cat /etc/services | grep mshell
 [ctrlr](*\#*) mshell_exists=$?
 [ctrlr](*\#*) if [ "${mshell_exists}" -ne "0" ]; then \

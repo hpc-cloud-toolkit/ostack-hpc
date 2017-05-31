@@ -8,17 +8,17 @@ path to images must be provided using environment variable "chpc\_image\_deploy\
 "chpc\_image\_user", and "chpc\_image\_sms". 
 
 In this example cloud images are built on controller node ("[ctrlr]\# "). Once images are built, they are stored in the standard openHPC Path.
+In this recipe we will create utility functions for each functionality and then integrate them to make a complete receipe to create a compute node OS image. First setup a path for images to be stored.
 
 % begin_ohpc_run
 % ohpc_validation_newline
 % ohpc_validation_comment #   XFILEX chpc_prepare_image
-% ohpc_validation_comment # SECTION BMNOS 
-% ohpc_validation_comment # Set cloud image path 
+%% ohpc_validation_comment # SECTION BMNOS 
+% ohpc_validation_comment Set cloud image path 
 % ohpc_validation_comment 
 \begin{lstlisting}[language=bash,keywords={},upquote=true]
 [ctrlr](*\#*) CHPC_CLOUD_IMAGE_PATH=/opt/ohpc/admin/images/cloud/
 \end{lstlisting}
 % end_ohpc_run
-
 
 

@@ -1,43 +1,65 @@
-To build compute node images, we need to install client packages of HPC components. This is accomplished by setting image type to compute. Default image type in hpc elements is "compute".
+To build compute node images, we need to install client packages of HPC components. This is accomplished by setting image type to compute. Default image type in hpc elements is "compute". then we will instruct disk-image-builder to install client hpc packages one by one. We will do all these in a shall function prepare\_user\_images.
 
 % begin_ohpc_run
 % ohpc_validation_newline
-
+% ohpc_validation_comment function to prepare head node
+% ohpc_validation_comment
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) export DIB_HPC_IMAGE_TYPE=compute
+[ctrlr](*\#*) function prepare_user_image() {
 \end{lstlisting} 
- % end_ohpc_run
+
+Check if user has already supplied compute node images by checking environment variable chpc\_create\_new\_image and chpc\_image\_user. If image is supplied then we will copy image to ohpc image location and setup our environemnt variable to point to image location 
+% begin_ohpc_run
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)    if [[ ${chpc_create_new_image} -ne 1 ]] && [[ -s $chpc_image_user ]]; then
+[ctrlr](*\#*)       # No need to create an image, image is provided by user
+[ctrlr](*\#*)       echo -n "Skiping cloud user-image build, Image provided:"
+[ctrlr](*\#*)       echo "$chpc_image_user"
+[ctrlr](*\#*)       CHPC_IMAGE_DEST=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_user)
+[ctrlr](*\#*)       if [[ ! -e $CHPC_IMAGE_DEST ]]; then
+[ctrlr](*\#*)          sudo cp $chpc_image_user $CHPC_CLOUD_IMAGE_PATH
+[ctrlr](*\#*)       fi
+[ctrlr](*\#*)       chpc_image_user=$CHPC_IMAGE_DEST
+[ctrlr](*\#*)    else
+\end{lstlisting} 
+
+% end_ohpc_run
+
+Creat new image if one is not supplied by a user. first set image type to compute  
+
+% begin_ohpc_run
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)       export DIB_HPC_IMAGE_TYPE=compute
+\end{lstlisting} 
+% end_ohpc_run
 
 Now enable SLURM resource manager for compute node.
 
 % begin_ohpc_run
-% ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) DIB_HPC_ELEMENTS+=" hpc-slurm"
+[ctrlr](*\#*)       DIB_HPC_ELEMENTS+=" hpc-slurm"
 \end{lstlisting} 
  % end_ohpc_run
 
 Add optional OpenHPC Components
 
 % begin_ohpc_run
-% ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*)  if [[ ${enable_mrsh} -eq 1 ]];then
-[ctrlr](*\#*)         DIB_HPC_ELEMENTS+=" hpc-mrsh"
-[ctrlr](*\#*)  fi
+[ctrlr](*\#*)       if [[ ${enable_mrsh} -eq 1 ]];then
+[ctrlr](*\#*)           DIB_HPC_ELEMENTS+=" hpc-mrsh"
+[ctrlr](*\#*)       fi
 \end{lstlisting} 
  % end_ohpc_run
 
 Now create a compute node image with element local-config, dhcp-all-interfaces, devuser, selinux-permisive and all hpc specific elements. Element local-config copies your local environment into image, which is the local users, their password and permissions. Element devuser will create new user specified by environment variable "DIB\_DEV\_USER\_USERNAME". 
 
 % begin_ohpc_run
-% ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) disk-image-create centos7 vm local-config dhcp-all-interfaces devuser \
- selinux-permissive $DIB_HPC_ELEMENTS -o icloud-hpc-cent7-sms
+[ctrlr](*\#*)       disk-image-create centos7 vm local-config dhcp-all-interfaces devuser \
+        selinux-permissive $DIB_HPC_ELEMENTS -o icloud-hpc-cent7-sms
 \end{lstlisting} 
  % end_ohpc_run 
 
@@ -45,13 +67,14 @@ Now create a compute node image with element local-config, dhcp-all-interfaces, 
 It will take a while to build an image. Once image is built, copy it to standard OpenHPC path.
 
 % begin_ohpc_run
-% ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) chpc_image_sms="$( realpath icloud-hpc-cent7.qcow2)"
-[ctrlr](*\#*) mkdir -p $CHPC_CLOUD_IMAGE_PATH
-[ctrlr](*\#*) mv -f $chpc_image_user$CHPC_CLOUD_IMAGE_PATH
-[ctrlr](*\#*) chpc_image_user=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_sms)
+[ctrlr](*\#*)       chpc_image_sms="$( realpath icloud-hpc-cent7.qcow2)"
+[ctrlr](*\#*)       mkdir -p $CHPC_CLOUD_IMAGE_PATH
+[ctrlr](*\#*)       mv -f $chpc_image_user$CHPC_CLOUD_IMAGE_PATH
+[ctrlr](*\#*)       chpc_image_user=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_sms)
+[ctrlr](*\#*)     fi # end of else of or if
+[ctrlr](*\#*) } # end of function
 \end{lstlisting} 
  % end_ohpc_run
 
