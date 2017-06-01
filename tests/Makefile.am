@@ -9,21 +9,29 @@ TESTS            =
 
 if ROOT_ENABLED
 
-if ADMIN_ENABLED
-   SUBDIRS += admin
+if OSTACK_ENABLED
+   TESTS += ostack
 endif
-if BOS_ENABLED
-   SUBDIRS += bos
+
+if DIB_ENABLED
+   TESTS += dib
 endif
-if OOB_ENABLED
-   SUBDIRS += oob
-endif
-if LUSTRE_ENABLED
-   SUBDIRS += lustre
-endif
-if SPACK_ENABLED
-   SUBDIRS += admin/spack
-endif
+
+#if ADMIN_ENABLED
+#   SUBDIRS += admin
+#endif
+#if BOS_ENABLED
+#   SUBDIRS += bos
+#endif
+#if OOB_ENABLED
+#   SUBDIRS += oob
+#endif
+#if LUSTRE_ENABLED
+#   SUBDIRS += lustre
+#endif
+#if SPACK_ENABLED
+#   SUBDIRS += admin/spack
+#endif
 
 else # non root tests
 
