@@ -11,7 +11,7 @@ First create a generic network for "HPC as a service" with a name "sharednet1"
 
 % begin_ohpc_run
 % ohpc_validation_newline
-
+% ohpc_command function setup_baremetal() {
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) #Get the tenant ID for the services tenant
     SERVICES_TENANT_ID=`keystone tenant-list | grep "|\s*services\s*|" | awk '{print $2}'`
@@ -110,6 +110,7 @@ Export keypair name for use it later in other sections
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*)     KEYPAIR_NAME=ostack_key
 \end{lstlisting} 
+% ohpc_command }
 % end_ohpc_run
 
 \subsubsection{Setup HPC head node}
@@ -120,7 +121,7 @@ We created HPC head node OS images in previous sections, let's upload this image
 
 % begin_ohpc_run
 % ohpc_validation_newline
-
+% ohpc_command function setup_sms() {
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) # Create sms node image
 [ctrlr](*\#*)    glance image-list | grep "|\s*sms-image\s*|"
@@ -182,6 +183,7 @@ We will assign a fixed IP address to sms node. This is done by associating sms n
     [ctrlr](*\#*) neutron port-create sharednet1 --dns_name $sms_name --fixed-ip ip_address=$sms_ip --name $sms_name --mac-address $sms_mac
 [ctrlr](*\#*)     SMS_PORT_ID=`neutron port-list | grep "|\s*$sms_name\s*|" | awk '{print $2}'`
 	\end{lstlisting} 
+% ohpc_command }
 % end_ohpc_run
 
 
@@ -193,6 +195,7 @@ For HPC compute nodes, we created compute node images, upload hpc compute node i
 
 % begin_ohpc_run
 % ohpc_validation_newline
+% ohpc_command function setup_cn() {
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) #Create the whole-disk-image from the user's qcow2 file
@@ -248,6 +251,7 @@ Similar to sms node, create setup for all compute nodes including creating ironi
 [ctrlr](*\#*) # Wait for the Nova hypervisor-stats to sync with available Ironic resources
 [ctrlr](*\#*) sleep 121
 \end{lstlisting} 
+% ohpc_command }
 % end_ohpc_run
 
 \subsubsection{Boot SMS node}
@@ -262,6 +266,7 @@ Before booting, save boot command to a script, which will useful later on if use
 
 % begin_ohpc_run
 % ohpc_validation_newline
+% ohpc_command function boot_sms() {
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) #Boot the sms node with nova. chpcInit is set from prepare_cloudInit
@@ -287,6 +292,7 @@ Wait around 15 seconds before we boot compute nodes. This will allow enough time
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) sleep 15
 \end{lstlisting} 
+% ohpc_command }
 % end_ohpc_run
 
 
@@ -296,6 +302,7 @@ Booting compute nodes are very similar to SMS nodes. In our case we will boot 4 
 
 % begin_ohpc_run
 % ohpc_validation_newline
+% ohpc_command function boot_cn() {
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) for ((i=0; i < ${num_ccomputes}; i++)); do
@@ -305,5 +312,23 @@ Booting compute nodes are very similar to SMS nodes. In our case we will boot 4 
 [ctrlr](*\#*) #wait for 5 sec before booting other compute node
 [ctrlr](*\#*) sleep 5
 [ctrlr](*\#*) done
-\end{lstlisting} 
+\end{lstlisting}
+% ohpc_command }
+% ohpc_validation_comment ## Initial setup baremetal environment 
+% ohpc_command setup_baremetal
+% ohpc_validation_comment ## Setup SMS node first
+% ohpc_command setup_sms
+% ohpc_validation_comment ## Setup Compute nodes second
+% ohpc_command setup_cn
+% ohpc_validation_comment ## Wait for the Nova hypervisor-stats to sync with available Ironic resources
+% ohpc_command sleep 121
+% ohpc_validation_comment ## Boot sms node
+% ohpc_command boot_sms
+% ohpc_validation_comment ## # wait for 15 sec before starting to boot compute nodes. TBD need to tune this time
+% ohpc_validation_comment ## # SMS node should be booted before compute nodes starts booting. At minimum
+% ohpc_validation_comment ## # sms node shall have cloud init executed before CN's cloud init
+% ohpc_command sleep 15
+% ohpc_validation_comment ## # Now boot compute nodes
+% ohpc_command boot_cn
+
 % end_ohpc_run
