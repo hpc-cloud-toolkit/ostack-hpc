@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([test-suite], [1.0.0], [karl.w.schulz@intel.com])
+AC_INIT([test-suite], [1.0.0], [sunil.mahawar@intel.com])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([1.13])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
@@ -72,13 +72,13 @@ AC_ARG_WITH(mpi-families,
 # disk-image-builder
 AC_ARG_ENABLE([dib],
 	 [AS_HELP_STRING([--enable-dib],[Enable dib tests (default=yes, root only)])],
-	 [],[enable_oob=yes])
+	 [],[enable_dib=yes])
 AM_CONDITIONAL(DIB_ENABLED,test "x$enable_dib" = "xyes" ) 
 #------------------------------------------------------------------------------------------
 # OpenStack
 AC_ARG_ENABLE([ostack],
 	 [AS_HELP_STRING([--enable-ostack],[Enable ostack tests (default=yes, root only)])],
-	 [],[enable_oob=yes])
+	 [],[enable_ostack=yes])
 AM_CONDITIONAL(OSTACK_ENABLED,test "x$enable_ostack" = "xyes" ) 
 #------------------------------------------------------------------------------------------
 
