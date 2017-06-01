@@ -60,17 +60,5 @@ First check if user has requested to create images by verifying environment vari
 
 % end_ohpc_run 
 
-<<<<<<< HEAD
-\begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) chpc_image_deploy_kernel="$( realpath icloud-hpc-deploy-c7.kernel)"
-[ctrlr](*\#*) chpc_image_deploy_ramdisk="$( realpath icloud-hpc-deploy-c7.initramfs)"
-[ctrlr](*\#*) # Store Images file
-[ctrlr](*\#*) mkdir -p $CHPC_CLOUD_IMAGE_PATH/
-[ctrlr](*\#*) sudo mv -f $chpc_image_deploy_kernel $CHPC_CLOUD_IMAGE_PATH/
-[ctrlr](*\#*) chpc_image_deploy_kernel=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_deploy_kernel)
-[ctrlr](*\#*) sudo mv -f $chpc_image_deploy_ramdisk $CHPC_CLOUD_IMAGE_PATH/
-[ctrlr](*\#*) chpc_image_deploy_ramdisk=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_deploy_ramdisk)
-\end{lstlisting} 
- % end_ohpc_run
-=======
->>>>>>> e7fc636c959244880eb7d6862e4317adf008cbc0
+
+
