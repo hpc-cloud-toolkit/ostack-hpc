@@ -4,7 +4,10 @@ Start editing by adding some environment variable, first one is to set path to s
 
 % begin_ohpc_run
 % ohpc_validation_newline
-% ohpc_validation_comment #   XFILEX prepare_cloud_init
+% ohpc_validation_comment #   XFILEX
+% ohpc_command #!/bin/bash
+% ohpc_validation_comment #   FILE: prepare_cloud_init
+
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*)chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
 [ctrlr](*\#*)logger "chpcInit: Updating Compute Node with HPC configuration"
@@ -133,7 +136,7 @@ Update the hostname as per sms node.
 [ctrlr](*\#*)     exit 1
 [ctrlr](*\#*) fi
 [ctrlr](*\#*) 
-[ctrlr](*\#*) (*\#*)set the hostname
+[ctrlr](*\#*) #set the hostname
 [ctrlr](*\#*) if [ $(hostname) != ${cc_hostname} ]; then
 [ctrlr](*\#*)     hostnamectl set-hostname ${cc_hostname}
 [ctrlr](*\#*) fi

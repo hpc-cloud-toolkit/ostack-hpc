@@ -4,10 +4,13 @@ Create a new file sms/update\_mrsh and add mrsh configuration to enable mrsh on 
 
 % begin_ohpc_run
 % ohpc_validation_newline
+% ohpc_validation_comment ## ZFILEZ
+% ohpc_command #!/bin/bash
+% ohpc_validation_comment # FILE: update_mrsh
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) (*\#*) Update mrsh
-[ctrlr](*\#*) (*\#*) check if it is already configured grep mshell /etc/services will return non-zero, else configure"
+[ctrlr](*\#*) # Update mrsh
+[ctrlr](*\#*) # check if it is already configured grep mshell /etc/services will return non-zero, else configure"
 [ctrlr](*\#*) cat /etc/services | grep mshell
 [ctrlr](*\#*) mshell_exists=$?
 [ctrlr](*\#*) if [ "${mshell_exists}" -ne "0" ]; then
@@ -27,9 +30,36 @@ Create a new file sms/update\_clustershell and add configuration to enable clust
 
 % begin_ohpc_run
 % ohpc_validation_newline
-
+% ohpc_validation_comment ## ZFILEZ
+% ohpc_command #!/bin/bash
+% ohpc_validation_comment # FILE: update_clustershell
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) sed -i -- 's/all: @adm,@compute/compute: cc[1-${num_ccomputes}]\n&/' /etc/clustershell/groups.d/local.cfg
 \end{lstlisting} 
  % end_ohpc_run
+ 
+ \subsubsection{Enable genders during cloud-init}
+ Create a new file sms/enable\_genders and add configuration to enable genders on compute nodes. And save it. 
+
+ % begin_ohpc_run
+ % ohpc_validation_newline
+ % ohpc_validation_comment ## ZFILEZ
+ % ohpc_command #!/bin/bash
+ % ohpc_validation_comment # FILE: enable_genders
+ 
+ 
+ \begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) #Update the genders at sms with compute node information
+[ctrlr](*\#*) # first check if genders is install TBD
+[ctrlr](*\#*) for ((i=0; i<$num_ccomputes; i++)) ; do
+[ctrlr](*\#*) cat /etc/genders | grep ${cc_name[$i]}
+[ctrlr](*\#*) gender_exists=$?
+[ctrlr](*\#*) if [ "${gender_exists}" -ne "0" ]; then 
+[ctrlr](*\#*) echo -e "${cc_name[$i]}\tcompute,bmc=${cc_bmc[$i+1]}"
+[ctrlr](*\#*) fi
+[ctrlr](*\#*) done >> /etc/gender
+ \end{lstlisting}
+ 
+% ohpc_validation_comment ## ZFILEZ
+% end_ohpc_run

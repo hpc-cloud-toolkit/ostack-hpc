@@ -11,12 +11,12 @@ First create a generic network for "HPC as a service" with a name "sharednet1"
 
 % begin_ohpc_run
 % ohpc_validation_newline
-
+% ohpc_command function setup_baremetal() {
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) (*\#*)Get the tenant ID for the services tenant
+[ctrlr](*\#*) #Get the tenant ID for the services tenant
     SERVICES_TENANT_ID=`keystone tenant-list | grep "|\s*services\s*|" | awk '{print $2}'`
 [ctrlr](*\#*) 
-[ctrlr](*\#*)     (*\#*)Create the flat network on which you are going to launch instances
+[ctrlr](*\#*) #Create the flat network on which you are going to launch instances
 [ctrlr](*\#*)     neutron net-list | grep "|\s*sharednet1\s*|"
 [ctrlr](*\#*)     net_exists=$?
 [ctrlr](*\#*)     if [ "${net_exists}" -ne "0" ]; then
@@ -33,7 +33,7 @@ Create a subnet for our cluster with user defined start and end IP addresses. Ma
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) (*\#*)Create the subnet on the newly created network
+[ctrlr](*\#*) #Create the subnet on the newly created network
 [ctrlr](*\#*)     neutron subnet-list | grep "|\s*subnet01\s*|"
 [ctrlr](*\#*)     subnet_exists=$?
 [ctrlr](*\#*)     if [ "${subnet_exists}" -ne "0" ]; then
@@ -49,7 +49,7 @@ Upload kernel and initrd images to glance service so that they are available to 
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) (*\#*)Create the deploy-kernel and deploy-initrd images
+[ctrlr](*\#*) #Create the deploy-kernel and deploy-initrd images
 [ctrlr](*\#*)     glance image-list | grep "|\s*deploy-vmlinuz\s*|"
 [ctrlr](*\#*)     img_exists=$?
 [ctrlr](*\#*)     if [ "${img_exists}" -ne "0" ]; then
@@ -72,9 +72,9 @@ Create a bare metal flavor with nova.
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) (*\#*)Create the baremetal flavor and set the architecture to x86_64
-[ctrlr](*\#*)     (*\#*) This will create common baremetal flavor, if SMS node & compute has different
-[ctrlr](*\#*)     (*\#*) characteristic than user shall create multiple flavor one each characterisitc
+[ctrlr](*\#*) #Create the baremetal flavor and set the architecture to x86_64
+[ctrlr](*\#*) # This will create common baremetal flavor, if SMS node & compute has different
+[ctrlr](*\#*) # characteristic than user shall create multiple flavor one each characterisitc
 [ctrlr](*\#*)     nova flavor-list | grep "|\s*baremetal-flavor\s*|"
 [ctrlr](*\#*)     flavor_exists=$?
 [ctrlr](*\#*)     if [ "$flavor_exists" -ne "0" ]; then
@@ -82,7 +82,7 @@ Create a bare metal flavor with nova.
 [ctrlr](*\#*)         nova flavor-key baremetal-flavor set cpu_arch=$ARCH
 [ctrlr](*\#*)     fi
 [ctrlr](*\#*)     FLAVOR_UUID=`nova flavor-list | grep "|\s*baremetal-flavor\s*|" | awk '{print $2}'`
-[ctrlr](*\#*) (*\#*)Increase the Quota limit for admin to allow nova boot
+[ctrlr](*\#*) #Increase the Quota limit for admin to allow nova boot
 [ctrlr](*\#*)     openstack quota set --ram 512000 --cores 1000 --instances 100 admin
 \end{lstlisting} 
 % end_ohpc_run
@@ -93,7 +93,7 @@ Finally register public ssh keys with nova, so that admin can ssh to the node.
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) (*\#*)Register SSH keys with Nova
+[ctrlr](*\#*) #Register SSH keys with Nova
 [ctrlr](*\#*)  nova keypair-list | grep "|\s*ostack_key\s*|"
 [ctrlr](*\#*)  keypair_exists=$?
 [ctrlr](*\#*)  if [ "${keypair_exists}" -ne "0" ]; then
@@ -110,6 +110,7 @@ Export keypair name for use it later in other sections
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*)     KEYPAIR_NAME=ostack_key
 \end{lstlisting} 
+% ohpc_command }
 % end_ohpc_run
 
 \subsubsection{Setup HPC head node}
@@ -120,9 +121,9 @@ We created HPC head node OS images in previous sections, let's upload this image
 
 % begin_ohpc_run
 % ohpc_validation_newline
-
+% ohpc_command function setup_sms() {
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) (*\#*) Create sms node image
+[ctrlr](*\#*) # Create sms node image
 [ctrlr](*\#*)    glance image-list | grep "|\s*sms-image\s*|"
 [ctrlr](*\#*)    img_exists=$?
 [ctrlr](*\#*)    if [ "${img_exists}" -ne "0" ]; then
@@ -138,7 +139,7 @@ For provisioning sms node with ironic, we need to register node with ironic. Thi
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) (*\#*)Create a sms node in the bare metal service ironic.
+[ctrlr](*\#*) #Create a sms node in the bare metal service ironic.
 [ctrlr](*\#*)     ironic node-list | grep "|\s*${sms_name}$\s*|"
 [ctrlr](*\#*)     node_exists=$?
 [ctrlr](*\#*)     if [ "${node_exists}" -ne "0" ]; then 
@@ -155,7 +156,7 @@ Now we need tell ironic about the network port on which node will perform pxe bo
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*)     (*\#*)Add the associated port(s) MAC address to the created node(s)
+[ctrlr](*\#*) #Add the associated port(s) MAC address to the created node(s)
 [ctrlr](*\#*)     ironic port-create -n ${SMS_UUID} -a ${sms_mac}
 \end{lstlisting} 
 % end_ohpc_run
@@ -178,10 +179,11 @@ We will assign a fixed IP address to sms node. This is done by associating sms n
 % ohpc_validation_newline
     
     \begin{lstlisting}[language=bash,keywords={}]
-    [ctrlr](*\#*) (*\#*)Setup neutron port for static IP addressing of sms node, this is an optional part
+    [ctrlr](*\#*) #Setup neutron port for static IP addressing of sms node, this is an optional part
     [ctrlr](*\#*) neutron port-create sharednet1 --dns_name $sms_name --fixed-ip ip_address=$sms_ip --name $sms_name --mac-address $sms_mac
 [ctrlr](*\#*)     SMS_PORT_ID=`neutron port-list | grep "|\s*$sms_name\s*|" | awk '{print $2}'`
 	\end{lstlisting} 
+% ohpc_command }
 % end_ohpc_run
 
 
@@ -193,9 +195,10 @@ For HPC compute nodes, we created compute node images, upload hpc compute node i
 
 % begin_ohpc_run
 % ohpc_validation_newline
+% ohpc_command function setup_cn() {
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) (*\#*)Create the whole-disk-image from the user's qcow2 file
+[ctrlr](*\#*) #Create the whole-disk-image from the user's qcow2 file
 [ctrlr](*\#*)     glance image-list | grep "|\s*user-image\s*|"
 [ctrlr](*\#*)     img_exists=$?
 [ctrlr](*\#*)     if [ "${img_exists}" -ne "0" ]; then
@@ -212,8 +215,8 @@ Similar to sms node, create setup for all compute nodes including creating ironi
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) (*\#*) Setup Compute nodes
-[ctrlr](*\#*) (*\#*) Note: if installed from the rpm, the following script is installed as setup_compute_nodes.sh 
+[ctrlr](*\#*) # Setup Compute nodes
+[ctrlr](*\#*) # Note: if installed from the rpm, the following script is installed as setup_compute_nodes.sh 
 [ctrlr](*\#*) 
 [ctrlr](*\#*)     for ((i=0; i < ${num_ccomputes}; i++)); do
 [ctrlr](*\#*)         (*\#*)(*\#*)Create compute nodes in the bare metal service
@@ -245,9 +248,10 @@ Similar to sms node, create setup for all compute nodes including creating ironi
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) (*\#*) Wait for the Nova hypervisor-stats to sync with available Ironic resources
+[ctrlr](*\#*) # Wait for the Nova hypervisor-stats to sync with available Ironic resources
 [ctrlr](*\#*) sleep 121
 \end{lstlisting} 
+% ohpc_command }
 % end_ohpc_run
 
 \subsubsection{Boot SMS node}
@@ -262,9 +266,10 @@ Before booting, save boot command to a script, which will useful later on if use
 
 % begin_ohpc_run
 % ohpc_validation_newline
+% ohpc_command function boot_sms() {
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) (*\#*)Boot the sms node with nova. chpcInit is set from prepare_cloudInit
+[ctrlr](*\#*) #Boot the sms node with nova. chpcInit is set from prepare_cloudInit
 [ctrlr](*\#*) echo "nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${SMS_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcSMSInit --nic port-id=${SMS_PORT_ID} ${sms_name}" > boot_sms
 \end{lstlisting} 
 % end_ohpc_run
@@ -287,6 +292,7 @@ Wait around 15 seconds before we boot compute nodes. This will allow enough time
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) sleep 15
 \end{lstlisting} 
+% ohpc_command }
 % end_ohpc_run
 
 
@@ -296,14 +302,33 @@ Booting compute nodes are very similar to SMS nodes. In our case we will boot 4 
 
 % begin_ohpc_run
 % ohpc_validation_newline
+% ohpc_command function boot_cn() {
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) for ((i=0; i < ${num_ccomputes}; i++)); do
 [ctrlr](*\#*) filename="cn$((i+1))"
 [ctrlr](*\#*) echo "nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${USER_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcInit --nic port-id=${NEUTRON_PORT_ID_CC[$i]} ${cnodename_prefix}$((i+1))" > boot_$filename
 [ctrlr](*\#*) nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${USER_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcInit --nic port-id=${NEUTRON_PORT_ID_CC[$i]} ${cnodename_prefix}$((i+1))
-[ctrlr](*\#*) (*\#*)wait for 5 sec before booting other compute node
+[ctrlr](*\#*) #wait for 5 sec before booting other compute node
 [ctrlr](*\#*) sleep 5
 [ctrlr](*\#*) done
-\end{lstlisting} 
+\end{lstlisting}
+% ohpc_command }
+% ohpc_validation_comment ## Initial setup baremetal environment 
+% ohpc_command setup_baremetal
+% ohpc_validation_comment ## Setup SMS node first
+% ohpc_command setup_sms
+% ohpc_validation_comment ## Setup Compute nodes second
+% ohpc_command setup_cn
+% ohpc_validation_comment ## Wait for the Nova hypervisor-stats to sync with available Ironic resources
+% ohpc_command sleep 121
+% ohpc_validation_comment ## Boot sms node
+% ohpc_command boot_sms
+% ohpc_validation_comment ## # wait for 15 sec before starting to boot compute nodes. TBD need to tune this time
+% ohpc_validation_comment ## # SMS node should be booted before compute nodes starts booting. At minimum
+% ohpc_validation_comment ## # sms node shall have cloud init executed before CN's cloud init
+% ohpc_command sleep 15
+% ohpc_validation_comment ## # Now boot compute nodes
+% ohpc_command boot_cn
+
 % end_ohpc_run

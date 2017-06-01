@@ -51,8 +51,8 @@ Configure tfpt server
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) (*\#*)Configure tftp 
-[ctrlr](*\#*) (*\#*)Configure /etc/xinet.d/tftp
+[ctrlr](*\#*) #Configure tftp 
+[ctrlr](*\#*) #Configure /etc/xinet.d/tftp
 [ctrlr](*\#*) echo "service tftp" > /etc/xinetd.d/tftp
 [ctrlr](*\#*) echo "{" >> /etc/xinetd.d/tftp
 [ctrlr](*\#*) echo "  protocol        = udp" >> /etc/xinetd.d/tftp
@@ -134,8 +134,8 @@ For cloud-init we need to enable meta data server, which is done via neutron con
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) (*\#*) Enable meta data
-[ctrlr](*\#*) (*\#*) Edit /etc/neutron/dhcp_agent.ini
+[ctrlr](*\#*) # Enable meta data
+[ctrlr](*\#*) # Edit /etc/neutron/dhcp_agent.ini
 [ctrlr](*\#*) sed --in-place "s|enable_isolated_metadata\ =\ False|enable_isolated_metadata\ =\ True|" /etc/neutron/dhcp_agent.ini
 [ctrlr](*\#*) sed --in-place "s|(*\#*)force_metadata\ =\ false|force_metadata\ =\ True|" \ /etc/neutron/dhcp_agent.ini
 \end{lstlisting} 
@@ -147,11 +147,11 @@ We will enable internal dns server to assign host name to the instances as reque
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) (*\#*)(*\#*)(*\#*)(*\#*)(*\#*)
-[ctrlr](*\#*) (*\#*) Enable internal dns for hostname resolution, if it already not set
-[ctrlr](*\#*) (*\#*) manipulating configuration file via shell, alternate is to use openstack-config (TODO)
-[ctrlr](*\#*) (*\#*)(*\#*)(*\#*)(*\#*)
-[ctrlr](*\#*) (*\#*) setup dns domain first
+[ctrlr](*\#*) #(*\#*)(*\#*)(*\#*)(*\#*)
+[ctrlr](*\#*) # Enable internal dns for hostname resolution, if it already not set
+[ctrlr](*\#*) # manipulating configuration file via shell, alternate is to use openstack-config (TODO)
+[ctrlr](*\#*) #(*\#*)(*\#*)(*\#*)
+[ctrlr](*\#*) # setup dns domain first
 [ctrlr](*\#*) if grep -q "^dns_domain.*openstacklocal$" /etc/neutron/neutron.conf; then
 [ctrlr](*\#*)    sed -in-place  "s|^dns_domain.*|dns_domain = oslocal|" /etc/neutron/neutron.conf
 [ctrlr](*\#*) else
@@ -159,7 +159,7 @@ We will enable internal dns server to assign host name to the instances as reque
 [ctrlr](*\#*)        sed -in-place  "s|^(*\#*)dns_domain = openstacklocal$|dns_domain = oslocal|" /etc/neutron/neutron.conf
 [ctrlr](*\#*)    fi
 [ctrlr](*\#*) fi
-[ctrlr](*\#*) (*\#*) configure ml2 dns driver for neutron
+[ctrlr](*\#*) # configure ml2 dns driver for neutron
 [ctrlr](*\#*) ml2file=/etc/neutron/plugins/ml2/ml2_conf.ini
 [ctrlr](*\#*) if ! grep -q "^extension_drivers" $ml2file; then
 [ctrlr](*\#*)     (*\#*) Assuming there is a place holder in comments, replace that string
