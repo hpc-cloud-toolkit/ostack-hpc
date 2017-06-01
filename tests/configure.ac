@@ -69,6 +69,19 @@ AC_ARG_WITH(mpi-families,
 # ROOT level tests
 #-----------------
 
+# disk-image-builder
+AC_ARG_ENABLE([dib],
+	 [AS_HELP_STRING([--enable-dib],[Enable dib tests (default=yes, root only)])],
+	 [],[enable_oob=yes])
+AM_CONDITIONAL(DIB_ENABLED,test "x$enable_dib" = "xyes" ) 
+#------------------------------------------------------------------------------------------
+# OpenStack
+AC_ARG_ENABLE([ostack],
+	 [AS_HELP_STRING([--enable-ostack],[Enable ostack tests (default=yes, root only)])],
+	 [],[enable_oob=yes])
+AM_CONDITIONAL(OSTACK_ENABLED,test "x$enable_ostack" = "xyes" ) 
+#------------------------------------------------------------------------------------------
+
 #------------------------------------------------------------------------------------------
 # Administrator Environment
 AC_ARG_ENABLE([admin],
@@ -353,27 +366,10 @@ AC_ARG_ENABLE([prk],
    [AX_OPTION_DEFAULT(type=long,enable_prk,no)])
 AM_CONDITIONAL(PRK_ENABLED,test "x$enable_prk" = "xyes" )
 #------------------------------------------------------------------------------------------
-
 AC_OUTPUT( Makefile 
        common/TEST_ENV
-       admin/Makefile 
-       user-env/Makefile 
-       bos/Makefile
-       perf-tools/scalasca/Makefile
-       perf-tools/tau/Makefile
-       oob/Makefile
-       lustre/Makefile
-       dev-tools/easybuild/Makefile
-       admin/spack/Makefile
-       dev-tools/numpy/Makefile
-       dev-tools/numpy/tests/Makefile
-       dev-tools/scipy/Makefile
-       dev-tools/scipy/tests/Makefile
-       dev-tools/tbb/Makefile
-       dev-tools/tbb/tests/Makefile
-       dev-tools/cilk/Makefile
-       dev-tools/R-base/Makefile
-       modules/Makefile )
+       dib/Makefile
+       ostack/Makefile )
 
 echo
 echo '--------------------------------------------- SUMMARY ---------------------------------------------'
@@ -400,6 +396,16 @@ echo
 echo Submodule Configuration:
 echo 
 if test "x$ROOT_ENABLED" = "x1" ; then
+    if test "x$enable_dib" = "xyes"; then
+       echo '    'Disk Image Builder..... : enabled
+    else 
+       echo '    'Disk Image Builder..... : disabled
+    fi
+    if test "x$enable_ostack" = "xyes"; then
+       echo '    'OpenStack software..... : enabled
+    else 
+       echo '    'OpenStack software..... : disabled
+    fi
     if test "x$enable_bos" = "xyes"; then
        echo '    'Base operating system..... : enabled
     else 
