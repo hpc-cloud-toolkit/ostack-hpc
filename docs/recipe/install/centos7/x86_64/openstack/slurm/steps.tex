@@ -260,5 +260,219 @@
 
 % ohpc_validation_comment  # # QFILEQ
 
+% ohpc_validation_comment  # # HFILEH
+% ohpc_validation_comment # FILE:heat-sms.yaml
+% ohpc_command heat_template_version: 2013-05-23
+% ohpc_command
+% ohpc_command description: >
+% ohpc_command   This is a heat template to create HPC SMS node
+% ohpc_command   http://docs.openstack.org/developer/heat/template_guide/index.html
+% ohpc_command   http://cloudinit.readthedocs.io/en/latest/
+% ohpc_command   create openstack with minimum parameter
+% ohpc_command   openstack stack create --template heat-sms.yaml --parameter "ssh_key_name:ostack_key;server_name:sms" stack-name1
+% ohpc_command   openstack stack delete stack-name1
+% ohpc_command
+% ohpc_command   #Created by: Sunil Mahawar
+% ohpc_command
+% ohpc_command parameters:
+% ohpc_command   ssh_key_name:
+% ohpc_command     type: string
+% ohpc_command     label: SSH Keypair
+% ohpc_command     description: Name of a SSH keypair.
+% ohpc_command     hidden: false
+% ohpc_command     default: ostack_key
+% ohpc_command
+% ohpc_command   server_name:
+% ohpc_command     type: string
+% ohpc_command     label: Instance Name
+% ohpc_command     description: Name of the baremetal instance.
+% ohpc_command     hidden: false
+% ohpc_command     default: sms1
+% ohpc_command
+% ohpc_command   instance_flavor:
+% ohpc_command     type: string
+% ohpc_command     label: Instance Flavor
+% ohpc_command     description: The flavor type to use for baremetal server.
+% ohpc_command     default: baremetal-flavor
+% ohpc_command     hidden: false
+% ohpc_command
+% ohpc_command   image_id:
+% ohpc_command     type: string
+% ohpc_command     label: Image ID
+% ohpc_command     description: The image to use for baremetal server.
+% ohpc_command     default: sms-image
+% ohpc_command     hidden: false
+% ohpc_command
+% ohpc_command   network_id:
+% ohpc_command     type: string
+% ohpc_command     label: Network ID
+% ohpc_command     description: The flat network to be used for baremetal server
+% ohpc_command     default: sharednet1
+% ohpc_command
+% ohpc_command   port_id:
+% ohpc_command     type: string
+% ohpc_command     label: Network port ID
+% ohpc_command     description: mac address to IP address mapping for static IP reservation
+% ohpc_command     default: sms1
+% ohpc_command
+% ohpc_command resources:
+% ohpc_command   boot_config:
+% ohpc_command     type: OS::Heat::CloudConfig
+% ohpc_command     properties:
+% ohpc_command       cloud_config:
+% ohpc_command         write_files:
+% ohpc_command         - path: /opt/ohpc/admin/cloud_hpc_init/chpc_sms_init.sh
+% ohpc_command           content: {get_file: /opt/ohpc/admin/cloud_hpc_init/chpc_sms_init}
+% ohpc_command
+% ohpc_command   boot_script:
+% ohpc_command     type: OS::Heat::SoftwareConfig
+% ohpc_command     properties:
+% ohpc_command       group: ungrouped
+% ohpc_command       config: |
+% ohpc_command         #!/bin/bash
+% ohpc_command         echo "Running sms_init script"
+% ohpc_command         sh /opt/ohpc/admin/cloud_hpc_init/chpc_sms_init.sh
+% ohpc_command         echo "Done"
+% ohpc_command
+% ohpc_command   server_init:
+% ohpc_command     type: OS::Heat::MultipartMime
+% ohpc_command     properties:
+% ohpc_command       parts:
+% ohpc_command       - config: {get_resource: boot_config}
+% ohpc_command       - config: {get_resource: boot_script}
+% ohpc_command
+% ohpc_command   baremetal_instance:
+% ohpc_command     type: OS::Nova::Server
+% ohpc_command     properties:
+% ohpc_command       name: { get_param: server_name }
+% ohpc_command       image: { get_param: image_id }
+% ohpc_command       flavor: { get_param: instance_flavor }
+% ohpc_command       key_name: { get_param: ssh_key_name }
+% ohpc_command       networks:
+% ohpc_command         - port: {get_param: port_id}
+% ohpc_command       user_data_format: SOFTWARE_CONFIG
+% ohpc_command       user_data: {get_resource: server_init}
+% ohpc_command
+% ohpc_command
+% ohpc_command outputs:
+% ohpc_command   ip_address:
+% ohpc_command     description: IP address of the baremetal instance
+% ohpc_command     value: { get_attr: [baremetal_instance, first_address] }
+% ohpc_command
+
+% ohpc_validation_comment  # # HFILEH
+% ohpc_validation_comment  #FILE: heat-cn.yaml
+% ohpc_command heat_template_version: 2013-05-23
+% ohpc_command
+% ohpc_command description: >
+% ohpc_command   This is a heat template to create HPC compute nodes
+% ohpc_command   http://docs.openstack.org/developer/heat/template_guide/index.html
+% ohpc_command   http://cloudinit.readthedocs.io/en/latest/
+% ohpc_command   create openstack with minimum parameter
+% ohpc_command   openstack stack create --template heat-cn.yaml -P "cn_count=2" stack-name1
+% ohpc_command   openstack stack delete stack-name1
+% ohpc_command
+% ohpc_command   #Created by: Sunil Mahawar
+% ohpc_command
+% ohpc_command parameters:
+% ohpc_command   ssh_key_name:
+% ohpc_command     type: string
+% ohpc_command     label: SSH Keypair
+% ohpc_command     description: Name of a SSH keypair.
+% ohpc_command     hidden: false
+% ohpc_command     default: ostack_key
+% ohpc_command
+% ohpc_command   server_name:
+% ohpc_command     type: string
+% ohpc_command     label: Instance Name
+% ohpc_command     description: Name of the baremetal instance.
+% ohpc_command     hidden: false
+% ohpc_command     default: cc%index%
+% ohpc_command
+% ohpc_command   instance_flavor:
+% ohpc_command     type: string
+% ohpc_command     label: Instance Flavor
+% ohpc_command     description: The flavor type to use for baremetal server.
+% ohpc_command     default: baremetal-flavor
+% ohpc_command     hidden: false
+% ohpc_command
+% ohpc_command   image_id:
+% ohpc_command     type: string
+% ohpc_command     label: Image ID
+% ohpc_command     description: The image to use for baremetal server.
+% ohpc_command     default: user-image
+% ohpc_command     hidden: false
+% ohpc_command
+% ohpc_command   network_id:
+% ohpc_command     type: string
+% ohpc_command     label: Network ID
+% ohpc_command     description: The flat network to be used for baremetal server
+% ohpc_command     default: sharednet1
+% ohpc_command
+% ohpc_command   port_id:
+% ohpc_command     type: string
+% ohpc_command     label: Network port ID
+% ohpc_command     description: mac address to IP address mapping for static IP reservation
+% ohpc_command     default: cc%index%
+% ohpc_command
+% ohpc_command   cn_count:
+% ohpc_command     type: number
+% ohpc_command     label: baremetal instances
+% ohpc_command     description: number of baremetal instances
+% ohpc_command     default: 1
+% ohpc_command
+% ohpc_command
+% ohpc_command resources:
+% ohpc_command   boot_config:
+% ohpc_command     type: OS::Heat::CloudConfig
+% ohpc_command     properties:
+% ohpc_command       cloud_config:
+% ohpc_command         write_files:
+% ohpc_command         - path: /opt/ohpc/admin/cloud_hpc_init/chpc_init.sh
+% ohpc_command           content: {get_file: /opt/ohpc/admin/cloud_hpc_init/chpc_init}
+% ohpc_command
+% ohpc_command   boot_script:
+% ohpc_command     type: OS::Heat::SoftwareConfig
+% ohpc_command     properties:
+% ohpc_command       group: ungrouped
+% ohpc_command       config: |
+% ohpc_command         #!/bin/bash
+% ohpc_command         echo "Running compute node boot script"
+% ohpc_command         sh /opt/ohpc/admin/cloud_hpc_init/chpc_init.sh
+% ohpc_command         echo "Done"
+% ohpc_command
+% ohpc_command   server_init:
+% ohpc_command     type: OS::Heat::MultipartMime
+% ohpc_command     properties:
+% ohpc_command       parts:
+% ohpc_command       - config: {get_resource: boot_config}
+% ohpc_command       - config: {get_resource: boot_script}
+% ohpc_command
+% ohpc_command   multi-server:
+% ohpc_command    type: OS::Heat::ResourceGroup
+% ohpc_command    properties:
+% ohpc_command       count: { get_param: cn_count }
+% ohpc_command       resource_def:
+% ohpc_command        type: OS::Nova::Server
+% ohpc_command        properties:
+% ohpc_command          name: { get_param: server_name }
+% ohpc_command          image: { get_param: image_id }
+% ohpc_command          flavor: { get_param: instance_flavor }
+% ohpc_command          key_name: { get_param: ssh_key_name }
+% ohpc_command          networks:
+% ohpc_command            - network: { get_param: network_id }
+% ohpc_command          user_data_format: SOFTWARE_CONFIG
+% ohpc_command          user_data: {get_resource: server_init}
+% ohpc_command
+% ohpc_command
+% ohpc_command #outputs:
+% ohpc_command #  ip_address:
+% ohpc_command #    description: IP address of the baremetal instance
+% ohpc_command #    value: { get_attr: [baremetal_instance, first_address] }
+% ohpc_command
+
+
+% ohpc_validation_comment  # # HFILEH
+
 %end_ohpc_run
 \end{document}
