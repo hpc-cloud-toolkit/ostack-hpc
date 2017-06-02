@@ -1,3 +1,10 @@
+###################################
+# README
+# Ver 1.1
+# 01JUN2017
+# James Kling - jamesklx@intel.com
+###################################
+
 This README covers generating recipe scripts from the HPCaaS documentation.
 
 To generate scripts-
@@ -5,12 +12,26 @@ To generate scripts-
 	1.) Make sure the input file in create_recipes.sh is correct.
 	2.) ./create_recipes.sh
 
-At current, this will publish the 4 recipes the docs generate.
-
-prepare_chpc_image
-prepare_cloud_init
-deploy_chpc_openstack 
-prepare_chpc_openstack
 
 
-More will be added as necessary
+At current, this will publish the 4 recipes the docs generate, the two support scripts, 
+the three optional SMS scripts, and a separate README for the flavor.
+
+It is hard coded for a single flavor, 3_hpc_as_a_service, but that can be scripted for future
+flavors.
+
+The files generated are:
+
+./3_hpc_as_a_service/prepare_chpc_image
+./3_hpc_as_a_service/prepare_cloud_init
+./3_hpc_as_a_service/deploy_chpc_openstack 
+./3_hpc_as_a_service/prepare_chpc_openstack
+./3_hpc_as_a_service/README
+./3_hpc_as_a_service/set_os_hpc 
+./3_hpc_as_a_service/update_cnodes_to_sms
+./3_hpc_as_a_service/sms/enable_genders 
+./3_hpc_as_a_service/sms/update_mrsh
+./3_hpc_as_a_service/sms/update_clustershell
+
+
+More will be added as necessary.
