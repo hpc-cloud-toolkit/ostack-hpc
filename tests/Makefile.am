@@ -10,11 +10,11 @@ TESTS            =
 if ROOT_ENABLED
 
 if OSTACK_ENABLED
-   TESTS += ostack
+   SUBDIRS += ostack
 endif
 
 if DIB_ENABLED
-   TESTS += dib
+   SUBDIRS += dib
 endif
 
 #if ADMIN_ENABLED
