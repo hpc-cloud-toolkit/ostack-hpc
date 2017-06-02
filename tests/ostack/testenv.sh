@@ -1,7 +1,7 @@
 #!../common/bats/bin/bats
 # -*-sh-*-
 
-load ../common/test_helper_functions
+load ../common/test_helper_functions || exit 1
 source ../common/functions || exit 1
 
 if [ -s ../TEST_ENV ];then
@@ -10,7 +10,7 @@ fi
 
 testname="ostack"
 # for testing we are installing packstack, and assuming keystonerc_admin is present at /root
-source /root/keystonerc_admin
+source /root/keystonerc_admin || exit 1
 #rpm=conman${DELIM}
 
 @test "[$testname] Verify openstack installation" {
