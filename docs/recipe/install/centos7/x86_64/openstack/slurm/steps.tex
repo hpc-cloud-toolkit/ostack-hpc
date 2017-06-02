@@ -57,7 +57,7 @@
 
 % Bare Metal Node Operating System --------------------------------------------
 \clearpage
-% ohpc_validation_comment #   XFILEX chpc_prepare_image
+% ohpc_validation_comment  #   XFILEX chpc_prepare_image
 \section{Preparing Bare Metal Node Operating System}\label{sec:baremetalprep}
 \input{common/bmnos}
 
@@ -129,4 +129,136 @@
 \section{Appendix}
 \input{common/appendix_a}
 
+% Output support files for recipes 
+% These are files needed to run the default recipes, but not needed in the documentation
+
+% begin_ohpc_run
+% ohpc_validation_comment  # # QFILEQ
+% ohpc_validation_comment  # FILE: README
+% ohpc_validation_comment This directory "hpc/recipe/3_hpc_as_service" maintains the recipes for use
+% ohpc_validation_comment case 3. In this case OpenStack provides baremetal nodes and recipe
+% ohpc_validation_comment creates one of the bare metal node as HPC head node and create other 
+% ohpc_validation_comment remaining bare metals as HPC compute nodes.
+% ohpc_validation_comment it provides recipe to create HPC head node images as well as hpc
+% ohpc_validation_comment compute node images.
+% ohpc_validation_comment for hpc configuration it creates cloud-init script (post boot script)
+% ohpc_validation_comment for each type of nodes (SMS as well CN)
+% ohpc_validation_comment This use case can be invoked as below:
+% ohpc_validation_comment ../setup_cloud_hpc.sh -i=inventory/3_hpc_as_service/hn3_has_input.local -u=3 % % ohpc_validation_comment -n=inventory/3_hpc_as_service/hn3_has_inventory
+% ohpc_validation_comment 
+% ohpc_validation_comment Below are the scripts called to create the environment for use case 1:
+% ohpc_validation_comment 
+% ohpc_validation_comment file: set_os_hpc
+% ohpc_validation_comment ================
+% ohpc_validation_comment This is the script to setup HPC in OpenStack Cloud. This script is called by 
+% ohpc_validation_comment setup_cloud_hpc.sh if user provides a "-u=3" input to it. To perform the job,
+% ohpc_validation_comment it executes other scripts.
+% ohpc_validation_comment 
+% ohpc_validation_comment file: prepare_cloud_init
+% ohpc_validation_comment ======================
+% ohpc_validation_comment This sripts generates cloudinit script (chpcInit) for both sms node as well as
+% ohpc_validation_comment compute nodes, which is supplied to Nova to boot the nodes.
+% ohpc_validation_comment 
+% ohpc_validation_comment file: prepare_chpc_image
+% ohpc_validation_comment ========================
+% ohpc_validation_comment This generates HPC images for provisioning bare metal cloud nodes. It generates 
+% ohpc_validation_comment 3 images
+% ohpc_validation_comment Two deploy images for ironic to use 
+% ohpc_validation_comment 1. icloud-hpc-deploy-c7.kernel
+% ohpc_validation_comment 2. icloud-hpc-deply-c7.initramfs
+% ohpc_validation_comment One user image for compute node
+% ohpc_validation_comment 3. icloud-hpc-cent7.qcow2
+% ohpc_validation_comment One user image for hpc head node (sms)
+% ohpc_validation_comment 4. icloud-hpc-cent7-sms.qcow2
+% ohpc_validation_comment 
+% ohpc_validation_comment file: prepare_chpc_openstack
+% ohpc_validation_comment ============================
+% ohpc_validation_comment This script prepares nova, ironic for baremetal provisioning, installs and 
+% ohpc_validation_comment configure pxe boot, pxe-impmi driver for ironic, and enable cloud init for 
+% ohpc_validation_comment baremetal nodes.
+% ohpc_validation_comment It also configure neutron for internal dns service
+% ohpc_validation_comment 
+% ohpc_validation_comment File: deploy_chpc_openstack
+% ohpc_validation_comment ===========================
+% ohpc_validation_comment This script deploy baremetal nodes in an openstack using nova, ironic, neutron 
+% ohpc_validation_comment and glance by using cloudinit recipe (prepare under prepare_cloudInit) and HPC
+% ohpc_validation_comment images (prepared by prepare_chpc_image).
+% ohpc_validation_comment it first deploys sms node and then deploy compute nodes.
+% ohpc_validation_comment 
+% ohpc_validation_comment file: update_cnodes_to_sms
+% ohpc_validation_comment ==========================
+% ohpc_validation_comment This script perform the post boot configuration including updating SLURM 
+% ohpc_validation_comment resource manager at sms node for hpc compute nodes
+% ohpc_validation_comment 
+
+
+% ohpc_validation_comment  # # QFILEQ
+% ohpc_command #!/bin/bash 
+% ohpc_validation_comment  # FILE: set_os_hpc
+% ohpc_command #This script expects compute node ID as an input
+% ohpc_command set -x
+% ohpc_command # find and setup working directory
+% ohpc_command CHPC_SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P )"
+% ohpc_command CHPC_SCRIPTDIR="${CHPC_SCRIPTDIR%x}"
+% ohpc_command cd $CHPC_SCRIPTDIR
+% ohpc_command
+% ohpc_command echo "..$CHPC_SCRIPTDIR .."
+% ohpc_command
+% ohpc_command #function cont_next() {
+% ohpc_command #   echo "continue to ? "
+% ohpc_command #   read uinput
+% ohpc_command #   if [ "$uinput" == "y" ]; then
+% ohpc_command #       echo "Continueing ..."
+% ohpc_command #    else
+% ohpc_command #      exit 0
+% ohpc_command #   fi
+% ohpc_command #}
+% ohpc_command
+% ohpc_command # Create Post boot file, can be used for cloudInit
+% ohpc_command # Check for NTP server and configuration on compute nodes
+% ohpc_command #
+% ohpc_command #
+% ohpc_command # =====================================
+% ohpc_command # Preparation for CloudInit Script and files
+% ohpc_command # =====================================
+% ohpc_command # This assumes that HPC head node recipe is installed and SMS_node functionality is already configured. It will get some data from there to prepare cloudInit
+% ohpc_command time source prepare_cloud_init
+% ohpc_command 
+% ohpc_command # ========================
+% ohpc_command # Prepare CloudHPC Image :
+% ohpc_command # ========================
+% ohpc_command # Check if User selected to prepare cloud HPC images
+% ohpc_command #cont_next
+% ohpc_command time source prepare_chpc_image
+% ohpc_command # =============================================
+% ohpc_command # Prepare OpenStack for HPC baremetal instances
+% ohpc_command # =============================================
+% ohpc_command #time source prepare_chpc_openstack
+% ohpc_command #cont_next
+% ohpc_command time source deploy_chpc_openstack
+% ohpc_command #Wait for CN(s) to come up. TODO: Poll and wait rather than just a set 10 minutes.
+% ohpc_command sleep 600
+% ohpc_command #Call cloudInit workaround script
+% ohpc_command #time source c_init_workaround
+% ohpc_command #
+% ohpc_command # ========================================================
+% ohpc_command # Prepare SMS/Service Node. 
+% ohpc_command # Add Cloud baremetal nodes to HPC Orchestrator
+% ohpc_command # ========================================================
+% ohpc_command #time source update_cnodes_to_sms
+% ohpc_command
+
+
+% ohpc_validation_comment  # # QFILEQ
+% ohpc_command #!/bin/bash 
+% ohpc_validation_comment  # FILE: update_cnodes_to_sms
+% ohpc_validation_comment  # Update chpc_sms_init or prepare_cloud_init  with similar informoation from recipe for use case 2
+% ohpc_command #on Head node, start slurm
+% ohpc_command sleep 5
+% ohpc_command ssh $sms_ip scontrol update nodename=cc[1-${num_ccomputes}] state=idle
+% ohpc_command ssh $sms_ip sinfo
+
+% ohpc_validation_comment  # # QFILEQ
+
+%end_ohpc_run
 \end{document}
