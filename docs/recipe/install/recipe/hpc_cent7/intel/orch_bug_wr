@@ -1,0 +1,11 @@
+
+## FILE: hpc_cent7/intel/orch_bug_wr
+pwd=$PWD
+mkdir /tmp/
+cd /tmp/
+rpm2cpio /mnt/hpc_orch_iso/x86_64/testsuite-orch-1.0-122.1.x86_64.rpm | cpio -idmv
+mv /tmp/opt/intel/hpc-orchestrator/pub/tests /opt/intel/hpc-orchestrator/pub/
+mv /tmp/opt/intel/hpc-orchestrator/pub/modulefiles/testsuite /opt/intel/hpc-orchestrator/pub/modulefiles/
+mv /tmp/opt/intel/hpc-orchestrator/pub/doc/contrib/testsuite-orch-1.0 /opt/intel/hpc-orchestrator/pub/doc/contrib/
+cd $pwd
+#  

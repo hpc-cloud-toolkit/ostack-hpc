@@ -1,0 +1,66 @@
+
+## FILE: get_cn_mac
+#!/bin/bash
+# check if ipmitool is installed, if not then quit
+#check if BMC_IP, BMC_uname and BMC Password is provided, if not then exi
+function get_bmc_mac {
+    bmc_ip=$1
+    bmc_user=$2
+    bmc_pass=$3
+    if [[ -z $bmc_pass ]]; then
+       ipmi_mac=`ipmitool -E -I lanplus -H $bmc_ip -U $bmc_user lan print 1 |grep "MAC Address"|awk '{print $4}'`
+    else
+       ipmi_mac=`ipmitool -E -I lanplus -H $bmc_ip -U $bmc_user -P $bmc_pass lan print 1 |grep "MAC Address"|awk '{print $4}'`
+    fi
+}
+function get_ipmi_mac_parts {
+    ipmi_mac=$1
+    ipmi_mac_constant_part=${ipmi_mac%:*}
+    ipmi_mac_last_octet=${ipmi_mac##*:}
+}
+function get_comput_mac_octets {
+    ipmi_mac_l=$1
+    hex_ipmi_mac="0x$ipmi_mac_l"
+    mac1_last_octet=$(($hex_ipmi_mac - 2))
+    mac2_last_octet=$(($hex_ipmi_mac - 1))
+    mac1_last_octet=`echo "obase=16; $mac1_last_octet"|bc`
+    mac2_last_octet=`echo "obase=16; $mac2_last_octet"|bc`
+}
+function get_compute_mac {
+    mac1="$ipmi_mac_constant_part:$mac1_last_octet"
+    mac2="$ipmi_mac_constant_part:$mac2_last_octet"
+}
+usage () {
+  echo "USAGE: $0 <bmc_ip> <bmc_user> [bmc_password]"
+}
+### Main ##
+# check of help is requested
+for i in "$@"; do
+  case $i in
+    -h|--help)
+      usage
+      exit 1
+    ;;
+  esac
+done
+# check if we have at least 3 arguments
+if [[ $# -lt 2 ]]; then
+    echo "Error: Insufficient Arguments"
+    usage
+    exit
+fi
+bmc_ip=$1
+bmc_user=$2
+bmc_pass=$3
+get_bmc_mac $bmc_ip $bmc_user $bmc_pass 
+# check if we got the virtual MAC
+if [[ -z $ipmi_mac ]]; then
+    echo "Error: BMC Communication Error"
+    exit
+fi
+get_ipmi_mac_parts $ipmi_mac
+get_comput_mac_octets $ipmi_mac_last_octet
+get_compute_mac
+echo "Compute MAC1: $mac1"
+echo "Compute MAC2: $mac2"
+#  

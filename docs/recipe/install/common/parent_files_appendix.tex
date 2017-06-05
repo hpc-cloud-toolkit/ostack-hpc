@@ -1,0 +1,3931 @@
+# This files contained below are parent helper scripts that are not necessary in the user documentation, but used for generating recipe scripts and config files.
+% begin_ohpc_run
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: hera_preq/15-default.conf
+% ohpc_command #
+% ohpc_command # This is the main Apache server configuration file.  It contains the
+% ohpc_command # configuration directives that give the server its instructions.
+% ohpc_command # See <URL:http://httpd.apache.org/docs/2.2/> for detailed information.
+% ohpc_command # In particular, see
+% ohpc_command # <URL:http://httpd.apache.org/docs/2.2/mod/directives.html>
+% ohpc_command # for a discussion of each configuration directive.
+% ohpc_command #
+% ohpc_command #
+% ohpc_command # Do NOT simply read the instructions in here without understanding
+% ohpc_command # what they do.  They're here only as hints or reminders.  If you are unsure
+% ohpc_command # consult the online docs. You have been warned.  
+% ohpc_command #
+% ohpc_command # The configuration directives are grouped into three basic sections:
+% ohpc_command #  1. Directives that control the operation of the Apache server process as a
+% ohpc_command #     whole (the 'global environment').
+% ohpc_command #  2. Directives that define the parameters of the 'main' or 'default' server,
+% ohpc_command #     which responds to requests that aren't handled by a virtual host.
+% ohpc_command #     These directives also provide default values for the settings
+% ohpc_command #     of all virtual hosts.
+% ohpc_command #  3. Settings for virtual hosts, which allow Web requests to be sent to
+% ohpc_command #     different IP addresses or hostnames and have them handled by the
+% ohpc_command #     same Apache server process.
+% ohpc_command #
+% ohpc_command # Configuration and logfile names: If the filenames you specify for many
+% ohpc_command # of the server's control files begin with "/" (or "drive:/" for Win32), the
+% ohpc_command # server will use that explicit path.  If the filenames do *not* begin
+% ohpc_command # with "/", the value of ServerRoot is prepended -- so "logs/foo.log"
+% ohpc_command # with ServerRoot set to "/etc/httpd" will be interpreted by the
+% ohpc_command # server as "/etc/httpd/logs/foo.log".
+% ohpc_command #
+% ohpc_command 
+% ohpc_command ### Section 1: Global Environment
+% ohpc_command #
+% ohpc_command # The directives in this section affect the overall operation of Apache,
+% ohpc_command # such as the number of concurrent requests it can handle or where it
+% ohpc_command # can find its configuration files.
+% ohpc_command #
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Don't give away too much information about all the subcomponents
+% ohpc_command # we are running.  Comment out this line if you don't mind remote sites
+% ohpc_command # finding out what major optional modules you are running
+% ohpc_command ServerTokens OS
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # ServerRoot: The top of the directory tree under which the server's
+% ohpc_command # configuration, error, and log files are kept.
+% ohpc_command #
+% ohpc_command # NOTE!  If you intend to place this on an NFS (or otherwise network)
+% ohpc_command # mounted filesystem then please read the LockFile documentation
+% ohpc_command # (available at <URL:http://httpd.apache.org/docs/2.2/mod/mpm_common.html#lockfile>);
+% ohpc_command # you will save yourself a lot of trouble.
+% ohpc_command #
+% ohpc_command # Do NOT add a slash at the end of the directory path.
+% ohpc_command #
+% ohpc_command ServerRoot "/etc/httpd"
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # PidFile: The file in which the server should record its process
+% ohpc_command # identification number when it starts.  Note the PIDFILE variable in
+% ohpc_command # /etc/sysconfig/httpd must be set appropriately if this location is
+% ohpc_command # changed.
+% ohpc_command #
+% ohpc_command PidFile run/httpd.pid
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Timeout: The number of seconds before receives and sends time out.
+% ohpc_command #
+% ohpc_command Timeout 60
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # KeepAlive: Whether or not to allow persistent connections (more than
+% ohpc_command # one request per connection). Set to "Off" to deactivate.
+% ohpc_command #
+% ohpc_command KeepAlive Off
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # MaxKeepAliveRequests: The maximum number of requests to allow
+% ohpc_command # during a persistent connection. Set to 0 to allow an unlimited amount.
+% ohpc_command # We recommend you leave this number high, for maximum performance.
+% ohpc_command #
+% ohpc_command MaxKeepAliveRequests 100
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # KeepAliveTimeout: Number of seconds to wait for the next request from the
+% ohpc_command # same client on the same connection.
+% ohpc_command #
+% ohpc_command KeepAliveTimeout 15
+% ohpc_command 
+% ohpc_command ##
+% ohpc_command ## Server-Pool Size Regulation (MPM specific)
+% ohpc_command ## 
+% ohpc_command 
+% ohpc_command # prefork MPM
+% ohpc_command # StartServers: number of server processes to start
+% ohpc_command # MinSpareServers: minimum number of server processes which are kept spare
+% ohpc_command # MaxSpareServers: maximum number of server processes which are kept spare
+% ohpc_command # ServerLimit: maximum value for MaxClients for the lifetime of the server
+% ohpc_command # MaxClients: maximum number of server processes allowed to start
+% ohpc_command # MaxRequestsPerChild: maximum number of requests a server process serves
+% ohpc_command <IfModule prefork.c>
+% ohpc_command StartServers       8
+% ohpc_command MinSpareServers    5
+% ohpc_command MaxSpareServers   20
+% ohpc_command ServerLimit      256
+% ohpc_command MaxClients       256
+% ohpc_command MaxRequestsPerChild  4000
+% ohpc_command </IfModule>
+% ohpc_command 
+% ohpc_command # worker MPM
+% ohpc_command # StartServers: initial number of server processes to start
+% ohpc_command # MaxClients: maximum number of simultaneous client connections
+% ohpc_command # MinSpareThreads: minimum number of worker threads which are kept spare
+% ohpc_command # MaxSpareThreads: maximum number of worker threads which are kept spare
+% ohpc_command # ThreadsPerChild: constant number of worker threads in each server process
+% ohpc_command # MaxRequestsPerChild: maximum number of requests a server process serves
+% ohpc_command <IfModule worker.c>
+% ohpc_command StartServers         4
+% ohpc_command MaxClients         300
+% ohpc_command MinSpareThreads     25
+% ohpc_command MaxSpareThreads     75 
+% ohpc_command ThreadsPerChild     25
+% ohpc_command MaxRequestsPerChild  0
+% ohpc_command </IfModule>
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Listen: Allows you to bind Apache to specific IP addresses and/or
+% ohpc_command # ports, in addition to the default. See also the <VirtualHost>
+% ohpc_command # directive.
+% ohpc_command #
+% ohpc_command # Change this to Listen on specific IP addresses as shown below to 
+% ohpc_command # prevent Apache from glomming onto all bound IP addresses (0.0.0.0)
+% ohpc_command #
+% ohpc_command #Listen 12.34.56.78:80
+% ohpc_command Listen 80
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Dynamic Shared Object (DSO) Support
+% ohpc_command #
+% ohpc_command # To be able to use the functionality of a module which was built as a DSO you
+% ohpc_command # have to place corresponding `LoadModule' lines at this location so the
+% ohpc_command # directives contained in it are actually available _before_ they are used.
+% ohpc_command # Statically compiled modules (those listed by `httpd -l') do not need
+% ohpc_command # to be loaded here.
+% ohpc_command #
+% ohpc_command # Example:
+% ohpc_command # LoadModule foo_module modules/mod_foo.so
+% ohpc_command #
+% ohpc_command LoadModule auth_basic_module modules/mod_auth_basic.so
+% ohpc_command LoadModule auth_digest_module modules/mod_auth_digest.so
+% ohpc_command LoadModule authn_file_module modules/mod_authn_file.so
+% ohpc_command LoadModule authn_alias_module modules/mod_authn_alias.so
+% ohpc_command LoadModule authn_anon_module modules/mod_authn_anon.so
+% ohpc_command LoadModule authn_dbm_module modules/mod_authn_dbm.so
+% ohpc_command LoadModule authn_default_module modules/mod_authn_default.so
+% ohpc_command LoadModule authz_host_module modules/mod_authz_host.so
+% ohpc_command LoadModule authz_user_module modules/mod_authz_user.so
+% ohpc_command LoadModule authz_owner_module modules/mod_authz_owner.so
+% ohpc_command LoadModule authz_groupfile_module modules/mod_authz_groupfile.so
+% ohpc_command LoadModule authz_dbm_module modules/mod_authz_dbm.so
+% ohpc_command LoadModule authz_default_module modules/mod_authz_default.so
+% ohpc_command LoadModule ldap_module modules/mod_ldap.so
+% ohpc_command LoadModule authnz_ldap_module modules/mod_authnz_ldap.so
+% ohpc_command LoadModule include_module modules/mod_include.so
+% ohpc_command LoadModule log_config_module modules/mod_log_config.so
+% ohpc_command LoadModule logio_module modules/mod_logio.so
+% ohpc_command LoadModule env_module modules/mod_env.so
+% ohpc_command LoadModule ext_filter_module modules/mod_ext_filter.so
+% ohpc_command LoadModule mime_magic_module modules/mod_mime_magic.so
+% ohpc_command LoadModule expires_module modules/mod_expires.so
+% ohpc_command LoadModule deflate_module modules/mod_deflate.so
+% ohpc_command LoadModule headers_module modules/mod_headers.so
+% ohpc_command LoadModule usertrack_module modules/mod_usertrack.so
+% ohpc_command LoadModule setenvif_module modules/mod_setenvif.so
+% ohpc_command LoadModule mime_module modules/mod_mime.so
+% ohpc_command LoadModule dav_module modules/mod_dav.so
+% ohpc_command LoadModule status_module modules/mod_status.so
+% ohpc_command LoadModule autoindex_module modules/mod_autoindex.so
+% ohpc_command LoadModule info_module modules/mod_info.so
+% ohpc_command LoadModule dav_fs_module modules/mod_dav_fs.so
+% ohpc_command LoadModule vhost_alias_module modules/mod_vhost_alias.so
+% ohpc_command LoadModule negotiation_module modules/mod_negotiation.so
+% ohpc_command LoadModule dir_module modules/mod_dir.so
+% ohpc_command LoadModule actions_module modules/mod_actions.so
+% ohpc_command LoadModule speling_module modules/mod_speling.so
+% ohpc_command LoadModule userdir_module modules/mod_userdir.so
+% ohpc_command LoadModule alias_module modules/mod_alias.so
+% ohpc_command LoadModule substitute_module modules/mod_substitute.so
+% ohpc_command LoadModule rewrite_module modules/mod_rewrite.so
+% ohpc_command LoadModule proxy_module modules/mod_proxy.so
+% ohpc_command LoadModule proxy_balancer_module modules/mod_proxy_balancer.so
+% ohpc_command LoadModule proxy_ftp_module modules/mod_proxy_ftp.so
+% ohpc_command LoadModule proxy_http_module modules/mod_proxy_http.so
+% ohpc_command LoadModule proxy_ajp_module modules/mod_proxy_ajp.so
+% ohpc_command LoadModule proxy_connect_module modules/mod_proxy_connect.so
+% ohpc_command LoadModule cache_module modules/mod_cache.so
+% ohpc_command LoadModule suexec_module modules/mod_suexec.so
+% ohpc_command LoadModule disk_cache_module modules/mod_disk_cache.so
+% ohpc_command LoadModule cgi_module modules/mod_cgi.so
+% ohpc_command LoadModule version_module modules/mod_version.so
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # The following modules are not loaded by default:
+% ohpc_command #
+% ohpc_command #LoadModule asis_module modules/mod_asis.so
+% ohpc_command #LoadModule authn_dbd_module modules/mod_authn_dbd.so
+% ohpc_command #LoadModule cern_meta_module modules/mod_cern_meta.so
+% ohpc_command #LoadModule cgid_module modules/mod_cgid.so
+% ohpc_command #LoadModule dbd_module modules/mod_dbd.so
+% ohpc_command #LoadModule dumpio_module modules/mod_dumpio.so
+% ohpc_command #LoadModule filter_module modules/mod_filter.so
+% ohpc_command #LoadModule ident_module modules/mod_ident.so
+% ohpc_command #LoadModule log_forensic_module modules/mod_log_forensic.so
+% ohpc_command #LoadModule unique_id_module modules/mod_unique_id.so
+% ohpc_command #
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Load config files from the config directory "/etc/httpd/conf.d".
+% ohpc_command #
+% ohpc_command Include conf.d/*.conf
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # ExtendedStatus controls whether Apache will generate "full" status
+% ohpc_command # information (ExtendedStatus On) or just basic information (ExtendedStatus
+% ohpc_command # Off) when the "server-status" handler is called. The default is Off.
+% ohpc_command #
+% ohpc_command #ExtendedStatus On
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # If you wish httpd to run as a different user or group, you must run
+% ohpc_command # httpd as root initially and it will switch.  
+% ohpc_command #
+% ohpc_command # User/Group: The name (or #number) of the user/group to run httpd as.
+% ohpc_command #  . On SCO (ODT 3) use "User nouser" and "Group nogroup".
+% ohpc_command #  . On HPUX you may not be able to use shared memory as nobody, and the
+% ohpc_command #    suggested workaround is to create a user www and use that user.
+% ohpc_command #  NOTE that some kernels refuse to setgid(Group) or semctl(IPC_SET)
+% ohpc_command #  when the value of (unsigned)Group is above 60000; 
+% ohpc_command #  don't use Group #-1 on these systems!
+% ohpc_command #
+% ohpc_command User apache
+% ohpc_command Group apache
+% ohpc_command 
+% ohpc_command ### Section 2: 'Main' server configuration
+% ohpc_command #
+% ohpc_command # The directives in this section set up the values used by the 'main'
+% ohpc_command # server, which responds to any requests that aren't handled by a
+% ohpc_command # <VirtualHost> definition.  These values also provide defaults for
+% ohpc_command # any <VirtualHost> containers you may define later in the file.
+% ohpc_command #
+% ohpc_command # All of these directives may appear inside <VirtualHost> containers,
+% ohpc_command # in which case these default settings will be overridden for the
+% ohpc_command # virtual host being defined.
+% ohpc_command #
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # ServerAdmin: Your address, where problems with the server should be
+% ohpc_command # e-mailed.  This address appears on some server-generated pages, such
+% ohpc_command # as error documents.  e.g. admin@your-domain.com
+% ohpc_command #
+% ohpc_command ServerAdmin root@localhost
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # ServerName gives the name and port that the server uses to identify itself.
+% ohpc_command # This can often be determined automatically, but we recommend you specify
+% ohpc_command # it explicitly to prevent problems during startup.
+% ohpc_command #
+% ohpc_command # If this is not set to valid DNS name for your host, server-generated
+% ohpc_command # redirections will not work.  See also the UseCanonicalName directive.
+% ohpc_command #
+% ohpc_command # If your host doesn't have a registered DNS name, enter its IP address here.
+% ohpc_command # You will have to access it by its address anyway, and this will make 
+% ohpc_command # redirections work in a sensible way.
+% ohpc_command #
+% ohpc_command #ServerName www.example.com:80
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # UseCanonicalName: Determines how Apache constructs self-referencing 
+% ohpc_command # URLs and the SERVER_NAME and SERVER_PORT variables.
+% ohpc_command # When set "Off", Apache will use the Hostname and Port supplied
+% ohpc_command # by the client.  When set "On", Apache will use the value of the
+% ohpc_command # ServerName directive.
+% ohpc_command #
+% ohpc_command UseCanonicalName Off
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # DocumentRoot: The directory out of which you will serve your
+% ohpc_command # documents. By default, all requests are taken from this directory, but
+% ohpc_command # symbolic links and aliases may be used to point to other locations.
+% ohpc_command #
+% ohpc_command DocumentRoot "/var/www/html"
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Each directory to which Apache has access can be configured with respect
+% ohpc_command # to which services and features are allowed and/or disabled in that
+% ohpc_command # directory (and its subdirectories). 
+% ohpc_command #
+% ohpc_command # First, we configure the "default" to be a very restrictive set of 
+% ohpc_command # features.  
+% ohpc_command #
+% ohpc_command <Directory />
+% ohpc_command     Options FollowSymLinks
+% ohpc_command     AllowOverride None
+% ohpc_command </Directory>
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Note that from this point forward you must specifically allow
+% ohpc_command # particular features to be enabled - so if something's not working as
+% ohpc_command # you might expect, make sure that you have specifically enabled it
+% ohpc_command # below.
+% ohpc_command #
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # This should be changed to whatever you set DocumentRoot to.
+% ohpc_command #
+% ohpc_command <Directory "/var/www/html">
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Possible values for the Options directive are "None", "All",
+% ohpc_command # or any combination of:
+% ohpc_command #   Indexes Includes FollowSymLinks SymLinksifOwnerMatch ExecCGI MultiViews
+% ohpc_command #
+% ohpc_command # Note that "MultiViews" must be named *explicitly* --- "Options All"
+% ohpc_command # doesn't give it to you.
+% ohpc_command #
+% ohpc_command # The Options directive is both complicated and important.  Please see
+% ohpc_command # http://httpd.apache.org/docs/2.2/mod/core.html#options
+% ohpc_command # for more information.
+% ohpc_command #
+% ohpc_command     Options Indexes FollowSymLinks
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # AllowOverride controls what directives may be placed in .htaccess files.
+% ohpc_command # It can be "All", "None", or any combination of the keywords:
+% ohpc_command #   Options FileInfo AuthConfig Limit
+% ohpc_command #
+% ohpc_command     AllowOverride None
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Controls who can get stuff from this server.
+% ohpc_command #
+% ohpc_command     Order allow,deny
+% ohpc_command     Allow from all
+% ohpc_command 
+% ohpc_command </Directory>
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # UserDir: The name of the directory that is appended onto a user's home
+% ohpc_command # directory if a ~user request is received.
+% ohpc_command #
+% ohpc_command # The path to the end user account 'public_html' directory must be
+% ohpc_command # accessible to the webserver userid.  This usually means that ~userid
+% ohpc_command # must have permissions of 711, ~userid/public_html must have permissions
+% ohpc_command # of 755, and documents contained therein must be world-readable.
+% ohpc_command # Otherwise, the client will only receive a "403 Forbidden" message.
+% ohpc_command #
+% ohpc_command # See also: http://httpd.apache.org/docs/misc/FAQ.html#forbidden
+% ohpc_command #
+% ohpc_command <IfModule mod_userdir.c>
+% ohpc_command     #
+% ohpc_command     # UserDir is disabled by default since it can confirm the presence
+% ohpc_command     # of a username on the system (depending on home directory
+% ohpc_command     # permissions).
+% ohpc_command     #
+% ohpc_command     UserDir disabled
+% ohpc_command 
+% ohpc_command     #
+% ohpc_command     # To enable requests to /~user/ to serve the user's public_html
+% ohpc_command     # directory, remove the "UserDir disabled" line above, and uncomment
+% ohpc_command     # the following line instead:
+% ohpc_command     # 
+% ohpc_command     #UserDir public_html
+% ohpc_command 
+% ohpc_command </IfModule>
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Control access to UserDir directories.  The following is an example
+% ohpc_command # for a site where these directories are restricted to read-only.
+% ohpc_command #
+% ohpc_command #<Directory /home/*/public_html>
+% ohpc_command #    AllowOverride FileInfo AuthConfig Limit
+% ohpc_command #    Options MultiViews Indexes SymLinksIfOwnerMatch IncludesNoExec
+% ohpc_command #    <Limit GET POST OPTIONS>
+% ohpc_command #        Order allow,deny
+% ohpc_command #        Allow from all
+% ohpc_command #    </Limit>
+% ohpc_command #    <LimitExcept GET POST OPTIONS>
+% ohpc_command #        Order deny,allow
+% ohpc_command #        Deny from all
+% ohpc_command #    </LimitExcept>
+% ohpc_command #</Directory>
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # DirectoryIndex: sets the file that Apache will serve if a directory
+% ohpc_command # is requested.
+% ohpc_command #
+% ohpc_command # The index.html.var file (a type-map) is used to deliver content-
+% ohpc_command # negotiated documents.  The MultiViews Option can be used for the 
+% ohpc_command # same purpose, but it is much slower.
+% ohpc_command #
+% ohpc_command DirectoryIndex index.html index.html.var
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # AccessFileName: The name of the file to look for in each directory
+% ohpc_command # for additional configuration directives.  See also the AllowOverride
+% ohpc_command # directive.
+% ohpc_command #
+% ohpc_command AccessFileName .htaccess
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # The following lines prevent .htaccess and .htpasswd files from being 
+% ohpc_command # viewed by Web clients. 
+% ohpc_command #
+% ohpc_command <Files ~ "^\.ht">
+% ohpc_command     Order allow,deny
+% ohpc_command     Deny from all
+% ohpc_command     Satisfy All
+% ohpc_command </Files>
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # TypesConfig describes where the mime.types file (or equivalent) is
+% ohpc_command # to be found.
+% ohpc_command #
+% ohpc_command TypesConfig /etc/mime.types
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # DefaultType is the default MIME type the server will use for a document
+% ohpc_command # if it cannot otherwise determine one, such as from filename extensions.
+% ohpc_command # If your server contains mostly text or HTML documents, "text/plain" is
+% ohpc_command # a good value.  If most of your content is binary, such as applications
+% ohpc_command # or images, you may want to use "application/octet-stream" instead to
+% ohpc_command # keep browsers from trying to display binary files as though they are
+% ohpc_command # text.
+% ohpc_command #
+% ohpc_command DefaultType text/plain
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # The mod_mime_magic module allows the server to use various hints from the
+% ohpc_command # contents of the file itself to determine its type.  The MIMEMagicFile
+% ohpc_command # directive tells the module where the hint definitions are located.
+% ohpc_command #
+% ohpc_command <IfModule mod_mime_magic.c>
+% ohpc_command #   MIMEMagicFile /usr/share/magic.mime
+% ohpc_command     MIMEMagicFile conf/magic
+% ohpc_command </IfModule>
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # HostnameLookups: Log the names of clients or just their IP addresses
+% ohpc_command # e.g., www.apache.org (on) or 204.62.129.132 (off).
+% ohpc_command # The default is off because it'd be overall better for the net if people
+% ohpc_command # had to knowingly turn this feature on, since enabling it means that
+% ohpc_command # each client request will result in AT LEAST one lookup request to the
+% ohpc_command # nameserver.
+% ohpc_command #
+% ohpc_command HostnameLookups Off
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # EnableMMAP: Control whether memory-mapping is used to deliver
+% ohpc_command # files (assuming that the underlying OS supports it).
+% ohpc_command # The default is on; turn this off if you serve from NFS-mounted 
+% ohpc_command # filesystems.  On some systems, turning it off (regardless of
+% ohpc_command # filesystem) can improve performance; for details, please see
+% ohpc_command # http://httpd.apache.org/docs/2.2/mod/core.html#enablemmap
+% ohpc_command #
+% ohpc_command #EnableMMAP off
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # EnableSendfile: Control whether the sendfile kernel support is 
+% ohpc_command # used to deliver files (assuming that the OS supports it). 
+% ohpc_command # The default is on; turn this off if you serve from NFS-mounted 
+% ohpc_command # filesystems.  Please see
+% ohpc_command # http://httpd.apache.org/docs/2.2/mod/core.html#enablesendfile
+% ohpc_command #
+% ohpc_command #EnableSendfile off
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # ErrorLog: The location of the error log file.
+% ohpc_command # If you do not specify an ErrorLog directive within a <VirtualHost>
+% ohpc_command # container, error messages relating to that virtual host will be
+% ohpc_command # logged here.  If you *do* define an error logfile for a <VirtualHost>
+% ohpc_command # container, that host's errors will be logged there and not here.
+% ohpc_command #
+% ohpc_command ErrorLog logs/error_log
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # LogLevel: Control the number of messages logged to the error_log.
+% ohpc_command # Possible values include: debug, info, notice, warn, error, crit,
+% ohpc_command # alert, emerg.
+% ohpc_command #
+% ohpc_command LogLevel warn
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # The following directives define some format nicknames for use with
+% ohpc_command # a CustomLog directive (see below).
+% ohpc_command #
+% ohpc_command LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+% ohpc_command LogFormat "%h %l %u %t \"%r\" %>s %b" common
+% ohpc_command LogFormat "%{Referer}i -> %U" referer
+% ohpc_command LogFormat "%{User-agent}i" agent
+% ohpc_command 
+% ohpc_command # "combinedio" includes actual counts of actual bytes received (%I) and sent (%O); this
+% ohpc_command # requires the mod_logio module to be loaded.
+% ohpc_command #LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" %I %O" combinedio
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # The location and format of the access logfile (Common Logfile Format).
+% ohpc_command # If you do not define any access logfiles within a <VirtualHost>
+% ohpc_command # container, they will be logged here.  Contrariwise, if you *do*
+% ohpc_command # define per-<VirtualHost> access logfiles, transactions will be
+% ohpc_command # logged therein and *not* in this file.
+% ohpc_command #
+% ohpc_command #CustomLog logs/access_log common
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # If you would like to have separate agent and referer logfiles, uncomment
+% ohpc_command # the following directives.
+% ohpc_command #
+% ohpc_command #CustomLog logs/referer_log referer
+% ohpc_command #CustomLog logs/agent_log agent
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # For a single logfile with access, agent, and referer information
+% ohpc_command # (Combined Logfile Format), use the following directive:
+% ohpc_command #
+% ohpc_command CustomLog logs/access_log combined
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Optionally add a line containing the server version and virtual host
+% ohpc_command # name to server-generated pages (internal error documents, FTP directory
+% ohpc_command # listings, mod_status and mod_info output etc., but not CGI generated
+% ohpc_command # documents or custom error documents).
+% ohpc_command # Set to "EMail" to also include a mailto: link to the ServerAdmin.
+% ohpc_command # Set to one of:  On | Off | EMail
+% ohpc_command #
+% ohpc_command ServerSignature On
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Aliases: Add here as many aliases as you need (with no limit). The format is 
+% ohpc_command # Alias fakename realname
+% ohpc_command #
+% ohpc_command # Note that if you include a trailing / on fakename then the server will
+% ohpc_command # require it to be present in the URL.  So "/icons" isn't aliased in this
+% ohpc_command # example, only "/icons/".  If the fakename is slash-terminated, then the 
+% ohpc_command # realname must also be slash terminated, and if the fakename omits the 
+% ohpc_command # trailing slash, the realname must also omit it.
+% ohpc_command #
+% ohpc_command # We include the /icons/ alias for FancyIndexed directory listings.  If you
+% ohpc_command # do not use FancyIndexing, you may comment this out.
+% ohpc_command #
+% ohpc_command Alias /icons/ "/var/www/icons/"
+% ohpc_command 
+% ohpc_command <Directory "/var/www/icons">
+% ohpc_command     Options Indexes MultiViews FollowSymLinks
+% ohpc_command     AllowOverride None
+% ohpc_command     Order allow,deny
+% ohpc_command     Allow from all
+% ohpc_command </Directory>
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # WebDAV module configuration section.
+% ohpc_command # 
+% ohpc_command <IfModule mod_dav_fs.c>
+% ohpc_command     # Location of the WebDAV lock database.
+% ohpc_command     DAVLockDB /var/lib/dav/lockdb
+% ohpc_command </IfModule>
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # ScriptAlias: This controls which directories contain server scripts.
+% ohpc_command # ScriptAliases are essentially the same as Aliases, except that
+% ohpc_command # documents in the realname directory are treated as applications and
+% ohpc_command # run by the server when requested rather than as documents sent to the client.
+% ohpc_command # The same rules about trailing "/" apply to ScriptAlias directives as to
+% ohpc_command # Alias.
+% ohpc_command #
+% ohpc_command ScriptAlias /cgi-bin/ "/var/www/cgi-bin/"
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # "/var/www/cgi-bin" should be changed to whatever your ScriptAliased
+% ohpc_command # CGI directory exists, if you have that configured.
+% ohpc_command #
+% ohpc_command <Directory "/var/www/cgi-bin">
+% ohpc_command     AllowOverride None
+% ohpc_command     Options None
+% ohpc_command     Order allow,deny
+% ohpc_command     Allow from all
+% ohpc_command </Directory>
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Redirect allows you to tell clients about documents which used to exist in
+% ohpc_command # your server's namespace, but do not anymore. This allows you to tell the
+% ohpc_command # clients where to look for the relocated document.
+% ohpc_command # Example:
+% ohpc_command # Redirect permanent /foo http://www.example.com/bar
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Directives controlling the display of server-generated directory listings.
+% ohpc_command #
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # IndexOptions: Controls the appearance of server-generated directory
+% ohpc_command # listings.
+% ohpc_command #
+% ohpc_command IndexOptions FancyIndexing VersionSort NameWidth=* HTMLTable Charset=UTF-8
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # AddIcon* directives tell the server which icon to show for different
+% ohpc_command # files or filename extensions.  These are only displayed for
+% ohpc_command # FancyIndexed directories.
+% ohpc_command #
+% ohpc_command AddIconByEncoding (CMP,/icons/compressed.gif) x-compress x-gzip
+% ohpc_command 
+% ohpc_command AddIconByType (TXT,/icons/text.gif) text/*
+% ohpc_command AddIconByType (IMG,/icons/image2.gif) image/*
+% ohpc_command AddIconByType (SND,/icons/sound2.gif) audio/*
+% ohpc_command AddIconByType (VID,/icons/movie.gif) video/*
+% ohpc_command 
+% ohpc_command AddIcon /icons/binary.gif .bin .exe
+% ohpc_command AddIcon /icons/binhex.gif .hqx
+% ohpc_command AddIcon /icons/tar.gif .tar
+% ohpc_command AddIcon /icons/world2.gif .wrl .wrl.gz .vrml .vrm .iv
+% ohpc_command AddIcon /icons/compressed.gif .Z .z .tgz .gz .zip
+% ohpc_command AddIcon /icons/a.gif .ps .ai .eps
+% ohpc_command AddIcon /icons/layout.gif .html .shtml .htm .pdf
+% ohpc_command AddIcon /icons/text.gif .txt
+% ohpc_command AddIcon /icons/c.gif .c
+% ohpc_command AddIcon /icons/p.gif .pl .py
+% ohpc_command AddIcon /icons/f.gif .for
+% ohpc_command AddIcon /icons/dvi.gif .dvi
+% ohpc_command AddIcon /icons/uuencoded.gif .uu
+% ohpc_command AddIcon /icons/script.gif .conf .sh .shar .csh .ksh .tcl
+% ohpc_command AddIcon /icons/tex.gif .tex
+% ohpc_command AddIcon /icons/bomb.gif core
+% ohpc_command 
+% ohpc_command AddIcon /icons/back.gif ..
+% ohpc_command AddIcon /icons/hand.right.gif README
+% ohpc_command AddIcon /icons/folder.gif ^^DIRECTORY^^
+% ohpc_command AddIcon /icons/blank.gif ^^BLANKICON^^
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # DefaultIcon is which icon to show for files which do not have an icon
+% ohpc_command # explicitly set.
+% ohpc_command #
+% ohpc_command DefaultIcon /icons/unknown.gif
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # AddDescription allows you to place a short description after a file in
+% ohpc_command # server-generated indexes.  These are only displayed for FancyIndexed
+% ohpc_command # directories.
+% ohpc_command # Format: AddDescription "description" filename
+% ohpc_command #
+% ohpc_command #AddDescription "GZIP compressed document" .gz
+% ohpc_command #AddDescription "tar archive" .tar
+% ohpc_command #AddDescription "GZIP compressed tar archive" .tgz
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # ReadmeName is the name of the README file the server will look for by
+% ohpc_command # default, and append to directory listings.
+% ohpc_command #
+% ohpc_command # HeaderName is the name of a file which should be prepended to
+% ohpc_command # directory indexes. 
+% ohpc_command ReadmeName README.html
+% ohpc_command HeaderName HEADER.html
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # IndexIgnore is a set of filenames which directory indexing should ignore
+% ohpc_command # and not include in the listing.  Shell-style wildcarding is permitted.
+% ohpc_command #
+% ohpc_command IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # DefaultLanguage and AddLanguage allows you to specify the language of 
+% ohpc_command # a document. You can then use content negotiation to give a browser a 
+% ohpc_command # file in a language the user can understand.
+% ohpc_command #
+% ohpc_command # Specify a default language. This means that all data
+% ohpc_command # going out without a specific language tag (see below) will 
+% ohpc_command # be marked with this one. You probably do NOT want to set
+% ohpc_command # this unless you are sure it is correct for all cases.
+% ohpc_command #
+% ohpc_command # * It is generally better to not mark a page as 
+% ohpc_command # * being a certain language than marking it with the wrong
+% ohpc_command # * language!
+% ohpc_command #
+% ohpc_command # DefaultLanguage nl
+% ohpc_command #
+% ohpc_command # Note 1: The suffix does not have to be the same as the language
+% ohpc_command # keyword --- those with documents in Polish (whose net-standard
+% ohpc_command # language code is pl) may wish to use "AddLanguage pl .po" to
+% ohpc_command # avoid the ambiguity with the common suffix for perl scripts.
+% ohpc_command #
+% ohpc_command # Note 2: The example entries below illustrate that in some cases 
+% ohpc_command # the two character 'Language' abbreviation is not identical to 
+% ohpc_command # the two character 'Country' code for its country,
+% ohpc_command # E.g. 'Danmark/dk' versus 'Danish/da'.
+% ohpc_command #
+% ohpc_command # Note 3: In the case of 'ltz' we violate the RFC by using a three char
+% ohpc_command # specifier. There is 'work in progress' to fix this and get
+% ohpc_command # the reference data for rfc1766 cleaned up.
+% ohpc_command #
+% ohpc_command # Catalan (ca) - Croatian (hr) - Czech (cs) - Danish (da) - Dutch (nl)
+% ohpc_command # English (en) - Esperanto (eo) - Estonian (et) - French (fr) - German (de)
+% ohpc_command # Greek-Modern (el) - Hebrew (he) - Italian (it) - Japanese (ja)
+% ohpc_command # Korean (ko) - Luxembourgeois* (ltz) - Norwegian Nynorsk (nn)
+% ohpc_command # Norwegian (no) - Polish (pl) - Portugese (pt)
+% ohpc_command # Brazilian Portuguese (pt-BR) - Russian (ru) - Swedish (sv)
+% ohpc_command # Simplified Chinese (zh-CN) - Spanish (es) - Traditional Chinese (zh-TW)
+% ohpc_command #
+% ohpc_command AddLanguage ca .ca
+% ohpc_command AddLanguage cs .cz .cs
+% ohpc_command AddLanguage da .dk
+% ohpc_command AddLanguage de .de
+% ohpc_command AddLanguage el .el
+% ohpc_command AddLanguage en .en
+% ohpc_command AddLanguage eo .eo
+% ohpc_command AddLanguage es .es
+% ohpc_command AddLanguage et .et
+% ohpc_command AddLanguage fr .fr
+% ohpc_command AddLanguage he .he
+% ohpc_command AddLanguage hr .hr
+% ohpc_command AddLanguage it .it
+% ohpc_command AddLanguage ja .ja
+% ohpc_command AddLanguage ko .ko
+% ohpc_command AddLanguage ltz .ltz
+% ohpc_command AddLanguage nl .nl
+% ohpc_command AddLanguage nn .nn
+% ohpc_command AddLanguage no .no
+% ohpc_command AddLanguage pl .po
+% ohpc_command AddLanguage pt .pt
+% ohpc_command AddLanguage pt-BR .pt-br
+% ohpc_command AddLanguage ru .ru
+% ohpc_command AddLanguage sv .sv
+% ohpc_command AddLanguage zh-CN .zh-cn
+% ohpc_command AddLanguage zh-TW .zh-tw
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # LanguagePriority allows you to give precedence to some languages
+% ohpc_command # in case of a tie during content negotiation.
+% ohpc_command #
+% ohpc_command # Just list the languages in decreasing order of preference. We have
+% ohpc_command # more or less alphabetized them here. You probably want to change this.
+% ohpc_command #
+% ohpc_command LanguagePriority en ca cs da de el eo es et fr he hr it ja ko ltz nl nn no pl pt pt-BR ru sv zh-CN zh-TW
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # ForceLanguagePriority allows you to serve a result page rather than
+% ohpc_command # MULTIPLE CHOICES (Prefer) [in case of a tie] or NOT ACCEPTABLE (Fallback)
+% ohpc_command # [in case no accepted languages matched the available variants]
+% ohpc_command #
+% ohpc_command ForceLanguagePriority Prefer Fallback
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Specify a default charset for all content served; this enables
+% ohpc_command # interpretation of all content as UTF-8 by default.  To use the 
+% ohpc_command # default browser choice (ISO-8859-1), or to allow the META tags
+% ohpc_command # in HTML content to override this choice, comment out this
+% ohpc_command # directive:
+% ohpc_command #
+% ohpc_command AddDefaultCharset UTF-8
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # AddType allows you to add to or override the MIME configuration
+% ohpc_command # file mime.types for specific file types.
+% ohpc_command #
+% ohpc_command #AddType application/x-tar .tgz
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # AddEncoding allows you to have certain browsers uncompress
+% ohpc_command # information on the fly. Note: Not all browsers support this.
+% ohpc_command # Despite the name similarity, the following Add* directives have nothing
+% ohpc_command # to do with the FancyIndexing customization directives above.
+% ohpc_command #
+% ohpc_command #AddEncoding x-compress .Z
+% ohpc_command #AddEncoding x-gzip .gz .tgz
+% ohpc_command 
+% ohpc_command # If the AddEncoding directives above are commented-out, then you
+% ohpc_command # probably should define those extensions to indicate media types:
+% ohpc_command #
+% ohpc_command AddType application/x-compress .Z
+% ohpc_command AddType application/x-gzip .gz .tgz
+% ohpc_command 
+% ohpc_command #
+% ohpc_command #   MIME-types for downloading Certificates and CRLs
+% ohpc_command #
+% ohpc_command AddType application/x-x509-ca-cert .crt
+% ohpc_command AddType application/x-pkcs7-crl    .crl
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # AddHandler allows you to map certain file extensions to "handlers":
+% ohpc_command # actions unrelated to filetype. These can be either built into the server
+% ohpc_command # or added with the Action directive (see below)
+% ohpc_command #
+% ohpc_command # To use CGI scripts outside of ScriptAliased directories:
+% ohpc_command # (You will also need to add "ExecCGI" to the "Options" directive.)
+% ohpc_command #
+% ohpc_command #AddHandler cgi-script .cgi
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # For files that include their own HTTP headers:
+% ohpc_command #
+% ohpc_command #AddHandler send-as-is asis
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # For type maps (negotiated resources):
+% ohpc_command # (This is enabled by default to allow the Apache "It Worked" page
+% ohpc_command #  to be distributed in multiple languages.)
+% ohpc_command #
+% ohpc_command AddHandler type-map var
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Filters allow you to process content before it is sent to the client.
+% ohpc_command #
+% ohpc_command # To parse .shtml files for server-side includes (SSI):
+% ohpc_command # (You will also need to add "Includes" to the "Options" directive.)
+% ohpc_command #
+% ohpc_command AddType text/html .shtml
+% ohpc_command AddOutputFilter INCLUDES .shtml
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Action lets you define media types that will execute a script whenever
+% ohpc_command # a matching file is called. This eliminates the need for repeated URL
+% ohpc_command # pathnames for oft-used CGI file processors.
+% ohpc_command # Format: Action media/type /cgi-script/location
+% ohpc_command # Format: Action handler-name /cgi-script/location
+% ohpc_command #
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Customizable error responses come in three flavors:
+% ohpc_command # 1) plain text 2) local redirects 3) external redirects
+% ohpc_command #
+% ohpc_command # Some examples:
+% ohpc_command #ErrorDocument 500 "The server made a boo boo."
+% ohpc_command #ErrorDocument 404 /missing.html
+% ohpc_command #ErrorDocument 404 "/cgi-bin/missing_handler.pl"
+% ohpc_command #ErrorDocument 402 http://www.example.com/subscription_info.html
+% ohpc_command #
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Putting this all together, we can internationalize error responses.
+% ohpc_command #
+% ohpc_command # We use Alias to redirect any /error/HTTP_<error>.html.var response to
+% ohpc_command # our collection of by-error message multi-language collections.  We use 
+% ohpc_command # includes to substitute the appropriate text.
+% ohpc_command #
+% ohpc_command # You can modify the messages' appearance without changing any of the
+% ohpc_command # default HTTP_<error>.html.var files by adding the line:
+% ohpc_command #
+% ohpc_command #   Alias /error/include/ "/your/include/path/"
+% ohpc_command #
+% ohpc_command # which allows you to create your own set of files by starting with the
+% ohpc_command # /var/www/error/include/ files and
+% ohpc_command # copying them to /your/include/path/, even on a per-VirtualHost basis.
+% ohpc_command #
+% ohpc_command 
+% ohpc_command Alias /error/ "/var/www/error/"
+% ohpc_command 
+% ohpc_command <IfModule mod_negotiation.c>
+% ohpc_command <IfModule mod_include.c>
+% ohpc_command     <Directory "/var/www/error">
+% ohpc_command         AllowOverride None
+% ohpc_command         Options IncludesNoExec
+% ohpc_command         AddOutputFilter Includes html
+% ohpc_command         AddHandler type-map var
+% ohpc_command         Order allow,deny
+% ohpc_command         Allow from all
+% ohpc_command         LanguagePriority en es de fr
+% ohpc_command         ForceLanguagePriority Prefer Fallback
+% ohpc_command     </Directory>
+% ohpc_command 
+% ohpc_command #    ErrorDocument 400 /error/HTTP_BAD_REQUEST.html.var
+% ohpc_command #    ErrorDocument 401 /error/HTTP_UNAUTHORIZED.html.var
+% ohpc_command #    ErrorDocument 403 /error/HTTP_FORBIDDEN.html.var
+% ohpc_command #    ErrorDocument 404 /error/HTTP_NOT_FOUND.html.var
+% ohpc_command #    ErrorDocument 405 /error/HTTP_METHOD_NOT_ALLOWED.html.var
+% ohpc_command #    ErrorDocument 408 /error/HTTP_REQUEST_TIME_OUT.html.var
+% ohpc_command #    ErrorDocument 410 /error/HTTP_GONE.html.var
+% ohpc_command #    ErrorDocument 411 /error/HTTP_LENGTH_REQUIRED.html.var
+% ohpc_command #    ErrorDocument 412 /error/HTTP_PRECONDITION_FAILED.html.var
+% ohpc_command #    ErrorDocument 413 /error/HTTP_REQUEST_ENTITY_TOO_LARGE.html.var
+% ohpc_command #    ErrorDocument 414 /error/HTTP_REQUEST_URI_TOO_LARGE.html.var
+% ohpc_command #    ErrorDocument 415 /error/HTTP_UNSUPPORTED_MEDIA_TYPE.html.var
+% ohpc_command #    ErrorDocument 500 /error/HTTP_INTERNAL_SERVER_ERROR.html.var
+% ohpc_command #    ErrorDocument 501 /error/HTTP_NOT_IMPLEMENTED.html.var
+% ohpc_command #    ErrorDocument 502 /error/HTTP_BAD_GATEWAY.html.var
+% ohpc_command #    ErrorDocument 503 /error/HTTP_SERVICE_UNAVAILABLE.html.var
+% ohpc_command #    ErrorDocument 506 /error/HTTP_VARIANT_ALSO_VARIES.html.var
+% ohpc_command 
+% ohpc_command </IfModule>
+% ohpc_command </IfModule>
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # The following directives modify normal HTTP response behavior to
+% ohpc_command # handle known problems with browser implementations.
+% ohpc_command #
+% ohpc_command BrowserMatch "Mozilla/2" nokeepalive
+% ohpc_command BrowserMatch "MSIE 4\.0b2;" nokeepalive downgrade-1.0 force-response-1.0
+% ohpc_command BrowserMatch "RealPlayer 4\.0" force-response-1.0
+% ohpc_command BrowserMatch "Java/1\.0" force-response-1.0
+% ohpc_command BrowserMatch "JDK/1\.0" force-response-1.0
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # The following directive disables redirects on non-GET requests for
+% ohpc_command # a directory that does not include the trailing slash.  This fixes a 
+% ohpc_command # problem with Microsoft WebFolders which does not appropriately handle 
+% ohpc_command # redirects for folders with DAV methods.
+% ohpc_command # Same deal with Apple's DAV filesystem and Gnome VFS support for DAV.
+% ohpc_command #
+% ohpc_command BrowserMatch "Microsoft Data Access Internet Publishing Provider" redirect-carefully
+% ohpc_command BrowserMatch "MS FrontPage" redirect-carefully
+% ohpc_command BrowserMatch "^WebDrive" redirect-carefully
+% ohpc_command BrowserMatch "^WebDAVFS/1.[0123]" redirect-carefully
+% ohpc_command BrowserMatch "^gnome-vfs/1.0" redirect-carefully
+% ohpc_command BrowserMatch "^XML Spy" redirect-carefully
+% ohpc_command BrowserMatch "^Dreamweaver-WebDAV-SCM1" redirect-carefully
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Allow server status reports generated by mod_status,
+% ohpc_command # with the URL of http://servername/server-status
+% ohpc_command # Change the ".example.com" to match your domain to enable.
+% ohpc_command #
+% ohpc_command #<Location /server-status>
+% ohpc_command #    SetHandler server-status
+% ohpc_command #    Order deny,allow
+% ohpc_command #    Deny from all
+% ohpc_command #    Allow from .example.com
+% ohpc_command #</Location>
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Allow remote server configuration reports, with the URL of
+% ohpc_command #  http://servername/server-info (requires that mod_info.c be loaded).
+% ohpc_command # Change the ".example.com" to match your domain to enable.
+% ohpc_command #
+% ohpc_command #<Location /server-info>
+% ohpc_command #    SetHandler server-info
+% ohpc_command #    Order deny,allow
+% ohpc_command #    Deny from all
+% ohpc_command #    Allow from .example.com
+% ohpc_command #</Location>
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Proxy Server directives. Uncomment the following lines to
+% ohpc_command # enable the proxy server:
+% ohpc_command #
+% ohpc_command #<IfModule mod_proxy.c>
+% ohpc_command #ProxyRequests On
+% ohpc_command #
+% ohpc_command #<Proxy *>
+% ohpc_command #    Order deny,allow
+% ohpc_command #    Deny from all
+% ohpc_command #    Allow from .example.com
+% ohpc_command #</Proxy>
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Enable/disable the handling of HTTP/1.1 "Via:" headers.
+% ohpc_command # ("Full" adds the server version; "Block" removes all outgoing Via: headers)
+% ohpc_command # Set to one of: Off | On | Full | Block
+% ohpc_command #
+% ohpc_command #ProxyVia On
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # To enable a cache of proxied content, uncomment the following lines.
+% ohpc_command # See http://httpd.apache.org/docs/2.2/mod/mod_cache.html for more details.
+% ohpc_command #
+% ohpc_command #<IfModule mod_disk_cache.c>
+% ohpc_command #   CacheEnable disk /
+% ohpc_command #   CacheRoot "/var/cache/mod_proxy"
+% ohpc_command #</IfModule>
+% ohpc_command #
+% ohpc_command 
+% ohpc_command #</IfModule>
+% ohpc_command # End of proxy directives.
+% ohpc_command 
+% ohpc_command ### Section 3: Virtual Hosts
+% ohpc_command #
+% ohpc_command # VirtualHost: If you want to maintain multiple domains/hostnames on your
+% ohpc_command # machine you can setup VirtualHost containers for them. Most configurations
+% ohpc_command # use only name-based virtual hosts so the server doesn't need to worry about
+% ohpc_command # IP addresses. This is indicated by the asterisks in the directives below.
+% ohpc_command #
+% ohpc_command # Please see the documentation at 
+% ohpc_command # <URL:http://httpd.apache.org/docs/2.2/vhosts/>
+% ohpc_command # for further details before you try to setup virtual hosts.
+% ohpc_command #
+% ohpc_command # You may use the command line option '-S' to verify your virtual host
+% ohpc_command # configuration.
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # Use name-based virtual hosting.
+% ohpc_command #
+% ohpc_command #NameVirtualHost *:80
+% ohpc_command #
+% ohpc_command # NOTE: NameVirtualHost cannot be used without a port specifier 
+% ohpc_command # (e.g. :80) if mod_ssl is being used, due to the nature of the
+% ohpc_command # SSL protocol.
+% ohpc_command #
+% ohpc_command 
+% ohpc_command #
+% ohpc_command # VirtualHost example:
+% ohpc_command # Almost any Apache directive may go into a VirtualHost container.
+% ohpc_command # The first VirtualHost section is used for requests without a known
+% ohpc_command # server name.
+% ohpc_command #
+% ohpc_command #<VirtualHost *:80>
+% ohpc_command #    ServerAdmin webmaster@dummy-host.example.com
+% ohpc_command #    DocumentRoot /www/docs/dummy-host.example.com
+% ohpc_command #    ServerName dummy-host.example.com
+% ohpc_command #    ErrorLog logs/dummy-host.example.com-error_log
+% ohpc_command #    CustomLog logs/dummy-host.example.com-access_log common
+% ohpc_command #</VirtualHost>
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: hera_preq/cmt_ohpc_inputs_dummy
+% ohpc_command # -*-sh-*-
+% ohpc_command # ------------------------------------------------------------------------------------------------
+% ohpc_command # ------------------------------------------------------------------------------------------------
+% ohpc_command # Template input file to define local variable settings for use with
+% ohpc_command # an installation recipe.
+% ohpc_command # ------------------------------------------------------------------------------------------------
+% ohpc_command 
+% ohpc_command # ---------------------------
+% ohpc_command # cluster fabric technology
+% ohpc_command # ---------------------------
+% ohpc_command # set to 1 for OPA, otherwise 0 for IB
+% ohpc_command opa_fabric="${opa_fabric:-0}"
+% ohpc_command 
+% ohpc_command 
+% ohpc_command # ---------------------------
+% ohpc_command # SMS (master) node settings
+% ohpc_command # ---------------------------
+% ohpc_command 
+% ohpc_command # Flag to recreate ssh keys on new install
+% ohpc_command recreate_keys="${recreate_keys:-0}"
+% ohpc_command 
+% ohpc_command # Hostname for master server (SMS)
+% ohpc_command sms_name="${sms_name:-sms030}"
+% ohpc_command                               
+% ohpc_command # Local (internal) IP address on SMS
+% ohpc_command sms_ip="${sms_ip:-192.168.1.30}"
+% ohpc_command 
+% ohpc_command # Internal ethernet interface on SMS
+% ohpc_command sms_eth_internal="${sms_eth_internal:-eth2}"
+% ohpc_command 
+% ohpc_command # Subnet netmask for internal cluster network
+% ohpc_command internal_netmask="${internal_netmask:-255.255.0.0}"
+% ohpc_command 
+% ohpc_command # Provisioning interface used by compute hosts
+% ohpc_command eth_provision="${eth_provision:-eth2}"
+% ohpc_command 
+% ohpc_command # Local ntp server for time synchronization
+% ohpc_command ntp_server="${ntp_server:-192.168.0.1}"
+% ohpc_command 
+% ohpc_command # BMC user credentials for use by IPMI
+% ohpc_command ipmi_username="${ipmi_username:-cod}"
+% ohpc_command IPMI_PASSWORD="${IPMI_PASSWORD:-unknown}"
+% ohpc_command 
+% ohpc_command # Additional time to wait for compute nodes to provision (seconds)
+% ohpc_command provision_wait="${provision_wait:-300}"
+% ohpc_command 
+% ohpc_command # Optional Stateful install device
+% ohpc_command stateful_dev="${stateful_dev:-}"
+% ohpc_command 
+% ohpc_command # Flags for optional installation/configuration
+% ohpc_command 
+% ohpc_command enable_clustershell="${enable_clustershell:-0}"
+% ohpc_command enable_ipmisol="${enable_ipmisol:-0}"
+% ohpc_command enable_ipoib="${enable_ipoib:-0}"
+% ohpc_command enable_ganglia="${enable_ganglia:-0}"
+% ohpc_command enable_kargs="${enable_kargs:-0}"
+% ohpc_command enable_lustre_client="${enable_lustre_client:-0}"
+% ohpc_command enable_mrsh="${enable_mrsh:-0}"
+% ohpc_command enable_nagios="${enable_nagios:-0}"
+% ohpc_command enable_powerman="${enable_powerman:-0}"
+% ohpc_command enable_stateful="${enable_stateful:-0}"
+% ohpc_command enable_ssf="${enable_ssf:-0}"
+% ohpc_command 
+% ohpc_command 
+% ohpc_command 
+% ohpc_command # -------------------------
+% ohpc_command # compute node settings
+% ohpc_command # -------------------------
+% ohpc_command 
+% ohpc_command # Set location of local BOS mirror for CN
+% ohpc_command BOS_MIRROR="${BOS_MIRROR:-http://linux-ftp.jf.intel.com/pub/mirrors/centos/7.3.1611/os/x86_64/}"
+% ohpc_command 
+% ohpc_command # Prefix for compute node hostnames
+% ohpc_command nodename_prefix="${nodename_prefix:-c}"
+% ohpc_command 
+% ohpc_command # compute node IP addresses
+% ohpc_command #c_ip[0]=172.16.1.13
+% ohpc_command #c_ip[1]=172.16.1.14
+% ohpc_command #c_ip[2]=172.16.1.15
+% ohpc_command #c_ip[3]=172.16.1.17
+% ohpc_command 
+% ohpc_command # compute node MAC addresses for provisioning interface
+% ohpc_command #c_mac[0]=00:1e:67:cb:e7:d4
+% ohpc_command #c_mac[1]=00:1e:67:cb:e8:56
+% ohpc_command #c_mac[2]=00:1e:67:cb:ee:5f
+% ohpc_command #c_mac[3]=00:1e:67:cb:f2:1a
+% ohpc_command 
+% ohpc_command # compute node BMC addresses
+% ohpc_command #c_bmc[0]=192.168.2.13
+% ohpc_command #c_bmc[1]=192.168.2.14
+% ohpc_command #c_bmc[2]=192.168.2.15
+% ohpc_command #c_bmc[3]=192.168.2.17
+% ohpc_command 
+% ohpc_command 
+% ohpc_command #-------------------
+% ohpc_command # Optional settings
+% ohpc_command #-------------------
+% ohpc_command 
+% ohpc_command # additional arguments to enable optional arguments for bootstrap kernel
+% ohpc_command kargs="${kargs:-acpi_pad.disable=1}"
+% ohpc_command 
+% ohpc_command # Lustre MGS mount name
+% ohpc_command mgs_fs_name="${mgs_fs_name:-192.168.1.90@tcp0:/hera1}"
+% ohpc_command 
+% ohpc_command # Subnet netmask for IPoIB network
+% ohpc_command ipoib_netmask="${ipoib_netmask:-255.255.0.0}"
+% ohpc_command 
+% ohpc_command # IPoIB address for SMS server
+% ohpc_command sms_ipoib="${sms_ipoib:-172.16.3.12}"
+% ohpc_command 
+% ohpc_command # IPoIB addresses for computes
+% ohpc_command #c_ipoib[0]=172.16.3.13
+% ohpc_command #c_ipoib[1]=172.16.3.14
+% ohpc_command #c_ipoib[2]=172.16.3.15
+% ohpc_command #c_ipoib[3]=172.16.3.17
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: hera_preq/CentOS-Base.repo
+% ohpc_command # CentOS-Base.repo
+% ohpc_command #
+% ohpc_command # The mirror system uses the connecting IP address of the client and the
+% ohpc_command # update status of each mirror to pick mirrors that are updated to and
+% ohpc_command # geographically close to the client.  You should use this for CentOS updates
+% ohpc_command # unless you are manually picking other mirrors.
+% ohpc_command #
+% ohpc_command # If the mirrorlist= does not work for you, as a fall back you can try the 
+% ohpc_command # remarked out baseurl= line instead.
+% ohpc_command #
+% ohpc_command #
+% ohpc_command 
+% ohpc_command [base]
+% ohpc_command name=CentOS-7 - Base
+% ohpc_command #mirrorlist=http://mirrorlist.centos.org/?release=7&arch=$basearch&repo=os&infra=$infra
+% ohpc_command #baseurl=http://linux-ftp.jf.intel.com/pub/mirrors/centos/7.1.1503/os/x86_64/
+% ohpc_command #baseurl=http://mirror.centos.org/centos/7/os/$basearch/
+% ohpc_command baseurl=http://linux-ftp.jf.intel.com/pub/mirrors/centos/7.3.1611/os/x86_64/
+% ohpc_command gpgcheck=1
+% ohpc_command gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+% ohpc_command 
+% ohpc_command #released updates 
+% ohpc_command [updates]
+% ohpc_command name=CentOS-7 - Updates
+% ohpc_command #mirrorlist=http://mirrorlist.centos.org/?release=7&arch=$basearch&repo=updates&infra=$infra
+% ohpc_command #baseurl=http://mirror.centos.org/centos/7/updates/$basearch/
+% ohpc_command baseurl=http://mirror.centos.org/centos/7/updates/x86_64/
+% ohpc_command gpgcheck=1
+% ohpc_command enabled=1
+% ohpc_command gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+% ohpc_command 
+% ohpc_command #additional packages that may be useful
+% ohpc_command [extras]
+% ohpc_command name=CentOS-7 - Extras
+% ohpc_command mirrorlist=http://mirrorlist.centos.org/?release=7&arch=$basearch&repo=extras&infra=$infra
+% ohpc_command #baseurl=http://mirror.centos.org/centos/7/extras/$basearch/
+% ohpc_command gpgcheck=1
+% ohpc_command enabled=1
+% ohpc_command gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+% ohpc_command 
+% ohpc_command #additional packages that extend functionality of existing packages
+% ohpc_command [centosplus]
+% ohpc_command name=CentOS-7 - Plus
+% ohpc_command mirrorlist=http://mirrorlist.centos.org/?release=7&arch=$basearch&repo=centosplus&infra=$infra
+% ohpc_command #baseurl=http://mirror.centos.org/centos/7/centosplus/$basearch/
+% ohpc_command gpgcheck=1
+% ohpc_command enabled=0
+% ohpc_command gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+% ohpc_command 
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: hera_preq/setup.sh
+% ohpc_command #!/bin/bash
+% ohpc_command #Get the current allotted IP matching 192 series...
+% ohpc_command currip=$(ifconfig | grep inet | awk '{print $2}' | grep 192*)
+% ohpc_command currhost=$(hostname)
+% ohpc_command #Add proxies to /etc/environment
+% ohpc_command echo "export http_proxy=proxy.ra.intel.com:911" >> /etc/environment
+% ohpc_command echo "export https_proxy=proxy.ra.intel.com:911" >> /etc/environment
+% ohpc_command 
+% ohpc_command # lOCAL no proxies for Headnode, intel.com
+% ohpc_command echo "export no_proxy=.intel.com,$currip" >> /etc/environment
+% ohpc_command source /etc/environment
+% ohpc_command 
+% ohpc_command #update hosts file right ip addresses
+% ohpc_command perl -pi -e "s/^(.*)$currhost/$currip $currhost/g" /etc/hosts
+% ohpc_command 
+% ohpc_command # add root in /etc/security/access.conf
+% ohpc_command echo "+:root : $currip " >> /etc/security/access.conf
+% ohpc_command 
+% ohpc_command # setup ssh keys do that root can ssh locally on that system
+% ohpc_command ssh-keygen -f /root/.ssh/cluster -N ""
+% ohpc_command cat /root/.ssh/cluster.pub >> /root/.ssh/authorized_keys 
+% ohpc_command scp /home_nfs/guptarav/hpc_preq/CentOS* /etc/yum.repos.d/
+% ohpc_command yum clean all
+% ohpc_command yum repolist
+% ohpc_command yum update -y
+% ohpc_command 
+% ohpc_command #update ohpc-docs info here
+% ohpc_command rpm -ivh https://github.com/openhpc/ohpc/releases/download/v1.3.GA/ohpc-release-1.3-1.el7.x86_64.rpm
+% ohpc_command  
+% ohpc_command #update input.local
+% ohpc_command # update cloud inventory file
+% ohpc_command 
+% ohpc_command 
+% ohpc_command # update answers.txt
+% ohpc_command perl -pie "s/^CONFIG_CONTROLLER_HOST=(.+)/CONFIG_CONTROLLER_HOST=$currip/" /home_nfs/guptarav/hpc/packstack/recipe/answer.txt
+% ohpc_command perl -pie "s/^CONFIG_COMPUTE_HOSTS=(.+)/CONFIG_COMPUTE_HOSTS=$currip/" /home_nfs/guptarav/hpc/packstack/recipe/answer.txt
+% ohpc_command perl -pie "s/^CONFIG_NETWORK_HOSTS=(.+)/CONFIG_NETWORK_HOSTS=$currip/" /home_nfs/guptarav/hpc/packstack/recipe/answer.txt
+% ohpc_command perl -pie "s/^CONFIG_STORAGE_HOST=(.+)/CONFIG_STORAGE_HOST=$currip/" /home_nfs/guptarav/hpc/packstack/recipe/answer.txt
+% ohpc_command perl -pie "s/^CONFIG_SAHARA_HOST=(.+)/CONFIG_SAHARA_HOST=$currip/" /home_nfs/guptarav/hpc/packstack/recipe/answer.txt
+% ohpc_command perl -pie "s/^CONFIG_AMQP_HOST=(.+)/CONFIG_AMQP_HOST=$currip/" /home_nfs/guptarav/hpc/packstack/recipe/answer.txt
+% ohpc_command perl -pie "s/^CONFIG_MARIADB_HOST=(.+)/CONFIG_MARIADB_HOST=$currip/" /home_nfs/guptarav/hpc/packstack/recipe/answer.txt
+% ohpc_command perl -pie "s/^CONFIG_MONGODB_HOST=(.+)/CONFIG_MONGODB_HOST=$currip/" /home_nfs/guptarav/hpc/packstack/recipe/answer.txt
+% ohpc_command perl -pie "s/^CONFIG_REDIS_MASTER_HOST=(.+)/CONFIG_REDIS_MASTER_HOST=$currip/" /home_nfs/guptarav/hpc/packstack/recipe/answer.txt
+% ohpc_command perl -pie "s/^CONFIG_KEYSTONE_LDAP_URL=ldap\:\/\/(.+)/CONFIG_KEYSTONE_LDAP_URL=ldap\:\/\/$currip/" /home_nfs/guptarav/hpc/packstack/recipe/answer.txt
+% ohpc_command 
+% ohpc_command #update answer.txt with correct ips
+% ohpc_command cat /root/cmt_ohpc_inputs | grep "c_ip\[3\]" | awk '{split($0,numbers,"="); print numbers[2]}'
+% ohpc_command 
+% ohpc_command 
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: hera_preq/environment
+% ohpc_command export http_proxy=proxy.ra.intel.com:911
+% ohpc_command export https_proxy=proxy.ra.intel.com:911
+% ohpc_command export no_proxy=.intel.com,172.16.1.12,127.0.0.1,172.16.0.0/32
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: common_functions
+% ohpc_command #!/bin/bash
+% ohpc_command 
+% ohpc_command #validateIpInput () {
+% ohpc_command #}
+% ohpc_command function validateInputFile () {
+% ohpc_command     if [[ -z "${inputFile}" || ! -e "${inputFile}" ]];then
+% ohpc_command       echo "Error: Unable to access local input file -> \"${inputFile}\""
+% ohpc_command       exit 1
+% ohpc_command     else
+% ohpc_command       . ${inputFile} || { echo "Error sourcing ${inputFile}"; exit 1; }
+% ohpc_command     fi
+% ohpc_command     _BADCOUNT=0
+% ohpc_command     
+% ohpc_command     for((i=0; i<${#c_ip[@]}; i++)) ; do
+% ohpc_command       if ! [[ ${c_ip[i]} =~ ^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([\
+% ohpc_command                                 0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$ ]]; then
+% ohpc_command         echo "ERROR: Invalid IP address #$i: ${c_ip[i]}"
+% ohpc_command         _BADCOUNT=$((_BADCOUNT+1))
+% ohpc_command       fi
+% ohpc_command       if ! [[ ${c_bmc[i]} =~ ^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([\
+% ohpc_command                                  0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$ ]]; then
+% ohpc_command         echo "ERROR: Invalid BMC IP address #$i: ${c_bmc[i]}"
+% ohpc_command         _BADCOUNT=$((_BADCOUNT+1))
+% ohpc_command       fi
+% ohpc_command       if ! [[ `echo ${c_mac[i]^^} | egrep "^([0-9A-F]{2}:){5}[0-9A-F]{2}$"` ]]; then
+% ohpc_command         echo "ERROR: Invalid MAC address #$i: ${c_mac[i]}"
+% ohpc_command         _BADCOUNT=$((_BADCOUNT+1))
+% ohpc_command       fi
+% ohpc_command     done
+% ohpc_command     
+% ohpc_command     [[ $_BADCOUNT -eq 0 ]] || exit 3
+% ohpc_command 
+% ohpc_command     #validateIpInput $nodename_prefix
+% ohpc_command }
+% ohpc_command 
+% ohpc_command function validateHpcInventory() {
+% ohpc_command     if [[ -z "${cloudHpcInventory}" || ! -e "${cloudHpcInventory}" ]];then
+% ohpc_command       echo "Error: Unable to access Cloud hpc inventory file -> \"${cloudHpcInventory}\""
+% ohpc_command       exit 1
+% ohpc_command     else
+% ohpc_command       . ${cloudHpcInventory} || { echo "Error sourcing ${cloudHpcInventory}"; exit 1; }
+% ohpc_command     fi
+% ohpc_command     #Verify Cloud IP. Move this to common function validateIpInput
+% ohpc_command     _BADCOUNT=0
+% ohpc_command     
+% ohpc_command     for((i=0; i<${#cc_ip[@]}; i++)) ; do
+% ohpc_command       if ! [[ ${cc_ip[i]} =~ ^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([\
+% ohpc_command                                 0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$ ]]; then
+% ohpc_command         echo "ERROR: Invalid IP address #$i: ${cc_ip[i]}"
+% ohpc_command         _BADCOUNT=$((_BADCOUNT+1))
+% ohpc_command       fi
+% ohpc_command       if ! [[ ${cc_bmc[i]} =~ ^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([\
+% ohpc_command                                  0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$ ]]; then
+% ohpc_command         echo "ERROR: Invalid BMC IP address #$i: ${cc_bmc[i]}"
+% ohpc_command         _BADCOUNT=$((_BADCOUNT+1))
+% ohpc_command       fi
+% ohpc_command       if ! [[ `echo ${cc_mac[i]^^} | egrep "^([0-9A-F]{2}:){5}[0-9A-F]{2}$"` ]]; then
+% ohpc_command         echo "ERROR: Invalid MAC address #$i: ${cc_mac[i]}"
+% ohpc_command         _BADCOUNT=$((_BADCOUNT+1))
+% ohpc_command       fi
+% ohpc_command     done
+% ohpc_command     #validateIpInput $cnodename_prefix
+% ohpc_command }
+% ohpc_command 
+% ohpc_command function setup_hosts () {
+% ohpc_command     # first search if nodes are already configured. if yes then do not configure again, so that it can be re-run
+% ohpc_command     hpc_tag="#### Cloud-HPC nodes entry, entered by HPC Orchestrator ####"
+% ohpc_command     #if ! grep -Pq "^$hpc_tag" /etc/hosts; then
+% ohpc_command     if ! grep -Fq "$hpc_tag" /etc/hosts; then
+% ohpc_command         echo $hpc_tag >> /etc/hosts
+% ohpc_command     fi
+% ohpc_command     #check if sms_name is already configured, if not then add sms entry
+% ohpc_command     if ! grep -Fq ${sms_name} /etc/hosts; then
+% ohpc_command         echo -e "${sms_ip}\t${sms_name}" >> /etc/hosts
+% ohpc_command     fi
+% ohpc_command     for ((i=0; i<$num_ccomputes; i++)) ; do
+% ohpc_command        if ! grep -Fq "${cc_name[$i]}" /etc/hosts; then
+% ohpc_command            echo -e "${cc_ip[$i]}\t${cc_name[$i]}"
+% ohpc_command        fi
+% ohpc_command     done >> /etc/hosts
+% ohpc_command }
+% ohpc_command 
+% ohpc_command function setup_cname () {
+% ohpc_command     # Determine number of computes and their hostnames
+% ohpc_command     export num_computes=${num_computes:-${#c_ip[@]}}
+% ohpc_command     for((i=0; i<${num_computes}; i++)) ; do
+% ohpc_command        c_name[$i]=${nodename_prefix}$((i+1))
+% ohpc_command     done
+% ohpc_command     export c_name
+% ohpc_command }
+% ohpc_command 
+% ohpc_command function setup_ccname() {
+% ohpc_command     export num_ccomputes=${num_ccomputes:-${#cc_ip[@]}}
+% ohpc_command     for((i=0; i<${num_ccomputes}; i++)) ; do
+% ohpc_command        cc_name[$i]=${cnodename_prefix}$((i+1))
+% ohpc_command     done
+% ohpc_command     export cc_name
+% ohpc_command }
+% ohpc_command 
+% ohpc_command function setup_computename() {
+% ohpc_command     setup_cname
+% ohpc_command     setup_ccname
+% ohpc_command }
+% ohpc_command 
+% ohpc_command function cidr_to_netmask() {
+% ohpc_command     cidr=$1
+% ohpc_command     value=$(( 0xffffffff ^ ((1 << (32 - $cidr)) - 1) ))
+% ohpc_command     netmask="$(( (value >> 24) & 0xff )).$(( (value >> 16) & 0xff )).$(( (value >> 8) & 0xff )).$(( value & 0xff ))"
+% ohpc_command     echo $netmask
+% ohpc_command }
+% ohpc_command 
+% ohpc_command function netmask_to_cidr() {
+% ohpc_command     nmask=$1
+% ohpc_command     # To calculate cidr, we just need to calculate number bits in each octets and add them.
+% ohpc_command     cidr_bits=0
+% ohpc_command     # iterate through each octets
+% ohpc_command     # use dot as saperator
+% ohpc_command     IFS=.
+% ohpc_command     for octs in $nmask ; do
+% ohpc_command        # we can only have 8 combinations in cidr 11111111, 11111110, 11111100, 11110000, 11100000,
+% ohpc_command        case $octs in
+% ohpc_command           0);;
+% ohpc_command           128) cidr_bits=$(($cidr_bits + 1));;
+% ohpc_command           192) cidr_bits=$(($cidr_bits + 2));;
+% ohpc_command           224) cidr_bits=$(($cidr_bits + 3));;
+% ohpc_command           240) cidr_bits=$(($cidr_bits + 4));;
+% ohpc_command           248) cidr_bits=$(($cidr_bits + 5));;
+% ohpc_command           252) cidr_bits=$(($cidr_bits + 6));;
+% ohpc_command           254) cidr_bits=$(($cidr_bits + 7));;
+% ohpc_command           255) cidr_bits=$(($cidr_bits + 8));;
+% ohpc_command           *) echo "Error: wrong netmask octets $octs";
+% ohpc_command        esac
+% ohpc_command     done
+% ohpc_command     echo $cidr_bits
+% ohpc_command }
+% ohpc_command 
+% ohpc_command function get_ip_from_ipcidr()
+% ohpc_command {
+% ohpc_command    ipcidr=$1
+% ohpc_command    ipadd=$( echo $ipcidr|awk -F '[/]' '{print $1}')
+% ohpc_command    echo $ipadd
+% ohpc_command }
+% ohpc_command function get_netmask_from_ipcidr()
+% ohpc_command {
+% ohpc_command    ipcidr=$1
+% ohpc_command    cidr=$( echo $ipcidr|awk -F '[/]' '{print $2}')
+% ohpc_command    netmask="$( cidr_to_netmask $cidr )"
+% ohpc_command    echo $netmask
+% ohpc_command }
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: c_init_workaround
+% ohpc_command #!/bin/bash
+% ohpc_command #set -x
+% ohpc_command #Possible requirement for this script: Set hostkey checking to no
+% ohpc_command sed --in-place "s|#\s*StrictHostKeyChecking\s*ask|StrictHostKeyChecking no|" /etc/ssh/ssh_config
+% ohpc_command 
+% ohpc_command #Possible requirement for this script: set ssh key permissions to 600
+% ohpc_command #chmod 600 /etc/ssh/ssh_host_ed*_key.pub
+% ohpc_command #chmod 600 /etc/ssh/ssh_host_ecdsa_key.pub
+% ohpc_command 
+% ohpc_command #Copy local cloud_hpc_init to all compute nodes. TODO: Call all nodes through a for loop
+% ohpc_command #scp -r /tmp/cloud_hpc_init/ ${cc_ip[0]}:/root
+% ohpc_command scp -r /tmp/cloud_hpc_init/ cc1:/root
+% ohpc_command 
+% ohpc_command #Execute cloud_hpc_init/chpc_init on nodes using pdsh. TODO: Call all nodes through a for loop
+% ohpc_command pdsh -w cc1 /root/cloud_hpc_init/chpcInit
+% ohpc_command #set +x
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: setup_cloud_hpc.sh
+% ohpc_command #!/bin/bash
+% ohpc_command # -----------------------------------------------------------------------------------------
+% ohpc_command #  Example Installation Script Template
+% ohpc_command #  
+% ohpc_command #  This convenience script encapsulates command-line instructions highlighted in
+% ohpc_command #  the Install Guide that can be used as a starting point to perform a local
+% ohpc_command #  cluster install beginning with bare-metal. Necessary inputs that describe local
+% ohpc_command #  hardware characteristics, desired network settings, and other customizations
+% ohpc_command #  are controlled via a companion input file that is used to initialize variables 
+% ohpc_command #  within this script.
+% ohpc_command #   
+% ohpc_command #  Please see the Install Guide for more information regarding the
+% ohpc_command #  procedure. Note that the section numbering included in this script refers to
+% ohpc_command #  corresponding sections from the install guide.
+% ohpc_command # -----------------------------------------------------------------------------------------
+% ohpc_command 
+% ohpc_command if [[ $EUID -ne 0 ]]; then echo "ERROR: Please run $0 as root"; exit 1; fi
+% ohpc_command 
+% ohpc_command set -E # traps on ERR will now be inherited by shell functions,
+% ohpc_command        # command substitution or subshells - equivalent to set -o errtrace
+% ohpc_command 
+% ohpc_command #For Debugging 
+% ohpc_command #set -x
+% ohpc_command SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P && echo x)"
+% ohpc_command SCRIPTDIR="${SCRIPTDIR%x}"
+% ohpc_command cd $SCRIPTDIR
+% ohpc_command SCRIPTDIR=$PWD
+% ohpc_command pwd
+% ohpc_command 
+% ohpc_command packstack_install=0
+% ohpc_command orchestrator_install=0
+% ohpc_command openhpc_install=0
+% ohpc_command USECASE=1
+% ohpc_command 
+% ohpc_command # enable common functions
+% ohpc_command source common_functions
+% ohpc_command 
+% ohpc_command usage () {
+% ohpc_command   echo "USAGE: $0 [-f] [-h] [-c] [-o] [-p] [-i=<input.local>] [-n=<cloud_node_inventory>] [-u=<use case id>]"
+% ohpc_command   echo " -u,--usecase       Select use case, 1, 2 or 3." 
+% ohpc_command   echo " -c,--openhpc       Install OpenHPC using the OpenHPC installation recipe"
+% ohpc_command   echo " -f,--forced        Forced run, run all sections with no prompt"
+% ohpc_command   echo " -h,--help          Print this message"
+% ohpc_command   echo " -i,--input         Location in local inputs"
+% ohpc_command   echo " -n,--inventory     Input to cloud HPC inventory file"
+% ohpc_command   echo " -o,--orchestrator  Install HPC Orchestrator using the HPC Orchestrator recipe"
+% ohpc_command   echo " -p,--packstack     Install OpenStack using the PackStack installation recipe"
+% ohpc_command }
+% ohpc_command 
+% ohpc_command for i in "$@"; do
+% ohpc_command   case $i in
+% ohpc_command     -c|--openhpc)
+% ohpc_command       openhpc_install=1
+% ohpc_command       shift # past argument with no value
+% ohpc_command     ;;
+% ohpc_command     -i=*|--input=*)
+% ohpc_command       if echo $i | grep '~'; then
+% ohpc_command         echo "ERROR: tilde(~) in pathname not supported."
+% ohpc_command         exit 3
+% ohpc_command       fi
+% ohpc_command       INPUT_LOCAL="${i#*=}"
+% ohpc_command       shift # past argument=value
+% ohpc_command     ;;
+% ohpc_command     -u=*|--usecase=*)
+% ohpc_command       export USECASE="${i#*=}"
+% ohpc_command 
+% ohpc_command       # Check if a valid use case
+% ohpc_command       if [[ $USECASE != "1" && $USECASE != "2" && $USECASE != "3" ]]; then
+% ohpc_command         echo "Unsupported usecase"
+% ohpc_command         exit 1
+% ohpc_command       fi
+% ohpc_command     ;;
+% ohpc_command     -f|--forced)
+% ohpc_command       FORCED=YES
+% ohpc_command       shift # past argument with no value
+% ohpc_command     ;;
+% ohpc_command     -n=*|--inventory=*)
+% ohpc_command       if echo $i | grep '~'; then
+% ohpc_command         echo "ERROR: tilde(~) in pathname not supported."
+% ohpc_command         exit 3
+% ohpc_command       fi
+% ohpc_command       CLOUD_HPC_INVENTORY="${i#*=}"
+% ohpc_command       shift # past argument with no value
+% ohpc_command     ;;
+% ohpc_command     -o|--orchestrator)
+% ohpc_command       orchestrator_install=1
+% ohpc_command       shift # past argument with no value
+% ohpc_command     ;;
+% ohpc_command     -p|--packstack)
+% ohpc_command       packstack_install=1
+% ohpc_command       shift # past argument with no value
+% ohpc_command     ;;
+% ohpc_command     -h|--help)
+% ohpc_command       usage
+% ohpc_command       exit 1
+% ohpc_command     ;;
+% ohpc_command     *)
+% ohpc_command       echo "ERROR: Unknown option \"$i\""
+% ohpc_command       usage
+% ohpc_command       exit 2
+% ohpc_command     ;;
+% ohpc_command   esac
+% ohpc_command done
+% ohpc_command 
+% ohpc_command # Check if a valid use case is selected
+% ohpc_command if [[ $USECASE != "1" && $USECASE != "2" && $USECASE != "3" ]]; then
+% ohpc_command   echo "Unsupported usecase, select a valid usecase [1,2,3]"
+% ohpc_command   exit 1
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command inputFile=$(readlink -f ${INPUT_LOCAL})
+% ohpc_command cloudHpcInventory=$(readlink -f ${CLOUD_HPC_INVENTORY})
+% ohpc_command 
+% ohpc_command validateInputFile
+% ohpc_command validateHpcInventory
+% ohpc_command 
+% ohpc_command # -------------------------------- Begin Recipe -------------------------------------------
+% ohpc_command # Commands below are extracted from the install guide recipe and are intended for 
+% ohpc_command # execution on the master SMS host.
+% ohpc_command # -----------------------------------------------------------------------------------------
+% ohpc_command 
+% ohpc_command # Determine number of cloud computes and their hostnames
+% ohpc_command setup_computename
+% ohpc_command 
+% ohpc_command #Set the hostname of the machine
+% ohpc_command #hostnamectl set-hostname ${sms_name}
+% ohpc_command 
+% ohpc_command #Install hpc orchestrator OR openhpc
+% ohpc_command if [ "$USECASE" != "3" ]; then
+% ohpc_command     if [ "${orchestrator_install}" -eq "1" ]; then
+% ohpc_command         mkdir -p /mnt/hpc_orch_iso
+% ohpc_command         mount -o loop ${orch_iso_path} /mnt/hpc_orch_iso
+% ohpc_command         rpm -Uvh /mnt/hpc_orch_iso/x86_64/Intel_HPC_Orchestrator_release-16.01.002.beta-8.1.x86_64.rpm
+% ohpc_command         rpm --import /etc/pki/pgp/HPC-Orchestrator*.asc
+% ohpc_command         pushd hpc_cent7/intel
+% ohpc_command         time source recipe.sh -f
+% ohpc_command         popd
+% ohpc_command     fi
+% ohpc_command 
+% ohpc_command     if [ "${openhpc_install}" -eq "1" ]; then
+% ohpc_command         export OHPC_INPUT_LOCAL=$(realpath ${INPUT_LOCAL})
+% ohpc_command         pushd hpc_cent7/ohpc
+% ohpc_command         time source recipe.sh
+% ohpc_command         popd
+% ohpc_command     fi
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command #Run packstack install.
+% ohpc_command if [ "${packstack_install}" -eq "1" ]; then
+% ohpc_command     pushd ../packstack/recipe
+% ohpc_command     time source packstack-install.sh -s=${controller_ip} -f=${cc_subnet_cidr} -e=${sms_eth_internal}
+% ohpc_command     popd
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command #set up hosts at head node or sms node
+% ohpc_command setup_hosts
+% ohpc_command #set -x
+% ohpc_command case $USECASE in
+% ohpc_command   1)
+% ohpc_command     pushd 1_combined_controller
+% ohpc_command     time source set_os_hpc
+% ohpc_command     popd
+% ohpc_command   ;;
+% ohpc_command   2)
+% ohpc_command     pushd 2_cloud_extension
+% ohpc_command     time source set_os_hpc
+% ohpc_command     popd
+% ohpc_command   ;;
+% ohpc_command   3)
+% ohpc_command     pushd 3_hpc_as_service
+% ohpc_command     time source set_os_hpc
+% ohpc_command     popd
+% ohpc_command   ;;
+% ohpc_command   *)
+% ohpc_command     echo "ERROR: Unsupported usecase"
+% ohpc_command     exit 1
+% ohpc_command   ;;
+% ohpc_command esac
+% ohpc_command     
+% ohpc_command true
+% ohpc_command 
+% ohpc_command #Call sinfo and srun to verify slurm's connection to the compute nodes
+% ohpc_command #sinfo
+% ohpc_command #srun -N ${num_ccomputes} hostname -i
+% ohpc_command 
+% ohpc_command # End
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: hpc_cent7/intel/recipe.sh
+% ohpc_command #!/bin/bash
+% ohpc_command # -----------------------------------------------------------------------------------------
+% ohpc_command #  Example Installation Script Template
+% ohpc_command #  
+% ohpc_command #  This convenience script encapsulates command-line instructions highlighted in
+% ohpc_command #  the Install Guide that can be used as a starting point to perform a local
+% ohpc_command #  cluster install beginning with bare-metal. Necessary inputs that describe local
+% ohpc_command #  hardware characteristics, desired network settings, and other customizations
+% ohpc_command #  are controlled via a companion input file that is used to initialize variables 
+% ohpc_command #  within this script.
+% ohpc_command #   
+% ohpc_command #  Please see the Install Guide for more information regarding the
+% ohpc_command #  procedure. Note that the section numbering included in this script refers to
+% ohpc_command #  corresponding sections from the install guide.
+% ohpc_command # -----------------------------------------------------------------------------------------
+% ohpc_command 
+% ohpc_command if [[ $EUID -ne 0 ]]; then echo "ERROR: Please run $0 as root"; exit 1; fi
+% ohpc_command 
+% ohpc_command set -E # traps on ERR will now be inherited by shell functions,
+% ohpc_command        # command substitution or subshells - equivalent to set -o errtrace
+% ohpc_command 
+% ohpc_command SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P && echo x)"
+% ohpc_command SCRIPTDIR="${SCRIPTDIR%x}"
+% ohpc_command cd $SCRIPTDIR
+% ohpc_command 
+% ohpc_command pwd
+% ohpc_command 
+% ohpc_command SECTIONNUM=0
+% ohpc_command SECTIONNAME[$SECTIONNUM]="$0"
+% ohpc_command 
+% ohpc_command # this syntax needed to -1+1 doesn't have an RC of 1
+% ohpc_command CountErrorTrap() { SECTIONERR[$SECTIONNUM]=$((++SECTIONERR[$SECTIONNUM])); }
+% ohpc_command ReportExitTrap() {
+% ohpc_command   echo -e "\nError count by section:"
+% ohpc_command   for I in ${!SECTIONNAME[@]}; do
+% ohpc_command     printf "%-72s : %d\n" "${SECTIONNAME[$I]}" ${SECTIONERR[$I]}
+% ohpc_command   done
+% ohpc_command }
+% ohpc_command 
+% ohpc_command trap CountErrorTrap ERR
+% ohpc_command trap ReportExitTrap EXIT
+% ohpc_command 
+% ohpc_command askrun () {
+% ohpc_command   SECTIONNUM=${#SECTIONNAME[@]}
+% ohpc_command   SECTIONNAME[$SECTIONNUM]="$2"
+% ohpc_command   SECTIONERR[$SECTIONNUM]=0
+% ohpc_command 
+% ohpc_command   while [ -z "$FORCED" ]; do
+% ohpc_command     read -p "Run \"$2\", Yes/Abort? [(y),a]: " answer
+% ohpc_command     case ${answer:0:1} in
+% ohpc_command       ""|y|Y )
+% ohpc_command         break
+% ohpc_command       ;;
+% ohpc_command       a|A )
+% ohpc_command         echo -e "Aborting $0\n"
+% ohpc_command         exit 1
+% ohpc_command       ;;
+% ohpc_command     esac
+% ohpc_command   done
+% ohpc_command 
+% ohpc_command   time source $1
+% ohpc_command   if [ $? -ne 0 ]; then
+% ohpc_command     echo    "###############################"
+% ohpc_command     echo    "## Section Execution Failure ##"
+% ohpc_command     echo    "###############################\n"
+% ohpc_command     echo -e "Aborting $0\n"
+% ohpc_command     exit 1
+% ohpc_command   fi
+% ohpc_command   echo -ne "$3"
+% ohpc_command 
+% ohpc_command   # we're back to meta script errors
+% ohpc_command   SECTIONNUM=0
+% ohpc_command }
+% ohpc_command 
+% ohpc_command usage () {
+% ohpc_command   echo "USAGE: $0 [-f] [-h] [-i=<input.local>]"
+% ohpc_command   echo " -f,--forced     Forced run, run all sections with no prompt"
+% ohpc_command   echo " -i,--input      Location in local inputs"
+% ohpc_command   echo " -h,--help       Print this message"
+% ohpc_command }
+% ohpc_command 
+% ohpc_command for i in "$@"; do
+% ohpc_command   case $i in
+% ohpc_command     -i=*|--input=*)
+% ohpc_command       if echo $i | grep '~'; then
+% ohpc_command         echo "ERROR: tilde(~) in pathname not supported."
+% ohpc_command         exit 3
+% ohpc_command       fi
+% ohpc_command       INPUT_LOCAL="${i#*=}"
+% ohpc_command       shift # past argument=value
+% ohpc_command     ;;
+% ohpc_command     -f|--forced)
+% ohpc_command       FORCED=YES
+% ohpc_command       shift # past argument with no value
+% ohpc_command     ;;
+% ohpc_command     -h|--help)
+% ohpc_command       usage
+% ohpc_command       exit 1
+% ohpc_command     ;;
+% ohpc_command     *)
+% ohpc_command       echo "ERROR: Unknown option \"$i\""
+% ohpc_command       usage
+% ohpc_command       exit 2
+% ohpc_command     ;;
+% ohpc_command   esac
+% ohpc_command done
+% ohpc_command 
+% ohpc_command inputFile=${INPUT_LOCAL}
+% ohpc_command 
+% ohpc_command if [[ -z "${inputFile}" || ! -e "${inputFile}" ]];then
+% ohpc_command   echo "Error: Unable to access local input file -> \"${inputFile}\""
+% ohpc_command   exit 1
+% ohpc_command else
+% ohpc_command   . ${inputFile} || { echo "Error sourcing ${inputFile}"; exit 1; }
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command _BADCOUNT=0
+% ohpc_command 
+% ohpc_command for((i=0; i<${#c_ip[@]}; i++)) ; do
+% ohpc_command   if ! [[ ${c_ip[i]} =~ ^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([\
+% ohpc_command                             0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$ ]]; then
+% ohpc_command     echo "ERROR: Invalid IP address #$i: ${c_ip[i]}"
+% ohpc_command     _BADCOUNT=$((_BADCOUNT+1))
+% ohpc_command   fi
+% ohpc_command   if ! [[ ${c_bmc[i]} =~ ^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([\
+% ohpc_command                              0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$ ]]; then
+% ohpc_command     echo "ERROR: Invalid BMC IP address #$i: ${c_bmc[i]}"
+% ohpc_command     _BADCOUNT=$((_BADCOUNT+1))
+% ohpc_command   fi
+% ohpc_command   if ! [[ `echo ${c_mac[i]^^} | egrep "^([0-9A-F]{2}:){5}[0-9A-F]{2}$"` ]]; then
+% ohpc_command     echo "ERROR: Invalid MAC address #$i: ${c_mac[i]}"
+% ohpc_command     _BADCOUNT=$((_BADCOUNT+1))
+% ohpc_command   fi
+% ohpc_command done
+% ohpc_command 
+% ohpc_command [[ $_BADCOUNT -eq 0 ]] || exit 3
+% ohpc_command 
+% ohpc_command # -------------------------------- Begin Recipe -------------------------------------------
+% ohpc_command # Commands below are extracted from the install guide recipe and are intended for 
+% ohpc_command # execution on the master SMS host.
+% ohpc_command # -----------------------------------------------------------------------------------------
+% ohpc_command 
+% ohpc_command 
+% ohpc_command # Determine number of computes and their hostnames
+% ohpc_command export num_computes=${num_computes:-${#c_ip[@]}}
+% ohpc_command for((i=0; i<${num_computes}; i++)) ; do
+% ohpc_command    c_name[$i]=${nodename_prefix}$((i+1))
+% ohpc_command done
+% ohpc_command export c_name
+% ohpc_command 
+% ohpc_command 
+% ohpc_command 
+% ohpc_command true
+% ohpc_command # Enable required repositories (Section 3.1)-(Section 3.2)
+% ohpc_command askrun "./sections/sec3.1-sec3.2:Enable_required_repositories.sh" \
+% ohpc_command   "Enable required repositories (Section 3.1)-(Section 3.2)" "\n\n"
+% ohpc_command cd $SCRIPTDIR
+% ohpc_command 
+% ohpc_command # Initial HeadNode configuration (Section 3.4)-(Section 3.7)
+% ohpc_command askrun "./sections/sec3.4-sec3.7:Initial_HeadNode_configuration.sh" \
+% ohpc_command   "Initial HeadNode configuration (Section 3.4)-(Section 3.7)" "\n\n"
+% ohpc_command cd $SCRIPTDIR
+% ohpc_command 
+% ohpc_command # Define compute image for provisioning (Section 3.8)-(Section 3.8.3)
+% ohpc_command askrun "./sections/sec3.8-sec3.8.3:Define_compute_image_for_provisioning.sh" \
+% ohpc_command   "Define compute image for provisioning (Section 3.8)-(Section 3.8.3)" "\n\n"
+% ohpc_command cd $SCRIPTDIR
+% ohpc_command 
+% ohpc_command # Additional Customizations (optional) (Section 3.8.4)-(Section 3.8.4.11)
+% ohpc_command askrun "./sections/sec3.8.4-sec3.8.4.11:Additional_Customizations_-optional-.sh" \
+% ohpc_command   "Additional Customizations (optional) (Section 3.8.4)-(Section 3.8.4.11)" "\n\n"
+% ohpc_command cd $SCRIPTDIR
+% ohpc_command 
+% ohpc_command # Finalize Provisioning (Section 3.9)-(Section 3.10)
+% ohpc_command askrun "./sections/sec3.9-sec3.10:Finalize_Provisioning.sh" \
+% ohpc_command   "Finalize Provisioning (Section 3.9)-(Section 3.10)" "\n\n"
+% ohpc_command cd $SCRIPTDIR
+% ohpc_command 
+% ohpc_command # Install Development Components (Section 4.1)-(Section 4.7)
+% ohpc_command askrun "./sections/sec4.1-sec4.7:Install_Development_Components.sh" \
+% ohpc_command   "Install Development Components (Section 4.1)-(Section 4.7)" "\n\n"
+% ohpc_command cd $SCRIPTDIR
+% ohpc_command 
+% ohpc_command # Resource Manager Startup (Section 5)-(Section 6)
+% ohpc_command askrun "./sections/sec5-sec6:Resource_Manager_Startup.sh" \
+% ohpc_command   "Resource Manager Startup (Section 5)-(Section 6)" "\n\n"
+% ohpc_command cd $SCRIPTDIR
+% ohpc_command 
+% ohpc_command # CLCK Supportability Extensions (Section 7)
+% ohpc_command askrun "./sections/sec7:CLCK_Supportability_Extensions.sh" \
+% ohpc_command   "CLCK Supportability Extensions (Section 7)" "\n\n"
+% ohpc_command cd $SCRIPTDIR
+% ohpc_command 
+% ohpc_command #Workaround for bad install orchestrator
+% ohpc_command echo "Workaround for section 4 installation bug of orchestrator install"
+% ohpc_command time source orch_bug_wr
+% ohpc_command # End
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: hpc_cent7/intel/sections/sec5-sec6:Resource_Manager_Startup.sh
+% ohpc_command #!/bin/bash
+% ohpc_command echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+% ohpc_command echo "> Resource Manager Startup (Section 5)-(Section 6)"
+% ohpc_command echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+% ohpc_command 
+% ohpc_command # ------------------------------------------------
+% ohpc_command # Resource Manager Startup (Section 5)-(Section 6)
+% ohpc_command # ------------------------------------------------
+% ohpc_command 
+% ohpc_command systemctl enable munge
+% ohpc_command systemctl enable slurmctld
+% ohpc_command systemctl start munge
+% ohpc_command systemctl start slurmctld
+% ohpc_command # Here we need to run Postboot script on Cloud Compute nodes
+% ohpc_command #pdsh -w ${nodename_prefix}[1-${num_computes}] systemctl enable munge
+% ohpc_command #pdsh -w ${nodename_prefix}[1-${num_computes}] systemctl start munge
+% ohpc_command #pdsh -w ${nodename_prefix}[1-${num_computes}] systemctl enable slurmd
+% ohpc_command #pdsh -w ${nodename_prefix}[1-${num_computes}] systemctl start slurmd
+% ohpc_command 
+% ohpc_command # for Demo all the nodes are from Cloud so this needs to be called once nodes are added and slurm is started on nodes.
+% ohpc_command #scontrol update nodename=${nodename_prefix}[1-${num_computes}] state=idle
+% ohpc_command 
+% ohpc_command useradd -U -m test
+% ohpc_command chown -R test:test ~test
+% ohpc_command 
+% ohpc_command #wwsh file resync passwd shadow group
+% ohpc_command # Wait for WW to recalc checksums on synced files
+% ohpc_command sleep 5
+% ohpc_command 
+% ohpc_command #pdsh -w ${nodename_prefix}[1-${num_computes}] /warewulf/bin/wwgetfiles 
+% ohpc_command 
+% ohpc_command 
+% ohpc_command true
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: hpc_cent7/intel/sections/sec3.8-sec3.8.3:Define_compute_image_for_provisioning.sh
+% ohpc_command #!/bin/bash
+% ohpc_command echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+% ohpc_command echo "> Define compute image for provisioning (Section 3.8)-(Section 3.8.3)"
+% ohpc_command echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+% ohpc_command 
+% ohpc_command # -------------------------------------------------------------------
+% ohpc_command # Define compute image for provisioning (Section 3.8)-(Section 3.8.3)
+% ohpc_command # -------------------------------------------------------------------
+% ohpc_command 
+% ohpc_command # For HPC Cloug POC, we are not using warewulf so comment this
+% ohpc_command #if [[ "http://BOS.mirror.requiredx" != "${BOS_MIRROR}x" ]]; then
+% ohpc_command #     perl -pi -e "s#^YUM_MIRROR=(\S*)#YUM_MIRROR=${BOS_MIRROR}#" \
+% ohpc_command #      /usr/libexec/warewulf/wwmkchroot/rhel-7.tmpl
+% ohpc_command #fi
+% ohpc_command 
+% ohpc_command #export CHROOT=/opt/intel/hpc-orchestrator/admin/images/rhel7.2
+% ohpc_command #wwmkchroot rhel-7 $CHROOT
+% ohpc_command 
+% ohpc_command #cp -p /etc/resolv.conf $CHROOT/etc/resolv.conf
+% ohpc_command 
+% ohpc_command # Add components to compute instance
+% ohpc_command #yum -y --installroot=$CHROOT groupinstall orch-slurm-client
+% ohpc_command #yum -y --installroot=$CHROOT install pdsh-orch
+% ohpc_command #yum -y --installroot=$CHROOT groupinstall "InfiniBand Support"
+% ohpc_command #yum -y --installroot=$CHROOT install infinipath-psm
+% ohpc_command #chroot $CHROOT systemctl enable rdma
+% ohpc_command #yum -y --installroot=$CHROOT install ntp
+% ohpc_command #yum -y --installroot=$CHROOT install kernel
+% ohpc_command #yum -y --installroot=$CHROOT install lmod-orch
+% ohpc_command 
+% ohpc_command ### ssh keys need to be trasfered via cloud init
+% ohpc_command #wwinit ssh_keys
+% ohpc_command #cat ~/.ssh/cluster.pub >> $CHROOT/root/.ssh/authorized_keys
+% ohpc_command 
+% ohpc_command # This will be done post boot via CloudInit
+% ohpc_command # nfs mount is perfromed at post boot
+% ohpc_command #echo "${sms_ip}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" >> $CHROOT/etc/fstab
+% ohpc_command #echo "${sms_ip}:/opt/intel/hpc-orchestrator/pub" \
+% ohpc_command # "/opt/intel/hpc-orchestrator/pub nfs nfsvers=3 0 0" \
+% ohpc_command # >> $CHROOT/etc/fstab
+% ohpc_command perl -pi -e "s/ControlMachine=\S+/ControlMachine=${sms_name}/" /etc/slurm/slurm.conf
+% ohpc_command 
+% ohpc_command echo "/home *(rw,no_subtree_check,fsid=10,no_root_squash)" >> /etc/exports
+% ohpc_command echo "/opt/intel/hpc-orchestrator/pub *(rw,no_subtree_check,fsid=11,no_root_squash)" >> /etc/exports
+% ohpc_command exportfs -a
+% ohpc_command systemctl restart nfs
+% ohpc_command systemctl enable nfs-server
+% ohpc_command #chroot $CHROOT systemctl enable ntpd
+% ohpc_command #echo "server ${sms_ip}" >> $CHROOT/etc/ntp.conf
+% ohpc_command 
+% ohpc_command 
+% ohpc_command # Update basic slurm configuration
+% ohpc_command    perl -pi -e "s/^NodeName=(\S+)/NodeName=${nodename_prefix}[1-${num_computes}]/" /etc/slurm/slurm.conf
+% ohpc_command    perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=${nodename_prefix}[1-${num_computes}]/" /etc/slurm/slurm.conf
+% ohpc_command    #perl -pi -e "s/^NodeName=(\S+)/NodeName=${nodename_prefix}[1-${num_computes}]/" $CHROOT/etc/slurm/slurm.conf
+% ohpc_command    #perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=${nodename_prefix}[1-${num_computes}]/" $CHROOT/etc/slurm/slurm.conf
+% ohpc_command 
+% ohpc_command 
+% ohpc_command true
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: hpc_cent7/intel/sections/sec3.8.4-sec3.8.4.11:Additional_Customizations_-optional-.sh
+% ohpc_command #!/bin/bash
+% ohpc_command echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+% ohpc_command echo "> Additional Customizations (optional) (Section 3.8.4)-(Section 3.8.4.11)"
+% ohpc_command echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+% ohpc_command 
+% ohpc_command # -----------------------------------------------------------------------
+% ohpc_command # Additional Customizations (optional) (Section 3.8.4)-(Section 3.8.4.11)
+% ohpc_command # -----------------------------------------------------------------------
+% ohpc_command # For Cloud POC we are not using warewulf, and image will be created using diskimage-builder tool so comment all image creation here
+% ohpc_command #
+% ohpc_command 
+% ohpc_command perl -pi -e 's/# End of file/\* soft memlock unlimited\n$&/s' /etc/security/limits.conf
+% ohpc_command perl -pi -e 's/# End of file/\* hard memlock unlimited\n$&/s' /etc/security/limits.conf
+% ohpc_command ##perl -pi -e 's/# End of file/\* soft memlock unlimited\n$&/s' $CHROOT/etc/security/limits.conf
+% ohpc_command ##perl -pi -e 's/# End of file/\* hard memlock unlimited\n$&/s' $CHROOT/etc/security/limits.conf
+% ohpc_command 
+% ohpc_command 
+% ohpc_command if [[ ${enable_mrsh} -eq 1 ]];then
+% ohpc_command      # Install mrsh
+% ohpc_command      yum -y install mrsh-orch mrsh-rsh-compat-orch
+% ohpc_command      ##yum -y --installroot=$CHROOT install mrsh-orch mrsh-rsh-compat-orch mrsh-server-orch
+% ohpc_command      echo "mshell          21212/tcp                  # mrshd" >> /etc/services
+% ohpc_command      echo "mlogin            541/tcp                  # mrlogind" >> /etc/services
+% ohpc_command      ##chroot $CHROOT systemctl enable xinetd
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command # Enable slurm pam module
+% ohpc_command ##echo "account    required     pam_slurm.so" >> $CHROOT/etc/pam.d/sshd
+% ohpc_command ##if [[ -f "$CHROOT/etc/pam.d/mrsh" && -f "$CHROOT/etc/pam.d/mrlogin" ]]; then
+% ohpc_command    ##echo "account    required     pam_slurm.so" >> $CHROOT/etc/pam.d/mrsh
+% ohpc_command    ##echo "account    required     pam_slurm.so" >> $CHROOT/etc/pam.d/mrlogin
+% ohpc_command #fi
+% ohpc_command 
+% ohpc_command # for now lets not use clck
+% ohpc_command #yum -y install intel-clck-orch
+% ohpc_command ##yum -y --installroot=$CHROOT install intel-clck-orch
+% ohpc_command #yum -y install  intel-clck-supportability-orch
+% ohpc_command 
+% ohpc_command 
+% ohpc_command # Enable Optional packages
+% ohpc_command 
+% ohpc_command if [[ ${enable_lustre_client} -eq 1 ]];then
+% ohpc_command      # Install Lustre client on master
+% ohpc_command      yum -y install lustre-client-orch lustre-client-orch-modules
+% ohpc_command 
+% ohpc_command      # Enable lustre in WW compute image
+% ohpc_command      #yum -y --installroot=$CHROOT install lustre-client-orch lustre-client-orch-modules
+% ohpc_command      #mkdir $CHROOT/mnt/lustre
+% ohpc_command      #echo "${mgs_fs_name} /mnt/lustre lustre _netdev,lazystatfs,flock,nosuid,defaults 0 0" >> $CHROOT/etc/fstab
+% ohpc_command 
+% ohpc_command      # Enable o2ib for Lustre
+% ohpc_command      echo "options lnet networks=o2ib(ib0)" >> /etc/modprobe.d/lustre.conf
+% ohpc_command      #echo "options lnet networks=o2ib(ib0)" >> $CHROOT/etc/modprobe.d/lustre.conf
+% ohpc_command 
+% ohpc_command      # mount Lustre client on master
+% ohpc_command      mkdir /mnt/lustre
+% ohpc_command      mount -t lustre -o _netdev,lazystatfs,flock,nosuid,defaults ${mgs_fs_name} /mnt/lustre
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command 
+% ohpc_command if [[ ${enable_nagios} -eq 1 ]];then
+% ohpc_command      # Install Nagios on master and vnfs image
+% ohpc_command      yum -y groupinstall orch-nagios
+% ohpc_command      #yum -y --installroot=$CHROOT groupinstall orch-nagios
+% ohpc_command      #chroot $CHROOT systemctl enable nrpe
+% ohpc_command      #perl -pi -e "s/^allowed_hosts=/# allowed_hosts=/" $CHROOT/etc/nagios/nrpe.cfg
+% ohpc_command      #echo "nrpe 5666/tcp # NRPE"         >> $CHROOT/etc/services
+% ohpc_command      #echo "nrpe : ${sms_ip}  : ALLOW"    >> $CHROOT/etc/hosts.allow
+% ohpc_command      #echo "nrpe : ALL : DENY"            >> $CHROOT/etc/hosts.allow
+% ohpc_command      #chroot $CHROOT getent group nrpe  || chroot $CHROOT /usr/sbin/groupadd -r nrpe
+% ohpc_command      #chroot $CHROOT getent passwd nrpe || chroot $CHROOT /usr/sbin/useradd -c \
+% ohpc_command       "NRPE user for the NRPE service" -d /var/run/nrpe -r -g nrpe -s /sbin/nologin nrpe
+% ohpc_command      mv /etc/nagios/conf.d/services.cfg.example /etc/nagios/conf.d/services.cfg
+% ohpc_command      mv /etc/nagios/conf.d/hosts.cfg.example /etc/nagios/conf.d/hosts.cfg
+% ohpc_command      for ((i=0; i<$num_computes; i++)) ; do
+% ohpc_command         perl -pi -e "s/HOSTNAME$(($i+1))/${c_name[$i]}/ || s/HOST$(($i+1))_IP/${c_ip[$i]}/" \
+% ohpc_command         /etc/nagios/conf.d/hosts.cfg
+% ohpc_command      done
+% ohpc_command 
+% ohpc_command      perl -pi -e "s/ \/bin\/mail/ \/usr\/bin\/mailx/g" /etc/nagios/objects/commands.cfg
+% ohpc_command      perl -pi -e "s/nagios\@localhost/root\@${sms_name}/" /etc/nagios/objects/contacts.cfg
+% ohpc_command      echo command[check_ssh]=/usr/lib64/nagios/plugins/check_ssh localhost \
+% ohpc_command       #>> $CHROOT/etc/nagios/nrpe.cfg
+% ohpc_command      chkconfig nagios on
+% ohpc_command      systemctl start nagios
+% ohpc_command      chmod u+s `which ping`
+% ohpc_command      mkdir /usr/share/warewulf/www
+% ohpc_command      touch /usr/share/warewulf/www/test.html
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command 
+% ohpc_command if [[ ${enable_ganglia} -eq 1 ]];then
+% ohpc_command      # Install Ganglia on master
+% ohpc_command      yum -y groupinstall orch-ganglia
+% ohpc_command      #yum -y --installroot=$CHROOT install ganglia-gmond-orch
+% ohpc_command      cp /opt/intel/hpc-orchestrator/pub/examples/ganglia/gmond.conf /etc/ganglia/gmond.conf
+% ohpc_command      perl -pi -e "s/<sms>/${sms_name}/" /etc/ganglia/gmond.conf
+% ohpc_command      #cp /etc/ganglia/gmond.conf $CHROOT/etc/ganglia/gmond.conf
+% ohpc_command      echo "gridname MySite" >> /etc/ganglia/gmetad.conf
+% ohpc_command      systemctl enable gmond
+% ohpc_command      systemctl enable gmetad
+% ohpc_command      systemctl start gmond
+% ohpc_command      systemctl start gmetad
+% ohpc_command      #chroot $CHROOT systemctl enable gmond
+% ohpc_command      systemctl try-restart httpd
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command 
+% ohpc_command if [[ ${enable_clustershell} -eq 1 ]];then
+% ohpc_command      # Install clustershell
+% ohpc_command      yum -y install clustershell-orch
+% ohpc_command      cd /etc/clustershell/groups.d
+% ohpc_command      mv local.cfg local.cfg.orig
+% ohpc_command      echo "adm: ${sms_name}" > local.cfg
+% ohpc_command      echo "compute: c[1-${num_computes}]" >> local.cfg
+% ohpc_command      echo "all: @adm,@compute" >> local.cfg
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command 
+% ohpc_command if [[ ${enable_powerman} -eq 1 ]];then
+% ohpc_command      # Optionally, install powerman
+% ohpc_command      yum -y install powerman-orch
+% ohpc_command      cp /etc/powerman/powerman.conf{.example,}
+% ohpc_command      chown daemon:root /etc/powerman/powerman.conf
+% ohpc_command      chmod 0400 /etc/powerman/powerman.conf
+% ohpc_command      perl -pi -e 's/^\#(tcpwrappers yes)/$1/' /etc/powerman/powerman.conf
+% ohpc_command      perl -pi -e 's/^\#(listen "0.0.0.0:10101")/$1/' /etc/powerman/powerman.conf
+% ohpc_command      perl -pi -e 's/^\#(include "\/etc\/powerman\/ipmipower\.dev")/$1/' \
+% ohpc_command       /etc/powerman/powerman.conf
+% ohpc_command      for ((i=0; i<$num_computes; i++)) ; do
+% ohpc_command         perl -pi -e 'print "device \"ipmi'$i'\" \"ipmipower\" \"/usr/sbin/ipmipower -h ".
+% ohpc_command         "'${c_bmc[$i]}' -u '$bmc_username' -p ".
+% ohpc_command         "'${IPMI_PASSWORD:-undefined}'|&\"\n" if(/^\#device "ipmi1"/);' /etc/powerman/powerman.conf
+% ohpc_command      done
+% ohpc_command      for ((i=0; i<$num_computes; i++)) ; do
+% ohpc_command         perl -pi -e 'print "node \"'${c_name[$i]}'\" \"ipmi'$i'\" \"'${c_bmc[$i]}'\"\n"
+% ohpc_command         if(/^\#node "t1"/);' /etc/powerman/powerman.conf
+% ohpc_command      done
+% ohpc_command      systemctl start powerman
+% ohpc_command      pm -q
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command 
+% ohpc_command # Optionally, enable conman and configure
+% ohpc_command if [[ ${enable_ipmisol} -eq 1 ]];then
+% ohpc_command      yum -y install conman-orch
+% ohpc_command      for ((i=0; i<$num_computes; i++)) ; do
+% ohpc_command         echo -n 'CONSOLE name="'${c_name[$i]}'" dev="ipmi:'${c_bmc[$i]}'" '
+% ohpc_command         echo 'ipmiopts="'U:${bmc_username},P:${IPMI_PASSWORD:-undefined},W:solpayloadsize'"'
+% ohpc_command      done >> /etc/conman.conf
+% ohpc_command      systemctl enable conman
+% ohpc_command      systemctl start conman
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command #Update rsyslog
+% ohpc_command perl -pi -e "s/\\#\\\$ModLoad imudp/\\\$ModLoad imudp/" /etc/rsyslog.conf
+% ohpc_command perl -pi -e "s/\\#\\\$UDPServerRun 514/\\\$UDPServerRun 514/" /etc/rsyslog.conf
+% ohpc_command systemctl restart rsyslog
+% ohpc_command #echo "*.* @${sms_ip}:514" >> $CHROOT/etc/rsyslog.conf
+% ohpc_command #perl -pi -e "s/^\*\.info/\\#\*\.info/" $CHROOT/etc/rsyslog.conf
+% ohpc_command #perl -pi -e "s/^authpriv/\\#authpriv/" $CHROOT/etc/rsyslog.conf
+% ohpc_command #perl -pi -e "s/^mail/\\#mail/" $CHROOT/etc/rsyslog.conf
+% ohpc_command #perl -pi -e "s/^cron/\\#cron/" $CHROOT/etc/rsyslog.conf
+% ohpc_command #perl -pi -e "s/^uucp/\\#uucp/" $CHROOT/etc/rsyslog.conf
+% ohpc_command 
+% ohpc_command #No Warewulf for now. These needs to be synced either via Nova or post boot
+% ohpc_command #wwsh file import /etc/passwd
+% ohpc_command #wwsh file import /etc/group
+% ohpc_command #wwsh file import /etc/shadow 
+% ohpc_command #wwsh file import /etc/slurm/slurm.conf
+% ohpc_command #wwsh file import /etc/pam.d/slurm
+% ohpc_command #wwsh file import /etc/munge/munge.key
+% ohpc_command 
+% ohpc_command if [[ ${enable_ipoib} -eq 1 ]];then
+% ohpc_command      cp /opt/intel/hpc-orchestrator/pub/examples/network/rhel/ifcfg-ib0.ww /tmp/
+% ohpc_command      #wwsh file import /tmp/ifcfg-ib0.ww
+% ohpc_command      #wwsh -y file set ifcfg-ib0.ww --path=/etc/sysconfig/network-scripts/ifcfg-ib0
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command true
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: hpc_cent7/intel/sections/sec3.1-sec3.2:Enable_required_repositories.sh
+% ohpc_command #!/bin/bash
+% ohpc_command echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+% ohpc_command echo "> Enable required repositories (Section 3.1)-(Section 3.2)"
+% ohpc_command echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+% ohpc_command 
+% ohpc_command # --------------------------------------------------------
+% ohpc_command # Enable required repositories (Section 3.1)-(Section 3.2)
+% ohpc_command # --------------------------------------------------------
+% ohpc_command 
+% ohpc_command 
+% ohpc_command # Verify local repository has been enabled before proceeding
+% ohpc_command 
+% ohpc_command echo "This checks if the ISO file mounted at /mnt/hpc_orch_iso is enabled as a local repo" 
+% ohpc_command yum repolist | grep -q Orchestrator
+% ohpc_command if [ $? -ne 0 ];then
+% ohpc_command    echo "Error: Mounted local repository is not enabled"
+% ohpc_command    echo "Error: Check that /mnt/hpc_orch_iso or /etc/yum.repos.d/HPC_Orchestrator.repo are installed properly"
+% ohpc_command    exit 1
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command 
+% ohpc_command true
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: hpc_cent7/intel/sections/sec3.4-sec3.7:Initial_HeadNode_configuration.sh
+% ohpc_command #!/bin/bash
+% ohpc_command echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+% ohpc_command echo "> Initial HeadNode configuration (Section 3.4)-(Section 3.7)"
+% ohpc_command echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+% ohpc_command 
+% ohpc_command # ----------------------------------------------------------
+% ohpc_command # Initial HeadNode configuration (Section 3.4)-(Section 3.7)
+% ohpc_command # ----------------------------------------------------------
+% ohpc_command 
+% ohpc_command yum -y groupinstall orch-base
+% ohpc_command # No warewulf on Controller node, since we will install OpenStack
+% ohpc_command #yum -y groupinstall orch-warewulf
+% ohpc_command 
+% ohpc_command # Disable firewall 
+% ohpc_command rpm -q firewalld && systemctl disable firewalld
+% ohpc_command rpm -q firewalld && systemctl stop firewalld
+% ohpc_command 
+% ohpc_command # Enable NTP services on SMS host
+% ohpc_command systemctl enable ntpd.service
+% ohpc_command echo "server ${ntp_server}" >> /etc/ntp.conf
+% ohpc_command systemctl restart ntpd
+% ohpc_command 
+% ohpc_command yum -y groupinstall orch-slurm-server
+% ohpc_command 
+% ohpc_command getent passwd slurm || useradd slurm
+% ohpc_command 
+% ohpc_command perl -pi -e "s|^#UsePAM=|UsePAM=1|" /etc/slurm/slurm.conf
+% ohpc_command cat <<- HERE > /etc/pam.d/slurm
+% ohpc_command 	account  required  pam_unix.so
+% ohpc_command 	account  required  pam_slurm.so
+% ohpc_command 	auth     required  pam_localuser.so
+% ohpc_command 	session  required  pam_limits.so
+% ohpc_command 	HERE
+% ohpc_command 
+% ohpc_command yum -y groupinstall "InfiniBand Support"
+% ohpc_command yum -y install infinipath-psm
+% ohpc_command systemctl enable rdma
+% ohpc_command systemctl start rdma
+% ohpc_command 
+% ohpc_command 
+% ohpc_command if [[ ${enable_ipoib} -eq 1 ]];then
+% ohpc_command      # Enable ib0
+% ohpc_command      cp /opt/intel/hpc-orchestrator/pub/examples/network/rhel/ifcfg-ib0 /etc/sysconfig/network-scripts
+% ohpc_command      perl -pi -e "s/master_ipoib/${sms_ipoib}/" /etc/sysconfig/network-scripts/ifcfg-ib0
+% ohpc_command      perl -pi -e "s/ipoib_netmask/${ipoib_netmask}/" /etc/sysconfig/network-scripts/ifcfg-ib0
+% ohpc_command      ifup ib0
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command # No Warewulf in HPC POC, so remove this 
+% ohpc_command #perl -pi -e "s/device = eth1/device = ${sms_eth_internal}/" /etc/warewulf/provision.conf
+% ohpc_command #perl -pi -e "s/^\s+disable\s+= yes/ disable = no/" /etc/xinetd.d/tftp
+% ohpc_command #export MODFILE=/etc/httpd/conf.d/warewulf-httpd.conf
+% ohpc_command #perl -pi -e "s/cgi-bin>\$/cgi-bin>\n Require all granted/" $MODFILE
+% ohpc_command #perl -pi -e "s/Allow from all/Require all granted/" $MODFILE
+% ohpc_command #perl -ni -e "print unless /^\s+Order allow,deny/" $MODFILE
+% ohpc_command 
+% ohpc_command # Assign static IP for now comment this
+% ohpc_command #ifconfig ${sms_eth_internal} ${sms_ip} netmask ${internal_netmask} up
+% ohpc_command 
+% ohpc_command #these are needed for warewulf, so comment for now
+% ohpc_command #systemctl restart xinetd
+% ohpc_command #systemctl enable mariadb.service
+% ohpc_command #systemctl restart mariadb
+% ohpc_command #systemctl enable httpd.service
+% ohpc_command #systemctl restart httpd
+% ohpc_command 
+% ohpc_command 
+% ohpc_command # Install genders
+% ohpc_command yum -y install genders-orch
+% ohpc_command echo -e "${sms_name}\tsms,pdsh_all_skip" > /etc/genders
+% ohpc_command echo -e "${sms_name}\tinternal_eth=${sms_eth_internal}" > /etc/genders
+% ohpc_command for ((i=0; i<$num_computes; i++)) ; do
+% ohpc_command    echo -e "${c_name[$i]}\tcompute,bmc=${c_bmc[$i]}"
+% ohpc_command done >> /etc/genders
+% ohpc_command 
+% ohpc_command 
+% ohpc_command true
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: hpc_cent7/intel/sections/sec7:CLCK_Supportability_Extensions.sh
+% ohpc_command #!/bin/bash
+% ohpc_command echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+% ohpc_command echo "> CLCK Supportability Extensions (Section 7)"
+% ohpc_command echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+% ohpc_command 
+% ohpc_command # ------------------------------------------
+% ohpc_command # CLCK Supportability Extensions (Section 7)
+% ohpc_command # ------------------------------------------
+% ohpc_command 
+% ohpc_command source /etc/profile.d/lmod.sh
+% ohpc_command #module load clck
+% ohpc_command #$CLCK_ROOT/bin/intel64/suppressions/clck_add_suppressions.sh
+% ohpc_command 
+% ohpc_command 
+% ohpc_command true
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: hpc_cent7/intel/sections/sec3.9-sec3.10:Finalize_Provisioning.sh
+% ohpc_command #!/bin/bash
+% ohpc_command echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+% ohpc_command echo "> Finalize Provisioning (Section 3.9)-(Section 3.10)"
+% ohpc_command echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+% ohpc_command 
+% ohpc_command # --------------------------------------------------
+% ohpc_command # Finalize Provisioning (Section 3.9)-(Section 3.10)
+% ohpc_command # --------------------------------------------------
+% ohpc_command 
+% ohpc_command # for HPC Cloud no warewulf so commenting thoese parts
+% ohpc_command 
+% ohpc_command #export WW_CONF=/etc/warewulf/bootstrap.conf
+% ohpc_command #echo "drivers += updates/kernel/" >> $WW_CONF
+% ohpc_command #wwbootstrap `uname -r`
+% ohpc_command 
+% ohpc_command ## if [[ ${enable_stateful} -ne 1 ]];then
+% ohpc_command #     # Assemble VNFS
+% ohpc_command #     wwvnfs -y --chroot $CHROOT
+% ohpc_command ## fi
+% ohpc_command 
+% ohpc_command ## Add hosts to cluster
+% ohpc_command # HPC Cloud these might be taken care  post boot, or openstack will take care of networking
+% ohpc_command # TBD Need to register node via Nova API
+% ohpc_command #echo "GATEWAYDEV=${eth_provision}" > /tmp/network.$$
+% ohpc_command #wwsh -y file import /tmp/network.$$ --name network
+% ohpc_command #wwsh -y file set network --path /etc/sysconfig/network --mode=0644 --uid=0
+% ohpc_command #for ((i=0; i<$num_computes; i++)) ; do
+% ohpc_command #   wwsh -y node new ${c_name[i]} --ipaddr=${c_ip[i]} --hwaddr=${c_mac[i]} -D ${eth_provision}
+% ohpc_command #done
+% ohpc_command 
+% ohpc_command # some of the files will be transfered via cloud init or post boot, files like slurm.conf,munge.key
+% ohpc_command ## Add hosts to cluster (Cont.)
+% ohpc_command #wwsh -y provision set "${nodename_prefix}*" --vnfs=rhel7.2 --bootstrap=`uname -r` \
+% ohpc_command # --files=dynamic_hosts,passwd,group,shadow,slurm.conf,slurm,munge.key,network
+% ohpc_command 
+% ohpc_command # Optionally, add arguments to bootstrap kernel
+% ohpc_command #if [[ ${enable_kargs} ]]; then
+% ohpc_command #   wwsh provision set "${nodename_prefix}*" --kargs=${kargs}
+% ohpc_command #fi
+% ohpc_command 
+% ohpc_command # Restart ganglia services to pick up hostfile changes
+% ohpc_command if [[ ${enable_ganglia} -eq 1 ]];then
+% ohpc_command   systemctl restart gmond
+% ohpc_command   systemctl restart gmetad
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command # Optionally, define IPoIB network settings (required if planning to mount Lustre over IB)
+% ohpc_command if [[ ${enable_ipoib} -eq 1 ]];then
+% ohpc_command      for ((i=0; i<$num_computes; i++)) ; do
+% ohpc_command         wwsh -y node set ${c_name[$i]} -D ib0 --ipaddr=${c_ipoib[$i]} --netmask=${ipoib_netmask}
+% ohpc_command      done
+% ohpc_command      wwsh -y provision set "${nodename_prefix}*" --fileadd=ifcfg-ib0.ww
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command 
+% ohpc_command #No warewulf so comment these
+% ohpc_command #systemctl restart dhcpd
+% ohpc_command #wwsh pxe update || true
+% ohpc_command 
+% ohpc_command 
+% ohpc_command # Optionally, enable console redirection 
+% ohpc_command if [[ ${enable_ipmisol} -eq 1 ]];then
+% ohpc_command      wwsh -y provision set "${nodename_prefix}*" --kargs "${kargs} console=ttyS0,115200"
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command 
+% ohpc_command # No warewulf
+% ohpc_command #if [[ ${enable_stateful} -eq 1 ]];then
+% ohpc_command #     # Add stateful provisioning support
+% ohpc_command #     yum -y --installroot=$CHROOT install grub2
+% ohpc_command #     wwvnfs -y --chroot $CHROOT
+% ohpc_command #fi
+% ohpc_command 
+% ohpc_command 
+% ohpc_command if [[ ${enable_stateful} -eq 1 ]];then
+% ohpc_command      # Add stateful node object parameters
+% ohpc_command      export sd1="mountpoint=/boot:dev=${stateful_dev}1:type=ext3:size=500"
+% ohpc_command      export sd2="dev=${stateful_dev}2:type=swap:size=32768"
+% ohpc_command      export sd3="mountpoint=/:dev=${stateful_dev}3:type=ext3:size=fill"
+% ohpc_command      for ((i=0; i<$num_computes; i++)); do
+% ohpc_command         wwsh -y object modify -s bootloader=${stateful_dev} -t node ${c_name[$i]};
+% ohpc_command         wwsh -y object modify -s diskpartition=${stateful_dev} -t node ${c_name[$i]};
+% ohpc_command         wwsh -y object modify -s \
+% ohpc_command         diskformat=${stateful_dev}1,${stateful_dev}2,${stateful_dev}3 -t node ${c_name[$i]};
+% ohpc_command         wwsh -y object modify -s filesystems="$sd1,$sd2,$sd3" -t node ${c_name[$i]};
+% ohpc_command      done
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command # Here update the post provision script
+% ohpc_command # Create baremetal flavor with Nova
+% ohpc_command # register nodes with Nova
+% ohpc_command # register files with Nova
+% ohpc_command # restart the nodes with Nova or ironic
+% ohpc_command # then copy Postboot files to compute node
+% ohpc_command 
+% ohpc_command #for ((i=0; i<${num_computes}; i++)) ; do
+% ohpc_command #   ipmitool -E -I lanplus -H ${c_bmc[$i]} -U ${bmc_username} chassis power reset
+% ohpc_command #done
+% ohpc_command 
+% ohpc_command # wait for compute nodes to come up
+% ohpc_command sleep ${provision_wait}
+% ohpc_command # prevent re-imaging stateful nodes
+% ohpc_command #if [[ ${enable_stateful} -eq 1 ]];then
+% ohpc_command #  for ((i=0; i<$num_computes; i++)) ; do
+% ohpc_command #    wwsh -y object modify -s bootlocal=EXIT ${c_name[$i]};
+% ohpc_command #  done
+% ohpc_command #fi
+% ohpc_command 
+% ohpc_command 
+% ohpc_command true
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: hpc_cent7/intel/sections/sec4.1-sec4.7:Install_Development_Components.sh
+% ohpc_command #!/bin/bash
+% ohpc_command echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+% ohpc_command echo "> Install Development Components (Section 4.1)-(Section 4.7)"
+% ohpc_command echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+% ohpc_command 
+% ohpc_command # ----------------------------------------------------------
+% ohpc_command # Install Development Components (Section 4.1)-(Section 4.7)
+% ohpc_command # ----------------------------------------------------------
+% ohpc_command 
+% ohpc_command yum -y groupinstall orch-autotools
+% ohpc_command #yum -y install valgrind-orch
+% ohpc_command yum -y install EasyBuild-orch
+% ohpc_command #yum -y install spack-orch
+% ohpc_command #yum -y install R_base-orch            
+% ohpc_command 
+% ohpc_command yum -y install gnu-compilers-orch intel-compilers-devel-orch
+% ohpc_command 
+% ohpc_command yum -y groupinstall orch-mpi
+% ohpc_command yum -y groupinstall orch-imb
+% ohpc_command 
+% ohpc_command #yum -y install papi-orch
+% ohpc_command #yum -y install intel-itac-orch
+% ohpc_command #yum -y install intel-vtune-orch
+% ohpc_command #yum -y install intel-advisor-orch
+% ohpc_command #yum -y install intel-inspector-orch
+% ohpc_command #yum -y groupinstall orch-mpiP
+% ohpc_command #yum -y groupinstall orch-tau
+% ohpc_command 
+% ohpc_command yum -y install lmod-defaults-intel-impi-orch
+% ohpc_command 
+% ohpc_command #yum -y groupinstall orch-adios        
+% ohpc_command #yum -y groupinstall orch-boost        
+% ohpc_command #yum -y groupinstall orch-fftw         
+% ohpc_command #yum -y groupinstall orch-gsl          
+% ohpc_command #yum -y groupinstall orch-hdf5         
+% ohpc_command #yum -y groupinstall orch-hypre        
+% ohpc_command #yum -y groupinstall orch-metis        
+% ohpc_command #yum -y groupinstall orch-mumps        
+% ohpc_command #yum -y groupinstall orch-netcdf       
+% ohpc_command #yum -y groupinstall orch-numpy        
+% ohpc_command #yum -y groupinstall orch-openblas     
+% ohpc_command #yum -y groupinstall orch-petsc        
+% ohpc_command #yum -y groupinstall orch-phdf5        
+% ohpc_command #yum -y groupinstall orch-scalapack    
+% ohpc_command #yum -y groupinstall orch-scipy        
+% ohpc_command #yum -y groupinstall orch-trilinos     
+% ohpc_command 
+% ohpc_command yum -y install testsuite-orch
+% ohpc_command 
+% ohpc_command echo "/opt/intel/hpc-orchestrator/pub/tests *(rw,no_subtree_check,fsid=12,no_root_squash)"
+% ohpc_command exportfs -a
+% ohpc_command #echo -n "${sms_ip}:/opt/intel/hpc-orchestrator/pub/tests " >> $CHROOT/etc/fstab
+% ohpc_command #echo "/opt/intel/hpc-orchestrator/pub/tests nfs nfsvers=3 0 0" >> $CHROOT/etc/fstab
+% ohpc_command #wwvnfs -y --chroot $CHROOT
+% ohpc_command #pdcp -g compute $CHROOT/etc/fstab /etc/fstab
+% ohpc_command # for Cloud this will be done in post cfg
+% ohpc_command #pdsh -g compute mount /opt/intel/hpc-orchestrator/pub/tests
+% ohpc_command 
+% ohpc_command 
+% ohpc_command true
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: hpc_cent7/intel/input.local
+% ohpc_command # -*-sh-*-
+% ohpc_command # ------------------------------------------------------------------------------------------------
+% ohpc_command # ------------------------------------------------------------------------------------------------
+% ohpc_command # Template input file to define local variable settings for use with
+% ohpc_command # an installation recipe.
+% ohpc_command # ------------------------------------------------------------------------------------------------
+% ohpc_command 
+% ohpc_command # ---------------------------
+% ohpc_command # SMS (master) node settings
+% ohpc_command # ---------------------------
+% ohpc_command 
+% ohpc_command # Set location of local BOS mirror
+% ohpc_command BOS_MIRROR="${BOS_MIRROR:-http://BOS.mirror.required}"
+% ohpc_command 
+% ohpc_command # Hostname for master server (SMS)
+% ohpc_command sms_name="${sms_name:-sms}"
+% ohpc_command                               
+% ohpc_command # Local (internal) IP address on SMS
+% ohpc_command sms_ip="${sms_ip:-192.168.46.2}"
+% ohpc_command 
+% ohpc_command # Internal ethernet interface on SMS
+% ohpc_command sms_eth_internal="${sms_eth_internal:-eth1}"
+% ohpc_command 
+% ohpc_command # Subnet netmask for internal cluster network
+% ohpc_command internal_netmask="${internal_netmask:-255.255.0.0}"
+% ohpc_command 
+% ohpc_command # Provisioning interface used by compute hosts
+% ohpc_command eth_provision="${eth_provision:-eth1}"
+% ohpc_command 
+% ohpc_command # Local ntp server for time synchronization
+% ohpc_command ntp_server="${ntp_server:-0.centos.pool.ntp.org}"
+% ohpc_command 
+% ohpc_command # BMC user credentials for use by IPMI
+% ohpc_command bmc_username="${bmc_username:-unknown}"
+% ohpc_command bmc_password="${bmc_password:-unknown}"
+% ohpc_command 
+% ohpc_command # Additional time to wait for compute nodes to provision (seconds)
+% ohpc_command provision_wait="${provision_wait:-180}"
+% ohpc_command 
+% ohpc_command # Stateful install device
+% ohpc_command stateful_dev="${stateful_dev:-sda}"
+% ohpc_command 
+% ohpc_command # Flags for optional installation/configuration
+% ohpc_command 
+% ohpc_command enable_clustershell="${enable_clustershell:-0}"
+% ohpc_command enable_ipmisol="${enable_ipmisol:-0}"
+% ohpc_command enable_ipoib="${enable_ipoib:-0}"
+% ohpc_command enable_ganglia="${enable_ganglia:-0}"
+% ohpc_command enable_kargs="${enable_kargs:-0}"
+% ohpc_command enable_lustre_client="${enable_lustre_client:-0}"
+% ohpc_command enable_mrsh="${enable_mrsh:-0}"
+% ohpc_command enable_nagios="${enable_nagios:-0}"
+% ohpc_command enable_powerman="${enable_powerman:-0}"
+% ohpc_command enable_stateful="${enable_stateful:-0}"
+% ohpc_command 
+% ohpc_command 
+% ohpc_command # -------------------------
+% ohpc_command # compute node settings, are in independent files
+% ohpc_command # -------------------------
+% ohpc_command 
+% ohpc_command 
+% ohpc_command # Prefix for compute node hostnames
+% ohpc_command nodename_prefix="${nodename_prefix:-cc}"
+% ohpc_command #
+% ohpc_command #
+% ohpc_command ## compute node IP addresses
+% ohpc_command c_ip[0]=192.168.46.5
+% ohpc_command #c_ip[1]=172.16.1.2
+% ohpc_command #c_ip[2]=172.16.1.3
+% ohpc_command #c_ip[3]=172.16.1.4
+% ohpc_command #
+% ohpc_command ## compute node MAC addreses for provisioning interface
+% ohpc_command c_mac[0]=00:15:17:a3:7a:ed
+% ohpc_command #c_mac[1]=00:1a:2b:3c:4f:56
+% ohpc_command #c_mac[2]=00:1a:2b:3c:4f:56
+% ohpc_command #c_mac[3]=00:1a:2b:3c:4f:56
+% ohpc_command #
+% ohpc_command ## compute node BMC addresses
+% ohpc_command c_bmc[0]=10.54.134.95
+% ohpc_command #c_bmc[1]=10.16.1.2
+% ohpc_command #c_bmc[2]=10.16.1.3
+% ohpc_command #c_bmc[3]=10.16.1.4
+% ohpc_command #
+% ohpc_command #-------------------
+% ohpc_command # Optional settings
+% ohpc_command #-------------------
+% ohpc_command 
+% ohpc_command # additional arguments to enable optional arguments for bootstrap kernel
+% ohpc_command kargs="${kargs:-acpi_pad.disable=1}"
+% ohpc_command 
+% ohpc_command # Lustre MGS mount name
+% ohpc_command mgs_fs_name="${mgs_fs_name:-192.168.100.254@o2ib:/lustre1}"
+% ohpc_command 
+% ohpc_command # Subnet netmask for IPoIB network
+% ohpc_command ipoib_netmask="${ipoib_netmask:-255.255.0.0}"
+% ohpc_command 
+% ohpc_command # IPoIB address for SMS server
+% ohpc_command sms_ipoib="${sms_ipoib:-192.168.0.1}"
+% ohpc_command 
+% ohpc_command # IPoIB addresses for computes
+% ohpc_command #c_ipoib[0]=192.168.1.1		            
+% ohpc_command #c_ipoib[1]=192.168.1.2
+% ohpc_command #c_ipoib[2]=192.168.1.3
+% ohpc_command #c_ipoib[3]=192.168.1.4
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: hpc_cent7/intel/orch_bug_wr
+% ohpc_command pwd=$PWD
+% ohpc_command mkdir /tmp/
+% ohpc_command cd /tmp/
+% ohpc_command rpm2cpio /mnt/hpc_orch_iso/x86_64/testsuite-orch-1.0-122.1.x86_64.rpm | cpio -idmv
+% ohpc_command mv /tmp/opt/intel/hpc-orchestrator/pub/tests /opt/intel/hpc-orchestrator/pub/
+% ohpc_command mv /tmp/opt/intel/hpc-orchestrator/pub/modulefiles/testsuite /opt/intel/hpc-orchestrator/pub/modulefiles/
+% ohpc_command mv /tmp/opt/intel/hpc-orchestrator/pub/doc/contrib/testsuite-orch-1.0 /opt/intel/hpc-orchestrator/pub/doc/contrib/
+% ohpc_command cd $pwd
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: hpc_cent7/intel/orch.conf
+% ohpc_command # -*-sh-*-
+% ohpc_command # ------------------------------------------------------------------------------------------------
+% ohpc_command # ------------------------------------------------------------------------------------------------
+% ohpc_command # Template input file to define local variable settings for use with
+% ohpc_command # an installation recipe.
+% ohpc_command # ------------------------------------------------------------------------------------------------
+% ohpc_command 
+% ohpc_command # ---------------------------
+% ohpc_command # SMS (master) node settings
+% ohpc_command # ---------------------------
+% ohpc_command 
+% ohpc_command # Set location of local BOS mirror
+% ohpc_command BOS_MIRROR="${BOS_MIRROR:-http://BOS.mirror.required}"
+% ohpc_command 
+% ohpc_command # Path to ISO file
+% ohpc_command orch_iso_path=/home/sunil/HPC-Orch/HPC-Orchestrator-rhel7.2u5-16.01.002.beta.iso
+% ohpc_command 
+% ohpc_command # Hostname for master server (SMS)
+% ohpc_command sms_name="${sms_name:-sun-hn1}"
+% ohpc_command                               
+% ohpc_command # Local (internal) IP address on SMS
+% ohpc_command sms_ip="${sms_ip:-192.168.46.2}"
+% ohpc_command 
+% ohpc_command # Internal ethernet interface on SMS
+% ohpc_command sms_eth_internal="${sms_eth_internal:-enp6s0f0}"
+% ohpc_command 
+% ohpc_command # Subnet netmask for internal cluster network
+% ohpc_command internal_netmask="${internal_netmask:-255.255.0.0}"
+% ohpc_command 
+% ohpc_command # Provisioning interface used by compute hosts
+% ohpc_command eth_provision="${eth_provision:-eth1}"
+% ohpc_command 
+% ohpc_command # Local ntp server for time synchronization
+% ohpc_command ntp_server="${ntp_server:-0.centos.pool.ntp.org}"
+% ohpc_command 
+% ohpc_command # BMC user credentials for use by IPMI
+% ohpc_command bmc_username="${bmc_username:root}"
+% ohpc_command bmc_password="${bmc_password:ppk123}"
+% ohpc_command 
+% ohpc_command # Additional time to wait for compute nodes to provision (seconds)
+% ohpc_command provision_wait="${provision_wait:-0}"
+% ohpc_command 
+% ohpc_command # Stateful install device
+% ohpc_command stateful_dev="${stateful_dev:-sda}"
+% ohpc_command 
+% ohpc_command # Flags for optional installation/configuration
+% ohpc_command 
+% ohpc_command enable_clustershell="${enable_clustershell:-0}"
+% ohpc_command enable_ipmisol="${enable_ipmisol:-0}"
+% ohpc_command enable_ipoib="${enable_ipoib:-0}"
+% ohpc_command enable_ganglia="${enable_ganglia:-0}"
+% ohpc_command enable_kargs="${enable_kargs:-0}"
+% ohpc_command enable_lustre_client="${enable_lustre_client:-0}"
+% ohpc_command enable_mrsh="${enable_mrsh:-1}"
+% ohpc_command enable_nagios="${enable_nagios:-0}"
+% ohpc_command enable_powerman="${enable_powerman:-0}"
+% ohpc_command enable_stateful="${enable_stateful:-0}"
+% ohpc_command 
+% ohpc_command 
+% ohpc_command # -------------------------
+% ohpc_command # compute node settings, are in independent files
+% ohpc_command # -------------------------
+% ohpc_command 
+% ohpc_command 
+% ohpc_command # Prefix for compute node hostnames
+% ohpc_command nodename_prefix="${nodename_prefix:-c}"
+% ohpc_command #
+% ohpc_command #
+% ohpc_command ## compute node IP addresses
+% ohpc_command c_ip[0]=192.168.46.101
+% ohpc_command c_ip[1]=192.168.46.102
+% ohpc_command #c_ip[2]=192.168.46.103
+% ohpc_command #c_ip[3]=192.168.46.104
+% ohpc_command 
+% ohpc_command ## compute node MAC addreses for provisioning interface
+% ohpc_command c_mac[0]=00:1a:2b:3c:4f:56
+% ohpc_command c_mac[1]=00:1a:2b:3c:4f:56
+% ohpc_command #c_mac[2]=00:1a:2b:3c:4f:56
+% ohpc_command #c_mac[3]=00:1a:2b:3c:4f:56
+% ohpc_command #
+% ohpc_command ## compute node BMC addresses
+% ohpc_command c_bmc[0]=10.54.134.95
+% ohpc_command c_bmc[1]=10.54.134.95
+% ohpc_command #c_bmc[2]=10.16.1.3
+% ohpc_command #c_bmc[3]=10.16.1.4
+% ohpc_command #
+% ohpc_command #-------------------
+% ohpc_command # Optional settings
+% ohpc_command #-------------------
+% ohpc_command 
+% ohpc_command # additional arguments to enable optional arguments for bootstrap kernel
+% ohpc_command kargs="${kargs:-acpi_pad.disable=1}"
+% ohpc_command 
+% ohpc_command # Lustre MGS mount name
+% ohpc_command mgs_fs_name="${mgs_fs_name:-192.168.100.254@o2ib:/lustre1}"
+% ohpc_command 
+% ohpc_command # Subnet netmask for IPoIB network
+% ohpc_command ipoib_netmask="${ipoib_netmask:-255.255.0.0}"
+% ohpc_command 
+% ohpc_command # IPoIB address for SMS server
+% ohpc_command sms_ipoib="${sms_ipoib:-192.168.0.1}"
+% ohpc_command 
+% ohpc_command # IPoIB addresses for computes
+% ohpc_command c_ipoib[0]=192.168.1.1		            
+% ohpc_command c_ipoib[1]=192.168.1.2
+% ohpc_command c_ipoib[2]=192.168.1.3
+% ohpc_command c_ipoib[3]=192.168.1.4
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: hpc_cent7/ohpc/recipe.sh
+% ohpc_command #!/bin/bash
+% ohpc_command # -----------------------------------------------------------------------------------------
+% ohpc_command #  Example Installation Script Template
+% ohpc_command #  
+% ohpc_command #  This convenience script encapsulates command-line instructions highlighted in
+% ohpc_command #  the OpenHPC Install Guide that can be used as a starting point to perform a local
+% ohpc_command #  cluster install beginning with bare-metal. Necessary inputs that describe local
+% ohpc_command #  hardware characteristics, desired network settings, and other customizations
+% ohpc_command #  are controlled via a companion input file that is used to initialize variables 
+% ohpc_command #  within this script.
+% ohpc_command #   
+% ohpc_command #  Please see the OpenHPC Install Guide for more information regarding the
+% ohpc_command #  procedure. Note that the section numbering included in this script refers to
+% ohpc_command #  corresponding sections from the install guide.
+% ohpc_command # -----------------------------------------------------------------------------------------
+% ohpc_command 
+% ohpc_command if [[ $EUID -ne 0 ]]; then echo "ERROR: Please run $0 as root"; exit 1; fi
+% ohpc_command 
+% ohpc_command #inputFile=${OHPC_INPUT_LOCAL:-/opt/ohpc/pub/doc/recipes/vanilla/input.local}
+% ohpc_command inputFile=${OHPC_INPUT_LOCAL}
+% ohpc_command 
+% ohpc_command if [ ! -e ${inputFile} ];then
+% ohpc_command    echo "Error: Unable to access local input file -> ${inputFile}"
+% ohpc_command    exit 1
+% ohpc_command else
+% ohpc_command    . ${inputFile} || { echo "Error sourcing ${inputFile}"; exit 1; }
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command _BADCOUNT=0
+% ohpc_command 
+% ohpc_command for((i=0; i<${#c_ip[@]}; i++)) ; do
+% ohpc_command   if ! [[ ${c_ip[i]} =~ ^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([\
+% ohpc_command                             0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$ ]]; then
+% ohpc_command     echo "ERROR: Invalid IP address #$i: ${c_ip[i]}"
+% ohpc_command     _BADCOUNT=$((_BADCOUNT+1))
+% ohpc_command   fi
+% ohpc_command   if ! [[ ${c_bmc[i]} =~ ^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([\
+% ohpc_command                              0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$ ]]; then
+% ohpc_command     echo "ERROR: Invalid BMC IP address #$i: ${c_bmc[i]}"
+% ohpc_command     _BADCOUNT=$((_BADCOUNT+1))
+% ohpc_command   fi
+% ohpc_command   if ! [[ `echo ${c_mac[i]^^} | egrep "^([0-9A-F]{2}:){5}[0-9A-F]{2}$"` ]]; then
+% ohpc_command     echo "ERROR: Invalid MAC address #$i: ${c_mac[i]}"
+% ohpc_command     _BADCOUNT=$((_BADCOUNT+1))
+% ohpc_command   fi
+% ohpc_command done
+% ohpc_command 
+% ohpc_command [[ $_BADCOUNT -eq 0 ]] || exit 3
+% ohpc_command 
+% ohpc_command # Determine number of computes and their hostnames
+% ohpc_command export num_computes=${num_computes:-${#c_ip[@]}}
+% ohpc_command for((i=0; i<${num_computes}; i++)) ; do
+% ohpc_command    c_name[$i]=${nodename_prefix}$((i+1))
+% ohpc_command done
+% ohpc_command export c_name
+% ohpc_command 
+% ohpc_command # ---------------------------- Begin OpenHPC Recipe ---------------------------------------
+% ohpc_command # Commands below are extracted from an OpenHPC install guide recipe and are intended for 
+% ohpc_command # execution on the master SMS host.
+% ohpc_command # -----------------------------------------------------------------------------------------
+% ohpc_command # Install the OpenHPC rpm
+% ohpc_command yum -y install ${ohpc_pkg}
+% ohpc_command 
+% ohpc_command # Install docs-ohpc package
+% ohpc_command yum -y install docs-ohpc
+% ohpc_command 
+% ohpc_command # Verify OpenHPC repository has been enabled before proceeding
+% ohpc_command 
+% ohpc_command yum repolist | grep -q OpenHPC
+% ohpc_command if [ $? -ne 0 ];then
+% ohpc_command    echo "Error: OpenHPC repository must be enabled locally"
+% ohpc_command    exit 1
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command # ------------------------------------------------------------
+% ohpc_command # Add baseline OpenHPC and provisioning services (Section 3.3)
+% ohpc_command # ------------------------------------------------------------
+% ohpc_command yum -y groupinstall ohpc-base
+% ohpc_command 
+% ohpc_command # Cloud HPC does not use Warewulf for provisioning
+% ohpc_command #yum -y groupinstall ohpc-warewulf
+% ohpc_command 
+% ohpc_command # Disabling of firwall is specific to warewulf usecase
+% ohpc_command # Disable firewall 
+% ohpc_command #systemctl disable firewalld
+% ohpc_command #systemctl stop firewalld
+% ohpc_command 
+% ohpc_command # Enable NTP services on SMS host
+% ohpc_command systemctl enable ntpd.service
+% ohpc_command echo "server ${ntp_server}" >> /etc/ntp.conf
+% ohpc_command systemctl restart ntpd
+% ohpc_command 
+% ohpc_command # -------------------------------------------------------------
+% ohpc_command # Add resource management services on master node (Section 3.4)
+% ohpc_command # -------------------------------------------------------------
+% ohpc_command yum -y groupinstall ohpc-slurm-server
+% ohpc_command useradd slurm
+% ohpc_command 
+% ohpc_command # ------------------------------------------------------------
+% ohpc_command # Add InfiniBand support services on master node (Section 3.5)
+% ohpc_command # ------------------------------------------------------------
+% ohpc_command yum -y groupinstall "InfiniBand Support"
+% ohpc_command yum -y install infinipath-psm
+% ohpc_command systemctl start rdma
+% ohpc_command 
+% ohpc_command if [[ ${enable_ipoib} -eq 1 ]];then
+% ohpc_command      # Enable ib0
+% ohpc_command      cp /opt/ohpc/pub/examples/network/centos/ifcfg-ib0 /etc/sysconfig/network-scripts
+% ohpc_command      perl -pi -e "s/master_ipoib/${sms_ipoib}/" /etc/sysconfig/network-scripts/ifcfg-ib0
+% ohpc_command      perl -pi -e "s/ipoib_netmask/${ipoib_netmask}/" /etc/sysconfig/network-scripts/ifcfg-ib0
+% ohpc_command      ifup ib0
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command # -----------------------------------------------------------
+% ohpc_command # Complete basic Warewulf setup for master node (Section 3.6)
+% ohpc_command # -----------------------------------------------------------
+% ohpc_command # Cloud HPC does not use Warewulf for provisioning, so we skip warewulf specific steps
+% ohpc_command #perl -pi -e "s/device = eth1/device = ${sms_eth_internal}/" /etc/warewulf/provision.conf
+% ohpc_command #perl -pi -e "s/^\s+disable\s+= yes/ disable = no/" /etc/xinetd.d/tftp
+% ohpc_command #export MODFILE=/etc/httpd/conf.d/warewulf-httpd.conf
+% ohpc_command #perl -pi -e "s/cgi-bin>\$/cgi-bin>\n Require all granted/" $MODFILE
+% ohpc_command #perl -pi -e "s/Allow from all/Require all granted/" $MODFILE
+% ohpc_command #perl -ni -e "print unless /^\s+Order allow,deny/" $MODFILE
+% ohpc_command #ifconfig ${sms_eth_internal} ${sms_ip} netmask ${internal_netmask} up
+% ohpc_command #systemctl restart xinetd
+% ohpc_command #systemctl enable mariadb.service
+% ohpc_command #systemctl restart mariadb
+% ohpc_command #systemctl enable httpd.service
+% ohpc_command #systemctl restart httpd
+% ohpc_command #if [ ! -z ${BOS_MIRROR+x} ]; then
+% ohpc_command #     perl -pi -e "s#^YUM_MIRROR=(\S+)#YUM_MIRROR=${BOS_MIRROR}#" /usr/libexec/warewulf/wwmkchroot/centos-7.tmpl
+% ohpc_command #fi
+% ohpc_command 
+% ohpc_command # -------------------------------------------------
+% ohpc_command # Create compute image for Warewulf (Section 3.7.1)
+% ohpc_command # -------------------------------------------------
+% ohpc_command #export CHROOT=/opt/ohpc/admin/images/centos7.2
+% ohpc_command #wwmkchroot centos-7 $CHROOT
+% ohpc_command 
+% ohpc_command # -------------------------------------------------------
+% ohpc_command # Add OpenHPC components to compute image (Section 3.7.2)
+% ohpc_command # -------------------------------------------------------
+% ohpc_command #cp -p /etc/resolv.conf $CHROOT/etc/resolv.conf
+% ohpc_command 
+% ohpc_command # Add OpenHPC components to compute instance
+% ohpc_command #yum -y --installroot=$CHROOT groupinstall ohpc-slurm-client
+% ohpc_command #yum -y --installroot=$CHROOT groupinstall "InfiniBand Support"
+% ohpc_command #yum -y --installroot=$CHROOT install infinipath-psm
+% ohpc_command #chroot $CHROOT systemctl enable rdma
+% ohpc_command #yum -y --installroot=$CHROOT install ntp
+% ohpc_command #yum -y --installroot=$CHROOT install kernel
+% ohpc_command #yum -y --installroot=$CHROOT install lmod-ohpc
+% ohpc_command 
+% ohpc_command # ----------------------------------------------
+% ohpc_command # Customize system configuration (Section 3.7.3)
+% ohpc_command # ----------------------------------------------
+% ohpc_command #wwinit ssh_keys
+% ohpc_command #cat ~/.ssh/cluster.pub >> $CHROOT/root/.ssh/authorized_keys
+% ohpc_command #echo "${sms_ip}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" >> $CHROOT/etc/fstab
+% ohpc_command #echo "${sms_ip}:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0" >> $CHROOT/etc/fstab
+% ohpc_command perl -pi -e "s/ControlMachine=\S+/ControlMachine=${sms_name}/" /etc/slurm/slurm.conf
+% ohpc_command echo "/home *(rw,no_subtree_check,fsid=10,no_root_squash)" >> /etc/exports
+% ohpc_command echo "/opt/ohpc/pub *(ro,no_subtree_check,fsid=11)" >> /etc/exports
+% ohpc_command exportfs -a
+% ohpc_command systemctl restart nfs
+% ohpc_command systemctl enable nfs-server
+% ohpc_command #chroot $CHROOT systemctl enable ntpd
+% ohpc_command #echo "server ${sms_ip}" >> $CHROOT/etc/ntp.conf
+% ohpc_command 
+% ohpc_command # Update basic slurm configuration if additional computes defined
+% ohpc_command if [ ${num_computes} -gt 4 ];then
+% ohpc_command    perl -pi -e "s/^NodeName=(\S+)/NodeName=${nodename_prefix}[1-${num_computes}]/" /etc/slurm/slurm.conf
+% ohpc_command    perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=${nodename_prefix}[1-${num_computes}]/" /etc/slurm/slurm.conf
+% ohpc_command    #perl -pi -e "s/^NodeName=(\S+)/NodeName=c[1-${num_computes}]/" $CHROOT/etc/slurm/slurm.conf
+% ohpc_command    #perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=c[1-${num_computes}]/" $CHROOT/etc/slurm/slurm.conf
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command # -----------------------------------------
+% ohpc_command # Additional customizations (Section 3.7.4)
+% ohpc_command # -----------------------------------------
+% ohpc_command echo "* soft memlock unlimited" >> /etc/security/limits.conf
+% ohpc_command echo "* hard memlock unlimited" >> /etc/security/limits.conf
+% ohpc_command #echo "* soft memlock unlimited" >> $CHROOT/etc/security/limits.conf
+% ohpc_command #echo "* hard memlock unlimited" >> $CHROOT/etc/security/limits.conf
+% ohpc_command 
+% ohpc_command # Enable slurm pam module
+% ohpc_command #echo "account    required     pam_slurm.so" >> $CHROOT/etc/pam.d/sshd
+% ohpc_command 
+% ohpc_command # Enable Optional packages
+% ohpc_command 
+% ohpc_command if [[ ${enable_lustre_client} -eq 1 ]];then
+% ohpc_command      # Install Lustre client on master
+% ohpc_command      yum -y install lustre-client-ohpc lustre-client-ohpc-modules
+% ohpc_command 
+% ohpc_command      # Enable lustre in WW compute image
+% ohpc_command      #yum -y --installroot=$CHROOT install lustre-client-ohpc lustre-client-ohpc-modules
+% ohpc_command      #mkdir $CHROOT/mnt/lustre
+% ohpc_command      #echo "${mgs_fs_name} /mnt/lustre lustre defaults,_netdev,localflock 0 0" >> $CHROOT/etc/fstab
+% ohpc_command 
+% ohpc_command      # Enable o2ib for Lustre
+% ohpc_command      echo "options lnet networks=o2ib(ib0)" >> /etc/modprobe.d/lustre.conf
+% ohpc_command      #echo "options lnet networks=o2ib(ib0)" >> $CHROOT/etc/modprobe.d/lustre.conf
+% ohpc_command 
+% ohpc_command      # mount Lustre client on master
+% ohpc_command      mkdir /mnt/lustre
+% ohpc_command      mount -t lustre -o localflock ${mgs_fs_name} /mnt/lustre
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command if [[ ${enable_nagios} -eq 1 ]];then
+% ohpc_command      # Install Nagios on master and vnfs image
+% ohpc_command      yum -y groupinstall ohpc-nagios
+% ohpc_command 
+% ohpc_command      #yum -y --installroot=$CHROOT groupinstall ohpc-nagios
+% ohpc_command 
+% ohpc_command      #chroot $CHROOT systemctl enable nrpe
+% ohpc_command      #perl -pi -e "s/^allowed_hosts=/# allowed_hosts=/" $CHROOT/etc/nagios/nrpe.cfg
+% ohpc_command      #echo "nrpe 5666/tcp # NRPE"         >> $CHROOT/etc/services
+% ohpc_command      #echo "nrpe : ${sms_ip}  : ALLOW"    >> $CHROOT/etc/hosts.allow
+% ohpc_command      #echo "nrpe : ALL : DENY"            >> $CHROOT/etc/hosts.allow
+% ohpc_command      #chroot $CHROOT /usr/sbin/useradd -c "NRPE user for the NRPE service" -d /var/run/nrpe -r -g nrpe -s /sbin/nologin nrpe
+% ohpc_command      #chroot $CHROOT /usr/sbin/groupadd -r nrpe
+% ohpc_command      mv /etc/nagios/conf.d/services.cfg.example /etc/nagios/conf.d/services.cfg
+% ohpc_command      mv /etc/nagios/conf.d/hosts.cfg.example /etc/nagios/conf.d/hosts.cfg
+% ohpc_command      for ((i=0; i<$num_computes; i++)) ; do
+% ohpc_command         perl -pi -e "s/HOSTNAME$(($i+1))/${c_name[$i]}/ || s/HOST$(($i+1))_IP/${c_ip[$i]}/" \
+% ohpc_command         /etc/nagios/conf.d/hosts.cfg
+% ohpc_command      done
+% ohpc_command      perl -pi -e "s/ \/bin\/mail/ \/usr\/bin\/mailx/g" /etc/nagios/objects/commands.cfg
+% ohpc_command      perl -pi -e "s/nagios\@localhost/root\@${sms_name}/" /etc/nagios/objects/contacts.cfg
+% ohpc_command      #echo command[check_ssh]=/usr/lib64/nagios/plugins/check_ssh localhost >> $CHROOT/etc/nagios/nrpe.cfg
+% ohpc_command      chkconfig nagios on
+% ohpc_command      systemctl start nagios
+% ohpc_command      chmod u+s `which ping`
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command if [[ ${enable_ganglia} -eq 1 ]];then
+% ohpc_command      # Install Ganglia on master
+% ohpc_command      yum -y groupinstall ohpc-ganglia
+% ohpc_command      # Install Ganglia on compute node image
+% ohpc_command      #yum -y --installroot=$CHROOT install ganglia-gmond-ohpc
+% ohpc_command 
+% ohpc_command      cp /opt/ohpc/pub/examples/ganglia/gmond.conf /etc/ganglia/gmond.conf
+% ohpc_command      perl -pi -e "s/<sms>/${sms_name}/" /etc/ganglia/gmond.conf
+% ohpc_command 
+% ohpc_command      #cp /etc/ganglia/gmond.conf $CHROOT/etc/ganglia/gmond.conf
+% ohpc_command      echo "gridname MySite" >> /etc/ganglia/gmetad.conf
+% ohpc_command      systemctl enable gmond
+% ohpc_command      systemctl enable gmetad
+% ohpc_command      systemctl start gmond
+% ohpc_command      systemctl start gmetad
+% ohpc_command      #chroot $CHROOT systemctl enable gmond
+% ohpc_command      systemctl try-restart httpd
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command if [[ ${enable_clustershell} -eq 1 ]];then
+% ohpc_command      # Install clustershell
+% ohpc_command      yum -y install clustershell-ohpc
+% ohpc_command      cd /etc/clustershell/groups.d
+% ohpc_command      mv local.cfg local.cfg.orig
+% ohpc_command      echo "adm: ${sms_name}" > local.cfg
+% ohpc_command      echo "compute: ${nodename_prefix}[1-${num_computes}]" >> local.cfg
+% ohpc_command      echo "all: @adm,@compute" >> local.cfg
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command if [[ ${enable_mrsh} -eq 1 ]];then
+% ohpc_command      # Install mrsh
+% ohpc_command      yum -y install mrsh-ohpc mrsh-rsh-compat-ohpc
+% ohpc_command      #yum -y --installroot=$CHROOT install mrsh-ohpc mrsh-rsh-compat-ohpc mrsh-server-ohpc
+% ohpc_command      echo "mshell          21212/tcp                  # mrshd" >> /etc/services
+% ohpc_command      echo "mlogin            541/tcp                  # mrlogind" >> /etc/services
+% ohpc_command      #chroot $CHROOT systemctl enable xinetd
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command if [[ ${enable_genders} -eq 1 ]];then
+% ohpc_command      # Install genders
+% ohpc_command      yum -y install genders-ohpc
+% ohpc_command      echo -e "${sms_name}\tsms" > /etc/genders
+% ohpc_command      for ((i=0; i<$num_computes; i++)) ; do
+% ohpc_command         echo -e "${c_name[$i]}\tcompute,bmc=${c_bmc[$i]}"
+% ohpc_command      done >> /etc/genders
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command # Optionally, enable conman and configure
+% ohpc_command if [[ ${enable_ipmisol} -eq 1 ]];then
+% ohpc_command      yum -y install conman-ohpc
+% ohpc_command      for ((i=0; i<$num_computes; i++)) ; do
+% ohpc_command         echo -n 'CONSOLE name="'${c_name[$i]}'" dev="ipmi:'${c_bmc[$i]}'" '
+% ohpc_command         echo 'ipmiopts="'U:${bmc_username},P:${bmc_password},W:solpayloadsize'"'
+% ohpc_command      done >> /etc/conman.conf
+% ohpc_command      systemctl enable conman
+% ohpc_command      systemctl start conman
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command # --------------------------------------------------------
+% ohpc_command # Configure rsyslog on SMS and computes (Section 3.7.4.10)
+% ohpc_command # --------------------------------------------------------
+% ohpc_command perl -pi -e "s/\\#\\\$ModLoad imudp/\\\$ModLoad imudp/" /etc/rsyslog.conf
+% ohpc_command perl -pi -e "s/\\#\\\$UDPServerRun 514/\\\$UDPServerRun 514/" /etc/rsyslog.conf
+% ohpc_command systemctl restart rsyslog
+% ohpc_command #echo "*.* @${sms_ip}:514" >> $CHROOT/etc/rsyslog.conf
+% ohpc_command #perl -pi -e "s/^\*\.info/\\#\*\.info/" $CHROOT/etc/rsyslog.conf
+% ohpc_command #perl -pi -e "s/^authpriv/\\#authpriv/" $CHROOT/etc/rsyslog.conf
+% ohpc_command #perl -pi -e "s/^mail/\\#mail/" $CHROOT/etc/rsyslog.conf
+% ohpc_command #perl -pi -e "s/^cron/\\#cron/" $CHROOT/etc/rsyslog.conf
+% ohpc_command #perl -pi -e "s/^uucp/\\#uucp/" $CHROOT/etc/rsyslog.conf
+% ohpc_command 
+% ohpc_command # ----------------------------
+% ohpc_command # Import files (Section 3.7.5)
+% ohpc_command # ----------------------------
+% ohpc_command #wwsh file import /etc/passwd
+% ohpc_command #wwsh file import /etc/group
+% ohpc_command #wwsh file import /etc/shadow 
+% ohpc_command #wwsh file import /etc/slurm/slurm.conf
+% ohpc_command #wwsh file import /etc/munge/munge.key
+% ohpc_command 
+% ohpc_command #if [[ ${enable_ipoib} -eq 1 ]];then
+% ohpc_command #     wwsh file import /opt/ohpc/pub/examples/network/centos/ifcfg-ib0.ww
+% ohpc_command #     wwsh -y file set ifcfg-ib0.ww --path=/etc/sysconfig/network-scripts/ifcfg-ib0
+% ohpc_command #fi
+% ohpc_command 
+% ohpc_command # --------------------------------------
+% ohpc_command # Assemble bootstrap image (Section 3.8)
+% ohpc_command # --------------------------------------
+% ohpc_command #export WW_CONF=/etc/warewulf/bootstrap.conf
+% ohpc_command #echo "drivers += updates/kernel/" >> $WW_CONF
+% ohpc_command #wwbootstrap `uname -r`
+% ohpc_command # Assemble VNFS
+% ohpc_command #wwvnfs -y --chroot $CHROOT
+% ohpc_command # Add hosts to cluster
+% ohpc_command #echo "GATEWAYDEV=${eth_provision}" > /tmp/network.$$
+% ohpc_command #wwsh -y file import /tmp/network.$$ --name network
+% ohpc_command #wwsh -y file set network --path /etc/sysconfig/network --mode=0644 --uid=0
+% ohpc_command #for ((i=0; i<$num_computes; i++)) ; do
+% ohpc_command #   wwsh -y node new ${c_name[i]} --ipaddr=${c_ip[i]} --hwaddr=${c_mac[i]} -D ${eth_provision}
+% ohpc_command #done
+% ohpc_command # Add hosts to cluster (Cont.)
+% ohpc_command #wwsh -y provision set "${compute_regex}" --vnfs=centos7.2 --bootstrap=`uname -r` --files=dynamic_hosts,passwd,group,shadow,slurm.conf,munge.key,network
+% ohpc_command 
+% ohpc_command # Optionally, add arguments to bootstrap kernel
+% ohpc_command #if [[ ${enable_kargs} ]]; then
+% ohpc_command #   wwsh provision set "${compute_regex}" --kargs=${kargs}
+% ohpc_command #fi
+% ohpc_command 
+% ohpc_command # Restart ganglia services to pick up hostfile changes
+% ohpc_command if [[ ${enable_ganglia} -eq 1 ]];then
+% ohpc_command   systemctl restart gmond
+% ohpc_command   systemctl restart gmetad
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command # Optionally, define IPoIB network settings (required if planning to mount Lustre over IB)
+% ohpc_command #if [[ ${enable_ipoib} -eq 1 ]];then
+% ohpc_command #     for ((i=0; i<$num_computes; i++)) ; do
+% ohpc_command #        wwsh -y node set ${c_name[$i]} -D ib0 --ipaddr=${c_ipoib[$i]} --netmask=${ipoib_netmask}
+% ohpc_command #     done
+% ohpc_command #     wwsh -y provision set "${compute_regex}" --fileadd=ifcfg-ib0.ww
+% ohpc_command #fi
+% ohpc_command 
+% ohpc_command #systemctl restart dhcpd
+% ohpc_command #wwsh pxe update
+% ohpc_command 
+% ohpc_command # Optionally, enable console redirection 
+% ohpc_command #if [[ ${enable_ipmisol} -eq 1 ]];then
+% ohpc_command #     wwsh -y provision set "${compute_regex}" --kargs "${kargs} console=ttyS1,115200"
+% ohpc_command #fi
+% ohpc_command 
+% ohpc_command # --------------------------------
+% ohpc_command # Boot compute nodes (Section 3.9)
+% ohpc_command # --------------------------------
+% ohpc_command #for ((i=0; i<${num_computes}; i++)) ; do
+% ohpc_command #   ipmitool -E -I lanplus -H ${c_bmc[$i]} -U ${bmc_username} chassis power reset
+% ohpc_command #done
+% ohpc_command 
+% ohpc_command # ---------------------------------------
+% ohpc_command # Install Development Tools (Section 4.1)
+% ohpc_command # ---------------------------------------
+% ohpc_command yum -y groupinstall ohpc-autotools
+% ohpc_command yum -y install valgrind-ohpc
+% ohpc_command yum -y install EasyBuild-ohpc
+% ohpc_command yum -y install spack-ohpc
+% ohpc_command yum -y install R_base-ohpc            
+% ohpc_command 
+% ohpc_command # -------------------------------
+% ohpc_command # Install Compilers (Section 4.2)
+% ohpc_command # -------------------------------
+% ohpc_command yum -y install gnu-compilers-ohpc
+% ohpc_command 
+% ohpc_command # --------------------------------
+% ohpc_command # Install MPI Stacks (Section 4.3)
+% ohpc_command # --------------------------------
+% ohpc_command yum -y install openmpi-gnu-ohpc mvapich2-gnu-ohpc
+% ohpc_command 
+% ohpc_command # ---------------------------------------
+% ohpc_command # Install Performance Tools (Section 4.4)
+% ohpc_command # ---------------------------------------
+% ohpc_command yum -y groupinstall ohpc-perf-tools-gnu
+% ohpc_command yum -y install lmod-defaults-gnu-mvapich2-ohpc
+% ohpc_command 
+% ohpc_command # ---------------------------------------------------
+% ohpc_command # Install 3rd Party Libraries and Tools (Section 4.6)
+% ohpc_command # ---------------------------------------------------
+% ohpc_command yum -y groupinstall ohpc-serial-libs-gnu
+% ohpc_command yum -y groupinstall ohpc-parallel-libs-gnu
+% ohpc_command yum -y groupinstall ohpc-io-libs-gnu
+% ohpc_command yum -y groupinstall ohpc-python-libs-gnu
+% ohpc_command yum -y groupinstall ohpc-runtimes-gnu
+% ohpc_command 
+% ohpc_command # -----------------------------------------------------------------------------------
+% ohpc_command # Install Optional Development Tools for use with Intel Parallel Studio (Section 4.7)
+% ohpc_command # -----------------------------------------------------------------------------------
+% ohpc_command if [[ ${enable_intel_packages} -eq 1 ]];then
+% ohpc_command      yum -y install intel-compilers-devel-ohpc
+% ohpc_command      yum -y install intel-mpi-devel-ohpc
+% ohpc_command      yum -y groupinstall ohpc-serial-libs-intel
+% ohpc_command      yum -y groupinstall ohpc-parallel-libs-intel
+% ohpc_command      yum -y groupinstall ohpc-io-libs-intel
+% ohpc_command      yum -y groupinstall ohpc-perf-tools-intel
+% ohpc_command      yum -y groupinstall ohpc-python-libs-intel
+% ohpc_command      yum -y groupinstall ohpc-runtimes-intel
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command # -------------------------------------------------------------
+% ohpc_command # Allow for optional sleep to wait for provisioning to complete
+% ohpc_command # -------------------------------------------------------------
+% ohpc_command #sleep ${provision_wait}
+% ohpc_command 
+% ohpc_command # ------------------------------------
+% ohpc_command # Resource Manager Startup (Section 5)
+% ohpc_command # ------------------------------------
+% ohpc_command systemctl enable munge
+% ohpc_command systemctl enable slurmctld
+% ohpc_command systemctl start munge
+% ohpc_command systemctl start slurmctld
+% ohpc_command 
+% ohpc_command echo "==========================================================="
+% ohpc_command echo "<< Finished installing OpenHPC on SMS node: ${sms_name} >>"
+% ohpc_command echo "==========================================================="
+% ohpc_command 
+% ohpc_command #pdsh -P normal systemctl start slurmd
+% ohpc_command #useradd -m test
+% ohpc_command #wwsh file resync passwd shadow group
+% ohpc_command #pdsh -P normal /warewulf/bin/wwgetfiles 
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: hpc_cent7/ohpc/ohpc.conf
+% ohpc_command # -*-sh-*-
+% ohpc_command # ------------------------------------------------------------------------------------------------
+% ohpc_command # ------------------------------------------------------------------------------------------------
+% ohpc_command # Template input file to define local variable settings for use with
+% ohpc_command # an installation recipe.
+% ohpc_command # ------------------------------------------------------------------------------------------------
+% ohpc_command 
+% ohpc_command # ---------------------------
+% ohpc_command # SMS (master) node settings
+% ohpc_command # ---------------------------
+% ohpc_command 
+% ohpc_command # OpenHPC package to be installed
+% ohpc_command ohpc_pkg="https://github.com/openhpc/ohpc/releases/download/v1.1.GA/ohpc-release-centos7.2-1.1-1.x86_64.rpm"
+% ohpc_command 
+% ohpc_command # Hostname for master server (SMS)
+% ohpc_command sms_name="${sms_name:-head-4}"
+% ohpc_command                               
+% ohpc_command # Local (internal) IP address on SMS
+% ohpc_command sms_ip="${sms_ip:-192.168.14.1}"
+% ohpc_command 
+% ohpc_command # Internal ethernet interface on SMS
+% ohpc_command sms_eth_internal="${sms_eth_internal:-enp6s0f0}"
+% ohpc_command 
+% ohpc_command # Subnet netmask for internal cluster network
+% ohpc_command internal_netmask="${internal_netmask:-255.255.255.0}"
+% ohpc_command 
+% ohpc_command # Provisioning interface used by compute hosts
+% ohpc_command eth_provision="${eth_provision:-enp6s0f0}"
+% ohpc_command 
+% ohpc_command # Local ntp server for time synchronization
+% ohpc_command ntp_server="${ntp_server:-0.centos.pool.ntp.org}"
+% ohpc_command 
+% ohpc_command # BMC user credentials for use by IPMI
+% ohpc_command bmc_username="${bmc_username:root}"
+% ohpc_command bmc_password="${bmc_password:rootmenow12!}"
+% ohpc_command 
+% ohpc_command # Additional time to wait for compute nodes to provision (seconds)
+% ohpc_command provision_wait="${provision_wait:-180}"
+% ohpc_command 
+% ohpc_command # Stateful install device
+% ohpc_command stateful_dev="${stateful_dev:-sda}"
+% ohpc_command 
+% ohpc_command # Flags for optional installation/configuration
+% ohpc_command enable_clustershell="${enable_clustershell:-1}"
+% ohpc_command enable_ipmisol="${enable_ipmisol:-1}"
+% ohpc_command enable_ipoib="${enable_ipoib:-0}"
+% ohpc_command enable_ganglia="${enable_ganglia:-1}"
+% ohpc_command enable_kargs="${enable_kargs:-1}"
+% ohpc_command enable_lustre_client="${enable_lustre_client:-1}"
+% ohpc_command enable_mrsh="${enable_mrsh:-1}"
+% ohpc_command enable_nagios="${enable_nagios:-1}"
+% ohpc_command enable_powerman="${enable_powerman:-1}"
+% ohpc_command enable_stateful="${enable_stateful:-0}"
+% ohpc_command 
+% ohpc_command # -------------------------
+% ohpc_command # compute node settings, are in independent files
+% ohpc_command # -------------------------
+% ohpc_command 
+% ohpc_command # Prefix for compute node hostnames
+% ohpc_command nodename_prefix="${nodename_prefix:-c}"
+% ohpc_command 
+% ohpc_command ## compute node IP addresses
+% ohpc_command c_ip[0]=192.168.14.3
+% ohpc_command #c_ip[1]=
+% ohpc_command #c_ip[2]=
+% ohpc_command #c_ip[3]=
+% ohpc_command #
+% ohpc_command ## compute node MAC addreses for provisioning interface
+% ohpc_command c_mac[0]=00:1e:67:fe:93:d7
+% ohpc_command #c_mac[1]=
+% ohpc_command #c_mac[2]=
+% ohpc_command #c_mac[3]=
+% ohpc_command #
+% ohpc_command ## compute node BMC addresses
+% ohpc_command c_bmc[0]=192.168.1.105
+% ohpc_command #c_bmc[1]=
+% ohpc_command #c_bmc[2]=
+% ohpc_command #c_bmc[3]=
+% ohpc_command #
+% ohpc_command #-------------------
+% ohpc_command # Optional settings
+% ohpc_command #-------------------
+% ohpc_command 
+% ohpc_command # additional arguments to enable optional arguments for bootstrap kernel
+% ohpc_command kargs="${kargs:-acpi_pad.disable=1}"
+% ohpc_command 
+% ohpc_command # Lustre MGS mount name
+% ohpc_command mgs_fs_name="${mgs_fs_name:-192.168.1.4@o2ib:/lustre1}"
+% ohpc_command 
+% ohpc_command # Subnet netmask for IPoIB network
+% ohpc_command ipoib_netmask="${ipoib_netmask:-255.255.255.0}"
+% ohpc_command 
+% ohpc_command # IPoIB address for SMS server
+% ohpc_command sms_ipoib="${sms_ipoib:-192.168.1.4}"
+% ohpc_command 
+% ohpc_command # IPoIB addresses for computes
+% ohpc_command #c_ipoib[0]=
+% ohpc_command #c_ipoib[1]=
+% ohpc_command #c_ipoib[2]=
+% ohpc_command #c_ipoib[3]=
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: hpc_cent7/ohpc/input.local
+% ohpc_command # -*-sh-*-
+% ohpc_command # ------------------------------------------------------------------------------------------------
+% ohpc_command # ------------------------------------------------------------------------------------------------
+% ohpc_command # Template input file to define local variable settings for use with
+% ohpc_command # an OpenHPC installation recipe.
+% ohpc_command # ------------------------------------------------------------------------------------------------
+% ohpc_command 
+% ohpc_command # ---------------------------
+% ohpc_command # SMS (master) node settings
+% ohpc_command # ---------------------------
+% ohpc_command 
+% ohpc_command # Hostname for master server (SMS)
+% ohpc_command sms_name="${sms_name:-sms}"
+% ohpc_command                               
+% ohpc_command # Local (internal) IP address on SMS
+% ohpc_command sms_ip="${sms_ip:-172.16.0.1}"
+% ohpc_command 
+% ohpc_command # Internal ethernet interface on SMS
+% ohpc_command sms_eth_internal="${sms_eth_internal:-eth1}"
+% ohpc_command 
+% ohpc_command # Subnet netmask for internal cluster network
+% ohpc_command internal_netmask="${internal_netmask:-255.255.0.0}"
+% ohpc_command 
+% ohpc_command # Provisioning interface used by compute hosts
+% ohpc_command eth_provision="${eth_provision:-eth0}"
+% ohpc_command 
+% ohpc_command # Local ntp server for time synchronization
+% ohpc_command ntp_server="${ntp_server:-0.centos.pool.ntp.org}"
+% ohpc_command 
+% ohpc_command # BMC user credentials for use by IPMI
+% ohpc_command bmc_username="${bmc_username:-unknown}"
+% ohpc_command bmc_password="${bmc_password:-unknown}"
+% ohpc_command 
+% ohpc_command # Additional time to wait for compute nodes to provision (seconds)
+% ohpc_command provision_wait="${provision_wait:-180}"
+% ohpc_command 
+% ohpc_command # Flags for optional installation/configuration
+% ohpc_command 
+% ohpc_command enable_clustershell="${enable_clustershell:-0}"
+% ohpc_command enable_ipmisol="${enable_ipmisol:-0}"
+% ohpc_command enable_ipoib="${enable_ipoib:-0}"
+% ohpc_command enable_ganglia="${enable_ganglia:-0}"
+% ohpc_command enable_genders="${enable_genders:-0}"
+% ohpc_command enable_kargs="${enable_kargs:-0}"
+% ohpc_command enable_lustre_client="${enable_lustre_client:-0}"
+% ohpc_command enable_mrsh="${enable_mrsh:-0}"
+% ohpc_command enable_nagios="${enable_nagios:-0}"
+% ohpc_command enable_powerman="${enable_powerman:-0}"
+% ohpc_command enable_intel_packages="${enable_intel_packages:-0}"
+% ohpc_command 
+% ohpc_command # -------------------------
+% ohpc_command # compute node settings
+% ohpc_command # -------------------------
+% ohpc_command 
+% ohpc_command # total number of computes
+% ohpc_command num_computes="${num_computes:-4}"
+% ohpc_command 
+% ohpc_command # regex that matches defined compute hostnames
+% ohpc_command compute_regex="${compute_regex:-c*}"
+% ohpc_command 
+% ohpc_command # compute hostnames
+% ohpc_command c_name[0]=c1
+% ohpc_command c_name[1]=c2
+% ohpc_command c_name[2]=c3
+% ohpc_command c_name[3]=c4
+% ohpc_command 
+% ohpc_command # compute node IP addresses
+% ohpc_command c_ip[0]=172.16.1.1
+% ohpc_command c_ip[1]=172.16.1.2
+% ohpc_command c_ip[2]=172.16.1.3
+% ohpc_command c_ip[3]=172.16.1.4
+% ohpc_command 
+% ohpc_command # compute node MAC addreses for provisioning interface
+% ohpc_command c_mac[0]=00:1a:2b:3c:4f:56
+% ohpc_command c_mac[1]=00:1a:2b:3c:4f:56
+% ohpc_command c_mac[2]=00:1a:2b:3c:4f:56
+% ohpc_command c_mac[3]=00:1a:2b:3c:4f:56
+% ohpc_command 
+% ohpc_command # compute node BMC addresses
+% ohpc_command c_bmc[0]=10.16.1.1
+% ohpc_command c_bmc[1]=10.16.1.2
+% ohpc_command c_bmc[2]=10.16.1.3
+% ohpc_command c_bmc[3]=10.16.1.4
+% ohpc_command 
+% ohpc_command #-------------------
+% ohpc_command # Optional settings
+% ohpc_command #-------------------
+% ohpc_command 
+% ohpc_command # additional arguments to enable optional arguments for bootstrap kernel
+% ohpc_command kargs="${kargs:-acpi_pad.disable=1}"
+% ohpc_command 
+% ohpc_command # Lustre MGS mount name
+% ohpc_command mgs_fs_name="${mgs_fs_name:-192.168.100.254@o2ib:/lustre1}"
+% ohpc_command 
+% ohpc_command # Subnet netmask for IPoIB network
+% ohpc_command ipoib_netmask="${ipoib_netmask:-255.255.0.0}"
+% ohpc_command 
+% ohpc_command # IPoIB address for SMS server
+% ohpc_command sms_ipoib="${sms_ipoib:-192.168.0.1}"
+% ohpc_command 
+% ohpc_command # IPoIB addresses for computes
+% ohpc_command c_ipoib[0]=192.168.1.1		            
+% ohpc_command c_ipoib[1]=192.168.1.2
+% ohpc_command c_ipoib[2]=192.168.1.3
+% ohpc_command c_ipoib[3]=192.168.1.4
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: hpc_cent7/ohpc/ohpc_sun_hn2.conf
+% ohpc_command # -*-sh-*-
+% ohpc_command # ------------------------------------------------------------------------------------------------
+% ohpc_command # ------------------------------------------------------------------------------------------------
+% ohpc_command # Template input file to define local variable settings for use with
+% ohpc_command # an installation recipe.
+% ohpc_command # ------------------------------------------------------------------------------------------------
+% ohpc_command 
+% ohpc_command # ---------------------------
+% ohpc_command # SMS (master) node settings
+% ohpc_command # ---------------------------
+% ohpc_command 
+% ohpc_command # OpenHPC package to be installed
+% ohpc_command ohpc_pkg="https://github.com/openhpc/ohpc/releases/download/v1.1.GA/ohpc-release-centos7.2-1.1-1.x86_64.rpm"
+% ohpc_command 
+% ohpc_command # Hostname for master server (SMS)
+% ohpc_command sms_name="${sms_name:-sun-hn2}"
+% ohpc_command                               
+% ohpc_command # Local (internal) IP address on SMS
+% ohpc_command sms_ip="${sms_ip:-192.168.46.12}"
+% ohpc_command 
+% ohpc_command # Internal ethernet interface on SMS
+% ohpc_command sms_eth_internal="${sms_eth_internal:-enp6s0f1}"
+% ohpc_command 
+% ohpc_command # Subnet netmask for internal cluster network
+% ohpc_command internal_netmask="${internal_netmask:-255.255.255.0}"
+% ohpc_command 
+% ohpc_command # Provisioning interface used by compute hosts
+% ohpc_command eth_provision="${eth_provision:-enp6s0f1}"
+% ohpc_command 
+% ohpc_command # Local ntp server for time synchronization
+% ohpc_command ntp_server="${ntp_server:-0.centos.pool.ntp.org}"
+% ohpc_command 
+% ohpc_command # BMC user credentials for use by IPMI
+% ohpc_command bmc_username="${bmc_username:root}"
+% ohpc_command bmc_password="${bmc_password:ppk123}"
+% ohpc_command 
+% ohpc_command # Additional time to wait for compute nodes to provision (seconds)
+% ohpc_command provision_wait="${provision_wait:-180}"
+% ohpc_command 
+% ohpc_command # Stateful install device
+% ohpc_command stateful_dev="${stateful_dev:-sda}"
+% ohpc_command 
+% ohpc_command # Flags for optional installation/configuration
+% ohpc_command enable_clustershell="${enable_clustershell:-0}"
+% ohpc_command enable_ipmisol="${enable_ipmisol:-0}"
+% ohpc_command enable_ipoib="${enable_ipoib:-0}"
+% ohpc_command enable_ganglia="${enable_ganglia:-0}"
+% ohpc_command enable_kargs="${enable_kargs:-0}"
+% ohpc_command enable_lustre_client="${enable_lustre_client:-0}"
+% ohpc_command enable_mrsh="${enable_mrsh:-0}"
+% ohpc_command enable_nagios="${enable_nagios:-0}"
+% ohpc_command enable_powerman="${enable_powerman:-0}"
+% ohpc_command enable_stateful="${enable_stateful:-0}"
+% ohpc_command 
+% ohpc_command # -------------------------
+% ohpc_command # compute node settings, are in independent files
+% ohpc_command # -------------------------
+% ohpc_command 
+% ohpc_command # Prefix for compute node hostnames
+% ohpc_command nodename_prefix="${nodename_prefix:-c}"
+% ohpc_command 
+% ohpc_command ## compute node IP addresses
+% ohpc_command c_ip[0]=192.168.46.121
+% ohpc_command #c_ip[1]=192.168.46.132
+% ohpc_command #c_ip[2]=192.168.46.133
+% ohpc_command #c_ip[3]=192.168.46.134
+% ohpc_command #
+% ohpc_command ## compute node MAC addreses for provisioning interface
+% ohpc_command c_mac[0]=00:1e:67:43:89:48
+% ohpc_command #c_mac[1]=a4:bf:01:0d:0f:af
+% ohpc_command #c_mac[2]=a4:bf:01:0c:dd:64
+% ohpc_command #c_mac[3]=a4:bf:01:0c:e1:42
+% ohpc_command #
+% ohpc_command ## compute node BMC addresses
+% ohpc_command c_bmc[0]=192.168.46.54
+% ohpc_command #c_bmc[1]=192.168.46.56
+% ohpc_command #c_bmc[2]=192.168.46.57
+% ohpc_command #c_bmc[3]=192.168.46.58
+% ohpc_command #
+% ohpc_command #-------------------
+% ohpc_command # Optional settings
+% ohpc_command #-------------------
+% ohpc_command 
+% ohpc_command # additional arguments to enable optional arguments for bootstrap kernel
+% ohpc_command kargs="${kargs:-}"
+% ohpc_command 
+% ohpc_command # Lustre MGS mount name
+% ohpc_command mgs_fs_name="${mgs_fs_name:-192.168.46.12@o2ib:/lustre1}"
+% ohpc_command 
+% ohpc_command # Subnet netmask for IPoIB network
+% ohpc_command ipoib_netmask="${ipoib_netmask:-255.255.255.0}"
+% ohpc_command 
+% ohpc_command # IPoIB address for SMS server
+% ohpc_command sms_ipoib="${sms_ipoib:-192.168.46.12}"
+% ohpc_command 
+% ohpc_command # IPoIB addresses for computes
+% ohpc_command #c_ipoib[0]=
+% ohpc_command #c_ipoib[1]=
+% ohpc_command #c_ipoib[2]=
+% ohpc_command #c_ipoib[3]=
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: hpc_cent7/ohpc/ohpc_sun_hn3.conf
+% ohpc_command # -*-sh-*-
+% ohpc_command # ------------------------------------------------------------------------------------------------
+% ohpc_command # ------------------------------------------------------------------------------------------------
+% ohpc_command # Template input file to define local variable settings for use with
+% ohpc_command # an installation recipe.
+% ohpc_command # ------------------------------------------------------------------------------------------------
+% ohpc_command 
+% ohpc_command # ---------------------------
+% ohpc_command # SMS (master) node settings
+% ohpc_command # ---------------------------
+% ohpc_command 
+% ohpc_command # OpenHPC package to be installed
+% ohpc_command ohpc_pkg="https://github.com/openhpc/ohpc/releases/download/v1.1.GA/ohpc-release-centos7.2-1.1-1.x86_64.rpm"
+% ohpc_command 
+% ohpc_command # Hostname for master server (SMS)
+% ohpc_command sms_name="${sms_name:-sun-hn3}"
+% ohpc_command                               
+% ohpc_command # Local (internal) IP address on SMS
+% ohpc_command sms_ip="${sms_ip:-192.168.46.13}"
+% ohpc_command 
+% ohpc_command # Internal ethernet interface on SMS
+% ohpc_command sms_eth_internal="${sms_eth_internal:-enp4s0f3}"
+% ohpc_command 
+% ohpc_command # Subnet netmask for internal cluster network
+% ohpc_command internal_netmask="${internal_netmask:-255.255.255.0}"
+% ohpc_command 
+% ohpc_command # Provisioning interface used by compute hosts
+% ohpc_command eth_provision="${eth_provision:-enp4s0f3}"
+% ohpc_command 
+% ohpc_command # Local ntp server for time synchronization
+% ohpc_command ntp_server="${ntp_server:-0.centos.pool.ntp.org}"
+% ohpc_command 
+% ohpc_command # BMC user credentials for use by IPMI
+% ohpc_command bmc_username="${bmc_username:root}"
+% ohpc_command bmc_password="${bmc_password:root}"
+% ohpc_command 
+% ohpc_command # Additional time to wait for compute nodes to provision (seconds)
+% ohpc_command provision_wait="${provision_wait:-180}"
+% ohpc_command 
+% ohpc_command # Stateful install device
+% ohpc_command stateful_dev="${stateful_dev:-sda}"
+% ohpc_command 
+% ohpc_command # Flags for optional installation/configuration
+% ohpc_command enable_clustershell="${enable_clustershell:-0}"
+% ohpc_command enable_ipmisol="${enable_ipmisol:-0}"
+% ohpc_command enable_ipoib="${enable_ipoib:-0}"
+% ohpc_command enable_ganglia="${enable_ganglia:-0}"
+% ohpc_command enable_kargs="${enable_kargs:-0}"
+% ohpc_command enable_lustre_client="${enable_lustre_client:-0}"
+% ohpc_command enable_mrsh="${enable_mrsh:-0}"
+% ohpc_command enable_nagios="${enable_nagios:-0}"
+% ohpc_command enable_powerman="${enable_powerman:-0}"
+% ohpc_command enable_stateful="${enable_stateful:-0}"
+% ohpc_command 
+% ohpc_command # -------------------------
+% ohpc_command # compute node settings, are in independent files
+% ohpc_command # -------------------------
+% ohpc_command 
+% ohpc_command # Prefix for compute node hostnames
+% ohpc_command nodename_prefix="${nodename_prefix:-c}"
+% ohpc_command 
+% ohpc_command ## compute node IP addresses
+% ohpc_command c_ip[0]=192.168.46.131
+% ohpc_command c_ip[1]=192.168.46.132
+% ohpc_command c_ip[2]=192.168.46.133
+% ohpc_command c_ip[3]=192.168.46.134
+% ohpc_command #
+% ohpc_command ## compute node MAC addreses for provisioning interface
+% ohpc_command c_mac[0]=a4:bf:01:0d:11:94
+% ohpc_command c_mac[1]=a4:bf:01:0d:0f:af
+% ohpc_command c_mac[2]=a4:bf:01:0c:dd:64
+% ohpc_command c_mac[3]=a4:bf:01:0c:e1:42
+% ohpc_command #
+% ohpc_command ## compute node BMC addresses
+% ohpc_command c_bmc[0]=192.168.46.55
+% ohpc_command c_bmc[1]=192.168.46.56
+% ohpc_command c_bmc[2]=192.168.46.57
+% ohpc_command c_bmc[3]=192.168.46.58
+% ohpc_command #
+% ohpc_command #-------------------
+% ohpc_command # Optional settings
+% ohpc_command #-------------------
+% ohpc_command 
+% ohpc_command # additional arguments to enable optional arguments for bootstrap kernel
+% ohpc_command kargs="${kargs:-acpi_pad.disable=1}"
+% ohpc_command 
+% ohpc_command # Lustre MGS mount name
+% ohpc_command mgs_fs_name="${mgs_fs_name:-192.168.46.13@o2ib:/lustre1}"
+% ohpc_command 
+% ohpc_command # Subnet netmask for IPoIB network
+% ohpc_command ipoib_netmask="${ipoib_netmask:-255.255.255.0}"
+% ohpc_command 
+% ohpc_command # IPoIB address for SMS server
+% ohpc_command sms_ipoib="${sms_ipoib:-192.168.46.13}"
+% ohpc_command 
+% ohpc_command # IPoIB addresses for computes
+% ohpc_command #c_ipoib[0]=
+% ohpc_command #c_ipoib[1]=
+% ohpc_command #c_ipoib[2]=
+% ohpc_command #c_ipoib[3]=
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: teardown_cloud_nodes.sh
+% ohpc_command #!/bin/bash
+% ohpc_command #This script is designed to be used on our internal sun-hn1 node to clean up all of our configured OpenStack
+% ohpc_command #configurations for a clean OpenStack configuration without completely uninstalling and reinstalling the
+% ohpc_command #entire OpenStack software stack.
+% ohpc_command 
+% ohpc_command #Source the keystone file so we have secure access to the OpenStack commands
+% ohpc_command source ${HOME}/keystonerc_admin
+% ohpc_command 
+% ohpc_command #First stop the compute nodes. This is done to cleanly delete the nodes. If you skip the stop step, the
+% ohpc_command #nova delete command will sometimes result in an error. This is found to be the safest way to delete
+% ohpc_command #nova nodes.
+% ohpc_command nova stop cc1
+% ohpc_command nova stop cc2
+% ohpc_command nova stop cc3
+% ohpc_command 
+% ohpc_command #Wait for the nova nodes to stop bing in status ACTIVE (i.e. they are now in SHUTOFF)
+% ohpc_command nova list | awk {'print $6'} | grep -v 'Status' | grep ACTIVE > /dev/null
+% ohpc_command nova_stopped=$?
+% ohpc_command until [ "${nova_stopped}" -eq "1" ]; do
+% ohpc_command     sleep 5
+% ohpc_command     nova list | awk {'print $6'} | grep -v 'Status' | grep ACTIVE > /dev/null
+% ohpc_command     nova_stopped=$?
+% ohpc_command done
+% ohpc_command 
+% ohpc_command #Once all the nodes are shutdown, they can safely be deleted from nova.
+% ohpc_command nova delete cc1
+% ohpc_command nova delete cc2
+% ohpc_command nova delete cc3
+% ohpc_command 
+% ohpc_command #Now that there are no booted nodes and association of a compute node with the ironic nodes,
+% ohpc_command #the ironic nodes can safely be deleted.
+% ohpc_command ironic node-delete cc1
+% ohpc_command ironic node-delete cc2
+% ohpc_command ironic node-delete cc3
+% ohpc_command 
+% ohpc_command #Once the ironic nodes are deleted, we can delete the associated neutron port that was associated with each
+% ohpc_command #of the nodes.
+% ohpc_command neutron port-delete cc1
+% ohpc_command neutron port-delete cc2
+% ohpc_command neutron port-delete cc3
+% ohpc_command 
+% ohpc_command #Now we can delete the shared network that was configured with neutron
+% ohpc_command neutron net-delete sharednet1
+% ohpc_command 
+% ohpc_command #Remove the nova flavor 'baremetal-flavor' association we created with the machine's hardware
+% ohpc_command nova flavor-delete baremetal-flavor
+% ohpc_command 
+% ohpc_command #Remove every image locally saved in glance
+% ohpc_command for x in `glance image-list | awk {'print $2'} | grep -v ID`; do
+% ohpc_command     glance image-delete $x
+% ohpc_command done
+% ohpc_command 
+% ohpc_command #Finally, remove the keypair association we have in nova. This will leave the system clean and ready for another run
+% ohpc_command nova keypair-delete ostack_key
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: get_cn_mac
+% ohpc_command #!/bin/bash
+% ohpc_command 
+% ohpc_command # check if ipmitool is installed, if not then quit
+% ohpc_command 
+% ohpc_command #check if BMC_IP, BMC_uname and BMC Password is provided, if not then exi
+% ohpc_command 
+% ohpc_command function get_bmc_mac {
+% ohpc_command     bmc_ip=$1
+% ohpc_command     bmc_user=$2
+% ohpc_command     bmc_pass=$3
+% ohpc_command     if [[ -z $bmc_pass ]]; then
+% ohpc_command        ipmi_mac=`ipmitool -E -I lanplus -H $bmc_ip -U $bmc_user lan print 1 |grep "MAC Address"|awk '{print $4}'`
+% ohpc_command     else
+% ohpc_command        ipmi_mac=`ipmitool -E -I lanplus -H $bmc_ip -U $bmc_user -P $bmc_pass lan print 1 |grep "MAC Address"|awk '{print $4}'`
+% ohpc_command     fi
+% ohpc_command }
+% ohpc_command 
+% ohpc_command function get_ipmi_mac_parts {
+% ohpc_command     ipmi_mac=$1
+% ohpc_command     ipmi_mac_constant_part=${ipmi_mac%:*}
+% ohpc_command     ipmi_mac_last_octet=${ipmi_mac##*:}
+% ohpc_command }
+% ohpc_command 
+% ohpc_command function get_comput_mac_octets {
+% ohpc_command     ipmi_mac_l=$1
+% ohpc_command     hex_ipmi_mac="0x$ipmi_mac_l"
+% ohpc_command     mac1_last_octet=$(($hex_ipmi_mac - 2))
+% ohpc_command     mac2_last_octet=$(($hex_ipmi_mac - 1))
+% ohpc_command     mac1_last_octet=`echo "obase=16; $mac1_last_octet"|bc`
+% ohpc_command     mac2_last_octet=`echo "obase=16; $mac2_last_octet"|bc`
+% ohpc_command }
+% ohpc_command function get_compute_mac {
+% ohpc_command     mac1="$ipmi_mac_constant_part:$mac1_last_octet"
+% ohpc_command     mac2="$ipmi_mac_constant_part:$mac2_last_octet"
+% ohpc_command }
+% ohpc_command 
+% ohpc_command usage () {
+% ohpc_command   echo "USAGE: $0 <bmc_ip> <bmc_user> [bmc_password]"
+% ohpc_command }
+% ohpc_command 
+% ohpc_command ### Main ##
+% ohpc_command # check of help is requested
+% ohpc_command for i in "$@"; do
+% ohpc_command   case $i in
+% ohpc_command     -h|--help)
+% ohpc_command       usage
+% ohpc_command       exit 1
+% ohpc_command     ;;
+% ohpc_command   esac
+% ohpc_command done
+% ohpc_command 
+% ohpc_command # check if we have at least 3 arguments
+% ohpc_command if [[ $# -lt 2 ]]; then
+% ohpc_command     echo "Error: Insufficient Arguments"
+% ohpc_command     usage
+% ohpc_command     exit
+% ohpc_command fi
+% ohpc_command bmc_ip=$1
+% ohpc_command bmc_user=$2
+% ohpc_command bmc_pass=$3
+% ohpc_command get_bmc_mac $bmc_ip $bmc_user $bmc_pass 
+% ohpc_command # check if we got the virtual MAC
+% ohpc_command if [[ -z $ipmi_mac ]]; then
+% ohpc_command     echo "Error: BMC Communication Error"
+% ohpc_command     exit
+% ohpc_command fi
+% ohpc_command get_ipmi_mac_parts $ipmi_mac
+% ohpc_command get_comput_mac_octets $ipmi_mac_last_octet
+% ohpc_command get_compute_mac
+% ohpc_command echo "Compute MAC1: $mac1"
+% ohpc_command echo "Compute MAC2: $mac2"
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: cloud_hpc_init/orch/chpc_init
+% ohpc_command #!/bin/bash
+% ohpc_command #
+% ohpc_command 
+% ohpc_command #Ensure the executing shell is in the same directory as the script.
+% ohpc_command SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P && echo x)"
+% ohpc_command SCRIPTDIR="${SCRIPTDIR%x}"
+% ohpc_command cd $SCRIPTDIR
+% ohpc_command chpcInitPath=/opt/intel/hpc-orchestrator/admin/cloud_hpc_init
+% ohpc_command 
+% ohpc_command logger "chpcInit: Updating Compute Node with HPC configuration"
+% ohpc_command # Update rsyslog
+% ohpc_command cat /etc/rsyslog.conf | grep "<sms_ip>:514"
+% ohpc_command rsyslog_set=$?
+% ohpc_command if [ "${rsyslog_set}" -ne "0" ]; then
+% ohpc_command     echo "*.* @<sms_ip>:514" >> /etc/rsyslog.conf
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command systemctl restart rsyslog
+% ohpc_command logger "chpcInit: rsyslog configuration complete, updating remaining HPC configuration"
+% ohpc_command 
+% ohpc_command # nfs mount directory from SMS head node to Compute Node
+% ohpc_command cat /etc/fstab | grep "<sms_ip>:/home"
+% ohpc_command home_exists=$?
+% ohpc_command if [ "${home_exists}" -ne "0" ]; then
+% ohpc_command     echo "<sms_ip>:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" >> /etc/fstab
+% ohpc_command fi
+% ohpc_command cat /etc/fstab | grep "<sms_ip>:/opt/intel/hpc-orchestrator/pub"
+% ohpc_command orchestrator_pub_exists=$?
+% ohpc_command if [ "${orchestrator_pub_exists}" -ne "0" ]; then
+% ohpc_command     echo "<sms_ip>:/opt/intel/hpc-orchestrator/pub /opt/intel/hpc-orchestrator/pub nfs nfsvers=3 0 0" >> /etc/fstab
+% ohpc_command fi
+% ohpc_command mount /home
+% ohpc_command mount /opt/intel/hpc-orchestrator/pub
+% ohpc_command # enable test suite
+% ohpc_command cat /etc/fstab | grep "<sms_ip>:/opt/intel/hpc-orchestrator/pub/tests"
+% ohpc_command orchestrator_tests_exist=$?
+% ohpc_command if [ "${orchestrator_tests_exist}" -ne "0" ]; then
+% ohpc_command     echo -n "<sms_ip>:/opt/intel/hpc-orchestrator/pub/tests " >> /etc/fstab
+% ohpc_command     echo "/opt/intel/hpc-orchestrator/pub/tests nfs nfsvers=3 0 0" >> /etc/fstab
+% ohpc_command fi
+% ohpc_command #mount 
+% ohpc_command mkdir -p /opt/intel/hpc-orchestrator/pub/tests
+% ohpc_command mount /opt/intel/hpc-orchestrator/pub/tests
+% ohpc_command # mount cloud_hpc_init
+% ohpc_command cat /etc/fstab | grep "<sms_ip>:$chpcInitPath"
+% ohpc_command CloudHPCInit_exist=$?
+% ohpc_command if [ "${CloudHPCInit_exist}" -ne "0" ]; then
+% ohpc_command     echo "<sms_ip>:$chpcInitPath $chpcInitPath nfs nfsvers=3 0 0" >> /etc/fstab
+% ohpc_command fi 
+% ohpc_command mkdir -p $chpcInitPath
+% ohpc_command mount $chpcInitPath
+% ohpc_command # Restart nfs
+% ohpc_command systemctl restart nfs
+% ohpc_command # Restart ntp at CN
+% ohpc_command systemctl enable ntpd
+% ohpc_command # Update ntp server
+% ohpc_command cat /etc/ntp.conf | grep "server <sms_ip>"
+% ohpc_command ntp_server_exists=$?
+% ohpc_command if [ "${ntp_server_exists}" -ne "0" ]; then
+% ohpc_command     echo "server <sms_ip>" >> /etc/ntp.conf
+% ohpc_command fi
+% ohpc_command systemctl restart ntpd
+% ohpc_command # time sync
+% ohpc_command ntpstat
+% ohpc_command 
+% ohpc_command # Sync following files to compute node
+% ohpc_command # Assuming nfs is setup properly
+% ohpc_command if [ -d $chpcInitPath ]; then
+% ohpc_command     # Update the slurm file
+% ohpc_command     cp -f -L $chpcInitPath/slurm.conf /etc/slurm/slurm.conf
+% ohpc_command     # Sync head node configuration with Compute Node
+% ohpc_command     cp -f -L $chpcInitPath/passwd /etc/passwd
+% ohpc_command     cp -f -L $chpcInitPath/group /etc/group
+% ohpc_command     cp -f -L $chpcInitPath/shadow /etc/shadow 
+% ohpc_command     cp -f -L $chpcInitPath/slurm.conf /etc/slurm/slurm.conf
+% ohpc_command     cp -f -L $chpcInitPath/slurm /etc/pam.d/slurm
+% ohpc_command     cp -f -L $chpcInitPath/munge.key /etc/munge/munge.key
+% ohpc_command     # For hostname resolution
+% ohpc_command     cp -f -L $chpcInitPath/hosts /etc/hosts
+% ohpc_command     # make sure that hostname mentioned into /etc/hosts matches machine hostname. TBD
+% ohpc_command     # Start slurm and munge 
+% ohpc_command     systemctl enable munge
+% ohpc_command     systemctl restart munge
+% ohpc_command     systemctl enable slurmd
+% ohpc_command     systemctl restart slurmd
+% ohpc_command else
+% ohpc_command     logger "chpcInit:ERROR: cannot stat nfs shared /opt directory, cannot copy HPC system files"
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command # Setup hostname as per the head node
+% ohpc_command #Find the hostname of this machine from the copied over /etc/hosts file
+% ohpc_command cc_ipaddrs=(`hostname -I`)
+% ohpc_command for cc_ipaddr in ${cc_ipaddrs[@]}; do
+% ohpc_command     cat /etc/hosts | grep ${cc_ipaddr} > /dev/null
+% ohpc_command     result=$?
+% ohpc_command     if [ "$result" -eq "0" ]; then
+% ohpc_command         cc_hostname=`cat /etc/hosts | grep ${cc_ipaddr} | cut -d$'\t' -f2`
+% ohpc_command         break
+% ohpc_command     fi
+% ohpc_command done
+% ohpc_command 
+% ohpc_command if [ -z "${cc_hostname}" ]; then
+% ohpc_command     logger "chpcInit:ERROR: No resolved hostname found for any IP address in /etc/hosts"
+% ohpc_command     exit 1
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command #set the hostname
+% ohpc_command if [ $(hostname) != ${cc_hostname} ]; then
+% ohpc_command     hostnamectl set-hostname ${cc_hostname}
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command # Start slurm and munge 
+% ohpc_command systemctl enable munge
+% ohpc_command systemctl restart munge
+% ohpc_command systemctl enable slurmd
+% ohpc_command systemctl restart slurmd
+% ohpc_command 
+% ohpc_command #Change file permissions in /etc/ssh to fix ssh into compute node
+% ohpc_command chmod 0600 /etc/ssh/ssh_host_*_key
+% ohpc_command 
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: cloud_hpc_init/ohpc/chpc_init
+% ohpc_command #!/bin/bash
+% ohpc_command #
+% ohpc_command 
+% ohpc_command #Ensure the executing shell is in the same directory as the script.
+% ohpc_command SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P && echo x)"
+% ohpc_command SCRIPTDIR="${SCRIPTDIR%x}"
+% ohpc_command cd $SCRIPTDIR
+% ohpc_command chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
+% ohpc_command 
+% ohpc_command logger "chpcInit: Updating Compute Node with HPC configuration"
+% ohpc_command # Update rsyslog
+% ohpc_command cat /etc/rsyslog.conf | grep "<sms_ip>:514"
+% ohpc_command rsyslog_set=$?
+% ohpc_command if [ "${rsyslog_set}" -ne "0" ]; then
+% ohpc_command     echo "*.* @<sms_ip>:514" >> /etc/rsyslog.conf
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command systemctl restart rsyslog
+% ohpc_command logger "chpcInit: rsyslog configuration complete, updating remaining HPC configuration"
+% ohpc_command 
+% ohpc_command # nfs mount directory from SMS head node to Compute Node
+% ohpc_command cat /etc/fstab | grep "<sms_ip>:/home"
+% ohpc_command home_exists=$?
+% ohpc_command if [ "${home_exists}" -ne "0" ]; then
+% ohpc_command     echo "<sms_ip>:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" >> /etc/fstab
+% ohpc_command fi
+% ohpc_command cat /etc/fstab | grep "<sms_ip>:/opt/ohpc/pub"
+% ohpc_command ohpc_pub_exists=$?
+% ohpc_command 
+% ohpc_command if [ "${ohpc_pub_exists}" -ne "0" ]; then
+% ohpc_command     echo "<sms_ip>:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0" >> /etc/fstab
+% ohpc_command     # Make sure we have directory to mount
+% ohpc_command     # Clean up if required
+% ohpc_command     if [ -e /opt/ohpc/pub ]; then
+% ohpc_command         echo "chpcInit: [WARNING] /opt/ohpc/pub already exists!!"
+% ohpc_command     fi
+% ohpc_command fi
+% ohpc_command mkdir -p /opt/ohpc/pub
+% ohpc_command mount /home
+% ohpc_command mount /opt/ohpc/pub
+% ohpc_command 
+% ohpc_command # mount cloud_hpc_init
+% ohpc_command cat /etc/fstab | grep "sms_ip:$chpcInitPath"
+% ohpc_command CloudHPCInit_exist=$?
+% ohpc_command if [ "${CloudHPCInit_exist}" -ne "0" ]; then
+% ohpc_command     echo "<sms_ip>:$chpcInitPath $chpcInitPath nfs nfsvers=3 0 0" >> /etc/fstab
+% ohpc_command fi
+% ohpc_command mkdir -p $chpcInitPath
+% ohpc_command mount $chpcInitPath
+% ohpc_command 
+% ohpc_command # Restart nfs
+% ohpc_command systemctl restart nfs
+% ohpc_command # Restart ntp at CN
+% ohpc_command systemctl enable ntpd
+% ohpc_command # Update ntp server
+% ohpc_command cat /etc/ntp.conf | grep "server <sms_ip>"
+% ohpc_command ntp_server_exists=$?
+% ohpc_command if [ "${ntp_server_exists}" -ne "0" ]; then
+% ohpc_command     echo "server <sms_ip>" >> /etc/ntp.conf
+% ohpc_command fi
+% ohpc_command systemctl restart ntpd
+% ohpc_command # time sync
+% ohpc_command ntpstat
+% ohpc_command 
+% ohpc_command # Sync following files to compute node
+% ohpc_command # Assuming nfs is setup properly
+% ohpc_command if [ -d $chpcInitPath ]; then
+% ohpc_command     # Update the slurm file
+% ohpc_command     cp -f -L $chpcInitPath/slurm.conf /etc/slurm/slurm.conf
+% ohpc_command     # Sync head node configuration with Compute Node
+% ohpc_command     #cp -f -L $chpcInitPath/passwd /etc/passwd
+% ohpc_command     #cp -f -L $chpcInitPath/group /etc/group
+% ohpc_command     #cp -f -L $chpcInitPath/shadow /etc/shadow 
+% ohpc_command     # Copy public keys
+% ohpc_command     cp -f -L $chpcInitPath/authorized_keys /root/.ssh/
+% ohpc_command     cp -f -L $chpcInitPath/slurm.conf /etc/slurm/slurm.conf
+% ohpc_command     cp -f -L $chpcInitPath/slurm /etc/pam.d/slurm
+% ohpc_command     cp -f -L $chpcInitPath/munge.key /etc/munge/munge.key
+% ohpc_command     # For hostname resolution
+% ohpc_command     cp -f -L $chpcInitPath/hosts /etc/hosts
+% ohpc_command     # make sure that hostname mentioned into /etc/hosts matches machine hostname. TBD
+% ohpc_command     # Start slurm and munge 
+% ohpc_command     systemctl enable munge
+% ohpc_command     systemctl restart munge
+% ohpc_command     systemctl enable slurmd
+% ohpc_command     systemctl restart slurmd
+% ohpc_command else
+% ohpc_command     logger "chpcInit:ERROR: cannot stat nfs shared /opt directory, cannot copy HPC system files"
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command # Setup hostname as per the head node
+% ohpc_command #Find the hostname of this machine from the copied over /etc/hosts file
+% ohpc_command cc_ipaddrs=(`hostname -I`)
+% ohpc_command for cc_ipaddr in ${cc_ipaddrs[@]}; do
+% ohpc_command     cat /etc/hosts | grep ${cc_ipaddr} > /dev/null
+% ohpc_command     result=$?
+% ohpc_command     if [ "$result" -eq "0" ]; then
+% ohpc_command         cc_hostname=`cat /etc/hosts | grep ${cc_ipaddr} | cut -d$'\t' -f2`
+% ohpc_command         break
+% ohpc_command     fi
+% ohpc_command done
+% ohpc_command 
+% ohpc_command if [ -z "${cc_hostname}" ]; then
+% ohpc_command     logger "chpcInit:ERROR: No resolved hostname found for any IP address in /etc/hosts"
+% ohpc_command     exit 1
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command #set the hostname
+% ohpc_command if [ $(hostname) != ${cc_hostname} ]; then
+% ohpc_command     hostnamectl set-hostname ${cc_hostname}
+% ohpc_command fi
+% ohpc_command 
+% ohpc_command # Start slurm and munge 
+% ohpc_command systemctl enable munge
+% ohpc_command systemctl restart munge
+% ohpc_command systemctl enable slurmd
+% ohpc_command systemctl restart slurmd
+% ohpc_command 
+% ohpc_command #Change file permissions in /etc/ssh to fix ssh into compute node
+% ohpc_command chmod 0600 /etc/ssh/ssh_host_*_key
+% ohpc_command 
+% ohpc_command #  PFILEP
+% ohpc_command ## FILE: cloud_hpc_init/ohpc/chpc_sms_init
+% ohpc_command #!/bin/bash
+% ohpc_command #
+% ohpc_command 
+% ohpc_command logger "chpcInit: Entered chpcInit"
+% ohpc_command #Ensure the executing shell is in the same directory as the script.
+% ohpc_command SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P && echo x)"
+% ohpc_command SCRIPTDIR="${SCRIPTDIR%x}"
+% ohpc_command cd $SCRIPTDIR
+% ohpc_command # Get the Compute node prefix and number of compute nodes
+% ohpc_command cnodename_prefix=<update_cnodename_prefix>
+% ohpc_command num_ccomputes=<update_num_ccomputes>
+% ohpc_command ntp_server=<update_ntp_server>
+% ohpc_command sms_name=<update_sms_name>
+% ohpc_command 
+% ohpc_command # setup cloudinit directory
+% ohpc_command chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
+% ohpc_command # create directory of not exists
+% ohpc_command mkdir -p $chpcInitPath
+% ohpc_command chmod 700 $chpcInitPath
+% ohpc_command 
+% ohpc_command # Copy other files needed for Cloud Init
+% ohpc_command #sudo cp -fpr /etc/passwd $chpcInitPath
+% ohpc_command #sudo cp -fpr /etc/shadow $chpcInitPath
+% ohpc_command #sudo cp -fpr /etc/group $chpcInitPath
+% ohpc_command #TBD: This is a workaround for now, what we want is nodes to communicate to other nodes and sms node. so need to update cn entries here. might want to generate a script which is executed on compute node, and that updates entries into /etc/hosts of compute node. This workaround will break other functionalities in Cloudburst scenario
+% ohpc_command #sudo cp -fpr /etc/hosts $chpcInitPath
+% ohpc_command # Copy public ssh key to shared drive
+% ohpc_command _ssh_path=/root/.ssh
+% ohpc_command if [ ! -e "$_ssh_path/hpcasservice" ]; then
+% ohpc_command 
+% ohpc_command     if [ ! -d "$_ssh_path" ]; then
+% ohpc_command         install -d -m 700 $_ssh_path
+% ohpc_command     fi
+% ohpc_command     ssh-keygen -t dsa -f $_ssh_path/hpcasservice -N '' -C "HPC Cluster key" > /dev/null 2>&1
+% ohpc_command     cat $_ssh_path/hpcasservice.pub >> $_ssh_path/authorized_keys
+% ohpc_command     chmod 0600 $_ssh_path/authorized_keys
+% ohpc_command fi
+% ohpc_command #update config
+% ohpc_command if [ ! -e "$_ssh_path/config" ]; then
+% ohpc_command     echo "Host *" > $_ssh_path/config
+% ohpc_command     echo "    IdentityFile ~/.ssh/hpcasservice" >> $_ssh_path/config
+% ohpc_command     echo "    StrictHostKeyChecking=no" >> $_ssh_path/config
+% ohpc_command fi
+% ohpc_command cp -fpr $_ssh_path/authorized_keys $chpcInitPath
+% ohpc_command 
+% ohpc_command 
+% ohpc_command # export CloudInit Path to nfs share
+% ohpc_command cat /etc/exports | grep "$chpcInitPath"
+% ohpc_command chpcInitPath_exported=$?
+% ohpc_command 
+% ohpc_command if [ "${chpcInitPath_exported}" -ne "0" ]; then
+% ohpc_command     echo "$chpcInitPath *(rw,no_subtree_check,no_root_squash)" >> /etc/exports
+% ohpc_command fi
+% ohpc_command # share /home from HN
+% ohpc_command if ! grep "^/home" /etc/exports; then
+% ohpc_command     echo "/home *(rw,no_subtree_check,fsid=10,no_root_squash)" >> /etc/exports
+% ohpc_command fi
+% ohpc_command # share /opt/ from HN
+% ohpc_command if ! grep "^/opt/ohpc/pub" /etc/exports; then
+% ohpc_command     echo "/opt/ohpc/pub *(ro,no_subtree_check,fsid=11)" >> /etc/exports
+% ohpc_command fi
+% ohpc_command exportfs -a
+% ohpc_command # Restart nfs
+% ohpc_command systemctl restart nfs
+% ohpc_command systemctl enable nfs-server
+% ohpc_command logger "chpcInit: nfs configuration complete, updating remaining HPC configuration"
+% ohpc_command 
+% ohpc_command #cat /etc/rsyslog.conf | grep "<sms_ip>:514"
+% ohpc_command #fi
+% ohpc_command #systemctl restart rsyslog
+% ohpc_command #logger "chpcInit: rsyslog configuration complete, updating remaining HPC configuration"
+% ohpc_command 
+% ohpc_command 
+% ohpc_command # configure NTP
+% ohpc_command systemctl enable ntpd
+% ohpc_command if [[ ! -z "$ntp_server" ]]; then
+% ohpc_command    echo "server ${ntp_server}" >> /etc/ntp.conf
+% ohpc_command fi
+% ohpc_command systemctl restart ntpd
+% ohpc_command systemctl enable ntpd.service
+% ohpc_command # time sync
+% ohpc_command ntpstat
+% ohpc_command logger "chpcInit:ntp configuration done"
+% ohpc_command 
+% ohpc_command ### Update Resource manager configuration ###
+% ohpc_command # Update basic slurm configuration at sms node
+% ohpc_command perl -pi -e "s/ControlMachine=\S+/ControlMachine=${sms_name}/" /etc/slurm/slurm.conf
+% ohpc_command perl -pi -e "s/^NodeName=(\S+)/NodeName=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
+% ohpc_command perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
+% ohpc_command # copy slurm file from sms node to Cloud Comute Nodes
+% ohpc_command cp -fpr -L /etc/slurm/slurm.conf $chpcInitPath
+% ohpc_command cp -fpr -L /etc/pam.d/slurm $chpcInitPath
+% ohpc_command cp -fpr -L /etc/munge/munge.key $chpcInitPath
+% ohpc_command # Start slurm and munge 
+% ohpc_command systemctl enable munge
+% ohpc_command systemctl restart munge
+% ohpc_command systemctl enable slurmctld
+% ohpc_command systemctl restart slurmctld
+% ohpc_command #systemctl enable slurmd
+% ohpc_command #systemctl restart slurmd
+% ohpc_command logger "chpcInit:slurm configuration done"
+% ohpc_command 
+% ohpc_command #Change file permissions in /etc/ssh to fix ssh into compute node
+% ohpc_command chmod 0600 /etc/ssh/ssh_host_*_key
+% ohpc_command 
+% ohpc_command 
+% ohpc_command # work-around for bug https://bugs.launchpad.net/neutron/+bug/1531426
+% ohpc_command # create /etc/hosts file with sms and compute node entry
+% end_ohpc_run
