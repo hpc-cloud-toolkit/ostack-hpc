@@ -11,6 +11,8 @@ First create a generic network for "HPC as a service" with a name "sharednet1"
 
 % begin_ohpc_run
 % ohpc_validation_newline
+% ohpc_validation_comment # XFILEX
+% ohpc_validation_comment # FILE: deploy_chpc_openstack part 2
 % ohpc_command function setup_baremetal() {
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) #Get the tenant ID for the services tenant
@@ -24,7 +26,7 @@ First create a generic network for "HPC as a service" with a name "sharednet1"
 [ctrlr](*\#*)     fi
 [ctrlr](*\#*)     NEUTRON_NETWORK_UUID=`neutron net-list | grep "|\s*sharednet1\s*|" | awk '{print $2}'`
 \end{lstlisting}
-%end_ohpc_run
+% end_ohpc_run
 
 
 Create a subnet for our cluster with user defined start and end IP addresses. Make the controller as a gateway for our instances.

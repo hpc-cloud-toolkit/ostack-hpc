@@ -29,7 +29,7 @@ Update sms\_ip in compute node cloud-init template with HPC head node.
 
 Update HPC head node cloud-init template with compute name prefix as defined by user
 
-%begin_ohpc_run
+% begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) sudo sed -i -e "s/<update_cnodename_prefix>/${cnodename_prefix}/g" $chpcSMSInit
 [ctrlr](*\#*) sudo sed -i -e "s/<update_num_ccomputes>/${num_ccomputes}/g" $chpcSMSInit
@@ -37,11 +37,11 @@ Update HPC head node cloud-init template with compute name prefix as defined by 
 [ctrlr](*\#*) sudo sed -i -e "s/<update_ntp_server>/${controller_ip}/g" $chpcSMSInit
 [ctrlr](*\#*) sudo sed -i -e "s/<update_sms_name>/${sms_name}/g" $chpcSMSInit
 \end{lstlisting}
-%end_ohpc_run
+% end_ohpc_run
 
 Optionally if user enabled mrsh or clustershell, then update cloud-init accordingly
 
-%begin_ohpc_run
+% begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) if [[ ${enable_mrsh} -eq 1 ]];then
 [ctrlr](*\#*)    # update mrsh for sms node
@@ -52,4 +52,4 @@ Optionally if user enabled mrsh or clustershell, then update cloud-init accordin
 [ctrlr](*\#*)    cat $CHPC_SCRIPTDIR/sms/update_clustershell >> $chpcSMSInit
 [ctrlr](*\#*) fi
 \end{lstlisting}
-%end_ophc_run
+% end_ophc_run

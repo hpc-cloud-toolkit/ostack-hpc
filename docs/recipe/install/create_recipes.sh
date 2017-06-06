@@ -65,6 +65,7 @@ mv recipe_2 ./recipe/$flavor3/$recipe2
 mv recipe_4 ./recipe/$flavor3/$recipe4
 mv recipe_5 ./recipe/$flavor3/$recipe5
 mv recipe_6 ./recipe/$flavor3/$recipe6
+cat recipe_7 >> ./recipe/$flavor3/$recipe5
 
 if [ ! -e ./recipe/$flavor3/sms ]; then
 	mkdir ./recipe$flavor3/sms

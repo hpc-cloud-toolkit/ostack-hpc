@@ -1,0 +1,85 @@
+
+# # FILE:heat-sms.yaml
+heat_template_version: 2013-05-23
+description: >
+  This is a heat template to create HPC SMS node
+  http://docs.openstack.org/developer/heat/template_guide/index.html
+  http://cloudinit.readthedocs.io/en/latest/
+  create openstack with minimum parameter
+  openstack stack create --template heat-sms.yaml --parameter "ssh_key_name:ostack_key;server_name:sms" stack-name1
+  openstack stack delete stack-name1
+  #Created by: Sunil Mahawar
+parameters:
+  ssh_key_name:
+    type: string
+    label: SSH Keypair
+    description: Name of a SSH keypair.
+    hidden: false
+    default: ostack_key
+  server_name:
+    type: string
+    label: Instance Name
+    description: Name of the baremetal instance.
+    hidden: false
+    default: sms1
+  instance_flavor:
+    type: string
+    label: Instance Flavor
+    description: The flavor type to use for baremetal server.
+    default: baremetal-flavor
+    hidden: false
+  image_id:
+    type: string
+    label: Image ID
+    description: The image to use for baremetal server.
+    default: sms-image
+    hidden: false
+  network_id:
+    type: string
+    label: Network ID
+    description: The flat network to be used for baremetal server
+    default: sharednet1
+  port_id:
+    type: string
+    label: Network port ID
+    description: mac address to IP address mapping for static IP reservation
+    default: sms1
+resources:
+  boot_config:
+    type: OS::Heat::CloudConfig
+    properties:
+      cloud_config:
+        write_files:
+        - path: /opt/ohpc/admin/cloud_hpc_init/chpc_sms_init.sh
+          content: {get_file: /opt/ohpc/admin/cloud_hpc_init/chpc_sms_init}
+  boot_script:
+    type: OS::Heat::SoftwareConfig
+    properties:
+      group: ungrouped
+      config: |
+        #!/bin/bash
+        echo "Running sms_init script"
+        sh /opt/ohpc/admin/cloud_hpc_init/chpc_sms_init.sh
+        echo "Done"
+  server_init:
+    type: OS::Heat::MultipartMime
+    properties:
+      parts:
+      - config: {get_resource: boot_config}
+      - config: {get_resource: boot_script}
+  baremetal_instance:
+    type: OS::Nova::Server
+    properties:
+      name: { get_param: server_name }
+      image: { get_param: image_id }
+      flavor: { get_param: instance_flavor }
+      key_name: { get_param: ssh_key_name }
+      networks:
+        - port: {get_param: port_id}
+      user_data_format: SOFTWARE_CONFIG
+      user_data: {get_resource: server_init}
+outputs:
+  ip_address:
+    description: IP address of the baremetal instance
+    value: { get_attr: [baremetal_instance, first_address] }
+#  # # 

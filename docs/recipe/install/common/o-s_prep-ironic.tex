@@ -5,9 +5,18 @@ Setenforce 0
 Create baremetal admin and baremetal observer role, and restart ironic API
 
 % begin_ohpc_run
+% ohpc_validation_comment # XFILEX
+% ohpc_command #!/bin/bash
+% ohpc_validation_comment # FILE: prepare_chpc_openstack
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) #Set SELinux to permissive
+[ctrlr](*\#*) setenforce 0
+
+[ctrlr](*\#*) #Source the keystonerc_admin file
+[ctrlr](*\#*) source ${HOME}/keystonerc_admin
+
 [ctrlr](*\#*) openstack role list | grep -i baremetal_admin
 [ctrlr](*\#*) role_exists=$?
 [ctrlr](*\#*) if [ "${role_exists}" -ne "0" ]; then 

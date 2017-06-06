@@ -13,14 +13,14 @@ Start editing by adding some environment variable, first one is to set path to s
 [ctrlr](*\#*)chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
 [ctrlr](*\#*)logger "chpcInit: Updating Compute Node with HPC configuration"
 \end{lstlisting}
-%end_ohpc_run
+% end_ohpc_run
 
 Update rsyslog configuration file to send all the syslog to sms. sms\_ip is the tag used here is updated with IP of SMS node just before provisioning.
 
 % begin_ohpc_run
 % ohpc_validation_newline
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*)  Update rsyslog
+[ctrlr](*\#*) # Update rsyslog
 [ctrlr](*\#*) cat /etc/rsyslog.conf | grep "<sms_ip>:514"
 [ctrlr](*\#*) rsyslog_set=$?
 [ctrlr](*\#*) if [ "${rsyslog_set}" -ne "0" ]; then
@@ -29,7 +29,7 @@ Update rsyslog configuration file to send all the syslog to sms. sms\_ip is the 
 [ctrlr](*\#*) systemctl restart rsyslog
 [ctrlr](*\#*) logger "chpcInit: rsyslog configuration complete, updating remaining HPC configuration"
 \end{lstlisting}
-%end_ohpc_run
+% end_ohpc_run
 
 Assuming sms node nfs share /home, /opt/ohpc/pub, =/opt/ohpc/admin/cloud\_hpc\_init lets mount them during boot
 
@@ -69,7 +69,7 @@ Assuming sms node nfs share /home, /opt/ohpc/pub, =/opt/ohpc/admin/cloud\_hpc\_i
 [ctrlr](*\#*) systemctl restart nfs
 [ctrlr](*\#*) 
 \end{lstlisting}
-%end_ohpc_run
+% end_ohpc_run
 
 Have ntp sync with sms node. 
 
@@ -113,7 +113,7 @@ Have ntp sync with sms node.
 [ctrlr](*\#*)     logger "chpcInit:ERROR: cannot stat nfs shared /opt directory, cannot copy HPC system files"
 [ctrlr](*\#*) fi
 \end{lstlisting}
-%end_ohpc_run
+% end_ohpc_run
 Update the hostname as per sms node.
 
 % begin_ohpc_run
@@ -142,7 +142,7 @@ Update the hostname as per sms node.
 [ctrlr](*\#*)     hostnamectl set-hostname ${cc_hostname}
 [ctrlr](*\#*) fi
 \end{lstlisting}
-%end_ohpc_run
+% end_ohpc_run
 
 By now all pre-requisite for slurm is taken care, lets start slurm daemon.
 
@@ -168,7 +168,7 @@ of ssh.
 [ctrlr](*\#*) #Change file permissions in /etc/ssh to fix ssh into compute node
 [ctrlr](*\#*) chmod 0600 /etc/ssh/ssh_host_*_key
 \end{lstlisting}
-%end_ohpc_run
+% end_ohpc_run
 
 Save the file with name chpc\_init, we will use this file during baremetal node instance creation.
 
