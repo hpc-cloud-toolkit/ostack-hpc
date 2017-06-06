@@ -5,7 +5,7 @@ GITID    := $(shell git describe 2> /dev/null)
 #$(info $$GITID is [${GITID}])                                                                                                              
 
 
-%.pdf:%.tex steps.tex manifest.tex $(wildcard common/*.tex common/ohpc-doc.sty common/base_edition/*.tex common/figures/*.pdf manifest/*.tex)
+%.pdf:%.tex steps.tex $(wildcard common/*.tex common/ohpc-doc.sty common/base_edition/*.tex common/figures/*.pdf manifest/*.tex)
 ifdef GITID
 	common/vc
 else

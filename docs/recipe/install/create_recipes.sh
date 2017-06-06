@@ -1,4 +1,7 @@
 #!/usr/bin/bash
+if [ -e steps.pdf ]; then
+	mv steps.pdf OpenHPC-HPCaaS-Installation.pdf
+fi
 
 input_file="./centos7/x86_64/openstack/slurm/steps.tex"
 flavor1="1_combined_controller"
