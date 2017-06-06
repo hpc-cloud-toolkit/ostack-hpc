@@ -2,7 +2,13 @@ In previous section we created template for cloud-init for hpc head node and hpc
 
 Copy cloud-init template to working folder
 
-%begin_ohpc_run
+% begin_ohpc_run
+% ohpc_validation_newline
+% ohpc_validation_comment ## ZFILEZ
+% ohpc_validation_comment ## XFILEX
+% ohpc_command #!/bin/bash
+% ohpc_validation_comment # FILE: prepare_cloud_init
+
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
 [ctrlr](*\#*) # if directory exists then mv to Old directory. TBD
@@ -33,7 +39,7 @@ Update HPC head node cloud-init template with compute name prefix as defined by 
 \end{lstlisting}
 %end_ohpc_run
 
-Optionally if user enabled mrsh or clusteshell, then update cloud-init accordingly
+Optionally if user enabled mrsh or clustershell, then update cloud-init accordingly
 
 %begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
