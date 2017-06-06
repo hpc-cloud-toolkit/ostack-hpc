@@ -1,6 +1,0 @@
-
-#!/bin/bash
-# # FILE: update_clustershell
-sed -i -- 's/all: @adm,@compute/compute: cc[1-${num_ccomputes}]\n&/' /etc/clustershell/groups.d/local.cfg
-
-# ## 
