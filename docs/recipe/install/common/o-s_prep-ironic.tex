@@ -3,6 +3,7 @@ Have selinux in permissive mode
 
 Create baremetal admin and baremetal observer role, and restart ironic API
 
+
 % begin_ohpc_run
 % ohpc_validation_comment # XFILEX
 % ohpc_command #!/bin/bash
@@ -12,7 +13,13 @@ Create baremetal admin and baremetal observer role, and restart ironic API
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) #Set SELinux to permissive
 [ctrlr](*\#*) setenforce 0
+\end{lstlisting}
+% end_ohpc_run
 
+Again, we're assuming your credentials are stored in keystonerc_admin...
+
+% begin_ohpc_run
+\begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) #Source the keystonerc_admin file
 [ctrlr](*\#*) source ${HOME}/keystonerc_admin
 

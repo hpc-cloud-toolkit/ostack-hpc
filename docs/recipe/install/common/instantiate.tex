@@ -50,9 +50,10 @@ Below is expected endpoint list.
 
 Recipe below is tested with controller node installed and configured using packstack.
 Reference section provide more detail on packstack installation of OpenStack.
-Before starting with HPC instantiation, please export openstack credential as a root or system admin, we will be using them during openstack configuration. 
+Before starting with HPC instantiation, please export openstack credentials, we will be using them during openstack configuration. 
 
-% begin_ohpc_run
+You can do this manually, as such:
+
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) unset OS_SERVICE_TOKEN
 [ctrlr](*\#*) export OS_USERNAME=admin
@@ -62,5 +63,12 @@ Before starting with HPC instantiation, please export openstack credential as a 
 [ctrlr](*\#*) 
 [ctrlr](*\#*) export OS_TENANT_NAME=admin
 [ctrlr](*\#*) export OS_REGION_NAME=<>  
+\end{lstlisting}
+
+OR, if you've deployed via PackStack, you can just source the keystonerc_admin file. These credentials will be used throughout the rest of this document. If you have an existing Openstack installation with more complex credentials, you will need to set them per your configuration.
+
+% begin_ohpc_run
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) source ${HOME}/keystonerc_admin
 \end{lstlisting}
 % end_ohpc_run
