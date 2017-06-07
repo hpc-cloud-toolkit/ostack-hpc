@@ -13,6 +13,17 @@ testname="ostack"
 source /root/keystonerc_admin || exit 1
 #rpm=conman${DELIM}
 
+@test "[$testname] Verify pack installation" {
+    run rpm -q --queryformat='%{VERSION}\n' openstack-packstack
+    assert_output "8.0.2"
+}
+
+@test "[$testname] Verify man page availability" {
+    run man -w openstack
+    assert_success
+    assert_output "/usr/share/man/man1/openstack.1.gz"
+}
+
 @test "[$testname] Verify openstack installation" {
     run which openstack
     assert_success
@@ -36,13 +47,8 @@ source /root/keystonerc_admin || exit 1
     assert_success
 
     run openstack --version
-    assert_success
+    assert_output "openstack 2.3.0"
 }
 
-@test "[$testname] Verify man page availability" {
-    run man -w openstack
-    assert_success
-    assert_output "/usr/share/man/man1/openstack.1.gz"
-}
 
 

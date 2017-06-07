@@ -17,6 +17,5 @@ testname="DIB"
 
 }
 @test "[$testname] Verify deploy image creation" {
-
 }
 

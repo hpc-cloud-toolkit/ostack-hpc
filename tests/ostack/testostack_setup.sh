@@ -44,118 +44,24 @@ source /root/keystonerc_admin
     rm -f .ostack_output
 }
 
-@test "[$testname] Verify OpenStack enrollment" {
-}
-@test "[OOB] ipmitool exists" {
-    run which ipmitool
-    assert_success
+@test "[$testname] Verify Neutron setup" {
 }
 
-@test "[OOB] istat exists" {
-    run which istat
-    assert_success
+@test "[$testname] Verify Glance and image setup" {
 }
 
-@test "[OOB] ipmitool local bmc ping" {
-
-    # Check 4 channels of ipmi lan for IP address
-
-    for lan in `seq 1 4`; do
-        ipmitool lan print $lan > .cmd_output || flunk "Unable to run ipmitool"
-        local my_bmc_ip=`cat .cmd_output | grep "IP Address              :" | awk '{print $4}'`
-
-        if [ $? -ne 0 ];then
-            flunk "Unable to ascertain local BMC IP address"
-        fi
-
-        if [ "$my_bmc_ip" != "0.0.0.0" ];then
-            break
-        fi
-    done
-
-    run ping -c 1 -W 1 -q $my_bmc_ip
-    assert_success
+@test "[$testname] Verify OpenStack ironic enrollment" {
 }
 
-@test "[OOB] ipmitool power status" {
-
-    if [ -z "$IPMI_PASSWORD" ];then
-        flunk "IPMI_PASSWORD is not set"
-    fi
-
-    # Check 4 channels of ipmi lan for IP address
-
-    for lan in `seq 1 4`; do
-        ipmitool lan print $lan > .cmd_output || flunk "Unable to run ipmitool"
-        local my_bmc_ip=`cat .cmd_output | grep "IP Address              :" | awk '{print $4}'`
-        
-        if [ $? -ne 0 ];then
-            flunk "Unable to ascertain local BMC IP address"
-        fi
-        
-        if [ "$my_bmc_ip" != "0.0.0.0" ];then
-            break
-        fi
-    done
-
-    # verify power status locally
-    run istat $my_bmc_ip
-    assert_output "$my_bmc_ip Chassis Power is on"
+@test "[$testname] Verify OpenStack ironic enrollment" {
 }
 
-@test "[OOB] ipmitool read CPU1 sensor data" {
-
-    if [ -z "$IPMI_PASSWORD" ];then
-        flunk "IPMI_PASSWORD is not set"
-    fi
-
-    # Check 4 channels of ipmi lan for IP address
-
-    for lan in `seq 1 4`; do
-        ipmitool lan print $lan > .cmd_output || flunk "Unable to run ipmitool"
-        local my_bmc_ip=`cat .cmd_output | grep "IP Address              :" | awk '{print $4}'`
-        
-        if [ $? -ne 0 ];then
-            flunk "Unable to ascertain local BMC IP address"
-        fi
-        
-        if [ "$my_bmc_ip" != "0.0.0.0" ];then
-            break
-        fi
-    done
-    
-    # read sensor data locally
-    ipmitool -E -I lanplus -H $my_bmc_ip -U root sensor > .cmd_output || flunk "Unable to query sensor data"
-    egrep -q "CPU1 Temp|P1 Therm Margin" .cmd_output   || flunk "CPU1 Temp not found in sensor data"
-
+@test "[$testname] Verify heat template for hpc as service" {
+# make sure that we have available baremetal nodes in nova as well as ironic
+# check nova list with sms node name or IP
+# check nova list with compute node name or IP
+# if present then clean those nodes 
+# instantiate node using heat template
+# wait
+# ping test
 }
-
-@test "[OOB] ipmitool read sel log" {
-    skip "skipp sel log read as entry 1 may not always be available"
-
-    if [ -z "$IPMI_PASSWORD" ];then
-        flunk "IPMI_PASSWORD is not set"
-    fi
-    
-    # Check 4 channels of ipmi lan for IP address
-
-    for lan in `seq 1 4`; do
-        ipmitool lan print $lan > .cmd_output || flunk "Unable to run ipmitool"
-        local my_bmc_ip=`cat .cmd_output | grep "IP Address              :" | awk '{print $4}'`
-        
-        if [ $? -ne 0 ];then
-            flunk "Unable to ascertain local BMC IP address"
-        fi
-
-        if [ "$my_bmc_ip" != "0.0.0.0" ];then
-            break
-        fi
-    done
-    
-    # verify sel log availability (query 1st record)
-    run timeout 10s ipmitool -E -I lanplus -H $my_bmc_ip -U root sel get 1
-    assert_success
-
-    rm -f .cmd_output
-}
-
