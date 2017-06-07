@@ -1,9 +1,0 @@
-
-#!/bin/bash 
-#  # FILE: update_cnodes_to_sms
-#  # Update chpc_sms_init or prepare_cloud_init  with similar informoation from recipe for use case 2
-#on Head node, start slurm
-sleep 5
-ssh $sms_ip scontrol update nodename=cc[1-${num_ccomputes}] state=idle
-ssh $sms_ip sinfo
-#  # # 
