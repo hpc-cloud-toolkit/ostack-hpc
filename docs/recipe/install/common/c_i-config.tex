@@ -21,11 +21,11 @@ Copy cloud-init template to working folder
 % end_ohpc_run
 
 Update sms\_ip in compute node cloud-init template with HPC head node. 
-
+% begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) sudo sed -i -e "s/<sms_ip>/${sms_ip}/g" $chpcInit
 \end{lstlisting}
-
+% end_ohpc_run
 
 Update HPC head node cloud-init template with compute name prefix as defined by user
 

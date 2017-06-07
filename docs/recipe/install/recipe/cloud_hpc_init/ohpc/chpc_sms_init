@@ -1,0 +1,72 @@
+
+# # FILE: chpc_sms_init
+# Get the Compute node prefix and number of compute nodes
+cnodename_prefix=<update_cnodename_prefix>
+num_ccomputes=<update_num_ccomputes>
+ntp_server=<update_ntp_server>
+sms_name=<update_sms_name>
+
+# setup cloudinit directory
+chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
+# create directory of not exists
+mkdir -p $chpcInitPath
+chmod 700 $chpcInitPath
+# To create same user environment, copy user files 
+# Copy other files needed for Cloud Init
+sudo cp -fpr /etc/passwd $chpcInitPath
+sudo cp -fpr /etc/shadow $chpcInitPath
+sudo cp -fpr /etc/group $chpcInitPath
+
+# export CloudInit Path to nfs share
+cat /etc/exports | grep "$chpcInitPath"
+chpcInitPath_exported=$?
+if [ "${chpcInitPath_exported}" -ne "0" ]; then
+   echo "$chpcInitPath *(rw,no_subtree_check,no_root_squash)" >> /etc/exports
+fi
+# share /home from HN
+if ! grep "^/home" /etc/exports; then
+    echo "/home *(rw,no_subtree_check,fsid=10,no_root_squash)" >> /etc/exports
+fi
+# share /opt/ from HN
+if ! grep "^/opt/ohpc/pub" /etc/exports; then
+    echo "/opt/ohpc/pub *(ro,no_subtree_check,fsid=11)" >> /etc/exports
+fi
+exportfs -a
+# Restart nfs
+systemctl restart nfs
+systemctl enable nfs-server
+logger "chpcInit: nfs configuration complete, updating remaining HPC configuration" 
+
+# configure NTP
+systemctl enable ntpd
+if [[ ! -z "$ntp_server" ]]; then
+   echo "server ${ntp_server}" >> /etc/ntp.conf
+fi
+systemctl restart ntpd
+systemctl enable ntpd.service
+# time sync
+ntpstat
+logger "chpcInit:ntp configuration done"
+
+#(*\#*)(*\#*) Update Resource manager configuration (*\#*)(*\#*)(*\#*)
+# Update basic slurm configuration at sms node
+perl -pi -e "s/ControlMachine=\S+/ControlMachine=${sms_name}/" /etc/slurm/slurm.conf
+perl -pi -e "s/^NodeName=(\S+)/NodeName=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
+perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
+# copy slurm file from sms node to Cloud Comute Nodes
+cp -fpr -L /etc/slurm/slurm.conf $chpcInitPath
+cp -fpr -L /etc/pam.d/slurm $chpcInitPath
+cp -fpr -L /etc/munge/munge.key $chpcInitPath
+# Start slurm and munge 
+systemctl enable munge
+systemctl restart munge
+systemctl enable slurmctld
+systemctl restart slurmctld
+#systemctl enable slurmd
+#systemctl restart slurmd
+logger "chpcInit:slurm configuration done"
+
+#Change file permissions in /etc/ssh to fix ssh into compute node
+chmod 0600 /etc/ssh/ssh_host_*_key
+
+# ## 

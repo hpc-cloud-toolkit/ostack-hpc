@@ -85,11 +85,6 @@ mv support_3 ./recipe/$flavor3/$support3
 mv support_4 ./recipe/$flavor3/$support4
 
 # Create Parent script directories
-mkdir -p ./recipe/cloud_hpc_init/ohpc
-# ^^ Has 2 files
-mkdir -p ./recipe/cloud_hpc_init/orch
-# ^^ Has 1 file
-
 mkdir -p recipe/cloud_hpc_init/ohpc
 mv parent_2 recipe/cloud_hpc_init/ohpc/chpc_init
 mv parent_3 recipe/cloud_hpc_init/ohpc/chpc_sms_init

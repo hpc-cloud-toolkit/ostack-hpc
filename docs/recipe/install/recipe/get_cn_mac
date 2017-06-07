@@ -1,0 +1,353 @@
+
+## FILE: ./get_cn_mac
+#!/bin/bash
+# check if ipmitool is installed, if not then quit
+#check if BMC_IP, BMC_uname and BMC Password is provided, if not then exi
+function get_bmc_mac {
+    bmc_ip=$1
+    bmc_user=$2
+    bmc_pass=$3
+    if [[ -z $bmc_pass ]]; then
+       ipmi_mac=`ipmitool -E -I lanplus -H $bmc_ip -U $bmc_user lan print 1 |grep "MAC Address"|awk '{print $4}'`
+    else
+       ipmi_mac=`ipmitool -E -I lanplus -H $bmc_ip -U $bmc_user -P $bmc_pass lan print 1 |grep "MAC Address"|awk '{print $4}'`
+    fi
+}
+function get_ipmi_mac_parts {
+    ipmi_mac=$1
+    ipmi_mac_constant_part=${ipmi_mac%:*}
+    ipmi_mac_last_octet=${ipmi_mac##*:}
+}
+function get_comput_mac_octets {
+    ipmi_mac_l=$1
+    hex_ipmi_mac="0x$ipmi_mac_l"
+    mac1_last_octet=$(($hex_ipmi_mac - 2))
+    mac2_last_octet=$(($hex_ipmi_mac - 1))
+    mac1_last_octet=`echo "obase=16; $mac1_last_octet"|bc`
+    mac2_last_octet=`echo "obase=16; $mac2_last_octet"|bc`
+}
+function get_compute_mac {
+    mac1="$ipmi_mac_constant_part:$mac1_last_octet"
+    mac2="$ipmi_mac_constant_part:$mac2_last_octet"
+}
+usage () {
+  echo "USAGE: $0 <bmc_ip> <bmc_user> [bmc_password]"
+}
+### Main ##
+# check of help is requested
+for i in "$@"; do
+  case $i in
+    -h|--help)
+      usage
+      exit 1
+    ;;
+  esac
+done
+# check if we have at least 3 arguments
+if [[ $# -lt 2 ]]; then
+    echo "Error: Insufficient Arguments"
+    usage
+    exit
+fi
+bmc_ip=$1
+bmc_user=$2
+bmc_pass=$3
+get_bmc_mac $bmc_ip $bmc_user $bmc_pass 
+# check if we got the virtual MAC
+if [[ -z $ipmi_mac ]]; then
+    echo "Error: BMC Communication Error"
+    exit
+fi
+get_ipmi_mac_parts $ipmi_mac
+get_comput_mac_octets $ipmi_mac_last_octet
+get_compute_mac
+echo "Compute MAC1: $mac1"
+echo "Compute MAC2: $mac2"
+#  # # QFILEQ
+#  # # XFILEX
+#  # FILE: README
+# This directory "hpc/recipe/3_hpc_as_service" maintains the recipes for use
+# case 3. In this case OpenStack provides baremetal nodes and recipe
+# creates one of the bare metal node as HPC head node and create other 
+# remaining bare metals as HPC compute nodes.
+# it provides recipe to create HPC head node images as well as hpc
+# compute node images.
+# for hpc configuration it creates cloud-init script (post boot script)
+# for each type of nodes (SMS as well CN)
+# This use case can be invoked as below:
+# ../setup_cloud_hpc.sh -i=inventory/3_hpc_as_service/hn3_has_input.local -u=3 % % ohpc_validation_comment -n=inventory/3_hpc_as_service/hn3_has_inventory
+# Below are the scripts called to create the environment for use case 1:
+# file: set_os_hpc
+# ================
+# This is the script to setup HPC in OpenStack Cloud. This script is called by 
+# setup_cloud_hpc.sh if user provides a "-u=3" input to it. To perform the job,
+# it executes other scripts.
+# file: prepare_cloud_init
+# ======================
+# This sripts generates cloudinit script (chpcInit) for both sms node as well as
+# compute nodes, which is supplied to Nova to boot the nodes.
+# file: prepare_chpc_image
+# ========================
+# This generates HPC images for provisioning bare metal cloud nodes. It generates 
+# 3 images
+# Two deploy images for ironic to use 
+# 1. icloud-hpc-deploy-c7.kernel
+# 2. icloud-hpc-deply-c7.initramfs
+# One user image for compute node
+# 3. icloud-hpc-cent7.qcow2
+# One user image for hpc head node (sms)
+# 4. icloud-hpc-cent7-sms.qcow2
+# file: prepare_chpc_openstack
+# ============================
+# This script prepares nova, ironic for baremetal provisioning, installs and 
+# configure pxe boot, pxe-impmi driver for ironic, and enable cloud init for 
+# baremetal nodes.
+# It also configure neutron for internal dns service
+# File: deploy_chpc_openstack
+# ===========================
+# This script deploy baremetal nodes in an openstack using nova, ironic, neutron 
+# and glance by using cloudinit recipe (prepare under prepare_cloudInit) and HPC
+# images (prepared by prepare_chpc_image).
+# it first deploys sms node and then deploy compute nodes.
+# file: update_cnodes_to_sms
+# ==========================
+# This script perform the post boot configuration including updating SLURM 
+# resource manager at sms node for hpc compute nodes
+#  # # QFILEQ
+#!/bin/bash 
+#  # FILE: set_os_hpc
+#This script expects compute node ID as an input
+set -x
+# find and setup working directory
+CHPC_SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P )"
+CHPC_SCRIPTDIR="${CHPC_SCRIPTDIR%x}"
+cd $CHPC_SCRIPTDIR
+echo "..$CHPC_SCRIPTDIR .."
+#function cont_next() {
+#   echo "continue to ? "
+#   read uinput
+#   if [ "$uinput" == "y" ]; then
+#       echo "Continueing ..."
+#    else
+#      exit 0
+#   fi
+#}
+# Create Post boot file, can be used for cloudInit
+# Check for NTP server and configuration on compute nodes
+#
+#
+# =====================================
+# Preparation for CloudInit Script and files
+# =====================================
+# This assumes that HPC head node recipe is installed and SMS_node functionality is already configured. It will get some data from there to prepare cloudInit
+time source prepare_cloud_init
+# ========================
+# Prepare CloudHPC Image :
+# ========================
+# Check if User selected to prepare cloud HPC images
+#cont_next
+time source prepare_chpc_image
+# =============================================
+# Prepare OpenStack for HPC baremetal instances
+# =============================================
+#time source prepare_chpc_openstack
+#cont_next
+time source deploy_chpc_openstack
+#Wait for CN(s) to come up. TODO: Poll and wait rather than just a set 10 minutes.
+sleep 600
+#Call cloudInit workaround script
+#time source c_init_workaround
+#
+# ========================================================
+# Prepare SMS/Service Node. 
+# Add Cloud baremetal nodes to HPC Orchestrator
+# ========================================================
+#time source update_cnodes_to_sms
+#  # # QFILEQ
+#!/bin/bash 
+#  # FILE: update_cnodes_to_sms
+#  # Update chpc_sms_init or prepare_cloud_init  with similar informoation from recipe for use case 2
+#on Head node, start slurm
+sleep 5
+ssh $sms_ip scontrol update nodename=cc[1-${num_ccomputes}] state=idle
+ssh $sms_ip sinfo
+#  # # QFILEQ
+#  # # HFILEH
+# # FILE:heat-sms.yaml
+heat_template_version: 2013-05-23
+description: >
+  This is a heat template to create HPC SMS node
+  http://docs.openstack.org/developer/heat/template_guide/index.html
+  http://cloudinit.readthedocs.io/en/latest/
+  create openstack with minimum parameter
+  openstack stack create --template heat-sms.yaml --parameter "ssh_key_name:ostack_key;server_name:sms" stack-name1
+  openstack stack delete stack-name1
+  #Created by: Sunil Mahawar
+parameters:
+  ssh_key_name:
+    type: string
+    label: SSH Keypair
+    description: Name of a SSH keypair.
+    hidden: false
+    default: ostack_key
+  server_name:
+    type: string
+    label: Instance Name
+    description: Name of the baremetal instance.
+    hidden: false
+    default: sms1
+  instance_flavor:
+    type: string
+    label: Instance Flavor
+    description: The flavor type to use for baremetal server.
+    default: baremetal-flavor
+    hidden: false
+  image_id:
+    type: string
+    label: Image ID
+    description: The image to use for baremetal server.
+    default: sms-image
+    hidden: false
+  network_id:
+    type: string
+    label: Network ID
+    description: The flat network to be used for baremetal server
+    default: sharednet1
+  port_id:
+    type: string
+    label: Network port ID
+    description: mac address to IP address mapping for static IP reservation
+    default: sms1
+resources:
+  boot_config:
+    type: OS::Heat::CloudConfig
+    properties:
+      cloud_config:
+        write_files:
+        - path: /opt/ohpc/admin/cloud_hpc_init/chpc_sms_init.sh
+          content: {get_file: /opt/ohpc/admin/cloud_hpc_init/chpc_sms_init}
+  boot_script:
+    type: OS::Heat::SoftwareConfig
+    properties:
+      group: ungrouped
+      config: |
+        #!/bin/bash
+        echo "Running sms_init script"
+        sh /opt/ohpc/admin/cloud_hpc_init/chpc_sms_init.sh
+        echo "Done"
+  server_init:
+    type: OS::Heat::MultipartMime
+    properties:
+      parts:
+      - config: {get_resource: boot_config}
+      - config: {get_resource: boot_script}
+  baremetal_instance:
+    type: OS::Nova::Server
+    properties:
+      name: { get_param: server_name }
+      image: { get_param: image_id }
+      flavor: { get_param: instance_flavor }
+      key_name: { get_param: ssh_key_name }
+      networks:
+        - port: {get_param: port_id}
+      user_data_format: SOFTWARE_CONFIG
+      user_data: {get_resource: server_init}
+outputs:
+  ip_address:
+    description: IP address of the baremetal instance
+    value: { get_attr: [baremetal_instance, first_address] }
+#  # # HFILEH
+#  #FILE: heat-cn.yaml
+heat_template_version: 2013-05-23
+description: >
+  This is a heat template to create HPC compute nodes
+  http://docs.openstack.org/developer/heat/template_guide/index.html
+  http://cloudinit.readthedocs.io/en/latest/
+  create openstack with minimum parameter
+  openstack stack create --template heat-cn.yaml -P "cn_count=2" stack-name1
+  openstack stack delete stack-name1
+  #Created by: Sunil Mahawar
+parameters:
+  ssh_key_name:
+    type: string
+    label: SSH Keypair
+    description: Name of a SSH keypair.
+    hidden: false
+    default: ostack_key
+  server_name:
+    type: string
+    label: Instance Name
+    description: Name of the baremetal instance.
+    hidden: false
+    default: cc%index%
+  instance_flavor:
+    type: string
+    label: Instance Flavor
+    description: The flavor type to use for baremetal server.
+    default: baremetal-flavor
+    hidden: false
+  image_id:
+    type: string
+    label: Image ID
+    description: The image to use for baremetal server.
+    default: user-image
+    hidden: false
+  network_id:
+    type: string
+    label: Network ID
+    description: The flat network to be used for baremetal server
+    default: sharednet1
+  port_id:
+    type: string
+    label: Network port ID
+    description: mac address to IP address mapping for static IP reservation
+    default: cc%index%
+  cn_count:
+    type: number
+    label: baremetal instances
+    description: number of baremetal instances
+    default: 1
+resources:
+  boot_config:
+    type: OS::Heat::CloudConfig
+    properties:
+      cloud_config:
+        write_files:
+        - path: /opt/ohpc/admin/cloud_hpc_init/chpc_init.sh
+          content: {get_file: /opt/ohpc/admin/cloud_hpc_init/chpc_init}
+  boot_script:
+    type: OS::Heat::SoftwareConfig
+    properties:
+      group: ungrouped
+      config: |
+        #!/bin/bash
+        echo "Running compute node boot script"
+        sh /opt/ohpc/admin/cloud_hpc_init/chpc_init.sh
+        echo "Done"
+  server_init:
+    type: OS::Heat::MultipartMime
+    properties:
+      parts:
+      - config: {get_resource: boot_config}
+      - config: {get_resource: boot_script}
+  multi-server:
+   type: OS::Heat::ResourceGroup
+   properties:
+      count: { get_param: cn_count }
+      resource_def:
+       type: OS::Nova::Server
+       properties:
+         name: { get_param: server_name }
+         image: { get_param: image_id }
+         flavor: { get_param: instance_flavor }
+         key_name: { get_param: ssh_key_name }
+         networks:
+           - network: { get_param: network_id }
+         user_data_format: SOFTWARE_CONFIG
+         user_data: {get_resource: server_init}
+#outputs:
+#  ip_address:
+#    description: IP address of the baremetal instance
+#    value: { get_attr: [baremetal_instance, first_address] }
+#  # # HFILEH
+
