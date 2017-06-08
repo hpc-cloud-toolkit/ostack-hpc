@@ -1,0 +1,10 @@
+# Base can be ohpc (OpenHPC) or orch (HPC Orchestrator) 
+# Defauilt is ohpc
+export DIB_HPC_BASE=${DIB_HPC_BASE:-ohpc}
+
+# This variable will configure user from host, running this script. By defualt it is 0. should be 1 to configure
+#export DIB_HPC_KEEP_USERS=${DIB_HPC_KEEP_USERS=:-0}  
+# Are we building image for HPC sms node or compute node. Default is compute node image
+export DIB_HPC_IMAGE_TYPE="${DIB_HPC_IMAGE_TYPE:-compute}"
+# variable to copy from/to hpc public keys, it is mainly useful for hpc as a service feature
+export DIB_HPC_SSH_PUB_KEY="${DIB_HPC_SSH_PUB_KEY:-/root/.ssh}"

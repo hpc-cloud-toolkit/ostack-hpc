@@ -1,0 +1,57 @@
+#!/bin/bash
+# It installs lmod
+
+if [ ${DIB_DEBUG_TRACE:-0} -gt 0 ]; then
+    set -x
+fi
+set -eu
+set -o pipefail
+
+# Unmount the package
+case "$DIB_HPC_BASE" in
+    orch)
+        # Unmount lllkk
+        HPC_MOUNT_DIR=/mnt/hpc_orch_iso
+        HPC_MOUNT_POINT=$TMP_MOUNT_PATH/$HPC_MOUNT_DIR
+        HPC_PUB_KEY=/etc/pki/pgp/HPC-Orchestrator-keyfile.asc
+        HPC_RELEASE_FILE=/etc/hpc-orch-release
+        # check if mount exists
+        # This is not a good way to check the mount point, might require better way.
+        if [ -e HPC_MOUNT_POINT/group.xml ]; then
+            sudo umount $HPC_MOUNT_POINT
+        fi
+        #Remove mount directory
+        if [ -e HPC_MOUNT_DIR ]; then
+            sudo rm -f $HPC_MOUNT_DIR
+        fi
+        #remove extra files copied for isntallation of HPC
+        #gpg public key
+        if [ -e $HPC_PUB_KEY ]; then
+            sudo rm -f $HPC_PUB_KEY
+        fi
+        #remove release file
+        if [ -e $HPC_RELEASE_FILE ]; then
+            sudo rm -f $HPC_RELEASE_FILE 
+        fi
+        #remove repo file too, otherwise it will conflict with other packages
+        HPC_REPO_FILE_NAME=$(basename $DIB_YUM_REPO_CONF)
+        # This is OS Specific code, need to update to support different OS then centos/rhel
+        HPC_REPO_FILE=/etc/yum.repos.d/$HPC_REPO_FILE_NAME
+        if [ -e $HPC_REPO_FILE ]; then
+            sudo rm -f $HPC_REPO_FILE
+        fi
+        ;;
+    ohpc)
+	# Nothing to be done for OpenHPC
+        # Remove OpenHPC repo
+        #install-packages -e $DIB_HPC_OHPC_PKG
+        #yum-config-manager --disable OpenHPC-updates
+        ;;
+    *)
+        echo "Error !! no DIB_HPC_BASE available!"
+        exit 1
+        ;;
+
+esac
+ 
+
