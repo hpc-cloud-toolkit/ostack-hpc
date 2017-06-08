@@ -1,0 +1,17 @@
+# Base can be ohpc (OpenHPC) or orch (HPC Orchestrator) 
+# Defauilt is ohpc
+export DIB_HPC_BASE=${DIB_HPC_BASE:-ohpc}
+# Are we building image for HPC sms node or compute node. Default is compute node image
+export DIB_HPC_IMAGE_TYPE="${DIB_HPC_IMAGE_TYPE:-compute}"
+
+# COMPILER, default is gnu. for more than 1 compiler, please additional compiler along with gnu
+export DIB_HPC_COMPILER="${DIB_HPC_COMPILER:-gnu}"
+
+# MPI Stack to be installed, by default openmpi & mvapich2 is enabled
+export DIB_HPC_MPI="${DIB_HPC_MPI:-openmpi mvapich2}"
+
+# Performance tools
+export DIB_HPC_PERF_TOOLS="${DIB_HPC_PERF_TOOLS:-perf-tools}"
+
+# 3rd Part Libraries & Tools
+export DIB_HPC_3RD_LIBS="${DIB_HPC_3RD_LIBS:-serial-libs parallel-libs io-libs python-libs runtimes}"

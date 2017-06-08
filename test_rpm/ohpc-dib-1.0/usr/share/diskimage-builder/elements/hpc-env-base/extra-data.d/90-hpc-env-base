@@ -1,0 +1,79 @@
+#!/bin/bash
+
+if [ ${DIB_DEBUG_TRACE:-0} -gt 0 ]; then
+    set -x
+fi
+set -eu
+set -o pipefail
+
+# Copy CloudInit configuration file
+if [ ! -z $DIB_HPC_FILE_PATH ]; then
+    sudo cp -L -f $DIB_HPC_FILE_PATH/cloud.cfg $TMP_HOOKS_PATH/
+fi
+# for compute node image copy ssh oub keys
+if [[ $DIB_HPC_IMAGE_TYPE == "compute" ]]; then
+    if [ -d $DIB_HPC_SSH_PUB_KEY ] && [ -e $DIB_HPC_SSH_PUB_KEY/authorized_keys ]; then
+        sudo cp -L -f $DIB_HPC_SSH_PUB_KEY/authorized_keys $TMP_HOOKS_PATH/
+    fi
+fi
+#generate ssh keys
+if [[ $DIB_HPC_IMAGE_TYPE == "sms" ]]; then
+    _ssh_path=$TMP_HOOKS_PATH/hpcasservice
+    echo "Configuring SSH for hpc cluster access"
+    install -d -m 700 $_ssh_path
+    ssh-keygen -t dsa -f $_ssh_path/hpcasservice -N '' -C "HPC Cluster key" > /dev/null 2>&1
+    cat $_ssh_path/hpcasservice.pub >> $_ssh_path/authorized_keys
+    chmod 0600 $_ssh_path/authorized_keys
+    # copy authorized key, which we will extract out to share with compute nodes
+    cp -l $_ssh_path/authorized_keys $TMP_HOOKS_PATH/
+fi
+
+case "$DIB_HPC_BASE" in
+    orch)
+        if [ -e $DIB_HPC_ORCH_PKG ]; then
+           DIB_HPC_ORCH_PKG_FILE=$(basename $DIB_HPC_ORCH_PKG)
+           #echo $DIB_HPC_ORCH_PKG_FILE
+           #check if file already copied
+           if [ ! -f $TMP_HOOKS_PATH/$DIB_HPC_ORCH_PKG_FILE ]; then
+              sudo cp -L -f $DIB_HPC_ORCH_PKG $TMP_HOOKS_PATH/
+           fi
+           #mount
+           HPC_MOUNT_POINT=$TMP_MOUNT_PATH/mnt/hpc_orch_iso
+           # check if mount already exists
+           # This is not a good way to check the mount point, might require better way
+           if [ ! -e HPC_MOUNT_POINT/group.xml ]; then
+               sudo mkdir -p $HPC_MOUNT_POINT 
+               sudo mount -o loop $TMP_HOOKS_PATH/$DIB_HPC_ORCH_PKG_FILE $HPC_MOUNT_POINT
+               ls -l $HPC_MOUNT_POINT
+           fi
+           #copy public key
+           HPC_PUB_KEY=/etc/pki/pgp/HPC-Orchestrator-keyfile.asc
+           HPC_PUB_KEY_PATH=${HPC_PUB_KEY%/*}
+           HPC_RELEASE_FILE=/etc/hpc-orch-release
+           if [ -e $HPC_PUB_KEY ]; then
+               sudo mkdir -p $TMP_MOUNT_PATH/$HPC_PUB_KEY_PATH
+               sudo cp -L -f $HPC_PUB_KEY $TMP_MOUNT_PATH/$HPC_PUB_KEY
+               #echo "======= $TMP_MOUNT_PATH/$HPC_PUB_KEY========\n=========================================="
+               #ls $TMP_MOUNT_PATH/$HPC_PUB_KEY
+           fi
+           #copy release file
+           if [ -e $HPC_RELEASE_FILE ]; then
+               sudo cp -L -f $HPC_RELEASE_FILE $TMP_MOUNT_PATH/$HPC_RELEASE_FILE
+               #echo "======= $TMP_MOUNT_PATH/$HPC_RELEASE_FILE ========\n=========================================="
+               #ls $TMP_MOUNT_PATH/$HPC_RELEASE_FILE
+           fi
+        else
+           echo "Error !! no DIB_HPC_ORCH_PKG_FILE:$DIB_HPC_ORCH_PKG"
+           exit 1
+        fi
+        ;;
+    ohpc)
+        # Nothing to be done here for OpenHPC
+        ;;
+    *)
+        echo "Error !! no DIB_HPC_BASE available!"
+        exit 1
+        ;;
+
+esac
+ 
