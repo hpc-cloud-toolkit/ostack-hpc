@@ -1,0 +1,4 @@
+obs or user need to create test-chpc.tar file and drop into
+SOURCES folder, before running rpmbuild --bb tests.spec command
+tests-chpc.tar is created by renaming tests folder with tests-chpc
+and than applying tar -cf tests-chpc.tar test.chpc command

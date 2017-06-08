@@ -33,7 +33,7 @@ Requires(pre):  shadow
 BuildRoot: %{_tmppath}/%{pname}-%{version}-%{release}-root
 DocDir:    %{OHPC_PUB}/doc/contrib
 
-%define testuser ohpc-test
+%define testuser chpc
 %define debug_package %{nil}
 
 %description
@@ -44,18 +44,17 @@ a default configuration is setup to enable collective testing. The test suite
 is made available under an '%{testuser}' user account.
 
 %prep
-#%setup -n tests-ohpc
+%setup -n tests-chpc
 
 %build
 
 export PATH=/opt/ohpc/pub/autotools/bin:$PATH
-cd tests
+pwd
 ./bootstrap
 
 
 %install
 
-cd tests
 %{__mkdir_p} %{buildroot}/home/%{testuser}/tests
 cp -a * %{buildroot}/home/%{testuser}/tests
 find %{buildroot}/home/%{testuser}/tests -name .gitignore  -exec rm {} \;

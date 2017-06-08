@@ -1,0 +1,11 @@
+creating tar file
+  > git clone ...
+  > cp -fr dib dib-chpc
+  > tar -cvf dib-chpc.tar dib_chpc
+copy tar file
+  > cp dib-chpc.tar components/admin/dib-chpc/SOURCES/
+copy CHPC_macro to source
+  > cp components/CHPC_macros components/admin/dib-chpc/SOURCES/
+run rpmbuild
+  > cd component/admin/dib-chpc
+    rpmbuild -bb SPECS/dib-chpc.spec
