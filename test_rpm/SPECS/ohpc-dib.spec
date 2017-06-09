@@ -1,6 +1,6 @@
 # Disk Image Builder add-on for OpenHPC-On-Openstack
  
-%define name        ohpc-dib
+%define name        dib
 %define release     1.0
 %define version     1.0
 %define buildroot %{_topdir}/%{name}-%{version}-root
@@ -11,7 +11,7 @@ License:        ASL - Apache Software License 2.0
 Name:           %{name}
 Release:        %{release}
 Version:	%{version}
-Source:         %{name}-%{version}.tar.gz
+Source:         %{name}-%{version}-chpc.tar.gz
 Group:          Development/Tools
 Requires:	diskimage-builder >= 1.14
 
