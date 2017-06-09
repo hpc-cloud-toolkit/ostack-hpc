@@ -26,6 +26,7 @@ This package will install the necessary scripts to deploy image builds for head 
 #Empty section
  
 %install
+ls -l *
 cp -r * %{buildroot}
  
 %files
