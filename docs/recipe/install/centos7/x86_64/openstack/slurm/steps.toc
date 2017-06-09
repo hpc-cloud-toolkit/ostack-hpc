@@ -1,0 +1,29 @@
+\contentsline {section}{\numberline {1}Introduction}{4}{section.1}
+\contentsline {subsection}{\numberline {1.1}Target Audience}{4}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Requirements/Assumptions}{4}{subsection.1.2}
+\contentsline {subsection}{\numberline {1.3}Inputs}{5}{subsection.1.3}
+\contentsline {section}{\numberline {2}Preparing Bare Metal Node Operating System}{7}{section.2}
+\contentsline {subsection}{\numberline {2.1}Install and Setup diskimage-builder}{7}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Setup common environment for diskimage-builder}{7}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Preparing ironic deploy images}{8}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.4}Preparing user images for bare metal instances}{9}{subsection.2.4}
+\contentsline {subsubsection}{\numberline {2.4.1}Preparing user image for head node OS}{9}{subsubsection.2.4.1}
+\contentsline {subsubsection}{\numberline {2.4.2}Preparing user image for compute node OS}{11}{subsubsection.2.4.2}
+\contentsline {subsubsection}{\numberline {2.4.3}Putting all together }{12}{subsubsection.2.4.3}
+\contentsline {section}{\numberline {3}Preparing Cloud-Init}{13}{section.3}
+\contentsline {subsection}{\numberline {3.1}Preparing template for compute node cloud-init}{13}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Preparing template for sms node cloud-init}{15}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Prepare optional part of cloud-init}{17}{subsection.3.3}
+\contentsline {subsubsection}{\numberline {3.3.1}Update mrsh during cloud-init}{17}{subsubsection.3.3.1}
+\contentsline {subsubsection}{\numberline {3.3.2}Updating cluster shell during cloud -init}{17}{subsubsection.3.3.2}
+\contentsline {subsubsection}{\numberline {3.3.3}Enable genders during cloud-init}{17}{subsubsection.3.3.3}
+\contentsline {subsection}{\numberline {3.4}Configuring overall cloud-init}{17}{subsection.3.4}
+\contentsline {section}{\numberline {4}Instantiating OpenHPC System in OpenStack Cloud}{19}{section.4}
+\contentsline {subsection}{\numberline {4.1}Prepare OpenStack for bare metal provisioning with ironic}{21}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Instantiate bare metal nodes}{23}{subsection.4.2}
+\contentsline {subsubsection}{\numberline {4.2.1}Setup generic bare metal instance}{23}{subsubsection.4.2.1}
+\contentsline {subsubsection}{\numberline {4.2.2}Setup HPC head node}{24}{subsubsection.4.2.2}
+\contentsline {subsubsection}{\numberline {4.2.3}Setup HPC compute nodes}{25}{subsubsection.4.2.3}
+\contentsline {subsubsection}{\numberline {4.2.4}Boot SMS node}{26}{subsubsection.4.2.4}
+\contentsline {subsubsection}{\numberline {4.2.5}Boot compute nodes}{27}{subsubsection.4.2.5}
+\contentsline {section}{\numberline {5}Appendix}{27}{section.5}

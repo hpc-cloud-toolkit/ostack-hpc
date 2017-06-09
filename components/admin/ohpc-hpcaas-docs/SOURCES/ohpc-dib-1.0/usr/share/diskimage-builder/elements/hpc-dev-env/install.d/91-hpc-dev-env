@@ -1,0 +1,39 @@
+#!/bin/bash
+# It installs lmod
+
+if [ ${DIB_DEBUG_TRACE:-0} -gt 0 ]; then
+    set -x
+fi
+set -eu
+set -o pipefail
+
+# Install Development Tools
+
+install-packages -g $DIB_HPC_BASE-autotools
+install-packages valgrind-$DIB_HPC_BASE EasyBuild-$DIB_HPC_BASE spack-$DIB_HPC_BASE R_base-$DIB_HPC_BASE
+
+# Install Compilers
+install-packages $DIB_HPC_COMPILER-compilers-$DIB_HPC_BASE
+# Install MPI Stack
+for cmp in $DIB_HPC_COMPILER; do
+   for mpi in $DIB_HPC_MPI; do
+      DIB_INSTALL_MPI=$mpi-$cmp-$DIB_HPC_BASE
+      install-packages $DIB_INSTALL_MPI 
+   done
+done
+
+# Install Performance Tools
+for cmp in $DIB_HPC_COMPILER; do
+    install-packages -g $DIB_HPC_BASE-$DIB_HPC_PERF_TOOLS-$cmp
+    # Install defaults for mvapich2
+    if [[ $DIB_HPC_MPI == *mvapich2* ]]; then
+       install-packages lmod-defaults-$cmp-mvapich2-$DIB_HPC_BASE 
+    fi
+    # Install 3rd party libraries
+    for libs in $DIB_HPC_3RD_LIBS; do
+        install-packages -g $DIB_HPC_BASE-$libs-$cmp
+    done
+done
+
+# Install yum-utils
+install-packages yum-utils

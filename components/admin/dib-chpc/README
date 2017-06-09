@@ -1,11 +1,22 @@
-creating tar file
-  > git clone ...
-  > cp -fr dib dib-chpc
-  > tar -cvf dib-chpc.tar dib_chpc
-copy tar file
-  > cp dib-chpc.tar components/admin/dib-chpc/SOURCES/
-copy CHPC_macro to source
-  > cp components/CHPC_macros components/admin/dib-chpc/SOURCES/
-run rpmbuild
-  > cd component/admin/dib-chpc
-    rpmbuild -bb SPECS/dib-chpc.spec
+ In the project root, there is a dir named `dib`. This needs to be renamed from '{chpc project root}/dib' to ' dib-chpc'
+
+Then create the tar file with
+
+                `tar -cf dib-chpc.tar dib-chpc`.
+
+Copy the tar file to the components/admin/dib-chpc/SOURCES/
+
+		`cp dib-chpc.tar components/admin/dib-chpc/SOURCES/`
+
+Copy the CHPC_macros file to SOURCES, too.
+
+		`cp components/CHPC_macros components/admin/dib-chpc/SOURCES/`
+
+Then build the rpm
+	
+		`cd component/admin/dib-chpc; rpmbuild -bb SPECS/dib-chpc.spec`
+
+
+
+
+
