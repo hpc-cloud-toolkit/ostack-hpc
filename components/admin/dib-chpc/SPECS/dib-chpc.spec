@@ -32,10 +32,12 @@ This package will install the necessary scripts to deploy image builds for head 
 %install
 mkdir -p %{buildroot}/usr/share/diskimage-builder/elements/yum/bin/
 mkdir -p %{buildroot}/usr/share/diskimage-builder/elements/
-mkdir -p %{buildroot}/opt/ohpc/admin/%{pname}/
+mkdir -p %{buildroot}/opt/ohpc/admin/%{pname}/elements
+mkdir -p %{buildroot}/opt/ohpc/admin/%{pname}/hpc-files
 mv dib_patch/elements/yum/bin/install-packages %{buildroot}/usr/share/diskimage-builder/elements/yum/bin/install-packages-new
-mv hpc/elements/* %{buildroot}/usr/share/diskimage-builder/elements/
-mv hpc/hpc-files/cloud.cfg %{buildroot}/opt/ohpc/admin/%{pname}/
+cp -fr hpc/elements/* %{buildroot}/usr/share/diskimage-builder/elements/
+mv hpc/elements/* %{buildroot}/opt/ohpc/admin/%{pname}/elements/
+mv hpc/hpc-files/cloud.cfg %{buildroot}/opt/ohpc/admin/%{pname}/hpc-files/
  
 %files
 %defattr(-,root,root)
