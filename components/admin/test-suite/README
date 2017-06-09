@@ -1,4 +1,18 @@
-obs or user need to create test-chpc.tar file and drop into
-SOURCES folder, before running rpmbuild --bb tests.spec command
-tests-chpc.tar is created by renaming tests folder with tests-chpc
-and than applying tar -cf tests-chpc.tar test.chpc command
+In the project root, there is a dir named `tests`. As the user, or OBS, this needs to be renamed from '{chpc project root}/tests' to ' tests-chpc'
+
+Then create the tar file with
+
+                `tar -cf tests-chpc.tar tests-chpc`.
+
+Move the tar file to the components/admin/test-suite/SOURCES/
+
+                `mv tests-chpc.tar components/admin/test-suite/SOURCES/`
+
+Copy the CHPC_macros file to SOURCES, too. (Don't use `mv`- this file is used by multiple spec files for rpmbuild)
+
+                `cp components/CHPC_macros components/admin/tests-chpc/SOURCES/`
+
+Then build the rpm
+
+                `cd component/admin/test-suite; rpmbuild -bb SPECS/tests-chpc.spec`
+

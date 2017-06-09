@@ -1,0 +1,63 @@
+This section configures the network for “HPC as a services”, upload compute OS images to glance, create a flavor for beremtal and upload public keys for ssh session.
+First create a generic network for “HPC as a service” with a name “sharednet1”.
+#Get the tenant ID for the services tenant
+    SERVICES_TENANT_ID=`keystone tenant-list | grep "|\s*services\s*|" | awk '{print $2}'`
+
+    #Create the flat network on which you are going to launch instances
+    neutron net-list | grep "|\s*sharednet1\s*|"
+    net_exists=$?
+    if [ "${net_exists}" -ne "0" ]; then
+        neutron net-create --tenant-id ${SERVICES_TENANT_ID} sharednet1 --shared --provider:network_type flat --provider:physical_network physnet1
+    fi
+    NEUTRON_NETWORK_UUID=`neutron net-list | grep "|\s*sharednet1\s*|" | awk '{print $2}'`
+
+Create a subnet for our cluster with user defined start and end IP addresses. make controller as a gateway for our instances.
+#Create the subnet on the newly created network
+    neutron subnet-list | grep "|\s*subnet01\s*|"
+    subnet_exists=$?
+    if [ "${subnet_exists}" -ne "0" ]; then
+        neutron subnet-create sharednet1 --name subnet01 --ip-version=4 --gateway=${controller_ip} --allocation-pool start=${cc_subnet_dhcp_start},end=${cc_subnet_dhcp_end} --enable-dhcp ${cc_subnet_cidr}
+    fi
+    NEUTRON_SUBNET_UUID=`neutron subnet-list | grep "|\s*subnet01\s*|" | awk '{print $2}'`
+
+upload kernel and initrd images to glance service so that they are available to ironic while deploying node.
+#Create the deploy-kernel and deploy-initrd images
+    glance image-list | grep "|\s*deploy-vmlinuz\s*|"
+    img_exists=$?
+    if [ "${img_exists}" -ne "0" ]; then
+        glance image-create --name deploy-vmlinuz --visibility public --disk-format aki --container-format aki < ${chpc_image_deploy_kernel}
+    fi
+    DEPLOY_VMLINUZ_UUID=`glance image-list | grep "|\s*deploy-vmlinuz\s*|" | awk '{print $2}'`
+
+    glance image-list | grep "|\s*deploy-initrd\s*|"
+    img_exists=$?
+    if [ "${img_exists}" -ne "0" ]; then
+        glance image-create --name deploy-initrd --visibility public --disk-format ari --container-format ari < ${chpc_image_deploy_ramdisk}
+    fi
+    DEPLOY_INITRD_UUID=`glance image-list | grep "|\s*deploy-initrd\s*|" | awk '{print $2}
+
+Create a bare metal flavor with nova.
+#Create the baremetal flavor and set the architecture to x86_64
+    # This will create common baremetal flavor, if SMS node & compute has different
+    # characteristic than user shall create multiple flavor one each characterisitc
+    nova flavor-list | grep "|\s*baremetal-flavor\s*|"
+    flavor_exists=$?
+    if [ "$flavor_exists" -ne "0" ]; then
+        nova flavor-create baremetal-flavor baremetal-flavor ${RAM_MB} ${DISK_GB} ${CPU}
+        nova flavor-key baremetal-flavor set cpu_arch=$ARCH
+    fi
+    FLAVOR_UUID=`nova flavor-list | grep "|\s*baremetal-flavor\s*|" | awk '{print $2}'`
+#Increase the Quota limit for admin to allow nova boot
+    openstack quota set --ram 512000 --cores 1000 --instances 100 admin
+
+Finally register public ssh keys with nova, so that admin can ssh to the node.
+#Register SSH keys with Nova
+ nova keypair-list | grep "|\s*ostack_key\s*|"
+ keypair_exists=$?
+ if [ "${keypair_exists}" -ne "0" ]; then
+    nova keypair-add --pub-key ${HOME}/.ssh/id_rsa.pub ostack_key
+ fi
+
+Export keypay name for use it later in other sections
+    KEYPAIR_NAME=ostack_key
+
