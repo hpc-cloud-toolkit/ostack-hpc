@@ -11,7 +11,7 @@ License:        ASL - Apache Software License 2.0
 Name:           %{name}
 Release:        %{release}
 Version:	%{version}
-Source:         %{name}-%{version}-chpc.tar.gz
+Source:         %{name}-%{version}-chpc.tar
 Group:          Development/Tools
 Requires:	diskimage-builder >= 1.14
 
