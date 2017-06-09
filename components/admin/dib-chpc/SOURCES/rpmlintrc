@@ -1,0 +1,4 @@
+addFilter("devel-file-in-non-devel-package")
+addFilter("wrong-script-interpreter")
+addFilter("non-standard-uid")
+addFilter("non-standard-gid"
