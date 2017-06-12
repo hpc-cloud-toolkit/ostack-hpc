@@ -20,7 +20,7 @@ License:        ASL - Apache Software License 2.0
 Name:           %{pname}
 Release:        0.1
 Version:        0.1
-Source0:        %{pname}-%{PROJ_NAME}.tar.gz
+Source0:        %{pname}-%{PROJ_NAME}.tar
 Source1:        CHPC_macros
 Group:          Development/Tools
 BuildRoot:  	%{_tmppath}/%{pname}-%{Version}-build
