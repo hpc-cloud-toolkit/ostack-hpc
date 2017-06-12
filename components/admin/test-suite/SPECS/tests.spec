@@ -9,13 +9,14 @@
 #----------------------------------------------------------------------------eh-
 
 %include %{_sourcedir}/CHPC_macros
+%include %{_sourcedir}/release_macros
 %{!?OPROJ_DELIM: %global OPROJ_DELIM -ohpc}
 %{!?CPROJ_DELIM: %global CPROJ_DELIM -chpc}
 
 Summary:   Integration test suite for OpenHPC
 Name:      test-suite%{CPROJ_DELIM}
-Version:   0.1
-Release:   0.1
+Release:   %{CHPC_RELEASE}
+Version:   %{CHPC_VERSION}
 License:   Apache-2.0
 Group:     %{PROJ_BASE}/admin
 BuildArch: noarch

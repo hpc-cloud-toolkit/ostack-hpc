@@ -1,6 +1,7 @@
 # Disk Image Builder add-on for OpenHPC-On-Openstack
 
 %include %{_sourcedir}/CHPC_macros
+%include %{_sourcedir}/release_macros
 %{!?OPROJ_DELIM: %global OPROJ_DELIM -ohpc}
 %{!?CPROJ_DELIM: %global CPROJ_DELIM -chpc}
  
@@ -10,8 +11,8 @@
 Summary:        Disk Image Builder add-ons for HPC on Openstack 
 License:        ASL - Apache Software License 2.0
 Name:           %{pname}
-Release:        0.1 
-Version:	0.1
+Release:        %{CHPC_RELEASE}
+Version:	%{CHPC_VERSION}
 Source:         %{pname}.tar
 Group:          Development/Tools
 BuildRoot:  %{_tmppath}/%{pname}-%{Version}-%{Release}-root
