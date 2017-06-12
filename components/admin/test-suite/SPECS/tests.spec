@@ -23,8 +23,8 @@ BuildArch: noarch
 Source0:   tests-chpc.tar
 Source1:   CHPC_macros
 
-BuildRequires:  autoconf%{OPROJ_DELIM}
-BuildRequires:  automake%{OPROJ_DELIM}
+BuildRequires:  autoconf >= 2.69
+BuildRequires:  automake >= 1.13
 
 %if 0%{?suse_version} >= 1230
 Requires(pre):  shadow
@@ -47,9 +47,8 @@ is made available under an '%{testuser}' user account.
 %setup -n tests-chpc
 
 %build
-
 export PATH=/opt/ohpc/pub/autotools/bin:$PATH
-pwd
+cd tests
 ./bootstrap
 
 
@@ -64,7 +63,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %pre
 getent passwd %{testuser} >/dev/null || \
-    /usr/sbin/useradd -U -c "OpenHPC integration test account" \
+    /usr/sbin/useradd -U -c "CloudHPC integration test account" \
     -s /bin/bash -m -b /home %{testuser}
 exit 0
 
@@ -77,7 +76,6 @@ exit 0
 %defattr(-,%{testuser},%{testuser},-)
 %dir /home/%{testuser}
 /home/%{testuser}/tests
-
 
 
 
