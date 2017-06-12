@@ -12,15 +12,14 @@
 %{!?OPROJ_DELIM: %global OPROJ_DELIM -ohpc}
 %{!?CPROJ_DELIM: %global CPROJ_DELIM -chpc}
 
-%define pname       hpcaas-docs
-%define buildroot %{_topdir}/%{pname}-1.0-root
+%define pname       hpcaas_docs
 
 Summary:        Documentation for HPC on Openstack
 License:        ASL - Apache Software License 2.0
 Name:           %{pname}
 Release:        0.1
 Version:        0.1
-Source0:        hpcaas_docs-%{PROJ_NAME}.tar
+Source0:        %{pname}-%{PROJ_NAME}.tar
 Source1:        CHPC_macros
 Group:          Development/Tools
 BuildRoot:  	%{_tmppath}/%{pname}-%{Version}-build
