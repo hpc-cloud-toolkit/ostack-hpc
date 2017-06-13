@@ -1,4 +1,4 @@
-We created helper function. Call these function in order to generate images for compute node.
+	We created a helper function. Call these functions in order to generate images for compute node.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -6,17 +6,26 @@ We created helper function. Call these function in order to generate images for 
 % ohpc_validation_comment Build HPC user image
 % ohpc_validation_comment 
 %% Next line will only appear in documentation
-print banner to start image building
+
+	Add these print banners to start image building for your scripting to help know where they are in the install.
+
 \begin{lstlisting}[language=bash,keywords={},upquote=true]
 [ctrlr](*\#*) echo "########################################################################"
 [ctrlr](*\#*) echo "########################### Starting SMS Image   ###########################"
 [ctrlr](*\#*) echo "########################################################################"
 \end{lstlisting}
 %% Next line will only appear in documentation
-First prepare image for sms node by calling function prepare\_image\_sms
+
+	Prepare image for sms node by calling function prepare\_image\_sms
+
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
 [ctrlr](*\#*) prepare\_sms\_image
+\end{lstlisting}
+
 %% Next line will only appear in documentation
-print banner to indicate end of image creation
+
+	Print banner to indicate end of image creation
+
 \begin{lstlisting}[language=bash,keywords={},upquote=true]
 [ctrlr](*\#*) echo $chpc_image_sms
 [ctrlr](*\#*) echo "########################################################################"
@@ -24,10 +33,15 @@ print banner to indicate end of image creation
 [ctrlr](*\#*) echo "########################################################################"
 \end{lstlisting}
 %% Next line will only appear in documentation
-prepare image for compute node by calling function prepare\_user\_image
+	Prepare image for compute node by calling function prepare\_user\_image
+
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
 [ctrlr](*\#*) prepare\_user\_image
+\end{lstlisting}
+
 %% Next line will only appear in documentation
-print banner to indicate end of user creation
+	Print banner to indicate end of user creation
+	
 \begin{lstlisting}[language=bash,keywords={},upquote=true]
 [ctrlr](*\#*) echo $chpc_image_user
 [ctrlr](*\#*) echo "########################################################################"
@@ -36,10 +50,17 @@ print banner to indicate end of user creation
 \end{lstlisting}
 
 %% Next line will only appear in documentation
-prepare deploye images for ironic provisioning 
+	
+	Prepare deploye images for ironic provisioning 
+
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
 [ctrlr](*\#*) prepare\_deploy\_image
+\end{lstlisting}
+
 %% Next line will only appear in documentation
-print banner to indicate end of user creation
+	
+	Print banner to indicate end of user creation
+
 \begin{lstlisting}[language=bash,keywords={},upquote=true]
 [ctrlr](*\#*) echo $chpc_image_deploy_kernel
 [ctrlr](*\#*) echo $chpc_image_deploy_ramdisk

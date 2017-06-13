@@ -1,6 +1,7 @@
 #!/bin/bash
 # Update chpc_sms_init or prepare_cloud_init  with similar informoation from recipe for use case 2
 
+# Verify nodes (head and compute) are up and running before completion of next lines. Add error check
 
 #on Head node, start slurm
 sleep 5

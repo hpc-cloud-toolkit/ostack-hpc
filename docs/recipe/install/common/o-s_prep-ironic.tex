@@ -1,7 +1,7 @@
-This section we will create generic configuration, required for baremetal provisioning. We will use ironic as a provisioner and nova as a scheduler.
-Have selinux in permissive mode
+	This section we will create generic configuration, required for baremetal provisioning. We will use ironic as a provisioner and nova as a scheduler.
+	Have SELinux in permissive mode. If you need SELinux enforcing, you're on your own for context rules.
 
-Create baremetal admin and baremetal observer role, and restart ironic API
+	Create baremetal admin and baremetal observer role, and restart ironic API.
 
 
 % begin_ohpc_run
@@ -16,7 +16,7 @@ Create baremetal admin and baremetal observer role, and restart ironic API
 \end{lstlisting}
 % end_ohpc_run
 
-Again, we're assuming your credentials are stored in keystonerc\_admin...
+	Again, we're assuming your credentials are stored in keystonerc\_admin...
 
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
@@ -99,7 +99,7 @@ Configure tfpt server
  % end_ohpc_run \n % end_ohpc_run
 
 
-Update Ironic configuration with tftp information. First update controller IP address for tftp server in ironic configuration.
+	Update Ironic configuration with tftp information. Update the controller IP address for tftp server in ironic configuration.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -109,7 +109,7 @@ Update Ironic configuration with tftp information. First update controller IP ad
 \end{lstlisting} 
  % end_ohpc_run
 
-Update other additional tftp settings in ironic configuration file:
+	Update other additional tftp settings in ironic configuration file:
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -121,7 +121,7 @@ Update other additional tftp settings in ironic configuration file:
 \end{lstlisting} 
  % end_ohpc_run
 
-Now inform Nova to use ironic for bare metal provisioning, by configuring NOVA.conf
+	Now, inform Nova to use Ironic for bare metal provisioning, by configuring nova.conf
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -132,7 +132,7 @@ Now inform Nova to use ironic for bare metal provisioning, by configuring NOVA.c
 \end{lstlisting} 
  % end_ohpc_run
 
-In our sample, we will not use controller node for any compute resource so, lets mark reserved host memory as 0.
+	In our sample, we will not use the controller node for any compute resource so, let's mark reserved host memory as 0.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -143,7 +143,7 @@ In our sample, we will not use controller node for any compute resource so, lets
 \end{lstlisting} 
  % end_ohpc_run
 
-For cloud-init we need to enable meta data server, which is done via neutron configuration.
+	For cloud-init, we need to enable meta data server, which is done via neutron configuration.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -156,7 +156,7 @@ For cloud-init we need to enable meta data server, which is done via neutron con
 \end{lstlisting} 
  % end_ohpc_run
 
-We will enable internal dns server to assign host name to the instances as requested by user. 
+	We will enable an internal DNS server to assign host name to the instances as requested by user. 
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -190,7 +190,7 @@ We will enable internal dns server to assign host name to the instances as reque
 \end{lstlisting} 
  % end_ohpc_run
 
-We are pretty much done with initial configuration, so let’s restart all the services at controller node.
+	We are pretty much done with initial configuration, so let's restart all the services at controller node.
 
 % begin_ohpc_run
 % ohpc_validation_newline

@@ -1,10 +1,12 @@
-To instantiate OpenHPC system, we will first prepare openstack components with HPC images, networking and other relevant configurations. After the configuration we will instantiate HPC head node and HPC compute node using nova. 
+	To instantiate OpenHPC system, we will need to prepare Openstack components with HPC images, networking, and other relevant configurations. After the configuration we will instantiate HPC head node and HPC compute node using nova. 
 
-It is assumed that system admin has installed OpenStack controller services and OpenStack network services (i.e. keystone, nova, ironic, glance, neutron, mongodb, rabbitmq server, heat etc). 
-Controller node is configured with OpenVSwitch Bridge on internal network port. 
-Two tenants, named \texttt{admin} and \texttt{services} are created in keystone to manage the services. All the services are created by system admin. 
+	It is assumed that you have a working configuration of OpenStack, with controller and network services (i.e. keystone, nova, ironic, glance, neutron, mongodb, rabbitmq server, heat etc). 
 
-Below is expected endpoint list.
+	The controller node should be configured with OpenVSwitch Bridge on an internal network port. If your configuration is different, adjust these settings accordingly, but keep in mind, YMMV.
+
+	Two tenants, named \texttt{admin} and \texttt{services} are created in keystone to manage the services. All the services are created by system admin. 
+
+	Below is the expected endpoint list.
 
 % begin_ohpc_run
 % ohpc_validation_comment #   XFILEX
@@ -16,8 +18,6 @@ Below is expected endpoint list.
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) openstack service list
-
-#Expected Output#
 +----------------------------------+-----------+---------------+---------------+
 | ID                                         | Region    | Service Name  | Service Type  |
 +----------------------------------+-----------+---------------+---------------+
@@ -35,12 +35,9 @@ Below is expected endpoint list.
 | c4161d4c9c6b4080b2cb66c2f580853d | RegionOne | ceilometer    | metering      |
 | d5714e8adb094671ad0388d04214c44d | RegionOne | cinderv2      | volumev2      |
 +----------------------------------+-----------+---------------+---------------+
-
 [ctrlr](*\#*) openstack project list
-
-#Expected Output#
 +----------------------------------+----------+
-| ID                                          | Name     |
+| ID                               | Name     |
 +----------------------------------+----------+
 | 7464fcc8f1b34048bd09fe165d18647b | admin    |
 | b1ed7efb53cc44c8b06daaee15b6a296 | services |
@@ -48,11 +45,11 @@ Below is expected endpoint list.
 \end{lstlisting}
 % end_ohpc_run
 
-Recipe below is tested with controller node installed and configured using packstack.
-Reference section provide more detail on packstack installation of OpenStack.
-Before starting with HPC instantiation, please export openstack credentials, we will be using them during openstack configuration. 
+	The recipe that follows is tested with a controller node installed and configured using RDO PackStack.
+	The reference section can provide more detail on PackStack installation of Openstack.
+	Before starting with HPC instantiation, please export the Openstack credentials, as we will be using them during Openstack configuration. 
 
-You can do this manually, as such:
+	You can do this manually, as such:
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) unset OS_SERVICE_TOKEN
@@ -60,12 +57,11 @@ You can do this manually, as such:
 [ctrlr](*\#*) export OS_PASSWORD=<>
 [ctrlr](*\#*) export OS_AUTH_URL=<>
 [ctrlr](*\#*) export PS1='[\u@\h \W(keystone_admin)]\$ '
-[ctrlr](*\#*) 
 [ctrlr](*\#*) export OS_TENANT_NAME=admin
 [ctrlr](*\#*) export OS_REGION_NAME=<>  
 \end{lstlisting}
 
-OR, if you've deployed via PackStack, you can just source the keystonerc\_admin file. These credentials will be used throughout the rest of this document. If you have an existing Openstack installation with more complex credentials, you will need to set them per your configuration.
+	OR, if you've deployed via PackStack, you can just source the keystonerc\_admin file. These credentials will be used throughout the rest of this document. If you have an existing Openstack installation with more complex credentials, you will need to set them per your configuration.
 
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]

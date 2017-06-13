@@ -1,13 +1,10 @@
 \subsubsection{Setup generic bare metal instance}
 
-This section configure open stack for bare metal instance according to HPC images and user inputs. Before starting this it is assumed that system administrator has installed openstack and its services and has done appropriate configuration for bare metal provisioning, which includes installing ironic, keystone, nova, neutron, glance. It is assumed that keystone is configured with 
+	This section configures Openstack for bare metal instances according to HPC images and user inputs. Before starting this, it is still assumed that system administrator has installed Openstack and its services.
 
-Before instantiating bare metal nodes with HPC, we need to do little bit more configuration. 
-Setup generic bare metal instance
+	Before instantiating bare metal nodes with HPC, we need to do little bit more configuration. This section configures the network for "HPC as a services", upload compute OS images to glance, create a flavor for bare metal and upload public keys for ssh session.
 
-This section configures the network for "HPC as a services", upload compute OS images to glance, create a flavor for bare metal and upload public keys for ssh session.
-
-First create a generic network for "HPC as a service" with a name "sharednet1"
+	Create a generic network for "HPC as a service" with a name "sharednet1"
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -29,7 +26,7 @@ First create a generic network for "HPC as a service" with a name "sharednet1"
 % end_ohpc_run
 
 
-Create a subnet for our cluster with user defined start and end IP addresses. Make the controller as a gateway for our instances.
+	Create a subnet for our cluster with user defined start and end IP addresses. Mark the controller as a gateway for our instances.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -45,7 +42,7 @@ Create a subnet for our cluster with user defined start and end IP addresses. Ma
 \end{lstlisting} 
 % end_ohpc_run
 
-Upload kernel and initrd images to glance service so that they are available to ironic while deploying node.
+	Upload kernel and initrd images to glance, so that they are available to ironic while deploying node.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -68,7 +65,7 @@ Upload kernel and initrd images to glance service so that they are available to 
 \end{lstlisting} 
 % end_ohpc_run
 
-Create a bare metal flavor with nova.
+	Create a bare metal flavor with nova.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -89,7 +86,7 @@ Create a bare metal flavor with nova.
 \end{lstlisting} 
 % end_ohpc_run
 
-Finally register public ssh keys with nova, so that admin can ssh to the node.
+	Register your public ssh keys with nova, so that admin can ssh to the node without an interactive password.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -104,7 +101,7 @@ Finally register public ssh keys with nova, so that admin can ssh to the node.
 \end{lstlisting} 
 % end_ohpc_run
 
-Export keypair name for use it later in other sections
+	Export keypair name for use it later in other sections
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -118,8 +115,9 @@ Export keypair name for use it later in other sections
 \subsubsection{Setup HPC head node}
 
 
-Previous section we created generic bare metal setup. In this section we will create configuration for HPC head node in an OpenStack cloud.
-We created HPC head node OS images in previous sections, let's upload this image to glance, and store IMAGE id in environment variable SMS\_DISK\_IMAGE\_UUID, to be used during boot. 
+	In a previous section, we created generic bare metal setup. In this section we will create configuration for HPC head node in an OpenStack cloud.
+	
+	We created HPC head node OS images in previous sections, so let's upload these images to glance, and store IMAGE id in environment variable SMS\_DISK\_IMAGE\_UUID, to be used during boot. 
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -135,7 +133,7 @@ We created HPC head node OS images in previous sections, let's upload this image
 \end{lstlisting} 
 % end_ohpc_run
 
-For provisioning sms node with ironic, we need to register node with ironic. This is done by registering node's BMC, node characteristic (aka flavor) like memory, cpu, disk space and node architecture. And registering kernel boot images. We will use pxe\_ipmitool as a provisioning driver in ironic with a boot mode as bios.
+	For provisioning sms node with ironic, we need to register the nodes with ironic. This is done by registering the node's BMC, characteristics (the Openstack flavor) like memory, cpu, disk space and architecture, and also registering kernel boot images. We will use the pxe\_ipmitool as a provisioning driver in ironic with a boot mode as bios.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -151,7 +149,7 @@ For provisioning sms node with ironic, we need to register node with ironic. Thi
 \end{lstlisting} 
 % end_ohpc_run
 
-Now we need tell ironic about the network port on which node will perform pxe boot by configuring MAC Address. 
+	Now, we need tell ironic about the network port, on which the node will perform pxe boot by configuring the MAC address(es). 
 
 
 % begin_ohpc_run
@@ -163,8 +161,8 @@ Now we need tell ironic about the network port on which node will perform pxe bo
 \end{lstlisting} 
 % end_ohpc_run
 
-Add the instance info and disk space for root 
-Add the instance\_info/image\_source and instance\_info/root\_gb
+	Add the instance info and disk space for root 
+	Add the instance\_info/image\_source and instance\_info/root\_gb
     
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -175,7 +173,7 @@ Add the instance\_info/image\_source and instance\_info/root\_gb
 % end_ohpc_run
 
 
-We will assign a fixed IP address to sms node. This is done by associating sms node’s MAC address with neutron port. We will store this information in the neutron with sms\_name. we will also set environment SMS\_PORT\_ID variable with this port id, to be used during boot.
+	We will assign a fixed IP address to the SMS node. This is done by associating SMS node’s MAC address with its neutron port. We will store this information in neutron with sms\_name. We will also set the environment variable, SMS\_PORT\_ID, with this port id, to be used during boot.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -191,9 +189,9 @@ We will assign a fixed IP address to sms node. This is done by associating sms n
 
 \subsubsection{Setup HPC compute nodes}
 
-In previous section we configured Openstack to instantiate sms node. In this section we will be configuring openstack to instantiate HPC compute nodes.
+	In a previous section we configured Openstack to instantiate the SMS node. In this section we will be configuring Openstack to instantiate the HPC compute nodes.
 
-For HPC compute nodes, we created compute node images, upload hpc compute node image to glance as a user image, and store IMAGE id in environment variable USER\_DISK\_IMAGE\_UUID, to be used during boot.
+	For HPC compute nodes, we created compute node images, upload those HPC compute node images to glance as a user image, and stored IMAGE id in environment variable USER\_DISK\_IMAGE\_UUID, to be used during boot.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -211,7 +209,7 @@ For HPC compute nodes, we created compute node images, upload hpc compute node i
 % end_ohpc_run
 
 
-Similar to sms node, create setup for all compute nodes including creating ironic node, associating node MAC address, adding instance information and assigning fix IP address. In our example we used 4 hpc compute nodes. to store the information in each OpenStack component we will assign compute node host name as a name, which is host name prefix (as chosen by user in inputs), followed by a node counter. 
+	Similar to the SMS node, create setup for all compute nodes, including creating ironic node, associating node MAC address, adding instance information, and assigning fix IP address. In our example we used 4 HPC compute nodes. To store the information in each OpenStack component, we will assign compute node host name as a name, which is host name prefix (as chosen by user in inputs), followed by a node counter. 
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -244,7 +242,7 @@ Similar to sms node, create setup for all compute nodes including creating ironi
 % end_ohpc_run
 
 
- Ironic periodically sync with Nova with available nodes. Nova then updates its record for all available hosts. So before booting the node with Nova allow some time to sync ironic with it. 
+	Ironic periodically syncs with Nova for available nodes. Nova then updates its record for all available hosts. So, before booting the node with Nova, allow some time to sync Ironic with it. 
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -258,13 +256,13 @@ Similar to sms node, create setup for all compute nodes including creating ironi
 
 \subsubsection{Boot SMS node}
 
-In previous section we completed the bare metal configuration. User can request any available baremetal nodes by specifying the flavor they want and image they want to boot node with. For bare metal we created a flavor with name baremetal-flavor, we will provide this to nova with a CLI option --flavor. In our situation we will request 1 bare metal node with a baremetal flavor (--flavor) and SMS node image to boot (--image).  We also would like to reserve the IP address of this node. 
+	In another previous section, we completed the bare metal configuration. User can request any available baremetal nodes by specifying the flavor they want and image they want to boot node with. For bare metal, we created a flavor with name baremetal-flavor, we will provide this to nova with a CLI option --flavor. In our situation we will request 1 bare metal node with a baremetal flavor (--flavor) and an SMS node image to boot (--image).  We also would like to reserve the IP address of this node. 
 
-In previous section (setup sms) we associated one of the nodes MAC address with IP address, we will request this from nova by indicating port-id we created earlier (port-id=\${SMS\_PORT\_ID}). 
+	In a previous section (setup sms), we associated one of the nodes MAC address with IP address, we will request this from nova by indicating port-id we created earlier (port-id=\${SMS\_PORT\_ID}). 
 
-In a previous section we also created cloud-init script for sms nodes. We will provide cloud-init script (chpcSMSInit) to nova CLI option --user-data. For cloud init we will use metadata server, which will be provided by "--meta role= option". We will provide sms public key with "--key-name" option. At the end we will give our node a name. This name will be a host name of booted bare metal node.
+	Also in a previous section, we also created cloud-init script for sms nodes. We will provide cloud-init script (chpcSMSInit) to nova CLI option --user-data. For cloud init we will use metadata server, which will be provided by "--meta role= option". We will provide sms public key with "--key-name" option. At the end we will give our node a name. This name will be a host name of booted bare metal node.
 
-Before booting, save boot command to a script, which will useful later on if user wants to re-instantiate same node.
+	Before booting, save boot command to a script, which will useful later on if user wants to re-instantiate same node.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -276,7 +274,7 @@ Before booting, save boot command to a script, which will useful later on if use
 \end{lstlisting} 
 % end_ohpc_run
 
-Issue a boot command to nova to boot a SMS node:
+	Issue a boot command to nova to boot a SMS node:
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -286,7 +284,7 @@ Issue a boot command to nova to boot a SMS node:
 \end{lstlisting} 
 % end_ohpc_run
 
-Wait around 15 seconds before we boot compute nodes. This will allow enough time to boot SMS node before compute nodes starts. 
+	Wait 15 seconds before we boot compute nodes. This will allow enough time to boot SMS node before compute nodes starts. 
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -300,7 +298,7 @@ Wait around 15 seconds before we boot compute nodes. This will allow enough time
 
 \subsubsection{Boot compute nodes}
 
-Booting compute nodes are very similar to SMS nodes. In our case we will boot 4 compute nodes (as specified in user inputs. Host name of compute node will use prefix defined by cnodename\_prefix variable, followed by node counter. For compute node we will use compute node image (USER\_DISK\_IMAGE\_UUID) and compute node cloud-init script (chpcInit). 
+	Booting compute nodes are very similar to booting SMS nodes. In our case we will boot 4 compute nodes (as specified in user inputs. Host name of compute node will use prefix defined by cnodename\_prefix variable, followed by node counter. For compute nodes, we will use a compute node image (USER\_DISK\_IMAGE\_UUID) and compute node cloud-init script (chpcInit). 
 
 % begin_ohpc_run
 % ohpc_validation_newline
