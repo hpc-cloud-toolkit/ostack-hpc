@@ -1,4 +1,4 @@
-To build head node (aka sms) images, we need to install server packages of HPC components. This is accomplished by setting image type to sms. Default image type in hpc elements is “compute”. we will create a function function prepare\_sms\_image
+	To build head node (SMS) images, we need to install the server packages of HPC components. This is accomplished by setting image type to sms. Default image type in hpc elements is "compute". we will create a function function prepare\_sms\_image
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -9,7 +9,8 @@ To build head node (aka sms) images, we need to install server packages of HPC c
 \end{lstlisting} 
 % end_ohpc_run
 
-First check if user has requested to create images by verifying environment variables chpc\_create\_new\_image and chpc\_image\_sms. If user already supplied images then we will copy images to our common image location and setup environment variable for later use
+	Check if user has requested to create images by verifying environment variables chpc\_create\_new\_image and chpc\_image\_sms. If user already supplied images then we will copy images to our common image location and setup environment variable for later use.
+	
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*)     if [[ ${chpc_create_new_image} -ne 1 ]] && [[ -s $chpc_image_sms ]]; then
@@ -25,100 +26,101 @@ First check if user has requested to create images by verifying environment vari
 \end{lstlisting} 
 % end_ohpc_run
 
-. If user has not supplied images then we will build sms image here. disk-image-builder will supports two type of HPC images, sms and compute.  
+	If user has not supplied images then we will build the sms image here. disk-image-builder will supports two type of HPC images, sms and compute.  
 
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*)         # setup environment varioable to indicate sms image type
-[ctrlr](*\#*)         export DIB\_HPC\_IMAGE\_TYPE=sms
+[ctrlr](*\#*)         export DIB_HPC_IMAGE_TYPE=sms
 \end{lstlisting} 
 % end_ohpc_run
 
-Enable SLURM resource manager for head node.
+	nable SLURM resource manager for head node.
 
 % begin_ohpc_run
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*)         DIB\_HPC\_ELEMENTS+=" hpc-slurm"
+[ctrlr](*\#*)         DIB_HPC_ELEMENTS+=" hpc-slurm"
 \end{lstlisting} 
  % end_ohpc_run
 
-Add optional OpenHPC Components
+	Add optional OpenHPC Components
 
 % begin_ohpc_run
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*)         if [[ \$\{enable\_mrsh\} -eq 1 ]];then
-[ctrlr](*\#*)             DIB\_HPC\_ELEMENTS+=" hpc-mrsh"
+[ctrlr](*\#*)         if [[ ${enable_mrsh} -eq 1 ]];then
+[ctrlr](*\#*)             DIB_HPC_ELEMENTS+=" hpc-mrsh"
 [ctrlr](*\#*)         fi
 \end{lstlisting} 
  % end_ohpc_run
 
-We will also setup HPC development environment on HPC head node. 
-Enable gnu compiler
+	We will also setup HPC development environment on HPC head node. 
+
+	Enable gnu compiler
 
 % begin_ohpc_run
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*)         export DIB\_HPC\_COMPILER="gnu"
+[ctrlr](*\#*)         export DIB_HPC_COMPILER="gnu"
 \end{lstlisting} 
  % end_ohpc_run
 
-Enable openmpi \& mvapich2
+	Enable openmpi \& mvapich2
 
 % begin_ohpc_run
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*)         export DIB\_HPC\_MPI="openmpi mvapich2"
+[ctrlr](*\#*)         export DIB_HPC_MPI="openmpi mvapich2"
 \end{lstlisting} 
  % end_ohpc_run
 
-Enable performance tools
+	Enable performance tools
 
 % begin_ohpc_run
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*)         export DIB\_HPC\_PERF\_TOOLS="perf-tools"
+[ctrlr](*\#*)         export DIB_HPC_PERF_TOOLS="perf-tools"
 \end{lstlisting} 
  % end_ohpc_run
 
-Enable 3rd party libraries serial-libs, parallel-libs, io-libs, python-libs and runtimes
+	Enable 3rd party libraries serial-libs, parallel-libs, io-libs, python-libs and runtimes.
 
 % begin_ohpc_run
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*)         export DIB\_HPC\_3RD\_LIBS="serial-libs parallel-libs io-libs python-libs runtimes"
+[ctrlr](*\#*)         export DIB_HPC_3RD_LIBS="serial-libs parallel-libs io-libs python-libs runtimes"
 \end{lstlisting} 
  % end_ohpc_run
 
-Add hpc development environment element to list of elements
+	Add HPC development environment element to list of elements
 
 % begin_ohpc_run
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*)         DIB\_HPC\_ELEMENTS+=" hpc-dev-env"
+[ctrlr](*\#*)         DIB_HPC_ELEMENTS+=" hpc-dev-env"
 \end{lstlisting} 
  % end_ohpc_run
 
-Now create a sms image with element local-config, dhcp-all-interfaces, devuser, selinux-permisive and all hpc specific elements. Element local-config copies your local environment into image, which is the local users, their password and permissions. Element devuser will create new user specified by environment variable "DIB\_DEV\_USER\_USERNAME". 
+	Now create an sms image with element local-config, dhcp-all-interfaces, devuser, selinux-permisive, and all HPC specific elements. Element local-config copies your local environment into image, which is the local users, their password and permissions. Element devuser will create a new user specified by environment variable "DIB\_DEV\_USER\_USERNAME". 
 
 % begin_ohpc_run
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*)         disk-image-create centos7 vm local-config dhcp-all-interfaces devuser \
-         selinux-permissive \$DIB\_HPC\_ELEMENTS -o icloud-hpc-cent7-sms
+         selinux-permissive $DIB_HPC_ELEMENTS -o icloud-hpc-cent7-sms
 \end{lstlisting} 
  % end_ohpc_run
 
-It will take a while to build an image. Once image is built copy it to standard openHPC path.
+	It will take a while to build an image. Once the image is built, copy it to standard OpenHPC path.
 
 % begin_ohpc_run
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*)         chpc_image_sms="$( realpath icloud-hpc-cent7.qcow2)"
 [ctrlr](*\#*)         mkdir -p $CHPC_CLOUD_IMAGE_PATH
-[ctrlr](*\#*)         mv -f \$chpc\_image\_sms \$CHPC\_CLOUD\_IMAGE\_PATH
-[ctrlr](*\#*)         chpc\_image\_sms=\$CHPC\_CLOUD\_IMAGE\_PATH/\$(basename \$chpc\_image\_sms)
+[ctrlr](*\#*)         mv -f $chpc_image_sms $CHPC_CLOUD_IMAGE_PATH
+[ctrlr](*\#*)         chpc_image_sms=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_sms)
 [ctrlr](*\#*)     fi # end of else of or if
 [ctrlr](*\#*) } # end of function
 \end{lstlisting} 

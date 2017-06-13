@@ -1,7 +1,8 @@
-Cloud init script for sms node is little different than compute node. Sms node, when instantiated within openstack, serve as a head node for HPC as a service and hosts all the services as a sms node in an independent hpc clusters. This will host server side of applications, resource manager, and share users. For more detail on sms node functionality please refer to OpenHPC documentation.
+	The cloud-init script for sms node is little different than compute node. The SMS node, when instantiated within Openstack, serves as a head node for HPC-as-a-Service, and hosts all the services as a sms node in an independent HPC cluster. This will host the server side of applications, resource manager, and share users. For more detail on sms node functionality please refer to OpenHPC documentation.
 
-In this recipe, we will prepare cloud-init template script for sms node, which than is updated with compute node IP, ntp server and other environmental variables, just before provisioning. 
-Create an empty chpc\_init file and open for editing. You can also use existing template and modify. Start editing by adding some environment variable, which will be updated later, just before provisioning.
+	In this recipe, we will prepare cloud-init template script for sms node, which then is updated with compute node IP, NTP server, and other environmental variables, just before provisioning. 
+
+	Create an empty chpc\_init file and open for editing. You can also use existing template and modify. Start editing by adding some environment variable, which will be updated later, just before provisioning.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -18,7 +19,7 @@ Create an empty chpc\_init file and open for editing. You can also use existing 
 \end{lstlisting} 
  % end_ohpc_run
 
-Now setup nfs share for cloud-init and files which want to send to compute nodes.
+	Now, setup nfs share for cloud-init and files which want to send to compute nodes.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -37,7 +38,7 @@ Now setup nfs share for cloud-init and files which want to send to compute nodes
 \end{lstlisting} 
  % end_ohpc_run
 
-Share /home, /opt/ohpc/pub and /opt/ohpc/admin/cloud\_hpc\_init over nfs
+	Share /home, /opt/ohpc/pub and /opt/ohpc/admin/cloud\_hpc\_init over nfs
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -66,7 +67,7 @@ Share /home, /opt/ohpc/pub and /opt/ohpc/admin/cloud\_hpc\_init over nfs
 \end{lstlisting} 
  % end_ohpc_run
 
-Configure ntp sever on sms node, as per the site setting.
+	Configure ntp sever on sms node, as per the site setting.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -85,7 +86,7 @@ Configure ntp sever on sms node, as per the site setting.
 \end{lstlisting} 
  % end_ohpc_run
 
-Distribute munge keys with compute nodes and then Update SLURM resource manager with hpc compute nodes.
+	Distribute munge keys with compute nodes, and then update the SLURM resource manager with HPC compute nodes.
 
 
 % begin_ohpc_run
@@ -113,7 +114,7 @@ Distribute munge keys with compute nodes and then Update SLURM resource manager 
  % end_ohpc_run
 
 
-One last step to make sure ssh is working and enabled on compute nodes. Update the permissions of ssh.
+	One last step is to make sure ssh is working and enabled on compute nodes. Update/verify the permissions of ssh.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -124,5 +125,5 @@ One last step to make sure ssh is working and enabled on compute nodes. Update t
 \end{lstlisting} 
  % end_ohpc_run
 
-Save the file with name chp\_sms\_cinit, we will use this file during sms node instance creation.
+	Save the file with name chp\_sms\_cinit, we will use this file during sms node instance creation.
 

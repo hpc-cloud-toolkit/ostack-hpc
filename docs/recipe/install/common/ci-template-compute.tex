@@ -1,6 +1,6 @@
-Create an empty chpc\_init file and open for editing. You can also use  existing template and modify.
+	Create an empty chpc\_init file and open for editing. You can also use  existing template and modify.
 
-Start editing by adding some environment variable, first one is to set path to shared folder for cloud-init
+	Start editing by adding some environment variable, first one is to set path to shared folder for cloud-init
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -15,7 +15,7 @@ Start editing by adding some environment variable, first one is to set path to s
 \end{lstlisting}
 % end_ohpc_run
 
-Update rsyslog configuration file to send all the syslog to sms. sms\_ip is the tag used here is updated with IP of SMS node just before provisioning.
+	Update rsyslog configuration file to send all the syslog to sms. sms\_ip is the tag used here is updated with IP of SMS node just before provisioning.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -31,7 +31,7 @@ Update rsyslog configuration file to send all the syslog to sms. sms\_ip is the 
 \end{lstlisting}
 % end_ohpc_run
 
-Assuming sms node nfs share /home, /opt/ohpc/pub, =/opt/ohpc/admin/cloud\_hpc\_init lets mount them during boot
+	Assuming sms node nfs share /home, /opt/ohpc/pub, =/opt/ohpc/admin/cloud\_hpc\_init lets mount them during boot
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -71,7 +71,7 @@ Assuming sms node nfs share /home, /opt/ohpc/pub, =/opt/ohpc/admin/cloud\_hpc\_i
 \end{lstlisting}
 % end_ohpc_run
 
-Have ntp sync with sms node. 
+	Have ntp sync with the sms node. 
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -114,7 +114,8 @@ Have ntp sync with sms node.
 [ctrlr](*\#*) fi
 \end{lstlisting}
 % end_ohpc_run
-Update the hostname as per sms node.
+
+	Update the hostname as per the sms node.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -144,7 +145,7 @@ Update the hostname as per sms node.
 \end{lstlisting}
 % end_ohpc_run
 
-By now all pre-requisite for slurm is taken care, lets start slurm daemon.
+	At this point, all pre-requisites for slurm should be met. Let's start the slurm daemon.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -158,8 +159,7 @@ By now all pre-requisite for slurm is taken care, lets start slurm daemon.
 \end{lstlisting}
 %end_ohpc_run
 
-One last step to make sure ssh is working and enabled on compute nodes. Update the permissions 
-of ssh.
+	One last step to make sure ssh is working and enabled on compute nodes. Update/verify the permissions of ssh.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -170,5 +170,5 @@ of ssh.
 \end{lstlisting}
 % end_ohpc_run
 
-Save the file with name chpc\_init, we will use this file during baremetal node instance creation.
+	Save the file with name chpc\_init, we will use this file during baremetal node instance creation.
 

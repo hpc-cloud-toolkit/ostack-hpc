@@ -1,6 +1,6 @@
-In previous section we created template for cloud-init for hpc head node and hpc compute nodes. We need to update these template with user defined inputs like IP Address, node names. With these updates, cloud-init script is ready to deploy with OpenStack Nova.
+	In the previous section we created templates for cloud-init for the HPC head node and HPC compute nodes. We need to update these templates with user defined inputs like IP Address, node names, etc. With these updates, the cloud-init script is ready to deploy with OpenStack Nova.
 
-Copy cloud-init template to working folder
+	Copy cloud-init template to working folder
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -20,14 +20,15 @@ Copy cloud-init template to working folder
 \end{lstlisting}
 % end_ohpc_run
 
-Update sms\_ip in compute node cloud-init template with HPC head node. 
+	Update sms\_ip in compute node cloud-init template with HPC head node. 
+	
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) sudo sed -i -e "s/<sms_ip>/${sms_ip}/g" $chpcInit
 \end{lstlisting}
 % end_ohpc_run
 
-Update HPC head node cloud-init template with compute name prefix as defined by user
+	Update HPC head node cloud-init template with compute name prefix, as defined by user.
 
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
@@ -39,7 +40,7 @@ Update HPC head node cloud-init template with compute name prefix as defined by 
 \end{lstlisting}
 % end_ohpc_run
 
-Optionally if user enabled mrsh or clustershell, then update cloud-init accordingly
+	Optionally, if user enabled mrsh or clustershell, then update cloud-init accordingly.
 
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]

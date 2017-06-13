@@ -1,7 +1,7 @@
 
-diskimage-builder or dib uses environment variables and elements to customize the images. This section setups default environment variable to build HPC images. For debugging purpose, we will create default user chpc with a password intel8086, with sudo privilege. These variables are used by element devuser. 
+	diskimage-builder (dib) uses environment variables and elements to customize the images. This section setups default environment variable to build HPC images. For debugging purpose, we will create default user chpc with a password intel8086, with sudo privilege. These variables are used by element devuser. 
 
-we will create function setup\_dib\_hpc\_base.
+	We will create a function setup\_dib\_hpc\_base.
 
 %% we will create function  setup_dib_hpc_base. 
 % begin_ohpc_run
@@ -14,7 +14,7 @@ we will create function setup\_dib\_hpc\_base.
 \end{lstlisting}
 % end_ohpc_run
 
-Install dib if it is not already installed by calling setup\_dib function, which we created in previous section
+	Install dib if it is not already installed by calling setup\_dib function, which we created in previous section
 
 % begin_ohpc_run
 % ohpc_validation_comment   Install dib if it is not already installed
@@ -32,29 +32,29 @@ Install dib if it is not already installed by calling setup\_dib function, which
 \end{lstlisting}
 % end_ohpc_run
 
-Now add path to custom elements which are not part of base diskimage-builder. OpenHPC provides few HPC elements. [Note: This also can be part of openHPC provided rpm for dib. In that case remove this step]
+	Add custom elements, which are not part of base diskimage-builder, to the path. OpenHPC provides a few HPC elements. [Note: This also can be part of OpenHPC provided rpm for dib. In that case, remove/ignore this step]
 
 % begin_ohpc_run
 %% ohpc_validation_comment # SECTION BMNOS
 % ohpc_validation_comment   Add custom elements in DIB
 % ohpc_validation_comment
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*)     export ELEMENTS_PATH="$(realpath ../../dib/hpc/elements)"
+[ctrlr](*\#*)     export ELEMENTS_PATH="$(realpath /opt/ohpc/admin/dib-chpc/elements/)"
 \end{lstlisting}
 % end_ohpc_run
 
-Add path to HPC specific files [note: same as earlier, this too can be part of rpm package]
+	Add path to HPC specific files [note: same as earlier, this too can be part of rpm package]
 
 % begin_ohpc_run
 %% ohpc_validation_comment # SECTION BMNOS
 % ohpc_validation_comment   Add path to HPC specific files
 % ohpc_validation_comment
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*)     export DIB_HPC_FILE_PATH="$(realpath ../../dib/hpc/hpc-files/)"
+[ctrlr](*\#*)     export DIB_HPC_FILE_PATH="$(realpath /opt/ohpc/admin/dib-chpc/hpc-files/)"
 \end{lstlisting}
 % end_ohpc_run
 
-HPC elements are common for OpenHPC and Intel HPC Orchestrator, environment variable "DIB\_HPC\_BASE" tell dib which one to pick. For OpenHPC set environment variable
+	HPC elements are common for OpenHPC and Intel HPC Orchestrator, environment variable "DIB\_HPC\_BASE" tell dib which one to pick. For OpenHPC, set environment variable.
 
 % begin_ohpc_run
 %% ohpc_validation_comment # SECTION BMNOS
@@ -65,7 +65,7 @@ HPC elements are common for OpenHPC and Intel HPC Orchestrator, environment vari
 \end{lstlisting}
 % end_ohpc_run
 
-Make sure open hpc packages is installed. ohpc\_pkg is one of the input setup earlier in this document.
+	Make sure open HPC packages is installed. ohpc\_pkg is one of the input setup earlier in this document.
 
 % begin_ohpc_run
 %% ohpc_validation_comment # SECTION BMNOS
@@ -76,7 +76,7 @@ Make sure open hpc packages is installed. ohpc\_pkg is one of the input setup ea
 \end{lstlisting}
 % end_ohpc_run
 
-Export same to DIB.
+	Export same to DIB.
 
 % begin_ohpc_run
 %% ohpc_validation_comment # SECTION BMNOS
@@ -87,7 +87,7 @@ Export same to DIB.
 \end{lstlisting}
 % end_ohpc_run
 
-Create list of HPC elements needed to build HPC images, by starting hpc-env-base. This element will setup basic hpc environment to build hpc images.
+	Create list of HPC elements needed to build HPC images, by starting hpc-env-base. This element will setup basic hpc environment to build hpc images.
 
 % begin_ohpc_run
 %% ohpc_validation_comment # SECTION BMNOS
