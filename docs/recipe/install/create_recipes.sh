@@ -6,7 +6,7 @@ fi
 input_file="./centos7/x86_64/openstack/slurm/steps.tex"
 flavor1="1_combined_controller"
 flavor2="2_cloud_extension"
-flavor3="3_hpc_as_a_service"
+flavor3="3_hpc_as_service"
 recipe2="prepare_chpc_image"
 recipe3="NULL"
 recipe4="prepare_cloud_init"
