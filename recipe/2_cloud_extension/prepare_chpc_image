@@ -18,7 +18,7 @@ function prepare_user_image() {
         #install grub dependency
         yum -y install parted
         # copy patch to installed location
-        sudo cp -fr ../../dib/dib_patch/* /usr/share/diskimage-builder/
+        sudo cp -fr ../../dib/patch/* /usr/share/diskimage-builder/
         
         # For Debugging enable user
         #export PATH=/home/ppk/PPK/dib/dev/diskimage-builder/bin:/home/ppk/PPK/dib/dev/dib-utils/bin:$PATH

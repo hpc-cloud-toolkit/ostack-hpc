@@ -7,7 +7,7 @@ function setup_dib() {
         #install grub dependency
         yum -y install parted
         # copy patch to installed location
-        sudo cp -fr ../../dib/dib_patch/* /usr/share/diskimage-builder/
+        sudo cp -fr ../../dib/patch/* /usr/share/diskimage-builder/
 }
 function setup_dib_hpc_base() {
         # Install dib if it is not already installed
