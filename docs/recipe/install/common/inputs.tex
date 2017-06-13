@@ -10,18 +10,42 @@ used throughout this recipe are presented below. Note that while the example def
 & \texttt{\$\{sms\_name\}} & {\small \# Hostname for SMS server} \\
 & \texttt{\$\{sms\_ip\}} & {\small \# Internal IP address on SMS server}  \\
 & \texttt{\$\{sms\_eth\_internal\}} & {\small \# Internal Ethernet interface on SMS} \\
+& \texttt{\$\{sms\_mac\}} & {\small \# MAC address of baremetal machine to be provisioned as head node} \\
+& \texttt{\$\{sms\_bmc\}} & {\small \# BMC IP address of baremetal machine to be provisioned as head node} \\
+& \texttt{\$\{sms\_bmc\_username\}} & {\small \# BMC creadential of HPC head node instance} \\
+& \texttt{\$\{sms\_bmc\_password\}} & {\small \# BMC creadential of HPC head node instance} \\
 & \texttt{\$\{eth\_provision\}} & {\small \# Provisioning interface for computes} \\
 & \texttt{\$\{internal\_netmask\}} & {\small \# Subnet netmask for internal network} \\
+& \texttt{\$\{controller\_name\}} & {\small \# Host name for opensack controller node} \\
+& \texttt{\$\{controller\_ip\}} & {\small \# internal ip address for opensack controller node} \\
+& \texttt{\$\{cc\_subnet\_cidr\}} & {\small \# CIDR for cloud subnet, will be used to assign IP address to instances } \\
+& \texttt{\$\{cc\_subnet\_dhcp\_start\}} & {\small \# Start IP address for cloud compute nodes instances} \\
+& \texttt{\$\{cc\_subnet\_dhcp\_end\}} & {\small \# End IP address for cloud compute nodes instances} \\
 & \texttt{\$\{ntp\_server\}} & {\small \# Local ntp server for time synchronization} \\
-& \texttt{\$\{bmc\_username\}} & {\small \# BMC username for use by IPMI} \\
-& \texttt{\$\{bmc\_password\}} & {\small \# BMC password for use by IPMI} \\
-& \texttt{\$\{num\_computes\}} & {\small \# Total \# of desired compute nodes} \\
-& \texttt{\$\{c\_ip[0]\}}, \, \texttt{\$\{c\_ip[1]\}}, ... & {\small \# Desired compute node addresses} \\
-& \texttt{\$\{c\_bmc[0]\}}, \texttt{\$\{c\_bmc[1]\}}, ... & {\small \# BMC addresses for computes} \\
-& \texttt{\$\{c\_mac[0]\}}, \texttt{\$\{c\_mac[1]\}}, ... & {\small \# MAC addresses for computes} \\
+& \texttt{\$\{bmc\_username\}} & {\small \# BMC username for cloud computes, used by IPMI} \\
+& \texttt{\$\{bmc\_password\}} & {\small \# BMC password for cloud computes, used by IPMI} \\
+& \texttt{\$\{num\_computes\}} & {\small \# Total \# of desired cloud compute nodes} \\
 & \texttt{\$\{compute\_regex\}} & {\small \# Regex matching all compute node names (e.g. ``c*'')} \\
-& \texttt{\$\{compute\_prefix\}} & {\small \# Prefix for compute node names (e.g. ``c'')} \\
-& 
+& \texttt{\$\{cnodename\_prefix\}} & {\small \# Prefix for compute node names (e.g. ``c'')} \\
+& \texttt{\$\{cc\_ip[0]\}}, \, \texttt{\$\{cc\_ip[1]\}}, ... & {\small \# Desired cloud compute node MAC addresses} \\
+& \texttt{\$\{cc\_bmc[0]\}}, \texttt{\$\{cc\_bmc[1]\}}, ... & {\small \# BMC addresses for cloud compute nodes} \\
+& \texttt{\$\{cc\_mac[0]\}}, \texttt{\$\{cc\_mac[1]\}}, ... & {\small \# MAC addresses for cloud computes nodes} \\
+& \texttt{\$\{RAM\_MB\}}, & {\small \# Memory on each compute nodes} \\
+& \texttt{\$\{CPU\_MB\}}, & {\small \# Number of CPUs on each compute nodes} \\
+& \texttt{\$\{DISK\_GB\}}, & {\small \# Local sotrage on each compute nodes} \\
+& \texttt{\$\{ARCH\}}, & {\small \# Processor Architecture of each compute nodes} \\
+& \texttt{\$\{SOCKETS\}}, & {\small \# Number of sockets  on Compute. this is used by SLURM} \\
+& \texttt{\$\{CORES\_PER\_SOCKET\}}, & {\small \# Number of cores per sockets  on Compute. This is used by SLURM} \\
+& \texttt{\$\{THREADS\_PER\_CORE\}}, & {\small \# Number of threads per cores on Compute. This is used by SLURM} \\
+& \texttt{\$\{chpc\_image\_deploy\_kernel\}}, & {\small \# Path to cloud node kernel image. } \\
+& \texttt{\$\{chpc\_image\_deploy\_ramdisk\}}, & {\small \# Path to cloud node ramdisk image. } \\
+& \texttt{\$\{chpc\_image\_user\}}, & {\small \# Path to HPC compute node user image. } \\
+& \texttt{\$\{chpc\_image\_sms\}}, & {\small \# Path to HPC head node user image. } \\
+& \texttt{\$\{ohpc\_pkg\}}, & {\small \# Link to OHPC package.  } \\
+\end{tabular}
+\begin{tabular}{@{}>{}l p{7cm} l}
+& \texttt{} & {\small \ 	i.e. https://github.com/openhpc/ohpc/releases/download/ } \\
+& \texttt{} & {\small \ 	v1.1.GA/ohpc\-release\-centos7.2\-1.1\-1.x86\_64.rpm. } \\
 \end{tabular}
 
 \vspace*{0.2cm}
