@@ -85,7 +85,7 @@ mv heat_3 ./recipe/$flavor3/heat_templates/$heat3
 
 mv support_2 ./recipe/$flavor3/$support2
 mv support_3 ./recipe/$flavor3/$support3
-mv support_4 ./recipe/$flavor3/$support4
+#mv support_4 ./recipe/$flavor3/$support4
 
 # Create Parent script directories
 mkdir -p recipe/cloud_hpc_init/ohpc
