@@ -129,6 +129,10 @@
 \subsection{Prepare OpenStack for bare metal provisioning with ironic} \label{sec:o-s_prep-ironic}
 \input{common/o-s_prep-ironic}
 
+\section{Updating SLURM}
+\input{common/update_cnodes_to_sms.tex}
+	
+
 \vspace*{-0.15cm}
 \newpage
 \subsection{Instantiate bare metal nodes} \label{sec:instantiate-bare-metal}
@@ -255,18 +259,9 @@
 % ohpc_command # Prepare SMS/Service Node. 
 % ohpc_command # Add Cloud baremetal nodes to HPC Orchestrator
 % ohpc_command # ========================================================
-% ohpc_command #time source update_cnodes_to_sms
+% ohpc_command time source update_cnodes_to_sms
 % ohpc_command
 
-
-% ohpc_validation_comment  # # QFILEQ
-% ohpc_command #!/bin/bash 
-% ohpc_validation_comment  # FILE: update_cnodes_to_sms
-% ohpc_validation_comment  # Update chpc_sms_init or prepare_cloud_init  with similar informoation from recipe for use case 2
-% ohpc_command #on Head node, start slurm
-% ohpc_command sleep 5
-% ohpc_command ssh $sms_ip scontrol update nodename=cc[1-${num_ccomputes}] state=idle
-% ohpc_command ssh $sms_ip sinfo
 
 % ohpc_validation_comment  # # QFILEQ
 
