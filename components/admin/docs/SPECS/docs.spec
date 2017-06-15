@@ -33,6 +33,7 @@ BuildRequires:  texlive-mdwtools
 BuildRequires:  texlive-multirow
 BuildRequires:  texlive-tcolorbox
 BuildRequires:  latexmk
+BuildRequires:  texlive-environ
 BuildRequires:  git
 Requires:       make
 Requires:       net-tools
