@@ -9,24 +9,24 @@ set -o pipefail
 
 case "$DIB_INIT_SYSTEM" in
     systemd)
-        if [ -e /etc/rsyslog.conf ]; then
+        #if [ -e /etc/rsyslog.conf ]; then
             # Restart the rsyslog
-            systemctl restart rsyslog
-        fi
+        #    systemctl restart rsyslog
+        #fi
 
         # Enable InfiniBand
-        systemctl enable rdma
+        # systemctl enable rdma
         # Enable NTPD
         if [[ $DIB_HPC_IMAGE_TYPE == "compute" ]]; then
             systemctl enable ntpd
         fi
         #Enable NTPD on sms node
         if [[ $DIB_HPC_IMAGE_TYPE == "sms" ]]; then
-            if [[ ! -z "$DIB_NTP_SERVER" ]]; then
+            if [[ ! -z "${DIB_NTP_SERVER}" ]]; then
                echo "server ${DIB_NTP_SERVER}" >> /etc/ntp.conf 
             fi
-            systemctl enable ntpd.service
-            systemctl enable nfs-server
+        #    systemctl enable ntpd.service
+        #   systemctl enable nfs-server
         fi
         ;;
     *)

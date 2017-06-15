@@ -78,8 +78,8 @@ Configure tfpt server
 [ctrlr](*\#*) echo "  server          = /usr/sbin/in.tftpd" >> /etc/xinetd.d/tftp
 [ctrlr](*\#*) echo "  server_args     = -v -v -v -v -v --map-file /tftpboot/map-file /tftpboot" >> /etc/xinetd.d/tftp
 [ctrlr](*\#*) echo "  disable         = no" >> /etc/xinetd.d/tftp
-[ctrlr](*\#*) echo "  (*\#*) This is a workaround for Fedora, where TFTP will listen only on" >> /etc/xinetd.d/tftp
-[ctrlr](*\#*) echo "  (*\#*) IPv6 endpoint, if IPv4 flag is not used." >> /etc/xinetd.d/tftp
+[ctrlr](*\#*) echo "  #This is a workaround for Fedora, where TFTP will listen only on" >> /etc/xinetd.d/tftp
+[ctrlr](*\#*) echo "  # IPv6 endpoint, if IPv4 flag is not used." >> /etc/xinetd.d/tftp
 [ctrlr](*\#*) echo "  flags           = IPv4" >> /etc/xinetd.d/tftp
 [ctrlr](*\#*) echo "}" >> /etc/xinetd.d/tftp
 
@@ -105,7 +105,7 @@ Configure tfpt server
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) sed --in-place "s|(*\#*)tftp_server=\$my_ip|tftp_server=${controller_ip}|" /etc/ironic/ironic.conf
+[ctrlr](*\#*) sed --in-place "s|#tftp_server=\$my_ip|tftp_server=${controller_ip}|" /etc/ironic/ironic.conf
 \end{lstlisting} 
  % end_ohpc_run
 
@@ -115,9 +115,9 @@ Configure tfpt server
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) sed --in-place "s|(*\#*)tftp_root=/tftpboot|tftp_root=/tftpboot|" /etc/ironic/ironic.conf
-[ctrlr](*\#*) sed --in-place "s|(*\#*)ip_version=4|ip_version=4|" /etc/ironic/ironic.conf
-[ctrlr](*\#*) sed --in-place "s|(*\#*)automated_clean=true|automated_clean=false|" /etc/ironic/ironic.conf
+[ctrlr](*\#*) sed --in-place "s|#tftp_root=/tftpboot|tftp_root=/tftpboot|" /etc/ironic/ironic.conf
+[ctrlr](*\#*) sed --in-place "s|#ip_version=4|ip_version=4|" /etc/ironic/ironic.conf
+[ctrlr](*\#*) sed --in-place "s|#automated_clean=true|automated_clean=false|" /etc/ironic/ironic.conf
 \end{lstlisting} 
  % end_ohpc_run
 
@@ -127,8 +127,8 @@ Configure tfpt server
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) sed --in-place "s|(*\#*)scheduler_use_baremetal_filters=false|scheduler_use_baremetal_filters=true|" \
- /etc/nova/nova.conf
+[ctrlr](*\#*) sed --in-place "s|#scheduler_use_baremetal_filters=false|scheduler_use_baremetal_filters=true|" \
+[ctrlr](*\#*) /etc/nova/nova.conf
 \end{lstlisting} 
  % end_ohpc_run
 
@@ -139,7 +139,7 @@ Configure tfpt server
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) sed --in-place "s|reserved_host_memory_mb=512|reserved_host_memory_mb=0|" /etc/nova/nova.conf
-[ctrlr](*\#*) sed --in-place "s|(*\#*)scheduler_host_subset_size=1|scheduler_host_subset_size=9999999|" /etc/nova/nova.conf
+[ctrlr](*\#*) sed --in-place "s|#scheduler_host_subset_size=1|scheduler_host_subset_size=9999999|" /etc/nova/nova.conf
 \end{lstlisting} 
  % end_ohpc_run
 
@@ -152,7 +152,7 @@ Configure tfpt server
 [ctrlr](*\#*) # Enable meta data
 [ctrlr](*\#*) # Edit /etc/neutron/dhcp_agent.ini
 [ctrlr](*\#*) sed --in-place "s|enable_isolated_metadata\ =\ False|enable_isolated_metadata\ =\ True|" /etc/neutron/dhcp_agent.ini
-[ctrlr](*\#*) sed --in-place "s|(*\#*)force_metadata\ =\ false|force_metadata\ =\ True|" \ /etc/neutron/dhcp_agent.ini
+[ctrlr](*\#*) sed --in-place "s|#force_metadata\ =\ false|force_metadata\ =\ True|" \ /etc/neutron/dhcp_agent.ini
 \end{lstlisting} 
  % end_ohpc_run
 
@@ -162,25 +162,25 @@ Configure tfpt server
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) #(*\#*)(*\#*)(*\#*)(*\#*)
+[ctrlr](*\#*) ######
 [ctrlr](*\#*) # Enable internal dns for hostname resolution, if it already not set
 [ctrlr](*\#*) # manipulating configuration file via shell, alternate is to use openstack-config (TODO)
-[ctrlr](*\#*) #(*\#*)(*\#*)(*\#*)
+[ctrlr](*\#*) ######
 [ctrlr](*\#*) # setup dns domain first
 [ctrlr](*\#*) if grep -q "^dns_domain.*openstacklocal$" /etc/neutron/neutron.conf; then
 [ctrlr](*\#*)    sed -in-place  "s|^dns_domain.*|dns_domain = oslocal|" /etc/neutron/neutron.conf
 [ctrlr](*\#*) else
 [ctrlr](*\#*)    if ! grep -q "^dns_domain" neutron.conf; then
-[ctrlr](*\#*)        sed -in-place  "s|^(*\#*)dns_domain = openstacklocal$|dns_domain = oslocal|" /etc/neutron/neutron.conf
+[ctrlr](*\#*)        sed -in-place  "s|^#dns_domain = openstacklocal$|dns_domain = oslocal|" /etc/neutron/neutron.conf
 [ctrlr](*\#*)    fi
 [ctrlr](*\#*) fi
 [ctrlr](*\#*) # configure ml2 dns driver for neutron
 [ctrlr](*\#*) ml2file=/etc/neutron/plugins/ml2/ml2_conf.ini
 [ctrlr](*\#*) if ! grep -q "^extension_drivers" $ml2file; then
-[ctrlr](*\#*)     (*\#*) Assuming there is a place holder in comments, replace that string
-[ctrlr](*\#*)     sed -in-place  "s|^(*\#*)extension_drivers.*|extension_drivers = port_security,dns|" $ml2file
+[ctrlr](*\#*)     # Assuming there is a place holder in comments, replace that string
+[ctrlr](*\#*)     sed -in-place  "s|^#extension_drivers.*|extension_drivers = port_security,dns|" $ml2file
 [ctrlr](*\#*) else
-[ctrlr](*\#*)     (*\#*) Entry is present, check if dns is already present, if not then enable
+[ctrlr](*\#*)     # Entry is present, check if dns is already present, if not then enable
 [ctrlr](*\#*)     if ! grep "^extension_drivers" $ml2file|grep -q dns; then
 [ctrlr](*\#*)         current_dns=`grep "^extension_drivers" $ml2file`
 [ctrlr](*\#*)         new_dns="$current_dns,dns"

@@ -6,6 +6,7 @@
 % ohpc_validation_comment
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) function prepare_user_image() {
+
 \end{lstlisting} 
 
 	Check if user has already supplied compute node images by checking environment variable chpc\_create\_new\_image and chpc\_image\_user. If image is supplied then we will copy image to ohpc image location and setup our environemnt variable to point to image location 
@@ -21,6 +22,8 @@
 [ctrlr](*\#*)       fi
 [ctrlr](*\#*)       chpc_image_user=$CHPC_IMAGE_DEST
 [ctrlr](*\#*)    else
+[ctrlr](*\#*)    
+
 \end{lstlisting} 
 
 % end_ohpc_run
@@ -31,6 +34,7 @@
 
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)       setup_dib_hpc_base
 [ctrlr](*\#*)       export DIB_HPC_IMAGE_TYPE=compute
 \end{lstlisting} 
 % end_ohpc_run
@@ -70,10 +74,10 @@
 % begin_ohpc_run
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*)       chpc_image_sms="$( realpath icloud-hpc-cent7.qcow2)"
+[ctrlr](*\#*)       chpc_image_user="$( realpath icloud-hpc-cent7.qcow2)"
 [ctrlr](*\#*)       mkdir -p $CHPC_CLOUD_IMAGE_PATH
 [ctrlr](*\#*)       mv -f $chpc_image_user$CHPC_CLOUD_IMAGE_PATH
-[ctrlr](*\#*)       chpc_image_user=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_sms)
+[ctrlr](*\#*)       chpc_image_user=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_user)
 [ctrlr](*\#*)     fi # end of else of or if
 [ctrlr](*\#*) } # end of function
 \end{lstlisting} 

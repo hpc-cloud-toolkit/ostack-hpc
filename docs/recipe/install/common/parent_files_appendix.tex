@@ -5,8 +5,8 @@
 
 % begin_ohpc_run
 % ohpc_command #  PFILEP
-% ohpc_command ## FILE: ./common_functions
 % ohpc_command #!/bin/bash
+% ohpc_command ## FILE: ./common_functions
 % ohpc_command 
 % ohpc_command #validateIpInput () {
 % ohpc_command #}
@@ -155,9 +155,13 @@
 % ohpc_command    netmask="$( cidr_to_netmask $cidr )"
 % ohpc_command    echo $netmask
 % ohpc_command }
+
+
+
+
 % ohpc_command #  PFILEP
-% ohpc_command ## FILE: ./c_init_workaround
 % ohpc_command #!/bin/bash
+% ohpc_command ## FILE: ./c_init_workaround
 % ohpc_command #set -x
 % ohpc_command #Possible requirement for this script: Set hostkey checking to no
 % ohpc_command sed --in-place "s|#\s*StrictHostKeyChecking\s*ask|StrictHostKeyChecking no|" /etc/ssh/ssh_config
@@ -173,9 +177,11 @@
 % ohpc_command #Execute cloud_hpc_init/chpc_init on nodes using pdsh. TODO: Call all nodes through a for loop
 % ohpc_command pdsh -w cc1 /root/cloud_hpc_init/chpcInit
 % ohpc_command #set +x
+
+
 % ohpc_command #  PFILEP
-% ohpc_command ## FILE: ./setup_cloud_hpc.sh
 % ohpc_command #!/bin/bash
+% ohpc_command ## FILE: ./setup_cloud_hpc.sh
 % ohpc_command # -----------------------------------------------------------------------------------------
 % ohpc_command #  Example Installation Script Template
 % ohpc_command #  
@@ -361,9 +367,12 @@
 % ohpc_command #srun -N ${num_ccomputes} hostname -i
 % ohpc_command 
 % ohpc_command # End
+
+
 % ohpc_command #  PFILEP
-% ohpc_command ## FILE: ./teardown_cloud_nodes.sh
+
 % ohpc_command #!/bin/bash
+% ohpc_command ## FILE: ./teardown_cloud_nodes.sh
 % ohpc_command #This script is designed to be used on our internal sun-hn1 node to clean up all of our configured OpenStack
 % ohpc_command #configurations for a clean OpenStack configuration without completely uninstalling and reinstalling the
 % ohpc_command #entire OpenStack software stack.
@@ -417,9 +426,12 @@
 % ohpc_command 
 % ohpc_command #Finally, remove the keypair association we have in nova. This will leave the system clean and ready for another run
 % ohpc_command nova keypair-delete ostack_key
+
+
+
 % ohpc_command #  PFILEP
-% ohpc_command ## FILE: ./get_cn_mac
 % ohpc_command #!/bin/bash
+% ohpc_command ## FILE: ./get_cn_mac
 % ohpc_command 
 % ohpc_command # check if ipmitool is installed, if not then quit
 % ohpc_command 

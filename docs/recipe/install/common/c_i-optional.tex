@@ -19,15 +19,15 @@
 [ctrlr](*\#*) cat /etc/services | grep mshell
 [ctrlr](*\#*) mshell_exists=$?
 [ctrlr](*\#*) if [ "${mshell_exists}" -ne "0" ]; then
-[ctrlr](*\#*)     echo "mshell          21212/tcp                  (*\#*) mrshd" >> /etc/services
+[ctrlr](*\#*)     echo "mshell          21212/tcp                   mrshd" >> /etc/services
 [ctrlr](*\#*) fi
 [ctrlr](*\#*) cat /etc/services | grep mlogin
 [ctrlr](*\#*) mlogin_exists=$?
 [ctrlr](*\#*) if [ "${mlogin_exists}" -ne "0" ]; then
-[ctrlr](*\#*)     echo "mlogin            541/tcp                  (*\#*) mrlogind" >> /etc/services
+[ctrlr](*\#*)     echo "mlogin            541/tcp                   mrlogind" >> /etc/services
 [ctrlr](*\#*) fi
 \end{lstlisting} 
- % end_ohpc_run
+% end_ohpc_run
 
 
 \subsubsection{Updating cluster shell during cloud -init}
@@ -49,11 +49,11 @@
 	
 	Create a new file sms/enable\_genders, add configuration to enable genders on compute nodes, and save it. 
 
- % begin_ohpc_run
- % ohpc_validation_newline
- % ohpc_validation_comment ## ZFILEZ
- % ohpc_command #!/bin/bash
- % ohpc_validation_comment # FILE: enable_genders
+% begin_ohpc_run
+% ohpc_validation_newline
+% ohpc_validation_comment ## ZFILEZ
+% ohpc_command #!/bin/bash
+% ohpc_validation_comment # FILE: enable_genders
  
  
  \begin{lstlisting}[language=bash,keywords={}]
@@ -65,7 +65,7 @@
 [ctrlr](*\#*) if [ "${gender_exists}" -ne "0" ]; then 
 [ctrlr](*\#*) echo -e "${cc_name[$i]}\tcompute,bmc=${cc_bmc[$i+1]}"
 [ctrlr](*\#*) fi
-[ctrlr](*\#*) done >> /etc/gender
+[ctrlr](*\#*) done >> /etc/genders
  \end{lstlisting}
  
 % ohpc_validation_comment ## ZFILEZ

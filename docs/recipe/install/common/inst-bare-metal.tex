@@ -13,7 +13,7 @@
 % ohpc_command function setup_baremetal() {
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) #Get the tenant ID for the services tenant
-    SERVICES_TENANT_ID=`keystone tenant-list | grep "|\s*services\s*|" | awk '{print $2}'`
+[ctrlr](*\#*)    SERVICES_TENANT_ID=`keystone tenant-list | grep "|\s*services\s*|" | awk '{print $2}'`
 [ctrlr](*\#*) 
 [ctrlr](*\#*) #Create the flat network on which you are going to launch instances
 [ctrlr](*\#*)     neutron net-list | grep "|\s*sharednet1\s*|"
@@ -330,5 +330,6 @@
 % ohpc_command sleep 15
 % ohpc_validation_comment ## # Now boot compute nodes
 % ohpc_command boot_cn
+% ohpc_command sleep 5
 
 % end_ohpc_run
