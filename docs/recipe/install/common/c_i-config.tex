@@ -14,7 +14,7 @@
 [ctrlr](*\#*) # if directory exists then mv to Old directory. TBD
 [ctrlr](*\#*) mkdir -p $chpcInitPath
 [ctrlr](*\#*) #copy Cloud HPC files to temp working directory
-[ctrlr](*\#*) sudo cp -fr -L < ${SCRIPTDIR} >/ cloud_hpc_init/${chpc_base}/* $chpcInitPath/
+[ctrlr](*\#*) sudo cp -fr -L ${SCRIPTDIR}/cloud_hpc_init/${chpc_base}/* $chpcInitPath
 [ctrlr](*\#*) export chpcInit=$chpcInitPath/chpc_init
 [ctrlr](*\#*) export chpcSMSInit=$chpcInitPath/chpc_sms_init
 \end{lstlisting}

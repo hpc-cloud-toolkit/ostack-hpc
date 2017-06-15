@@ -2,7 +2,7 @@
 
 % begin_ohpc_run
 % ohpc_validation_newline
-% ohpc_validation_comment function to prepare head node
+% ohpc_validation_comment function to prepare compute node
 % ohpc_validation_comment
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) function prepare_user_image() {
@@ -60,8 +60,7 @@
 % begin_ohpc_run
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*)       disk-image-create centos7 vm local-config dhcp-all-interfaces devuser \
-        selinux-permissive $DIB_HPC_ELEMENTS -o icloud-hpc-cent7-sms
+[ctrlr](*\#*)       disk-image-create centos7 vm local-config dhcp-all-interfaces devuser selinux-permissive $DIB_HPC_ELEMENTS -o icloud-hpc-cent7
 \end{lstlisting} 
  % end_ohpc_run 
 
