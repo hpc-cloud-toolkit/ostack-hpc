@@ -4,7 +4,7 @@ export DIB_DEV_USER_USERNAME=chpc
 export DIB_DEV_USER_PASSWORD=intel8086
 export DIB_DEV_USER_PWDLESS_SUDO=1
 export DIB_DEBUG_TRACE=1
-export ELEMENTS_PATH=/home/ppk/dib/dev/hpc/elements
+export ELEMENTS_PATH=/home/sunil/hpc/dib/hpc/elements
 export DIB_HPC_BASE=ohpc
 #export DIB_HPC_ORCH_PKG=/home/ppk/Downloads/HPC-Orchestrator-rhel7.2u5-16.01.002.beta.iso
 export DIB_HPC_FILE_PATH=/home/ppk/dib/dev/hpc/hpc-files
@@ -15,6 +15,7 @@ export DIB_HPC_FILE_PATH=/home/ppk/dib/dev/hpc/hpc-files
 export DIB_HPC_IMAGE_TYPE=sms
 # temp path for ssh authorized keys
 export DIB_HPC_SSH_PUB_KEY=/root/.ssh/hpcasservice
+#export DIB_NTP_SERVER=10.23.184.104
 
 # sms node specific variables, mainly used by hpc-dev-env elements
 # compiler
@@ -26,8 +27,9 @@ export DIB_HPC_PERF_TOOLS="perf-tools"
 # 3rd Part Libraries & Tools
 export DIB_HPC_3RD_LIBS="serial-libs parallel-libs io-libs python-libs runtimes"
 
-#export DIB_HPC_OHPC_PKG="https://github.com/openhpc/ohpc/releases/download/v1.2.1.GA/ohpc-release-centos7.2-1.2-1.x86_64.rpm"
-export DIB_HPC_OHPC_PKG="https://github.com/openhpc/ohpc/releases/download/v1.1.GA/ohpc-release-centos7.2-1.1-1.x86_64.rpm"
+export DIB_HPC_OHPC_PKG="https://github.com/openhpc/ohpc/releases/download/v1.2.1.GA/ohpc-release-centos7.2-1.2-1.x86_64.rpm"
+#export DIB_HPC_OHPC_PKG="https://github.com/openhpc/ohpc/releases/download/v1.1.GA/ohpc-release-centos7.2-1.1-1.x86_64.rpm"
+#export DIB_HPC_OHPC_PKG="https://github.com/openhpc/ohpc/releases/download/v1.3.GA/ohpc-release-1.3-1.el7.x86_64.rpm"
 
 # dib is failing on openHPC repo, so disabling this for now
 #export DIB_DISABLE_KERNEL_CLEANUP=1

@@ -12,12 +12,12 @@ set -u
 case "$DIB_INIT_SYSTEM" in
     systemd)
         if [ -e /etc/rsyslog.conf ]; then
-            # Restart the rsyslog
+             Restart the rsyslog
             systemctl restart rsyslog
         fi
 
         # Enable InfiniBand
-        systemctl enable rdma
+         systemctl enable rdma
         # Enable NTPD
         if [[ $DIB_HPC_IMAGE_TYPE == "compute" ]]; then
             systemctl enable ntpd
