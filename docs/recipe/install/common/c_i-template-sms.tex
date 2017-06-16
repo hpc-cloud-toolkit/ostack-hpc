@@ -16,6 +16,12 @@
 [ctrlr](*\#*) num_ccomputes=<update_num_ccomputes>
 [ctrlr](*\#*) ntp_server=<update_ntp_server>
 [ctrlr](*\#*) sms_name=<update_sms_name>
+[ctrlr](*\#*) logger "chpcInit: Entered chpcInit"
+[ctrlr](*\#*) #Ensure the executing shell is in the same directory as the script.
+[ctrlr](*\#*) SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P && echo x)"
+[ctrlr](*\#*) SCRIPTDIR="${SCRIPTDIR%x}"
+[ctrlr](*\#*) cd $SCRIPTDIR
+
 \end{lstlisting} 
  % end_ohpc_run
 
@@ -35,6 +41,25 @@
 [ctrlr](*\#*) sudo cp -fpr /etc/passwd $chpcInitPath
 [ctrlr](*\#*) sudo cp -fpr /etc/shadow $chpcInitPath
 [ctrlr](*\#*) sudo cp -fpr /etc/group $chpcInitPath
+[ctrlr](*\#*) # Copy public ssh key to shared drive
+[ctrlr](*\#*) _ssh_path=/root/.ssh
+[ctrlr](*\#*) if [ ! -e "$_ssh_path/hpcasservice" ]; then
+[ctrlr](*\#*) 
+[ctrlr](*\#*) 	if [ ! -d "$_ssh_path" ]; then
+[ctrlr](*\#*) 		install -d -m 700 $_ssh_path
+[ctrlr](*\#*) 	fi
+[ctrlr](*\#*) 	ssh-keygen -t dsa -f $_ssh_path/hpcasservice -N '' -C "HPC Cluster key" > /dev/null 2>&1
+[ctrlr](*\#*) 	cat $_ssh_path/hpcasservice.pub >> $_ssh_path/authorized_keys
+[ctrlr](*\#*) 	chmod 0600 $_ssh_path/authorized_keys
+[ctrlr](*\#*) fi
+[ctrlr](*\#*) 	#update config
+[ctrlr](*\#*) if [ ! -e "$_ssh_path/config" ]; then
+[ctrlr](*\#*) 	echo "Host *" > $_ssh_path/config
+[ctrlr](*\#*) 	echo "    IdentityFile ~/.ssh/hpcasservice" >> $_ssh_path/config
+[ctrlr](*\#*) 	echo "    StrictHostKeyChecking=no" >> $_ssh_path/config
+[ctrlr](*\#*) fi
+[ctrlr](*\#*) cp -fpr $_ssh_path/authorized_keys $chpcInitPath
+
 \end{lstlisting} 
  % end_ohpc_run
 

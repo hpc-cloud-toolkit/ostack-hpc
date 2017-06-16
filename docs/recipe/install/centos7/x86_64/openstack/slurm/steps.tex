@@ -149,62 +149,63 @@
 % ohpc_validation_comment  # # QFILEQ
 % ohpc_validation_comment  # # XFILEX
 
-% ohpc_validation_comment  # FILE: README
-% ohpc_validation_comment This directory "hpc/recipe/3_hpc_as_service" maintains the recipes for use
-% ohpc_validation_comment case 3. In this case OpenStack provides baremetal nodes and recipe
-% ohpc_validation_comment creates one of the bare metal node as HPC head node and create other 
-% ohpc_validation_comment remaining bare metals as HPC compute nodes.
-% ohpc_validation_comment it provides recipe to create HPC head node images as well as hpc
-% ohpc_validation_comment compute node images.
-% ohpc_validation_comment for hpc configuration it creates cloud-init script (post boot script)
-% ohpc_validation_comment for each type of nodes (SMS as well CN)
-% ohpc_validation_comment This use case can be invoked as below:
-% ohpc_validation_comment ../setup_cloud_hpc.sh -i=inventory/3_hpc_as_service/hn3_has_input.local -u=3 % % ohpc_validation_comment -n=inventory/3_hpc_as_service/hn3_has_inventory
-% ohpc_validation_comment 
-% ohpc_validation_comment Below are the scripts called to create the environment for use case 1:
-% ohpc_validation_comment 
-% ohpc_validation_comment file: set_os_hpc
-% ohpc_validation_comment ================
-% ohpc_validation_comment This is the script to setup HPC in OpenStack Cloud. This script is called by 
-% ohpc_validation_comment setup_cloud_hpc.sh if user provides a "-u=3" input to it. To perform the job,
-% ohpc_validation_comment it executes other scripts.
-% ohpc_validation_comment 
-% ohpc_validation_comment file: prepare_cloud_init
-% ohpc_validation_comment ======================
-% ohpc_validation_comment This sripts generates cloudinit script (chpcInit) for both sms node as well as
-% ohpc_validation_comment compute nodes, which is supplied to Nova to boot the nodes.
-% ohpc_validation_comment 
-% ohpc_validation_comment file: prepare_chpc_image
-% ohpc_validation_comment ========================
-% ohpc_validation_comment This generates HPC images for provisioning bare metal cloud nodes. It generates 
-% ohpc_validation_comment 3 images
-% ohpc_validation_comment Two deploy images for ironic to use 
-% ohpc_validation_comment 1. icloud-hpc-deploy-c7.kernel
-% ohpc_validation_comment 2. icloud-hpc-deply-c7.initramfs
-% ohpc_validation_comment One user image for compute node
-% ohpc_validation_comment 3. icloud-hpc-cent7.qcow2
-% ohpc_validation_comment One user image for hpc head node (sms)
-% ohpc_validation_comment 4. icloud-hpc-cent7-sms.qcow2
-% ohpc_validation_comment 
-% ohpc_validation_comment file: prepare_chpc_openstack
-% ohpc_validation_comment ============================
-% ohpc_validation_comment This script prepares nova, ironic for baremetal provisioning, installs and 
-% ohpc_validation_comment configure pxe boot, pxe-impmi driver for ironic, and enable cloud init for 
-% ohpc_validation_comment baremetal nodes.
-% ohpc_validation_comment It also configure neutron for internal dns service
-% ohpc_validation_comment 
-% ohpc_validation_comment File: deploy_chpc_openstack
-% ohpc_validation_comment ===========================
-% ohpc_validation_comment This script deploy baremetal nodes in an openstack using nova, ironic, neutron 
-% ohpc_validation_comment and glance by using cloudinit recipe (prepare under prepare_cloudInit) and HPC
-% ohpc_validation_comment images (prepared by prepare_chpc_image).
-% ohpc_validation_comment it first deploys sms node and then deploy compute nodes.
-% ohpc_validation_comment 
-% ohpc_validation_comment file: update_cnodes_to_sms
-% ohpc_validation_comment ==========================
-% ohpc_validation_comment This script perform the post boot configuration including updating SLURM 
-% ohpc_validation_comment resource manager at sms node for hpc compute nodes
-% ohpc_validation_comment 
+% ohpc_command  # FILE: README
+% ohpc_command This directory "hpc/recipe/3_hpc_as_service" maintains the recipes for use
+% ohpc_command case 3. In this case OpenStack provides baremetal nodes and recipe
+% ohpc_command creates one of the bare metal node as HPC head node and create other 
+% ohpc_command  remaining bare metals as HPC compute nodes.
+% ohpc_command it provides recipe to create HPC head node images as well as hpc
+% ohpc_command compute node images.
+% ohpc_command for hpc configuration it creates cloud-init script (post boot script)
+% ohpc_command for each type of nodes (SMS as well CN)
+% ohpc_command This use case can be invoked as below:
+% ohpc_command ../setup_cloud_hpc.sh -i=inventory/3_hpc_as_service/hn3_has_input.local -u=3  
+% ohpc_command -n=inventory/3_hpc_as_service/hn3_has_inventory
+% ohpc_command 
+% ohpc_command Below are the scripts called to create the environment for use case 1:
+% ohpc_command 
+% ohpc_command file: set_os_hpc
+% ohpc_command ================
+% ohpc_command This is the script to setup HPC in OpenStack Cloud. This script is called by 
+% ohpc_command setup_cloud_hpc.sh if user provides a "-u=3" input to it. To perform the job,
+% ohpc_command it executes other scripts.
+% ohpc_command validation_comment  
+% ohpc_command file: prepare_cloud_init
+% ohpc_command ======================
+% ohpc_command This sripts generates cloudinit script (chpcInit) for both sms node as well as
+% ohpc_command compute nodes, which is supplied to Nova to boot the nodes.
+% ohpc_command validation_comment  
+% ohpc_command file: prepare_chpc_image
+% ohpc_command ========================
+% ohpc_command This generates HPC images for provisioning bare metal cloud nodes. It generates 
+% ohpc_command 3 images
+% ohpc_command Two deploy images for ironic to use 
+% ohpc_command 1. icloud-hpc-deploy-c7.kernel
+% ohpc_command 2. icloud-hpc-deply-c7.initramfs
+% ohpc_command One user image for compute node
+% ohpc_command 3. icloud-hpc-cent7.qcow2
+% ohpc_command One user image for hpc head node (sms)
+% ohpc_command 4. icloud-hpc-cent7-sms.qcow2
+% ohpc_command 
+% ohpc_command file: prepare_chpc_openstack
+% ohpc_command ============================
+% ohpc_command This script prepares nova, ironic for baremetal provisioning, installs and 
+% ohpc_command configure pxe boot, pxe-impmi driver for ironic, and enable cloud init for 
+% ohpc_command baremetal nodes.
+% ohpc_command It also configure neutron for internal dns service
+% ohpc_command 
+% ohpc_command File: deploy_chpc_openstack
+% ohpc_command ===========================
+% ohpc_command This script deploy baremetal nodes in an openstack using nova, ironic, neutron 
+% ohpc_command and glance by using cloudinit recipe (prepare under prepare_cloudInit) and HPC
+% ohpc_command images (prepared by prepare_chpc_image).
+% ohpc_command it first deploys sms node and then deploy compute nodes.
+% ohpc_command 
+% ohpc_command file: update_cnodes_to_sms
+% ohpc_command ==========================
+% ohpc_command This script perform the post boot configuration including updating SLURM 
+% ohpc_command resource manager at sms node for hpc compute nodes
+% ohpc_command 
 
 
 % ohpc_validation_comment  # # QFILEQ

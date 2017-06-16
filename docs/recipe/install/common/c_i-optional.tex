@@ -19,12 +19,12 @@
 [ctrlr](*\#*) cat /etc/services | grep mshell
 [ctrlr](*\#*) mshell_exists=$?
 [ctrlr](*\#*) if [ "${mshell_exists}" -ne "0" ]; then
-[ctrlr](*\#*)     echo "mshell          21212/tcp                   mrshd" >> /etc/services
+[ctrlr](*\#*)     echo "mshell          21212/tcp                  # mrshd" >> /etc/services
 [ctrlr](*\#*) fi
 [ctrlr](*\#*) cat /etc/services | grep mlogin
 [ctrlr](*\#*) mlogin_exists=$?
 [ctrlr](*\#*) if [ "${mlogin_exists}" -ne "0" ]; then
-[ctrlr](*\#*)     echo "mlogin            541/tcp                   mrlogind" >> /etc/services
+[ctrlr](*\#*)     echo "mlogin            541/tcp                  # mrlogind" >> /etc/services
 [ctrlr](*\#*) fi
 \end{lstlisting} 
 % end_ohpc_run

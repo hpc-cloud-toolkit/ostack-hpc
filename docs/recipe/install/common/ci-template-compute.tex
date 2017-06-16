@@ -10,8 +10,13 @@
 % ohpc_validation_comment #   FILE: chpc_init
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*)chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
-[ctrlr](*\#*)logger "chpcInit: Updating Compute Node with HPC configuration"
+[ctrlr](*\#*) chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
+[ctrlr](*\#*) SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P && echo x)"
+[ctrlr](*\#*) SCRIPTDIR="${SCRIPTDIR%x}"
+[ctrlr](*\#*) cd $SCRIPTDIR
+[ctrlr](*\#*) chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
+
+[ctrlr](*\#*) logger "chpcInit: Updating Compute Node with HPC configuration"
 \end{lstlisting}
 % end_ohpc_run
 
@@ -26,7 +31,7 @@
 [ctrlr](*\#*) if [ "${rsyslog_set}" -ne "0" ]; then
 [ctrlr](*\#*)    echo "*.* @<sms_ip>:514" >> /etc/rsyslog.conf
 [ctrlr](*\#*) fi
-[ctrlr](*\#*) systemctl restart rsyslog
+[ctrlr](*\#*)  systemctl restart rsyslog
 [ctrlr](*\#*) logger "chpcInit: rsyslog configuration complete, updating remaining HPC configuration"
 \end{lstlisting}
 % end_ohpc_run
@@ -40,7 +45,7 @@
 [ctrlr](*\#*) cat /etc/fstab | grep "<sms_ip>:/home"
 [ctrlr](*\#*) home_exists=$?
 [ctrlr](*\#*) if [ "${home_exists}" -ne "0" ]; then
-[ctrlr](*\#*)     echo "<sms_ip>:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 [ctrlr](*\#*) 0" >> /etc/fstab
+[ctrlr](*\#*)     echo "<sms_ip>:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" >> /etc/fstab
 [ctrlr](*\#*) fi
 [ctrlr](*\#*) cat /etc/fstab | grep "<sms_ip>:/opt/ohpc/pub"
 [ctrlr](*\#*) ohpc_pub_exists=$?
@@ -98,6 +103,7 @@
 [ctrlr](*\#*)     cp -f -L $chpcInitPath/passwd /etc/passwd
 [ctrlr](*\#*)     cp -f -L $chpcInitPath/group /etc/group
 [ctrlr](*\#*)     cp -f -L $chpcInitPath/shadow /etc/shadow
+[ctrlr](*\#*)     cp -f -L $chpcInitPath/authorized_keys /root/.ssh/
 [ctrlr](*\#*)     cp -f -L $chpcInitPath/slurm.conf /etc/slurm/slurm.conf
 [ctrlr](*\#*)     cp -f -L $chpcInitPath/slurm /etc/pam.d/slurm
 [ctrlr](*\#*)     cp -f -L $chpcInitPath/munge.key /etc/munge/munge.key
