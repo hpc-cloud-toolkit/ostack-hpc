@@ -10,7 +10,7 @@
 % ohpc_validation_comment #   FILE: chpc_init
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
+[ctrlr](*\#*) #Ensure the executing shell is in the same directory as the script.
 [ctrlr](*\#*) SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P && echo x)"
 [ctrlr](*\#*) SCRIPTDIR="${SCRIPTDIR%x}"
 [ctrlr](*\#*) cd $SCRIPTDIR
@@ -31,7 +31,7 @@
 [ctrlr](*\#*) if [ "${rsyslog_set}" -ne "0" ]; then
 [ctrlr](*\#*)    echo "*.* @<sms_ip>:514" >> /etc/rsyslog.conf
 [ctrlr](*\#*) fi
-[ctrlr](*\#*)  systemctl restart rsyslog
+[ctrlr](*\#*) systemctl restart rsyslog
 [ctrlr](*\#*) logger "chpcInit: rsyslog configuration complete, updating remaining HPC configuration"
 \end{lstlisting}
 % end_ohpc_run
@@ -100,9 +100,10 @@
 [ctrlr](*\#*)     # Update the slurm file
 [ctrlr](*\#*)     cp -f -L $chpcInitPath/slurm.conf /etc/slurm/slurm.conf
 [ctrlr](*\#*)     # Sync head node configuration with Compute Node
-[ctrlr](*\#*)     cp -f -L $chpcInitPath/passwd /etc/passwd
-[ctrlr](*\#*)     cp -f -L $chpcInitPath/group /etc/group
-[ctrlr](*\#*)     cp -f -L $chpcInitPath/shadow /etc/shadow
+[ctrlr](*\#*)     #cp -f -L $chpcInitPath/passwd /etc/passwd
+[ctrlr](*\#*)     #cp -f -L $chpcInitPath/group /etc/group
+[ctrlr](*\#*)     #cp -f -L $chpcInitPath/shadow /etc/shadow
+[ctrlr](*\#*)     # Copy public keys
 [ctrlr](*\#*)     cp -f -L $chpcInitPath/authorized_keys /root/.ssh/
 [ctrlr](*\#*)     cp -f -L $chpcInitPath/slurm.conf /etc/slurm/slurm.conf
 [ctrlr](*\#*)     cp -f -L $chpcInitPath/slurm /etc/pam.d/slurm

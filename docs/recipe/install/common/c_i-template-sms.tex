@@ -11,16 +11,16 @@
 % ohpc_validation_comment # FILE: chpc_sms_init
 
 \begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) #Ensure the executing shell is in the same directory as the script.
+[ctrlr](*\#*) SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P && echo x)"
+[ctrlr](*\#*) SCRIPTDIR="${SCRIPTDIR%x}"
+[ctrlr](*\#*) cd $SCRIPTDIR
 [ctrlr](*\#*) # Get the Compute node prefix and number of compute nodes
 [ctrlr](*\#*) cnodename_prefix=<update_cnodename_prefix>
 [ctrlr](*\#*) num_ccomputes=<update_num_ccomputes>
 [ctrlr](*\#*) ntp_server=<update_ntp_server>
 [ctrlr](*\#*) sms_name=<update_sms_name>
 [ctrlr](*\#*) logger "chpcInit: Entered chpcInit"
-[ctrlr](*\#*) #Ensure the executing shell is in the same directory as the script.
-[ctrlr](*\#*) SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P && echo x)"
-[ctrlr](*\#*) SCRIPTDIR="${SCRIPTDIR%x}"
-[ctrlr](*\#*) cd $SCRIPTDIR
 
 \end{lstlisting} 
  % end_ohpc_run
@@ -38,9 +38,9 @@
 [ctrlr](*\#*) chmod 700 $chpcInitPath
 [ctrlr](*\#*) # To create same user environment, copy user files 
 [ctrlr](*\#*) # Copy other files needed for Cloud Init
-[ctrlr](*\#*) sudo cp -fpr /etc/passwd $chpcInitPath
-[ctrlr](*\#*) sudo cp -fpr /etc/shadow $chpcInitPath
-[ctrlr](*\#*) sudo cp -fpr /etc/group $chpcInitPath
+[ctrlr](*\#*) #sudo cp -fpr /etc/passwd $chpcInitPath
+[ctrlr](*\#*) #sudo cp -fpr /etc/shadow $chpcInitPath
+[ctrlr](*\#*) #sudo cp -fpr /etc/group $chpcInitPath
 [ctrlr](*\#*) # Copy public ssh key to shared drive
 [ctrlr](*\#*) _ssh_path=/root/.ssh
 [ctrlr](*\#*) if [ ! -e "$_ssh_path/hpcasservice" ]; then
@@ -118,7 +118,7 @@
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) #(*\#*)(*\#*) Update Resource manager configuration (*\#*)(*\#*)(*\#*)
+[ctrlr](*\#*) # Update Resource manager configuration (*\#*)(*\#*)(*\#*)
 [ctrlr](*\#*) # Update basic slurm configuration at sms node
 [ctrlr](*\#*) perl -pi -e "s/ControlMachine=\S+/ControlMachine=${sms_name}/" /etc/slurm/slurm.conf
 [ctrlr](*\#*) perl -pi -e "s/^NodeName=(\S+)/NodeName=${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
