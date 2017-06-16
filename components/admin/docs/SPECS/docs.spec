@@ -34,6 +34,7 @@ BuildRequires:  texlive-multirow
 BuildRequires:  texlive-tcolorbox
 BuildRequires:  latexmk
 BuildRequires:  texlive-environ
+BuildRequires:  texlive-trimspaces
 BuildRequires:  git
 Requires:       make
 Requires:       net-tools
@@ -71,22 +72,22 @@ install -m 0755 -p -D %{grecipe}/common_functions %{buildroot}/%{d_path}/
 install -m 0755 -p -D %{grecipe}/setup_cloud_hpc.sh %{buildroot}/%{d_path}/
 install -m 0755 -p -D %{grecipe}/teardown_cloud_nodes.sh %{buildroot}/%{d_path}/
 install -m 0755 -p -D %{grecipe}/get_cn_mac %{buildroot}/%{d_path}/
-install -m 0755 -p -d %{grecipe}/3_hpc_as_a_service %{buildroot}/%{d_path}/3_hpc_as_a_service
-install -m 0755 -p -D %{grecipe}/3_hpc_as_a_service/set_os_hpc %{buildroot}/%{d_path}/3_hpc_as_a_service/
-install -m 0755 -p -d %{grecipe}/3_hpc_as_a_service/heat_templates %{buildroot}/%{d_path}/3_hpc_as_a_service/heat_templates
-install -m 0755 -p -D %{grecipe}/3_hpc_as_a_service/heat_templates/heat-cn.yaml %{buildroot}/%{d_path}//3_hpc_as_a_service/heat_templates/
-install -m 0755 -p -D %{grecipe}/3_hpc_as_a_service/heat_templates/heat-sms.yaml %{buildroot}/%{d_path}//3_hpc_as_a_service/heat_templates/
+install -m 0755 -p -d %{grecipe}/3_hpc_as_service %{buildroot}/%{d_path}/3_hpc_as_service
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/set_os_hpc %{buildroot}/%{d_path}/3_hpc_as_service/
+install -m 0755 -p -d %{grecipe}/3_hpc_as_service/heat_templates %{buildroot}/%{d_path}/3_hpc_as_service/heat_templates
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/heat_templates/heat-cn.yaml %{buildroot}/%{d_path}//3_hpc_as_service/heat_templates/
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/heat_templates/heat-sms.yaml %{buildroot}/%{d_path}//3_hpc_as_service/heat_templates/
 
-install -m 0755 -p -d %{grecipe}/3_hpc_as_a_service/sms %{buildroot}/%{d_path}/3_hpc_as_a_service/sms/
-install -m 0755 -p -D %{grecipe}/3_hpc_as_a_service/sms/update_mrsh %{buildroot}/%{d_path}//3_hpc_as_a_service/sms/
-install -m 0755 -p -D %{grecipe}/3_hpc_as_a_service/sms/update_clustershell %{buildroot}/%{d_path}//3_hpc_as_a_service/sms/
-install -m 0755 -p -D %{grecipe}/3_hpc_as_a_service/sms/enable_genders %{buildroot}/%{d_path}//3_hpc_as_a_service/sms/
-install -m 0755 -p -D %{grecipe}/3_hpc_as_a_service/update_cnodes_to_sms %{buildroot}/%{d_path}//3_hpc_as_a_service/
-install -m 0755 -p -D %{grecipe}/3_hpc_as_a_service/deploy_chpc_openstack %{buildroot}/%{d_path}//3_hpc_as_a_service/
-install -m 0755 -p -D %{grecipe}/3_hpc_as_a_service/prepare_chpc_image %{buildroot}/%{d_path}//3_hpc_as_a_service/
-install -m 0755 -p -D %{grecipe}/3_hpc_as_a_service/prepare_chpc_openstack %{buildroot}/%{d_path}//3_hpc_as_a_service/
-install -m 0755 -p -D %{grecipe}/3_hpc_as_a_service/prepare_cloud_init %{buildroot}/%{d_path}//3_hpc_as_a_service/
-install -m 0755 -p -D %{grecipe}/3_hpc_as_a_service/README %{buildroot}/%{d_path}//3_hpc_as_a_service/
+install -m 0755 -p -d %{grecipe}/3_hpc_as_service/sms %{buildroot}/%{d_path}/3_hpc_as_service/sms/
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/sms/update_mrsh %{buildroot}/%{d_path}//3_hpc_as_service/sms/
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/sms/update_clustershell %{buildroot}/%{d_path}//3_hpc_as_service/sms/
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/sms/enable_genders %{buildroot}/%{d_path}//3_hpc_as_service/sms/
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/update_cnodes_to_sms %{buildroot}/%{d_path}//3_hpc_as_service/
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/deploy_chpc_openstack %{buildroot}/%{d_path}//3_hpc_as_service/
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/prepare_chpc_image %{buildroot}/%{d_path}//3_hpc_as_service/
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/prepare_chpc_openstack %{buildroot}/%{d_path}//3_hpc_as_service/
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/prepare_cloud_init %{buildroot}/%{d_path}//3_hpc_as_service/
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/README %{buildroot}/%{d_path}//3_hpc_as_service/
 install -m 0755 -p -d %{grecipe}/cloud_hpc_init %{buildroot}/%{d_path}/cloud_hpc_init
 install -m 0755 -p -d %{grecipe}/cloud_hpc_init/ohpc %{buildroot}/%{d_path}/cloud_hpc_init/ohpc
 install -m 0755 -p -D %{grecipe}/cloud_hpc_init/ohpc/chpc_init %{buildroot}/%{d_path}/cloud_hpc_init/ohpc/
