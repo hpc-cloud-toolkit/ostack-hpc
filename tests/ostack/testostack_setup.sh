@@ -10,7 +10,14 @@ fi
 
 testname="ostack"
 # for testing we are installing packstack, and assuming keystonerc_admin is present at /root
-source /root/keystonerc_admin
+setup() {
+   source /root/keystonerc_admin
+   netname=sharednet1
+    
+}
+teardown() {
+   #Remove unwanted files which was generated as a part of this test
+}
 
 @test "[$testname] Verify OpenStack setup" {
 
@@ -45,6 +52,12 @@ source /root/keystonerc_admin
 }
 
 @test "[$testname] Verify Neutron setup" {
+    #verify if neutron is setup for flat network.
+    neutron net-show $netname  > /tmp/.output
+    neutron net-show sharednet1|grep provider:network_type|awk {'print $4'} > tmp/.output
+    run grep flat /tmp/.output
+    assert_success
+    assert_output "flat"
 }
 
 @test "[$testname] Verify Glance and image setup" {
@@ -53,7 +66,7 @@ source /root/keystonerc_admin
 @test "[$testname] Verify OpenStack ironic enrollment" {
 }
 
-@test "[$testname] Verify OpenStack ironic enrollment" {
+@test "[$testname] Verify OpenStack nova flavor matches with ironic nodes charaterisitcs" {
 }
 
 @test "[$testname] Verify heat template for hpc as service" {
