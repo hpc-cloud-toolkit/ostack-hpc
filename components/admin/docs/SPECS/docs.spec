@@ -34,6 +34,7 @@ BuildRequires:  texlive-multirow
 BuildRequires:  texlive-tcolorbox
 BuildRequires:  latexmk
 BuildRequires:  texlive-environ
+BuildRequires:  texlive-trimspaces
 BuildRequires:  git
 Requires:       make
 Requires:       net-tools
