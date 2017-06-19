@@ -220,19 +220,9 @@
 % ohpc_command
 % ohpc_command echo "..$CHPC_SCRIPTDIR .."
 % ohpc_command
-% ohpc_command #function cont_next() {
-% ohpc_command #   echo "continue to ? "
-% ohpc_command #   read uinput
-% ohpc_command #   if [ "$uinput" == "y" ]; then
-% ohpc_command #       echo "Continueing ..."
-% ohpc_command #    else
-% ohpc_command #      exit 0
-% ohpc_command #   fi
-% ohpc_command #}
 % ohpc_command
 % ohpc_command # Create Post boot file, can be used for cloudInit
 % ohpc_command # Check for NTP server and configuration on compute nodes
-% ohpc_command #
 % ohpc_command #
 % ohpc_command # =====================================
 % ohpc_command # Preparation for CloudInit Script and files
@@ -244,13 +234,11 @@
 % ohpc_command # Prepare CloudHPC Image :
 % ohpc_command # ========================
 % ohpc_command # Check if User selected to prepare cloud HPC images
-% ohpc_command #cont_next
 % ohpc_command time source prepare_chpc_image
 % ohpc_command # =============================================
 % ohpc_command # Prepare OpenStack for HPC baremetal instances
 % ohpc_command # =============================================
-% ohpc_command #time source prepare_chpc_openstack
-% ohpc_command #cont_next
+% ohpc_command time source prepare_chpc_openstack
 % ohpc_command time source deploy_chpc_openstack
 % ohpc_command #Wait for CN(s) to come up. TODO: Poll and wait rather than just a set 10 minutes.
 % ohpc_command sleep 600
