@@ -170,7 +170,7 @@ Configure tfpt server
 [ctrlr](*\#*) if grep -q "^dns_domain.*openstacklocal$" /etc/neutron/neutron.conf; then
 [ctrlr](*\#*)    sed -in-place  "s|^dns_domain.*|dns_domain = oslocal|" /etc/neutron/neutron.conf
 [ctrlr](*\#*) else
-[ctrlr](*\#*)    if ! grep -q "^dns_domain" neutron.conf; then
+[ctrlr](*\#*)    if ! grep -q "^dns_domain" /etc/neutron/neutron.conf; then
 [ctrlr](*\#*)        sed -in-place  "s|^#dns_domain = openstacklocal$|dns_domain = oslocal|" /etc/neutron/neutron.conf
 [ctrlr](*\#*)    fi
 [ctrlr](*\#*) fi

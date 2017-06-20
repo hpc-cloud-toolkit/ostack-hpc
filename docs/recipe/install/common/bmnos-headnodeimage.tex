@@ -117,7 +117,7 @@
 % begin_ohpc_run
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*)         chpc_image_sms="$( realpath icloud-hpc-cent7.qcow2)"
+[ctrlr](*\#*)         chpc_image_sms="$( realpath icloud-hpc-cent7-sms.qcow2)"
 [ctrlr](*\#*)         mkdir -p $CHPC_CLOUD_IMAGE_PATH
 [ctrlr](*\#*)         mv -f $chpc_image_sms $CHPC_CLOUD_IMAGE_PATH
 [ctrlr](*\#*)         chpc_image_sms=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_sms)

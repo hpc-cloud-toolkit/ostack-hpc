@@ -18,6 +18,8 @@ function setup_dib_hpc_base() {
         export DIB_DEV_USER_USERNAME=chpc
         export DIB_DEV_USER_PASSWORD=intel8086
         export DIB_DEV_USER_PWDLESS_SUDO=1
+        #setup NTP server
+        export DIB_NTP_SERVER=$ntp_server
         # For debugging enable DEBUG_TRACE
         #export DIB_DEBUG_TRACE=1
         # Add our custom element path
@@ -82,7 +84,7 @@ function prepare_sms_image() {
         echo "=== User Image Creation complete ===================================="
         echo "====================================================================="
         # User Image is reday
-        chpc_image_sms="$( realpath icloud-hpc-cent7.qcow2)"
+        chpc_image_sms="$( realpath icloud-hpc-cent7-sms.qcow2)"
         mkdir -p $CHPC_CLOUD_IMAGE_PATH 
         mv -f $chpc_image_sms $CHPC_CLOUD_IMAGE_PATH 
         chpc_image_sms=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_sms)
