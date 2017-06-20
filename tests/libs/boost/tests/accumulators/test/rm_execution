@@ -1,0 +1,51 @@
+#!./common/bats/bin/bats 
+# -*-sh-*-
+
+source ./common/test_helper_functions.bash || exit 1
+source ./common/functions || exit 1
+
+if [ -s ./common/TEST_ENV ];then
+    source ./common/TEST_ENV
+fi
+
+check_rms
+rm=$RESOURCE_MANAGER
+
+PKG="Boost/Accumulators"
+
+@test "[$PKG] min-test under resource manager ($rm/$LMOD_FAMILY_COMPILER/$LMOD_FAMILY_MPI)" {
+    test=min
+    if [ ! -x $test ];then
+        flunk "$test does not exist"
+    fi
+    run_serial_binary ./$test
+    assert_success
+}
+
+@test "[$PKG] max-test under resource manager ($rm/$LMOD_FAMILY_COMPILER/$LMOD_FAMILY_MPI)" {
+    test=max
+    if [ ! -x $test ];then
+        flunk "$test does not exist"
+    fi
+    run_serial_binary ./$test
+    assert_success
+}
+
+@test "[$PKG] skewness-test under resource manager ($rm/$LMOD_FAMILY_COMPILER/$LMOD_FAMILY_MPI)" {
+    test=skewness
+    if [ ! -x $test ];then
+        flunk "$test does not exist"
+    fi
+    run_serial_binary ./$test
+    assert_success
+}
+
+@test "[$PKG] variance-test under resource manager ($rm/$LMOD_FAMILY_COMPILER/$LMOD_FAMILY_MPI)" {
+    test=variance
+    if [ ! -x $test ];then
+        flunk "$test does not exist"
+    fi
+    run_serial_binary ./$test
+    assert_success
+}
+

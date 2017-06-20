@@ -1,0 +1,21 @@
+#!./common/bats/bin/bats 
+# -*-sh-*-
+
+source ./common/test_helper_functions.bash || exit 1
+source ./common/functions || exit 1
+
+if [ -s ./common/TEST_ENV ];then
+    source ./common/TEST_ENV
+fi
+
+check_rms
+rm=$RESOURCE_MANAGER
+
+PKG="Boost/ublas"
+
+@test "[$PKG] bench1_ublas binary under resource manager ($rm/$LMOD_FAMILY_COMPILER/$LMOD_FAMILY_MPI)" {
+    test="bench1_ublas "
+
+    run run_serial_binary ./$test
+    assert_success
+}

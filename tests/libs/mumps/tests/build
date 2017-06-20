@@ -1,0 +1,14 @@
+#!../../../common/bats/bin/bats
+# -*-sh-*-
+
+load ../../../common/test_helper_functions || exit 1
+source ../../../common/functions || exit 1
+
+@test "[Mumps] build Mumps executables ($LMOD_FAMILY_COMPILER/$LMOD_FAMILY_MPI)" {
+
+    run make -f Makefile.ohpc clean 
+    assert_success
+    run make -f Makefile.ohpc all
+    assert_success
+
+}
