@@ -22,15 +22,28 @@ USAGE () {
 
 setup_tests()
 {
-    # bootstrap
-    # configure
+    #bootstrap
+    configure
+    # run input.local to get input parameters
+    load common/test_helper_functions || exit 1
+    source common/functions || exit 1
+    
+    if [ -s common/TEST_ENV ];then
+        source common/TEST_ENV
+    fi
+    
+}
+run_dib_tests()
+{
+    pushd dib
+    make check
 }
 run_controller_tests()
 {
     # bootstrap
     # configure
-    # pushd ostack
-    # make check
+    pushd ostack
+    make check
 }
 run_chpc_sms_tests()
 {
@@ -38,33 +51,6 @@ run_chpc_sms_tests()
     # ssh to sms node
     # run tests
     # return results
-}
-run_root_level_tests()
-{
-    echo " "
-    echo "Running Root-Level Tests"
-    echo " "
-
-    service ipmi start || ERROR "Unable to start ipmi"
-    echo `pwd`
-    cd ${TEST_DIR} || ERROR "Unable to access top level test directory"
-
-    export BATS_JUNIT_GROUP="RootLevelTests"
-
-    if [[ "$BaseOS" == "centos7.1" || "$BaseOS" == "centos7.2" ]];then
-        perl -pi -e "s#BOS_RELEASE=\S+#BOS_RELEASE=centos-release#" TEST_ENV
-    elif [[ "$BaseOS" == "rhel7.2" ]];then
-        perl -pi -e "s#BOS_RELEASE=\S+#BOS_RELEASE=redhat-release#" TEST_ENV
-    fi
-
-    #[[ -f Makefile ]] && make clean && make distclean
-    #./bootstrap || ERROR "Unable to bootstrap root-level tests"
-    ./configure ${config_opts} || ERROR "Unable to configure root-level tests"
-    make -k check
-
-    ROOT_STATUS=$?
-    cd - >& /dev/null
-    return $ROOT_STATUS
 }
 
 run_user_level_tests()
