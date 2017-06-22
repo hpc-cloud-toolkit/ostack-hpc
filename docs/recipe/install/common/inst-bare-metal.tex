@@ -321,15 +321,15 @@
 % ohpc_validation_comment ## Setup Compute nodes second
 % ohpc_command setup_cn
 % ohpc_validation_comment ## Wait for the Nova hypervisor-stats to sync with available Ironic resources
-% ohpc_command sleep 121
+% ohpc_command #sleep 121
 % ohpc_validation_comment ## Boot sms node
 % ohpc_command boot_sms
 % ohpc_validation_comment ## # wait for 15 sec before starting to boot compute nodes. TBD need to tune this time
 % ohpc_validation_comment ## # SMS node should be booted before compute nodes starts booting. At minimum
 % ohpc_validation_comment ## # sms node shall have cloud init executed before CN's cloud init
-% ohpc_command sleep 15
+% ohpc_command #sleep 15
 % ohpc_validation_comment ## # Now boot compute nodes
 % ohpc_command boot_cn
-% ohpc_command sleep 5
+% ohpc_command #sleep 5
 
 % end_ohpc_run
