@@ -12,8 +12,8 @@ recipe3="NULL"
 recipe4="prepare_cloud_init"
 recipe5="deploy_chpc_openstack"
 recipe6="prepare_chpc_openstack"
-#recipe7="NULL"
-recipe7="update_cnodes_to_sms"
+recipe7="NULL"
+recipe8="update_cnodes_to_sms"
 optional2="update_mrsh"
 optional3="update_clustershell"
 optional4="enable_genders"
@@ -66,12 +66,12 @@ echo "Parsing to individual recipes"
 mkdir -p ./recipe/$flavor3/sms
 mkdir -p ./recipe/$flavor3/heat_templates
 
-mv recipe_2 ./recipe/$flavor3/$recipe2
-mv recipe_4 ./recipe/$flavor3/$recipe4
-mv recipe_5 ./recipe/$flavor3/$recipe5
-mv recipe_6 ./recipe/$flavor3/$recipe6
-mv recipe_7 ./recipe/$flavor3/$recipe7
-cat recipe_8 >> ./recipe/$flavor3/$recipe5
+cp recipe_2 ./recipe/$flavor3/$recipe2
+cp recipe_4 ./recipe/$flavor3/$recipe4
+cp recipe_5 ./recipe/$flavor3/$recipe5
+cp recipe_6 ./recipe/$flavor3/$recipe6
+cat recipe_7 >> ./recipe/$flavor3/$recipe5
+cp recipe_8 ./recipe/$flavor3/$recipe8
 
 if [ ! -e ./recipe/$flavor3/sms ]; then
 	mkdir ./recipe$flavor3/sms
@@ -95,7 +95,6 @@ for i in 5 7 8 9; do
 	str="parent$i"
 	mv parent_$i ./recipe/${!str}
 done
-
 
 rm -rf output.txt
 rm -rf optional_*

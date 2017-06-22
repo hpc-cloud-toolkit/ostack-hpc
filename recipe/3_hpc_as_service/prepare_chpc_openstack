@@ -86,7 +86,7 @@ sed --in-place "s|#force_metadata\ =\ false|force_metadata\ =\ True|" /etc/neutr
 if grep -q "^dns_domain.*openstacklocal$" /etc/neutron/neutron.conf; then
    sed -in-place  "s|^dns_domain.*|dns_domain = oslocal|" /etc/neutron/neutron.conf
 else
-   if ! grep -q "^dns_domain" neutron.conf; then
+   if ! grep -q "^dns_domain" /etc/neutron/neutron.conf; then
        sed -in-place  "s|^#dns_domain = openstacklocal$|dns_domain = oslocal|" /etc/neutron/neutron.conf
    fi
 fi

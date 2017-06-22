@@ -31,12 +31,12 @@
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*)         # setup environment varioable to indicate sms image type
-[ctrlr](*\#*) 		  setup_dib_hpc_base
+[ctrlr](*\#*)         setup_dib_hpc_base
 [ctrlr](*\#*)         export DIB_HPC_IMAGE_TYPE=sms
 \end{lstlisting} 
 % end_ohpc_run
 
-	nable SLURM resource manager for head node.
+	Enable SLURM resource manager for head node.
 
 % begin_ohpc_run
 
@@ -117,7 +117,7 @@
 % begin_ohpc_run
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*)         chpc_image_sms="$( realpath icloud-hpc-cent7.qcow2)"
+[ctrlr](*\#*)         chpc_image_sms="$( realpath icloud-hpc-cent7-sms.qcow2)"
 [ctrlr](*\#*)         mkdir -p $CHPC_CLOUD_IMAGE_PATH
 [ctrlr](*\#*)         mv -f $chpc_image_sms $CHPC_CLOUD_IMAGE_PATH
 [ctrlr](*\#*)         chpc_image_sms=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_sms)

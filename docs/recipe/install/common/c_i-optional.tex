@@ -60,11 +60,11 @@
 [ctrlr](*\#*) #Update the genders at sms with compute node information
 [ctrlr](*\#*) # first check if genders is install TBD
 [ctrlr](*\#*) for ((i=0; i<$num_ccomputes; i++)) ; do
-[ctrlr](*\#*) cat /etc/genders | grep ${cc_name[$i]}
-[ctrlr](*\#*) gender_exists=$?
-[ctrlr](*\#*) if [ "${gender_exists}" -ne "0" ]; then 
-[ctrlr](*\#*) echo -e "${cc_name[$i]}\tcompute,bmc=${cc_bmc[$i+1]}"
-[ctrlr](*\#*) fi
+[ctrlr](*\#*)    cat /etc/genders | grep ${cc_name[$i]}
+[ctrlr](*\#*)    gender_exists=$?
+[ctrlr](*\#*)    if [ "${gender_exists}" -ne "0" ]; then 
+[ctrlr](*\#*)       echo -e "${cc_name[$i]}\tcompute,bmc=${cc_bmc[$i+1]}"
+[ctrlr](*\#*)    fi
 [ctrlr](*\#*) done >> /etc/genders
  \end{lstlisting}
  

@@ -12,7 +12,7 @@ set -u
 case "$DIB_INIT_SYSTEM" in
     systemd)
         if [ -e /etc/rsyslog.conf ]; then
-             Restart the rsyslog
+            # Restart the rsyslog
             systemctl restart rsyslog
         fi
 

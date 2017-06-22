@@ -4,10 +4,11 @@ export DIB_DEV_USER_USERNAME=chpc
 export DIB_DEV_USER_PASSWORD=intel8086
 export DIB_DEV_USER_PWDLESS_SUDO=1
 export DIB_DEBUG_TRACE=1
-export ELEMENTS_PATH=/home/ppk/dib/dev/hpc/elements
+export ELEMENTS_PATH="$(realpath /opt/ohpc/admin/dib-chpc/elements/)"
 export DIB_HPC_BASE=ohpc
 #export DIB_HPC_ORCH_PKG=/home/ppk/Downloads/HPC-Orchestrator-rhel7.2u5-16.01.002.beta.iso
-export DIB_HPC_FILE_PATH=/home/ppk/dib/dev/hpc/hpc-files
+export DIB_HPC_FILE_PATH="$(realpath /opt/ohpc/admin/dib-chpc/hpc-files/)"
+
 #Path to HPC base yum repo file
 #export DIB_YUM_REPO_CONF=/etc/yum.repos.d/HPC_Orchestrator.repo
 # path of ssh authorized keys for ssh access

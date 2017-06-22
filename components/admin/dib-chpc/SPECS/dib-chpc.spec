@@ -47,7 +47,7 @@ mv hpc/hpc-files/cloud.cfg %{buildroot}/opt/ohpc/admin/%{pname}/hpc-files/
 
 %post
 
-if [ -e /usr/share/diskimage-builder/elements/yum/bin/install-packages-new]
+if [ -e /usr/share/diskimage-builder/elements/yum/bin/install-packages-new ]
 	then
 		mv /usr/share/diskimage-builder/elements/yum/bin/install-packages /usr/share/diskimage-builder/elements/yum/bin/install-packages-ORIG-ohpc-dib
 		mv /usr/share/diskimage-builder/elements/yum/bin/install-packages-new /usr/share/diskimage-builder/elements/yum/bin/install-packages

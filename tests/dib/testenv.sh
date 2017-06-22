@@ -10,7 +10,14 @@ testname="DIB"
 #local environments
 setup() {
 dibelements=/usr/share/diskimage-builder/elements
+}
+teardown() {
 #dibelements=../../dib/hpc/elements/
+}
+
+@test "[$testname] Verify dib-chpc installation" {
+    run rpm -q dib-chpc
+    assert_success
 }
 
 @test "[$testname] Verify diskimage-builder installation" {
@@ -54,14 +61,8 @@ dibelements=/usr/share/diskimage-builder/elements
     assert_success
     assert_output "hpc-dev-env"
 }
-@test "[$testname] Verify hpc elements hpc-dev-env" {
-    #check for hpc-dev-env
-    ls $dibelements|grep hpc > /tmp/.f_output
-    run grep "hpc-dev-env" /tmp/.f_output
-    assert_success
-    assert_output "hpc-dev-env"
-}
 
 @test "[$testname] Verify cloud.cfg file is present" {
-
+    run test -f /opt/ohpc/admin/dib-chpc/hpc-files/cloud.cfg
+    assert_success
 }

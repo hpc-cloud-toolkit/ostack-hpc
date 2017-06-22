@@ -1,0 +1,41 @@
+#!./common/bats/bin/bats
+# -*-sh-*-
+
+load ./common/test_helper_functions || exit 1
+source ./common/functions || exit 1
+
+if [ -s ./common/TEST_ENV ];then
+   . ./common/TEST_ENV
+else
+    ERROR "TEST_ENV does not exist"
+fi
+
+CMD_TIMEOUT="10:00"
+TEST_NUM_RANKS=8
+TEST_NUM_THREADS=4
+
+check_rms
+rm=$RESOURCE_MANAGER
+
+NODES=2
+TASKS=$((NODES*TEST_NUM_RANKS))
+
+# set global env settings
+export OMP_NUM_THREADS=$TEST_NUM_THREADS
+if [ $LMOD_FAMILY_MPI == "mvapich2" ];then
+    export MV2_ENABLE_AFFINITY=0
+    export IPATH_NO_CPUAFFINITY=1
+fi
+
+@test "[Libs/IMB] run IMB-MPI1 on $NODES nodes under resource manager ($rm/$LMOD_FAMILY_COMPILER/$LMOD_FAMILY_MPI)" {
+    EXE=$IMB_DIR/bin/IMB-MPI1
+    ARGS="PingPong Sendrecv Bcast Allreduce"
+
+    if [ ! -x $EXE ];then
+        flunk "missing $EXE"
+    fi
+
+    run_mpi_binary -t $CMD_TIMEOUT $EXE "$ARGS" $NODES $TASKS
+    assert_success
+}
+

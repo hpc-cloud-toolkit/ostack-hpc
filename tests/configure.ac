@@ -91,52 +91,20 @@ AM_CONDITIONAL(ADMIN_ENABLED,test "x$enable_admin" = "xyes" )
 #------------------------------------------------------------------------------------------
 # Base operating system 
 AC_ARG_ENABLE([bos],
-	 [AS_HELP_STRING([--enable-bos],[Enable bos tests (default=yes, root only)])],
-	 [],[enable_bos=yes])
+	 [AS_HELP_STRING([--enable-bos],[Enable bos tests (default=no, root only)])],
+	 [],[enable_bos=no])
 AM_CONDITIONAL(BOS_ENABLED,test "x$enable_bos" = "xyes" ) 
-#------------------------------------------------------------------------------------------
-# Out-of-band
-AC_ARG_ENABLE([oob],
-	 [AS_HELP_STRING([--enable-oob],[Enable oob tests (default=yes, root only)])],
-	 [],[enable_oob=yes])
-AM_CONDITIONAL(OOB_ENABLED,test "x$enable_oob" = "xyes" ) 
 #------------------------------------------------------------------------------------------
 # Lustre
 AC_ARG_ENABLE([lustre],
 	 [AS_HELP_STRING([--enable-lustre],[Enable Lustre utility tests (default=no, root only)])],
 	 [],[enable_lustre=no])
 AM_CONDITIONAL(LUSTRE_ENABLED,test "x$enable_lustre" = "xyes" ) 
-#------------------------------------------------------------------------------------------
-# spack
-AC_ARG_ENABLE([spack],
-	 [AS_HELP_STRING([--enable-spack],[Enable spack tests (default=yes, root only)])],
-	 [],[enable_spack=yes])
-AM_CONDITIONAL(SPACK_ENABLED,test "x$enable_spack" = "xyes" ) 
 
 #-----------------
 # User level tests
 #-----------------
 
-
-
-#------------------------------------------------------------------------------------------
-# Compilers
-AC_ARG_ENABLE([compilers],
-   [AS_HELP_STRING([--enable-compilers],[Enable compiler toolchain tests (default=yes)])],[],
-   [AX_OPTION_DEFAULT(type=short,enable_compilers,yes)])
-AM_CONDITIONAL(COMPILERS_ENABLED,test "x$enable_compilers" = "xyes" ) 
-#------------------------------------------------------------------------------------------
-# R
-AC_ARG_ENABLE([R],
-   [AS_HELP_STRING([--enable-R],[Enable R tests (default=yes)])],[],
-   [AX_OPTION_DEFAULT(type=long,enable_R,yes)])
-AM_CONDITIONAL(R_ENABLED,test "x$enable_R" = "xyes" ) 
-#------------------------------------------------------------------------------------------
-# mpiP
-AC_ARG_ENABLE([mpiP],
-   [AS_HELP_STRING([--enable-mpiP],[Enable mpiP profiler tests (default=yes)])],[],
-   [AX_OPTION_DEFAULT(type=long,enable_mpiP,yes)])
-AM_CONDITIONAL(MPIP_ENABLED,test "x$enable_mpiP" = "xyes" ) 
 #------------------------------------------------------------------------------------------
 # Valgrind
 AC_ARG_ENABLE([valgrind],
@@ -164,8 +132,8 @@ AM_CONDITIONAL(HDF5_ENABLED,test "x$enable_hdf5" = "xyes" )
 #------------------------------------------------------------------------------------------
 # PHDF5
 AC_ARG_ENABLE([phdf5],
-   [AS_HELP_STRING([--enable-phdf5],[Enable PHDF5 tests (default=yes)])],[],
-   [AX_OPTION_DEFAULT(type=long,enable_phdf5,yes)])
+   [AS_HELP_STRING([--enable-phdf5],[Enable PHDF5 tests (default=no)])],[],
+   [AX_OPTION_DEFAULT(type=long,enable_phdf5,no)])
 AM_CONDITIONAL(PHDF5_ENABLED,test "x$enable_phdf5" = "xyes" ) 
 #------------------------------------------------------------------------------------------
 # IMB
@@ -176,8 +144,8 @@ AM_CONDITIONAL(IMB_ENABLED,test "x$enable_imb" = "xyes" )
 #------------------------------------------------------------------------------------------
 # GSL
 AC_ARG_ENABLE([gsl],
-   [AS_HELP_STRING([--enable-gsl],[Enable GSL library tests (default=yes)])],[],
-   [AX_OPTION_DEFAULT(type=long,enable_gsl,yes)])
+   [AS_HELP_STRING([--enable-gsl],[Enable GSL library tests (default=no)])],[],
+   [AX_OPTION_DEFAULT(type=long,enable_gsl,no)])
 AM_CONDITIONAL(GSL_ENABLED,test "x$enable_gsl" = "xyes" )
 #------------------------------------------------------------------------------------------
 # FFTW
@@ -248,8 +216,8 @@ AM_CONDITIONAL(OOM_ENABLED,test "x$enable_oom" = "xyes" )
 #------------------------------------------------------------------------------------------
 # OCR
 AC_ARG_ENABLE([ocr],
-   [AS_HELP_STRING([--enable-ocr],[Enable OCR tests (default=yes)])],[],
-   [AX_OPTION_DEFAULT(type=long,enable_ocr,yes)])
+   [AS_HELP_STRING([--enable-ocr],[Enable OCR tests (default=no)])],[],
+   [AX_OPTION_DEFAULT(type=long,enable_ocr,no)])
 AM_CONDITIONAL(OCR_ENABLED,test "x$enable_ocr" = "xyes" )
 #------------------------------------------------------------------------------------------
 # OPENBLAS
@@ -284,8 +252,8 @@ AM_CONDITIONAL(SCALAPACK_ENABLED,test "x$enable_scalapack" = "xyes" )
 #------------------------------------------------------------------------------------------
 # Scipy
 AC_ARG_ENABLE([scipy],
-   [AS_HELP_STRING([--enable-scipy],[Enable scipy tests (default=yes)])],[],
-   [AX_OPTION_DEFAULT(type=long,enable_scipy,yes)])
+   [AS_HELP_STRING([--enable-scipy],[Enable scipy tests (default=no)])],[],
+   [AX_OPTION_DEFAULT(type=long,enable_scipy,no)])
 AM_CONDITIONAL(SCIPY_ENABLED,test "x$enable_scipy" = "xyes" ) 
 #------------------------------------------------------------------------------------------
 # SuperLU
@@ -332,8 +300,8 @@ AM_CONDITIONAL(CILK_ENABLED,test "x$enable_cilk" = "xyes" )
 #------------------------------------------------------------------------------------------
 # Trilinos
 AC_ARG_ENABLE([trilinos],
-   [AS_HELP_STRING([--enable-trilinos],[Enable trilinos tests (default=yes)])],[],
-   [AX_OPTION_DEFAULT(type=long,enable_trilinos,yes)])
+   [AS_HELP_STRING([--enable-trilinos],[Enable trilinos tests (default=no)])],[],
+   [AX_OPTION_DEFAULT(type=long,enable_trilinos,no)])
 AM_CONDITIONAL(TRILINOS_ENABLED,test "x$enable_trilinos" = "xyes" )
 #------------------------------------------------------------------------------------------
 # User Environment
@@ -344,13 +312,13 @@ AM_CONDITIONAL(USERENV_ENABLED,test "x$enable_munge" = "xyes" )
 #------------------------------------------------------------------------------------------
 # MiniFE
 AC_ARG_ENABLE([minife],
-   [AS_HELP_STRING([--enable-minife],[Enable MiniFE tests (default=yes)])],[],
-   [AX_OPTION_DEFAULT(type=long,enable_minife,yes)])
+   [AS_HELP_STRING([--enable-minife],[Enable MiniFE tests (default=no)])],[],
+   [AX_OPTION_DEFAULT(type=long,enable_minife,no)])
 AM_CONDITIONAL(MINIFE_ENABLED,test "x$enable_minife" = "xyes" )
 #------------------------------------------------------------------------------------------
 # MiniDFT
 AC_ARG_ENABLE([minidft],
-   [AS_HELP_STRING([--enable-minidft],[Enable MiniDFT tests (default=yes)])],[],
+   [AS_HELP_STRING([--enable-minidft],[Enable MiniDFT tests (default=no)])],[],
    [AX_OPTION_DEFAULT(type=long,enable_minidft,no)])
 AM_CONDITIONAL(MINIDFT_ENABLED,test "x$enable_minidft" = "xyes" )
 #------------------------------------------------------------------------------------------

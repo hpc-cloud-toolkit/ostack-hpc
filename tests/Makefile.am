@@ -17,9 +17,9 @@ if DIB_ENABLED
    SUBDIRS += dib
 endif
 
-#if ADMIN_ENABLED
-#   SUBDIRS += admin
-#endif
+if ADMIN_ENABLED
+   SUBDIRS += admin
+endif
 #if BOS_ENABLED
 #   SUBDIRS += bos
 #endif
@@ -76,17 +76,17 @@ if COMPILERS_ENABLED
    TESTS += compilers/ohpc-tests/test_compiler_families
 endif
 
-if VALGRIND_ENABLED
-   TESTS += dev-tools/valgrind/ohpc-tests/test_compiler_families
-endif
+#if VALGRIND_ENABLED
+#   TESTS += dev-tools/valgrind/ohpc-tests/test_compiler_families
+#endif
 
-if R_ENABLED
-   TESTS += dev-tools/R-base/ohpc-tests/test_compiler_families
-endif
-
-if MPIP_ENABLED
-   TESTS += perf-tools/mpiP/ohpc-tests/test_mpi_families
-endif
+#if R_ENABLED
+#   TESTS += dev-tools/R-base/ohpc-tests/test_compiler_families
+#endif
+#
+#if MPIP_ENABLED
+#   TESTS += perf-tools/mpiP/ohpc-tests/test_mpi_families
+#endif
 
 if FFTW_ENABLED
    TESTS += libs/fftw/ohpc-tests/test_mpi_families

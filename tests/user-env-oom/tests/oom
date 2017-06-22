@@ -1,0 +1,21 @@
+#!./common/bats/bin/bats
+# -*-sh-*-
+
+load ../../common/test_helper_functions || exit 1
+source ../../common/functions || exit 1
+
+if [ -s ../../TEST_ENV ]; then
+	source ../../TEST_ENV
+fi
+
+check_rms
+
+@test "[oom] Test job OOM condition ($LMOD_FAMILY_COMPILER/$RESOURCE_MANAGER)" {
+    skip "disable to invistigate disk fillup"
+    if [ ! -s oom_check ]; then
+        flunk "oom_check binary does no exists"
+    fi
+
+    run_serial_binary ./oom_check
+    assert_success
+}
