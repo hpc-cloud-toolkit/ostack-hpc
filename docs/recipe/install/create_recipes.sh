@@ -102,3 +102,18 @@ rm -rf support_*
 rm -rf recipe_*
 rm -rf heat_*
 rm -rf parent_*
+ 
+for parsed_file in `find ./recipe`; do 
+	if [[ ! -d $parsed_file ]]; then 
+        readline=$(head -n 1 $parsed_file)
+        	if [[ -z $readline ]]; then
+                	echo "First line is empty. Cleanup."
+                	tail -n +2 $parsed_file > $parsed_file.tmp
+                	mv $parsed_file.tmp $parsed_file
+                else
+                        echo "The first line is NOT null, skipping cleanup of leading blank lines."
+
+        	fi
+	fi
+done
+
