@@ -4,4 +4,3 @@ TESTS  = init.sh
 TESTS += testenv.sh
 TESTS += test_hpc_img.sh
 
-CLEANFILES=$(wildcard *.xml)

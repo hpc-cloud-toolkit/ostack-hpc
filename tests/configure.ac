@@ -72,13 +72,15 @@ AC_ARG_WITH(mpi-families,
 # disk-image-builder
 AC_ARG_ENABLE([dib],
 	 [AS_HELP_STRING([--enable-dib],[Enable dib tests (default=yes, root only)])],
-	 [],[enable_dib=yes])
+	 [],
+         [AX_OPTION_DEFAULT(type=long,enable_dib,yes)])
 AM_CONDITIONAL(DIB_ENABLED,test "x$enable_dib" = "xyes" ) 
 #------------------------------------------------------------------------------------------
 # OpenStack
 AC_ARG_ENABLE([ostack],
 	 [AS_HELP_STRING([--enable-ostack],[Enable ostack tests (default=yes, root only)])],
-	 [],[enable_ostack=yes])
+	 [],
+         [AX_OPTION_DEFAULT(type=short,enable_ostack,yes)])
 AM_CONDITIONAL(OSTACK_ENABLED,test "x$enable_ostack" = "xyes" ) 
 #------------------------------------------------------------------------------------------
 
@@ -104,6 +106,32 @@ AM_CONDITIONAL(LUSTRE_ENABLED,test "x$enable_lustre" = "xyes" )
 #-----------------
 # User level tests
 #-----------------
+
+#------------------------------------------------------------------------------------------
+# Compilers
+AC_ARG_ENABLE([compilers],
+   [AS_HELP_STRING([--enable-compilers],[Enable compiler toolchain tests (default=no)])],[],
+   [AX_OPTION_DEFAULT(type=short,enable_compilers,no)])
+AM_CONDITIONAL(COMPILERS_ENABLED,test "x$enable_compilers" = "xyes" )
+#------------------------------------------------------------------------------------------
+# R
+AC_ARG_ENABLE([R],
+   [AS_HELP_STRING([--enable-R],[Enable R tests (default=no)])],[],
+   [AX_OPTION_DEFAULT(type=long,enable_R,no)])
+AM_CONDITIONAL(R_ENABLED,test "x$enable_R" = "xyes" )
+#------------------------------------------------------------------------------------------
+# Lustre
+AC_ARG_ENABLE([lustre],
+   [AS_HELP_STRING([--enable-lustre],[Enable Lustre utility tests (default=no)])],[],
+   [AX_OPTION_DEFAULT(type=short,enable_lustre,no)])
+AM_CONDITIONAL(LUSTRE_ENABLED,test "x$enable_lustre" = "xyes" )
+#------------------------------------------------------------------------------------------
+# mpiP
+AC_ARG_ENABLE([mpiP],
+   [AS_HELP_STRING([--enable-mpiP],[Enable mpiP profiler tests (default=no)])],[],
+   [AX_OPTION_DEFAULT(type=long,enable_mpiP,no)])
+AM_CONDITIONAL(MPIP_ENABLED,test "x$enable_mpiP" = "xyes" )
+#------------------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------------------
 # Valgrind
@@ -330,7 +358,7 @@ AM_CONDITIONAL(HPCG_ENABLED,test "x$enable_hpcg" = "xyes" )
 #------------------------------------------------------------------------------------------
 # PRK
 AC_ARG_ENABLE([prk],
-   [AS_HELP_STRING([--enable-prk],[Enable PRK tests (default=yes)])],[],
+   [AS_HELP_STRING([--enable-prk],[Enable PRK tests (default=no)])],[],
    [AX_OPTION_DEFAULT(type=long,enable_prk,no)])
 AM_CONDITIONAL(PRK_ENABLED,test "x$enable_prk" = "xyes" )
 #------------------------------------------------------------------------------------------

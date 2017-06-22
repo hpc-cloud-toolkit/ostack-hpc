@@ -4,4 +4,3 @@ TESTS  = init.sh
 TESTS += testenv.sh
 TESTS += testostack_setup.sh
 
-CLEANFILES=$(wildcard *.xml)
