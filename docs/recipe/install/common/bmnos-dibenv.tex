@@ -67,22 +67,12 @@
 \end{lstlisting}
 % end_ohpc_run
 
-	Make sure open HPC packages is installed. ohpc\_pkg is one of the input setup earlier in this document.
+	To install ohpc packages on image, we need to export ohpc package to DIB.
+         ohpc\_pkg is one of the input setup earlier in this document.
 
 % begin_ohpc_run
 %% ohpc_validation_comment # SECTION BMNOS
-% ohpc_validation_comment   Check package installed
-% ohpc_validation_comment
-\begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*)     yum -y install ${ohpc_pkg}
-\end{lstlisting}
-% end_ohpc_run
-
-	Export same to DIB.
-
-% begin_ohpc_run
-%% ohpc_validation_comment # SECTION BMNOS
-% ohpc_validation_comment   Export to DIB
+% ohpc_validation_comment   Export ohpc package to DIB
 % ohpc_validation_comment
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*)     export DIB_HPC_OHPC_PKG=${ohpc_pkg}
