@@ -40,7 +40,7 @@ mount /home
 mount /opt/ohpc/pub
 
 # mount cloud_hpc_init
-cat /etc/fstab | grep "sms_ip:$chpcInitPath"
+cat /etc/fstab | grep "<sms_ip>:$chpcInitPath"
 CloudHPCInit_exist=$?
 if [ "${CloudHPCInit_exist}" -ne "0" ]; then
     echo "<sms_ip>:$chpcInitPath $chpcInitPath nfs nfsvers=3 0 0" >> /etc/fstab
@@ -77,7 +77,7 @@ if [ -d $chpcInitPath ]; then
     cp -f -L $chpcInitPath/slurm /etc/pam.d/slurm
     cp -f -L $chpcInitPath/munge.key /etc/munge/munge.key
     # For hostname resolution
-    cp -f -L $chpcInitPath/hosts /etc/hosts
+    #cp -f -L $chpcInitPath/hosts /etc/hosts
     # make sure that hostname mentioned into /etc/hosts matches machine hostname. TBD
     # Start slurm and munge 
     systemctl enable munge
@@ -89,26 +89,27 @@ else
 fi
 
 # Setup hostname as per the head node
-#Find the hostname of this machine from the copied over /etc/hosts file
-cc_ipaddrs=(`hostname -I`)
-for cc_ipaddr in ${cc_ipaddrs[@]}; do
-    cat /etc/hosts | grep ${cc_ipaddr} > /dev/null
-    result=$?
-    if [ "$result" -eq "0" ]; then
-        cc_hostname=`cat /etc/hosts | grep ${cc_ipaddr} | cut -d$'\t' -f2`
-        break
-    fi
-done
-
-if [ -z "${cc_hostname}" ]; then
-    logger "chpcInit:ERROR: No resolved hostname found for any IP address in /etc/hosts"
-    exit 1
-fi
-
-#set the hostname
-if [ $(hostname) != ${cc_hostname} ]; then
-    hostnamectl set-hostname ${cc_hostname}
-fi
+# hostname is now setup by openstack so no need for this
+##Find the hostname of this machine from the copied over /etc/hosts file
+#cc_ipaddrs=(`hostname -I`)
+#for cc_ipaddr in ${cc_ipaddrs[@]}; do
+#    cat /etc/hosts | grep ${cc_ipaddr} > /dev/null
+#    result=$?
+#    if [ "$result" -eq "0" ]; then
+#        cc_hostname=`cat /etc/hosts | grep ${cc_ipaddr} | cut -d$'\t' -f2`
+#        break
+#    fi
+#done
+#
+#if [ -z "${cc_hostname}" ]; then
+#    logger "chpcInit:ERROR: No resolved hostname found for any IP address in /etc/hosts"
+#    exit 1
+#fi
+#
+##set the hostname
+#if [ $(hostname) != ${cc_hostname} ]; then
+#    hostnamectl set-hostname ${cc_hostname}
+#fi
 
 # Start slurm and munge 
 systemctl enable munge
@@ -119,3 +120,4 @@ systemctl restart slurmd
 #Change file permissions in /etc/ssh to fix ssh into compute node
 chmod 0600 /etc/ssh/ssh_host_*_key
 
+logger "chpcInit:complete"

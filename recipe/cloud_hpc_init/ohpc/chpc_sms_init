@@ -102,6 +102,7 @@ logger "chpcInit:slurm configuration done"
 
 #Change file permissions in /etc/ssh to fix ssh into compute node
 chmod 0600 /etc/ssh/ssh_host_*_key
+logger "chpcInit: Entered chpcInit"
 
 
 # work-around for bug https://bugs.launchpad.net/neutron/+bug/1531426
