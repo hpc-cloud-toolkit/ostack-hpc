@@ -109,7 +109,7 @@
 [ctrlr](*\#*)     cp -f -L $chpcInitPath/slurm /etc/pam.d/slurm
 [ctrlr](*\#*)     cp -f -L $chpcInitPath/munge.key /etc/munge/munge.key
 [ctrlr](*\#*)     # For hostname resolution
-[ctrlr](*\#*)     cp -f -L $chpcInitPath/hosts /etc/hosts
+[ctrlr](*\#*)     # cp -f -L $chpcInitPath/hosts /etc/hosts
 [ctrlr](*\#*)     # make sure that hostname mentioned into /etc/hosts matches machine hostname. TBD
 [ctrlr](*\#*)     # Start slurm and munge 
 [ctrlr](*\#*)     systemctl enable munge
@@ -128,27 +128,27 @@
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) # Setup hostname as per the head node
-[ctrlr](*\#*) #Find the hostname of this machine from the copied over /etc/hosts file
-[ctrlr](*\#*) cc_ipaddrs=(`hostname -I`)
-[ctrlr](*\#*) for cc_ipaddr in ${cc_ipaddrs[@]}; do
-[ctrlr](*\#*)     cat /etc/hosts | grep ${cc_ipaddr} > /dev/null
-[ctrlr](*\#*)     result=$?
-[ctrlr](*\#*)     if [ "$result" -eq "0" ]; then
-[ctrlr](*\#*)         cc_hostname=`cat /etc/hosts | grep ${cc_ipaddr} | cut -d$'\t' -f2`
-[ctrlr](*\#*)         break
-[ctrlr](*\#*)     fi
-[ctrlr](*\#*) done
-[ctrlr](*\#*) 
-[ctrlr](*\#*) if [ -z "${cc_hostname}" ]; then
-[ctrlr](*\#*)     logger "chpcInit:ERROR: No resolved hostname found for any IP address in /etc/hosts"
-[ctrlr](*\#*)     exit 1
-[ctrlr](*\#*) fi
-[ctrlr](*\#*) 
-[ctrlr](*\#*) #set the hostname
-[ctrlr](*\#*) if [ $(hostname) != ${cc_hostname} ]; then
-[ctrlr](*\#*)     hostnamectl set-hostname ${cc_hostname}
-[ctrlr](*\#*) fi
+[ctrlr](*\#*) ## Setup hostname as per the head node
+[ctrlr](*\#*) ##Find the hostname of this machine from the copied over /etc/hosts file
+[ctrlr](*\#*) #cc_ipaddrs=(`hostname -I`)
+[ctrlr](*\#*) #for cc_ipaddr in ${cc_ipaddrs[@]}; do
+[ctrlr](*\#*) #    cat /etc/hosts | grep ${cc_ipaddr} > /dev/null
+[ctrlr](*\#*) #    result=$?
+[ctrlr](*\#*) #    if [ "$result" -eq "0" ]; then
+[ctrlr](*\#*) #        cc_hostname=`cat /etc/hosts | grep ${cc_ipaddr} | cut -d$'\t' -f2`
+[ctrlr](*\#*) #        break
+[ctrlr](*\#*) #    fi
+[ctrlr](*\#*) #done
+[ctrlr](*\#*) # 
+[ctrlr](*\#*) #if [ -z "${cc_hostname}" ]; then
+[ctrlr](*\#*) #    logger "chpcInit:ERROR: No resolved hostname found for any IP address in /etc/hosts"
+[ctrlr](*\#*) #    exit 1
+[ctrlr](*\#*) #fi
+[ctrlr](*\#*) # 
+[ctrlr](*\#*) ##set the hostname
+[ctrlr](*\#*) #if [ $(hostname) != ${cc_hostname} ]; then
+[ctrlr](*\#*) #    hostnamectl set-hostname ${cc_hostname}
+[ctrlr](*\#*) #fi
 \end{lstlisting}
 % end_ohpc_run
 
@@ -174,6 +174,7 @@
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) #Change file permissions in /etc/ssh to fix ssh into compute node
 [ctrlr](*\#*) chmod 0600 /etc/ssh/ssh_host_*_key
+[ctrlr](*\#*) logger "chpcInit: Complete"
 \end{lstlisting}
 % end_ohpc_run
 
