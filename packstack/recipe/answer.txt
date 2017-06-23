@@ -50,7 +50,7 @@ CONFIG_AODH_INSTALL=y
 
 # Specify 'y' to install OpenStack Metering as a Service (gnocchi).
 # ['y', 'n']
-CONFIG_GNOCCHI_INSTALL=y
+CONFIG_GNOCCHI_INSTALL=n
 
 # Specify 'y' to install OpenStack Data Processing (sahara). In case
 # of sahara installation packstack also installs heat.['y', 'n']
@@ -753,6 +753,11 @@ CONFIG_NOVA_PCI_ALIAS=
 # "name':"default"}, {...}]
 CONFIG_NOVA_PCI_PASSTHROUGH_WHITELIST=
 
+# The hypervisor driver to use with Nova. Can be either 'qemu' or
+# 'kvm'. Defaults to 'qemu' on virtual machines and 'kvm' on bare
+# metal hardware.
+CONFIG_NOVA_LIBVIRT_VIRT_TYPE=%{::default_hypervisor}
+
 # Private interface for flat DHCP on the Compute servers.
 CONFIG_NOVA_COMPUTE_PRIVIF=
 
@@ -1184,6 +1189,22 @@ CONFIG_PROVISION_IMAGE_FORMAT=qcow2
 # User to use when connecting to instances booted from the demo
 # image.
 CONFIG_PROVISION_IMAGE_SSH_USER=cirros
+
+# Name of the uec image created in Glance used in tempest tests
+# (default "cirros-uec").
+CONFIG_PROVISION_UEC_IMAGE_NAME=cirros-uec
+
+# URL of the kernel image copied to Glance image for uec image
+# (defaults to a URL for a recent "cirros" uec image).
+CONFIG_PROVISION_UEC_IMAGE_KERNEL_URL=http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-kernel
+
+# URL of the ramdisk image copied to Glance image for uec image
+# (defaults to a URL for a recent "cirros" uec image).
+CONFIG_PROVISION_UEC_IMAGE_RAMDISK_URL=http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-initramfs
+
+# URL of the disk image copied to Glance image for uec image
+# (defaults to a URL for a recent "cirros" uec image).
+CONFIG_PROVISION_UEC_IMAGE_DISK_URL=http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img
 
 CONFIG_TEMPEST_HOST=
 
