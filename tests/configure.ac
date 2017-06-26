@@ -366,6 +366,21 @@ AC_OUTPUT( Makefile
        common/TEST_ENV
        dib/Makefile
        ostack/Makefile )
+       admin/Makefile 
+       user-env/Makefile 
+       bos/Makefile
+       perf-tools/scalasca/Makefile
+       perf-tools/tau/Makefile
+       dev-tools/easybuild/Makefile
+       dev-tools/numpy/Makefile
+       dev-tools/numpy/tests/Makefile
+       dev-tools/scipy/Makefile
+       dev-tools/scipy/tests/Makefile
+       dev-tools/tbb/Makefile
+       dev-tools/tbb/tests/Makefile
+       dev-tools/cilk/Makefile
+       dev-tools/R-base/Makefile
+       modules/Makefile )
 
 echo
 echo '--------------------------------------------- SUMMARY ---------------------------------------------'
