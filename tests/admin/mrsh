@@ -14,6 +14,6 @@ fi
 }
 
 @test "[mrsh] run command on compute node" {
-    run mrsh c1 hostname
+    run mrsh cc1 hostname
     assert_success
 }
