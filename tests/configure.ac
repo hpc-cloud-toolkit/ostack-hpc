@@ -76,6 +76,13 @@ AC_ARG_ENABLE([dib],
          [AX_OPTION_DEFAULT(type=long,enable_dib,yes)])
 AM_CONDITIONAL(DIB_ENABLED,test "x$enable_dib" = "xyes" ) 
 #------------------------------------------------------------------------------------------
+# modules
+AC_ARG_ENABLE([modules],
+	 [AS_HELP_STRING([--enable-modules],[Enable modules tests (default=yes, root only)])],
+	 [],
+         [AX_OPTION_DEFAULT(type=long,enable_modules,yes)])
+AM_CONDITIONAL(DIB_ENABLED,test "x$enable_modules" = "xyes" ) 
+#------------------------------------------------------------------------------------------
 # OpenStack
 AC_ARG_ENABLE([ostack],
 	 [AS_HELP_STRING([--enable-ostack],[Enable ostack tests (default=yes, root only)])],
@@ -365,7 +372,8 @@ AM_CONDITIONAL(PRK_ENABLED,test "x$enable_prk" = "xyes" )
 AC_OUTPUT( Makefile 
        common/TEST_ENV
        dib/Makefile
-       ostack/Makefile )
+       ostack/Makefile 
+       modules/Makefile )
 
 echo
 echo '--------------------------------------------- SUMMARY ---------------------------------------------'
