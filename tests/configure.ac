@@ -76,6 +76,13 @@ AC_ARG_ENABLE([dib],
          [AX_OPTION_DEFAULT(type=long,enable_dib,yes)])
 AM_CONDITIONAL(DIB_ENABLED,test "x$enable_dib" = "xyes" ) 
 #------------------------------------------------------------------------------------------
+# modules
+AC_ARG_ENABLE([modules],
+	 [AS_HELP_STRING([--enable-modules],[Enable modules tests (default=yes, root only)])],
+	 [],
+         [AX_OPTION_DEFAULT(type=long,enable_modules,yes)])
+AM_CONDITIONAL(DIB_ENABLED,test "x$enable_modules" = "xyes" ) 
+#------------------------------------------------------------------------------------------
 # OpenStack
 AC_ARG_ENABLE([ostack],
 	 [AS_HELP_STRING([--enable-ostack],[Enable ostack tests (default=yes, root only)])],
@@ -368,7 +375,6 @@ AC_OUTPUT( Makefile
        ostack/Makefile )
        admin/Makefile 
        user-env/Makefile 
-       bos/Makefile
        perf-tools/scalasca/Makefile
        perf-tools/tau/Makefile
        dev-tools/easybuild/Makefile
