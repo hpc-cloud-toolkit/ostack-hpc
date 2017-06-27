@@ -34,7 +34,7 @@ for compiler in $COMPILER_FAMILIES ; do
 	make    clean         || exit 1
 	make -k check         || status=1
 
-        for dir in module program_options/test regex/test accumulators/test multi_array/test random/test numeric/test ; do
+        for dir in module program_options/test accumulators/test multi_array/test random/test numeric/test ; do
             save_logs_mpi_family tests/$dir $compiler $mpi
         done
 
