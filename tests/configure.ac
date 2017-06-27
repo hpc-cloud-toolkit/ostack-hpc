@@ -71,7 +71,7 @@ AC_ARG_WITH(mpi-families,
 
 # disk-image-builder
 AC_ARG_ENABLE([dib],
-	 [AS_HELP_STRING([--enable-dib],[Enable dib tests (default=yes, root only)])],
+	 [AS_HELP_STRING([--enable-dib],[Enable dib tests (default=no, root only)])],
 	 [],
          [AX_OPTION_DEFAULT(type=long,enable_dib,yes)])
 AM_CONDITIONAL(DIB_ENABLED,test "x$enable_dib" = "xyes" ) 
@@ -85,7 +85,7 @@ AM_CONDITIONAL(DIB_ENABLED,test "x$enable_modules" = "xyes" )
 #------------------------------------------------------------------------------------------
 # OpenStack
 AC_ARG_ENABLE([ostack],
-	 [AS_HELP_STRING([--enable-ostack],[Enable ostack tests (default=yes, root only)])],
+	 [AS_HELP_STRING([--enable-ostack],[Enable ostack tests (default=no, root only)])],
 	 [],
          [AX_OPTION_DEFAULT(type=short,enable_ostack,yes)])
 AM_CONDITIONAL(OSTACK_ENABLED,test "x$enable_ostack" = "xyes" ) 
