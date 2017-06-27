@@ -50,11 +50,11 @@ AC_ARG_ENABLE([pxse],
 if test x$enable_pxse = xyes ;then
    AC_MSG_RESULT([yes])
    AC_SUBST(COMPILER_FAMILIES,["gnu intel"])       
-   AC_SUBST(MPI_FAMILIES,["mpich mvapich2 openmpi impi"])
+   AC_SUBST(MPI_FAMILIES,["mvapich2 openmpi impi"])
 else
    AC_MSG_RESULT([no])
    AC_SUBST(COMPILER_FAMILIES,[gnu])       
-   AC_SUBST(MPI_FAMILIES,["mpich mvapich2 openmpi"])
+   AC_SUBST(MPI_FAMILIES,["mvapich2 openmpi"])
 fi
 
 # MPI families can be overriden by user
@@ -372,7 +372,7 @@ AM_CONDITIONAL(PRK_ENABLED,test "x$enable_prk" = "xyes" )
 AC_OUTPUT( Makefile 
        common/TEST_ENV
        dib/Makefile
-       ostack/Makefile )
+       ostack/Makefile
        admin/Makefile 
        user-env/Makefile 
        perf-tools/scalasca/Makefile
