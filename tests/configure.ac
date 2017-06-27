@@ -50,11 +50,11 @@ AC_ARG_ENABLE([pxse],
 if test x$enable_pxse = xyes ;then
    AC_MSG_RESULT([yes])
    AC_SUBST(COMPILER_FAMILIES,["gnu intel"])       
-   AC_SUBST(MPI_FAMILIES,["mpich mvapich2 openmpi impi"])
+   AC_SUBST(MPI_FAMILIES,["mvapich2 openmpi impi"])
 else
    AC_MSG_RESULT([no])
    AC_SUBST(COMPILER_FAMILIES,[gnu])       
-   AC_SUBST(MPI_FAMILIES,["mpich mvapich2 openmpi"])
+   AC_SUBST(MPI_FAMILIES,["mvapich2 openmpi"])
 fi
 
 # MPI families can be overriden by user
@@ -71,7 +71,7 @@ AC_ARG_WITH(mpi-families,
 
 # disk-image-builder
 AC_ARG_ENABLE([dib],
-	 [AS_HELP_STRING([--enable-dib],[Enable dib tests (default=yes, root only)])],
+	 [AS_HELP_STRING([--enable-dib],[Enable dib tests (default=no, root only)])],
 	 [],
          [AX_OPTION_DEFAULT(type=long,enable_dib,yes)])
 AM_CONDITIONAL(DIB_ENABLED,test "x$enable_dib" = "xyes" ) 
@@ -85,7 +85,7 @@ AM_CONDITIONAL(DIB_ENABLED,test "x$enable_modules" = "xyes" )
 #------------------------------------------------------------------------------------------
 # OpenStack
 AC_ARG_ENABLE([ostack],
-	 [AS_HELP_STRING([--enable-ostack],[Enable ostack tests (default=yes, root only)])],
+	 [AS_HELP_STRING([--enable-ostack],[Enable ostack tests (default=no, root only)])],
 	 [],
          [AX_OPTION_DEFAULT(type=short,enable_ostack,yes)])
 AM_CONDITIONAL(OSTACK_ENABLED,test "x$enable_ostack" = "xyes" ) 
@@ -372,7 +372,20 @@ AM_CONDITIONAL(PRK_ENABLED,test "x$enable_prk" = "xyes" )
 AC_OUTPUT( Makefile 
        common/TEST_ENV
        dib/Makefile
-       ostack/Makefile 
+       ostack/Makefile
+       admin/Makefile 
+       user-env/Makefile 
+       perf-tools/scalasca/Makefile
+       perf-tools/tau/Makefile
+       dev-tools/easybuild/Makefile
+       dev-tools/numpy/Makefile
+       dev-tools/numpy/tests/Makefile
+       dev-tools/scipy/Makefile
+       dev-tools/scipy/tests/Makefile
+       dev-tools/tbb/Makefile
+       dev-tools/tbb/tests/Makefile
+       dev-tools/cilk/Makefile
+       dev-tools/R-base/Makefile
        modules/Makefile )
 
 echo
