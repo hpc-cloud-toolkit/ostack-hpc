@@ -1,9 +1,6 @@
 % begin_ohpc_run
 % ohpc_validation_comment # XFILEX
-% end_ohpc_run
-\# This file generates the parent scripts form the parse\_doc
-
-% begin_ohpc_run
+% ohpc_validation_comment # The run below generates the parent scripts from the parsed docs
 % ohpc_command #  PFILEP
 % ohpc_command #!/bin/bash
 % ohpc_command ## FILE: ./common_functions
@@ -503,3 +500,194 @@
 % ohpc_command echo "Compute MAC1: $mac1"
 % ohpc_command echo "Compute MAC2: $mac2"
 % end_ohpc_run
+
+% begin_ohpc_run
+% ohpc_validation_comment #  PFILEP
+% ohpc_command # -*-sh-*-
+% ohpc_command # ------------------------------------------------------------------------------------------------
+% ohpc_command # Template for INPUT.LOCAL ------------------------------------------------------------------------------------------------
+% ohpc_command # Template input file to define local variable settings for use with
+% ohpc_command # an installation recipe.
+% ohpc_command # ------------------------------------------------------------------------------------------------
+% ohpc_command 
+% ohpc_command # ---------------------------
+% ohpc_command # SMS (master) node settings
+% ohpc_command # ---------------------------
+% ohpc_command 
+% ohpc_command # Set location of local BOS mirror
+% ohpc_command # BOS_MIRROR="${BOS_MIRROR:-http://BOS.mirror.required}"
+% ohpc_command 
+% ohpc_command # Path to ISO file
+% ohpc_command # orch_iso_path=/root/images/HPC-Orchestrator-rhel7.2u5-16.01.002.beta.iso
+% ohpc_command 
+% ohpc_command # Hostname for master server (SMS)
+% ohpc_command sms_name=""
+% ohpc_command                               
+% ohpc_command # Local (internal) IP address on SMS
+% ohpc_command sms_ip=""
+% ohpc_command 
+% ohpc_command # Internal ethernet interface on SMS
+% ohpc_command sms_eth_internal=""
+% ohpc_command 
+% ohpc_command # Subnet netmask for internal cluster network
+% ohpc_command internal_netmask=""
+% ohpc_command 
+% ohpc_command # Provisioning interface used by compute hosts
+% ohpc_command eth_provision=""
+% ohpc_command 
+% ohpc_command # Local ntp server for time synchronization
+% ohpc_command ntp_server=""
+% ohpc_command 
+% ohpc_command # BMC user credentials for use by IPMI
+% ohpc_command bmc_username="<<bmc_username>>"
+% ohpc_command bmc_password="<<bmc_password>>"
+% ohpc_command 
+% ohpc_command # Additional time to wait for compute nodes to provision (seconds)
+% ohpc_command provision_wait=""
+% ohpc_command 
+% ohpc_command # Stateful install device
+% ohpc_command stateful_dev="${stateful_dev:-sda}"
+% ohpc_command 
+% ohpc_command # Flags for optional installation/configuration
+% ohpc_command 
+% ohpc_command enable_clustershell="${enable_clustershell:-0}"
+% ohpc_command enable_ipmisol="${enable_ipmisol:-0}"
+% ohpc_command enable_ipoib="${enable_ipoib:-0}"
+% ohpc_command enable_ganglia="${enable_ganglia:-0}"
+% ohpc_command enable_kargs="${enable_kargs:-0}"
+% ohpc_command enable_lustre_client="${enable_lustre_client:-0}"
+% ohpc_command enable_mrsh="${enable_mrsh:-1}"
+% ohpc_command enable_nagios="${enable_nagios:-0}"
+% ohpc_command enable_powerman="${enable_powerman:-0}"
+% ohpc_command enable_stateful="${enable_stateful:-0}"
+% ohpc_command 
+% ohpc_command 
+% ohpc_command # -------------------------
+% ohpc_command # compute node settings, are in independent files
+% ohpc_command # -------------------------
+% ohpc_command # -------------------------
+% ohpc_command # # compute node settings, are in independent files
+% ohpc_command # # -------------------------
+% ohpc_command ohpc_pkg="${ohpc_pkg:-https://github.com/openhpc/ohpc/releases/download/v1.2.1.GA/ohpc-release-centos7.2-1.2-1.x86_64.rpm}"
+% ohpc_command #
+% ohpc_command 
+% ohpc_command 
+% ohpc_command # Prefix for compute node hostnames
+% ohpc_command nodename_prefix="${nodename_prefix:-c}"
+% ohpc_command #
+% ohpc_command #
+% ohpc_command ## compute node IP addresses
+% ohpc_command #c_ip[0]=X.X.X.X
+% ohpc_command #c_ip[1]=
+% ohpc_command #c_ip[2]=
+% ohpc_command #c_ip[3]=
+% ohpc_command 
+% ohpc_command ## compute node MAC addreses for provisioning interface
+% ohpc_command c_mac[0]=00:00:00:00:00:00
+% ohpc_command #c_mac[1]=
+% ohpc_command #c_mac[2]=
+% ohpc_command #c_mac[3]=
+% ohpc_command #
+% ohpc_command ## compute node BMC addresses
+% ohpc_command c_bmc[0]=X.X.X.X
+% ohpc_command #c_bmc[1]=
+% ohpc_command #c_bmc[2]=
+% ohpc_command #c_bmc[3]=
+% ohpc_command #
+% ohpc_command #-------------------
+% ohpc_command # Optional settings
+% ohpc_command #-------------------
+% ohpc_command 
+% ohpc_command # additional arguments to enable optional arguments for bootstrap kernel
+% ohpc_command kargs="${kargs:-acpi_pad.disable=1}"
+% ohpc_command 
+% ohpc_command # Lustre MGS mount name
+% ohpc_command mgs_fs_name="${mgs_fs_name:-X.X.X.X@o2ib:/lustre1}"
+% ohpc_command 
+% ohpc_command # Subnet netmask for IPoIB network
+% ohpc_command ipoib_netmask="${ipoib_netmask:-X.X.X.X}"
+% ohpc_command 
+% ohpc_command # IPoIB address for SMS server
+% ohpc_command sms_ipoib="${sms_ipoib:-X.X.X.X}"
+% ohpc_command 
+% ohpc_command # IPoIB addresses for computes
+% ohpc_command c_ipoib[0]=X.X.X.X		            
+% ohpc_command #c_ipoib[1]=
+% ohpc_command #c_ipoib[2]=
+% ohpc_command #c_ipoib[3]=
+
+% ohpc_validation_comment #  PFILEP
+% ohpc_command ## Template for INVENTORY
+% ohpc_command ## HPC Base package   -   
+% ohpc_command ## Currently supported,
+% ohpc_command ##     orch -> Intel HPC Orchestrator
+% ohpc_command ##     ohpc -> OpenHPC
+% ohpc_command ##
+% ohpc_command ##
+% ohpc_command #chpc_base="orch"
+% ohpc_command chpc_base="ohpc"
+% ohpc_command 
+% ohpc_command # HPC slurm partition that needs to be extended. Specified by the admin
+% ohpc_command hpc_slurm_partition=normal
+% ohpc_command 
+% ohpc_command # list Compute nodes
+% ohpc_command # Prefix for compute node hostnames
+% ohpc_command cnodename_prefix="<<prefix>>"
+% ohpc_command 
+% ohpc_command # Local (internal) hostname on SMS
+% ohpc_command controller_name="<<controller_name>>"
+% ohpc_command 
+% ohpc_command # Local (internal) IP address on SMS
+% ohpc_command controller_ip="X.X.X.X"
+% ohpc_command 
+% ohpc_command # cloud subnet CIDR
+% ohpc_command cc_subnet_cidr="X.X.X.X/Y"
+% ohpc_command 
+% ohpc_command # cloud subnet DHCP range
+% ohpc_command cc_subnet_dhcp_start="X.X.X.X"
+% ohpc_command cc_subnet_dhcp_end="X.X.X.X"
+% ohpc_command 
+% ohpc_command sms_mac=00:00:00:00:00:00
+% ohpc_command sms_bmc=X.X.X.X
+% ohpc_command # BMC user credentials for use by IPMI
+% ohpc_command sms_bmc_username="<<username>>"
+% ohpc_command sms_bmc_password="<<password>>"
+% ohpc_command 
+% ohpc_command # cloud compute node IP addresses
+% ohpc_command # might need to get MAC and IP from Nova and use here, TBD
+% ohpc_command cc_ip[0]=X.X.X.X
+% ohpc_command #cc_ip[1]=
+% ohpc_command #cc_ip[2]=
+% ohpc_command 
+% ohpc_command # cloud compute node MAC addreses for provisioning interface
+% ohpc_command cc_mac[0]=00:00:00:00:00:00
+% ohpc_command #cc_mac[1]=
+% ohpc_command #cc_mac[2]=
+% ohpc_command 
+% ohpc_command # cloud compute node BMC addresses
+% ohpc_command cc_bmc[0]=X.X.X.X
+% ohpc_command # cc_bmc[1]=
+% ohpc_command # cc_bmc[2]=
+% ohpc_command 
+% ohpc_command # cloud node BMC username and password
+% ohpc_command cc_bmc_username="<<username=root>>"
+% ohpc_command cc_bmc_password="<<password>>"
+% ohpc_command 
+% ohpc_command #cloud compute node characterstics (aka nova flavor)
+% ohpc_command RAM_MB=65536   		#PROVIDED AS AN EXAMPLE. CHECK YOUR SETTINGS!
+% ohpc_command CPU=32			#PROVIDED AS AN EXAMPLE. CHECK YOUR SETTINGS!
+% ohpc_command DISK_GB=750		#PROVIDED AS AN EXAMPLE. CHECK YOUR SETTINGS!
+% ohpc_command ARCH=x86_64		#PROVIDED AS AN EXAMPLE. CHECK YOUR SETTINGS!
+% ohpc_command SOCKETS=2		#PROVIDED AS AN EXAMPLE. CHECK YOUR SETTINGS!
+% ohpc_command CORES_PER_SOCKET=8	#PROVIDED AS AN EXAMPLE. CHECK YOUR SETTINGS!
+% ohpc_command THREADS_PER_CORE=2	#PROVIDED AS AN EXAMPLE. CHECK YOUR SETTINGS!
+% ohpc_command 
+% ohpc_command # Cloud Compute Node Images (Adjust if you use your own images, or change the default location)
+% ohpc_command chpc_image_deploy_kernel="${chpc_image_deploy_kernel=/opt/ohpc/admin/images/cloud/ironic-deploy.kernel}"
+% ohpc_command chpc_image_deploy_ramdisk="${chpc_image_deploy_ramdisk=/opt/ohpc/admin/images/cloud/ironic-deploy.initramfs}"
+% ohpc_command chpc_image_user="${chpc_image_user=/opt/ohpc/admin/images/cloud/icloud-hpc-cent7.qcow2}"
+% ohpc_command chpc_image_sms="${chpc_image_sms=/opt/ohpc/admin/images/cloud/icloud-hpc-cent7-sms.qcow2}"
+% ohpc_command chpc_create_new_image="${chpc_create_new_image=0}"
+% ohpc_command 
+% ohpc_validation_comment # PFILEP 
+%end_ohpc_run

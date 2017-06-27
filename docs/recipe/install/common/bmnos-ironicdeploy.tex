@@ -15,7 +15,8 @@
 
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*)    if [[ ${chpc_create_new_image} -ne 1 ]] && [[ -s $chpc_image_deploy_kernel ]] && [[ -s $chpc_image_deploy_ramdisk ]]; then
+[ctrlr](*\#*)    if [[ ${chpc_create_new_image} -ne 1 ]] && [[ -s $chpc_image_deploy_kernel ]] && \
+[ctrlr](*\#*)     [[ -s $chpc_image_deploy_ramdisk ]]; then
 [ctrlr](*\#*)        # need to create an image, image is provided by user
 [ctrlr](*\#*)        echo "Skiping cloud deploy-image build, Image provided:"
 [ctrlr](*\#*)        echo "Deploy ramdisk Image:$chpc_image_deploy_ramdisk"

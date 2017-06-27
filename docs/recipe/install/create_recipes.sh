@@ -31,6 +31,8 @@ parent6="NULL"
 parent7="setup_cloud_hpc.sh"
 parent8="teardown_cloud_nodes.sh"
 parent9="get_cn_mac"
+parent10="Template-INPUT.LOCAL"
+parent11="Template-INVENTORY"
 
 
 echo "There are three types of recipes, but at present only '3 - HPC as a Service' is useable."
@@ -95,6 +97,8 @@ for i in 5 7 8 9; do
 	str="parent$i"
 	mv parent_$i ./recipe/${!str}
 done
+mv parent_10 recipe/Template-INPUT.LOCAL
+mv parent_11 recipe/Template-INVENTORY
 
 rm -rf output.txt
 rm -rf optional_*

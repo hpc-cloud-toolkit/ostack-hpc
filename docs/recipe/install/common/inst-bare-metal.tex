@@ -19,7 +19,8 @@
 [ctrlr](*\#*)     neutron net-list | grep "|\s*sharednet1\s*|"
 [ctrlr](*\#*)     net_exists=$?
 [ctrlr](*\#*)     if [ "${net_exists}" -ne "0" ]; then
-[ctrlr](*\#*)         neutron net-create --tenant-id ${SERVICES_TENANT_ID} sharednet1 --shared --provider:network_type flat --provider:physical_network physnet1
+[ctrlr](*\#*)         neutron net-create --tenant-id ${SERVICES_TENANT_ID} sharednet1 --shared \
+[ctrlr](*\#*)          --provider:network_type flat --provider:physical_network physnet1
 [ctrlr](*\#*)     fi
 [ctrlr](*\#*)     NEUTRON_NETWORK_UUID=`neutron net-list | grep "|\s*sharednet1\s*|" | awk '{print $2}'`
 \end{lstlisting}
@@ -36,7 +37,9 @@
 [ctrlr](*\#*)     neutron subnet-list | grep "|\s*subnet01\s*|"
 [ctrlr](*\#*)     subnet_exists=$?
 [ctrlr](*\#*)     if [ "${subnet_exists}" -ne "0" ]; then
-[ctrlr](*\#*)         neutron subnet-create sharednet1 --name subnet01 --ip-version=4 --gateway=${controller_ip} --allocation-pool start=${cc_subnet_dhcp_start},end=${cc_subnet_dhcp_end} --enable-dhcp ${cc_subnet_cidr}
+[ctrlr](*\#*)         neutron subnet-create sharednet1 --name subnet01 --ip-version=4 --gateway=${controller_ip} \
+[ctrlr](*\#*)          --allocation-pool start=${cc_subnet_dhcp_start},end=${cc_subnet_dhcp_end} \
+[ctrlr](*\#*)          --enable-dhcp ${cc_subnet_cidr}
 [ctrlr](*\#*)     fi
 [ctrlr](*\#*)     NEUTRON_SUBNET_UUID=`neutron subnet-list | grep "|\s*subnet01\s*|" | awk '{print $2}'`
 \end{lstlisting} 
@@ -52,14 +55,16 @@
 [ctrlr](*\#*)     glance image-list | grep "|\s*deploy-vmlinuz\s*|"
 [ctrlr](*\#*)     img_exists=$?
 [ctrlr](*\#*)     if [ "${img_exists}" -ne "0" ]; then
-[ctrlr](*\#*)         glance image-create --name deploy-vmlinuz --visibility public --disk-format aki --container-format aki < ${chpc_image_deploy_kernel}
+[ctrlr](*\#*)         glance image-create --name deploy-vmlinuz --visibility public --disk-format \
+[ctrlr](*\#*)          aki --container-format aki < ${chpc_image_deploy_kernel}
 [ctrlr](*\#*)     fi
 [ctrlr](*\#*)     DEPLOY_VMLINUZ_UUID=`glance image-list | grep "|\s*deploy-vmlinuz\s*|" | awk '{print $2}'`
 [ctrlr](*\#*) 
 [ctrlr](*\#*)     glance image-list | grep "|\s*deploy-initrd\s*|"
 [ctrlr](*\#*)     img_exists=$?
 [ctrlr](*\#*)     if [ "${img_exists}" -ne "0" ]; then
-[ctrlr](*\#*)         glance image-create --name deploy-initrd --visibility public --disk-format ari --container-format ari < ${chpc_image_deploy_ramdisk}
+[ctrlr](*\#*)         glance image-create --name deploy-initrd --visibility public --disk-format ari \
+[ctrlr](*\#*)         --container-format ari < ${chpc_image_deploy_ramdisk}
 [ctrlr](*\#*)     fi
 [ctrlr](*\#*)     DEPLOY_INITRD_UUID=`glance image-list | grep "|\s*deploy-initrd\s*|" | awk '{print $2}'`
 \end{lstlisting} 
@@ -111,7 +116,7 @@
 \end{lstlisting} 
 % ohpc_command }
 % end_ohpc_run
-
+\newpage
 \subsubsection{Setup HPC head node}
 
 
@@ -127,7 +132,8 @@
 [ctrlr](*\#*)    glance image-list | grep "|\s*sms-image\s*|"
 [ctrlr](*\#*)    img_exists=$?
 [ctrlr](*\#*)    if [ "${img_exists}" -ne "0" ]; then
-[ctrlr](*\#*)        glance image-create --name sms-image --visibility public --disk-format qcow2 --container-format bare < ${chpc_image_sms}
+[ctrlr](*\#*)        glance image-create --name sms-image --visibility public --disk-format qcow2 \
+[ctrlr](*\#*)          --container-format bare < ${chpc_image_sms}
 [ctrlr](*\#*)    fi
 [ctrlr](*\#*)    SMS_DISK_IMAGE_UUID=`glance image-list | grep "|\s*sms-image\s*|" | awk '{print $2}'`
 \end{lstlisting} 
@@ -143,7 +149,11 @@
 [ctrlr](*\#*)     ironic node-list | grep "|\s*${sms_name}$\s*|"
 [ctrlr](*\#*)     node_exists=$?
 [ctrlr](*\#*)     if [ "${node_exists}" -ne "0" ]; then 
-[ctrlr](*\#*)         ironic node-create -d pxe_ipmitool -i deploy_kernel=${DEPLOY_VMLINUZ_UUID} -i deploy_ramdisk=${DEPLOY_INITRD_UUID} -i ipmi_terminal_port=8023 -i ipmi_address=${sms_bmc} -i ipmi_username=${sms_bmc_username} -i ipmi_password=${sms_bmc_password} -p cpus=${CPU} -p memory_mb=${RAM_MB} -p local_gb=${DISK_GB} -p cpu_arch=${ARCH} -p capabilities="boot_mode:bios" -n ${sms_name}
+[ctrlr](*\#*)         ironic node-create -d pxe_ipmitool -i deploy_kernel=${DEPLOY_VMLINUZ_UUID} -i \
+[ctrlr](*\#*)         deploy_ramdisk=${DEPLOY_INITRD_UUID} -i ipmi_terminal_port=8023 -i ipmi_address=${sms_bmc} \
+[ctrlr](*\#*)         -i ipmi_username=${sms_bmc_username} -i ipmi_password=${sms_bmc_password} -p cpus=${CPU} -p \
+[ctrlr](*\#*)         memory_mb=${RAM_MB} -p local_gb=${DISK_GB} -p cpu_arch=${ARCH} -p \
+[ctrlr](*\#*)          capabilities="boot_mode:bios" -n ${sms_name}
 [ctrlr](*\#*)     fi
 [ctrlr](*\#*)     SMS_UUID=`ironic node-list | grep "|\s*${sms_name}\s*|" | awk '{print $2}'`
 \end{lstlisting} 
@@ -161,14 +171,15 @@
 \end{lstlisting} 
 % end_ohpc_run
 
-	Add the instance info and disk space for root 
+Add the instance info and disk space for root. \newline
 	Add the instance\_info/image\_source and instance\_info/root\_gb
     
 % begin_ohpc_run
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*)     ironic node-update $SMS_UUID add instance_info/image_source=${SMS_DISK_IMAGE_UUID} instance_info/root_gb=50
+[ctrlr](*\#*)     ironic node-update $SMS_UUID add \
+[ctrlr](*\#*)          instance_info/image_source=${SMS_DISK_IMAGE_UUID} instance_info/root_gb=50
 \end{lstlisting} 
 % end_ohpc_run
 
@@ -180,13 +191,14 @@
     
     \begin{lstlisting}[language=bash,keywords={}]
     [ctrlr](*\#*) #Setup neutron port for static IP addressing of sms node, this is an optional part
-    [ctrlr](*\#*) neutron port-create sharednet1 --dns_name $sms_name --fixed-ip ip_address=$sms_ip --name $sms_name --mac-address $sms_mac
-[ctrlr](*\#*)     SMS_PORT_ID=`neutron port-list | grep "|\s*$sms_name\s*|" | awk '{print $2}'`
+    [ctrlr](*\#*) neutron port-create sharednet1 --dns_name $sms_name --fixed-ip \
+    [ctrlr](*\#*)          ip_address=$sms_ip --name $sms_name --mac-address $sms_mac
+    [ctrlr](*\#*)     SMS_PORT_ID=`neutron port-list | grep "|\s*$sms_name\s*|" | awk '{print $2}'`
 	\end{lstlisting} 
 % ohpc_command }
 % end_ohpc_run
 
-
+\newpage
 \subsubsection{Setup HPC compute nodes}
 
 	In a previous section we configured Openstack to instantiate the SMS node. In this section we will be configuring Openstack to instantiate the HPC compute nodes.
@@ -202,7 +214,8 @@
 [ctrlr](*\#*)     glance image-list | grep "|\s*user-image\s*|"
 [ctrlr](*\#*)     img_exists=$?
 [ctrlr](*\#*)     if [ "${img_exists}" -ne "0" ]; then
-[ctrlr](*\#*)         glance image-create --name user-image --visibility public --disk-format qcow2 --container-format bare < ${chpc_image_user}
+[ctrlr](*\#*)         glance image-create --name user-image --visibility public --disk-format \
+[ctrlr](*\#*)          qcow2 --container-format bare < ${chpc_image_user}
 [ctrlr](*\#*)     fi
 [ctrlr](*\#*)     USER_DISK_IMAGE_UUID=`glance image-list | grep "|\s*user-image\s*|" | awk '{print $2}'`
 \end{lstlisting} 
@@ -223,24 +236,33 @@
 [ctrlr](*\#*)         ironic node-list | grep "|\s*${cnodename_prefix}$((i+1))\s*|"
 [ctrlr](*\#*)         node_exists=$?
 [ctrlr](*\#*)         if [ "${node_exists}" -ne "0" ]; then
-[ctrlr](*\#*)             ironic node-create -d pxe_ipmitool -i deploy_kernel=${DEPLOY_VMLINUZ_UUID} -i deploy_ramdisk=${DEPLOY_INITRD_UUID} -i ipmi_terminal_port=8023 -i ipmi_address=${cc_bmc[$i]} -i ipmi_username=${cc_bmc_username} -i ipmi_password=${cc_bmc_password} -p cpus=${CPU} -p memory_mb=${RAM_MB} -p local_gb=${DISK_GB} -p cpu_arch=${ARCH} -p capabilities="boot_mode:bios" -n ${cnodename_prefix}$((i+1))
+[ctrlr](*\#*)             ironic node-create -d pxe_ipmitool -i \
+[ctrlr](*\#*)          deploy_kernel=${DEPLOY_VMLINUZ_UUID} -i deploy_ramdisk=${DEPLOY_INITRD_UUID} \
+[ctrlr](*\#*)         -i ipmi_terminal_port=8023 -i ipmi_address=${cc_bmc[$i]} \
+[ctrlr](*\#*)         -i ipmi_username=${cc_bmc_username} -i ipmi_password=${cc_bmc_password} -p cpus=${CPU} \
+[ctrlr](*\#*)          -p memory_mb=${RAM_MB} -p local_gb=${DISK_GB} -p cpu_arch=${ARCH} -p \
+[ctrlr](*\#*)          capabilities="boot_mode:bios" -n ${cnodename_prefix}$((i+1))
 [ctrlr](*\#*)        fi
-[ctrlr](*\#*)        NODE_UUID_CC[$i]=`ironic node-list | grep "|\s*${cnodename_prefix}$((i+1))\s*|" | awk '{print $2}'`
+[ctrlr](*\#*)        NODE_UUID_CC[$i]=`ironic node-list | grep \
+[ctrlr](*\#*)          "|\s*${cnodename_prefix}$((i+1))\s*|" | awk '{print $2}'`
 
 [ctrlr](*\#*)         # update for compute nodes node MAC
 [ctrlr](*\#*)         ironic port-create -n ${NODE_UUID_CC[$i]} -a ${cc_mac[$i]}
 
 [ctrlr](*\#*)         #Add the instance_info/image_source and instance_info/root_gb
-[ctrlr](*\#*)         ironic node-update ${NODE_UUID_CC[$i]} add instance_info/image_source=${USER_DISK_IMAGE_UUID} instance_info/root_gb=50
+[ctrlr](*\#*)         ironic node-update ${NODE_UUID_CC[$i]} add \
+[ctrlr](*\#*)          instance_info/image_source=${USER_DISK_IMAGE_UUID} instance_info/root_gb=50
 [ctrlr](*\#*) 
 [ctrlr](*\#*)         #Setup neutron port for static IP addressing of compute nodes
 [ctrlr](*\#*)         cn_name=${cnodename_prefix}$((i+1))
-[ctrlr](*\#*)         neutron port-create sharednet1 --dns_name $cn_name --fixed-ip ip_address=${cc_ip[$i]} --name $cn_name --mac-address ${cc_mac[$i]}
-[ctrlr](*\#*)         NEUTRON_PORT_ID_CC[$i]=`neutron port-list | grep "|\s*${cnodename_prefix}$((i+1))\s*|" | awk '{print $2}'`
+[ctrlr](*\#*)         neutron port-create sharednet1 --dns_name $cn_name --fixed-ip \
+[ctrlr](*\#*)          ip_address=${cc_ip[$i]} --name $cn_name --mac-address ${cc_mac[$i]}
+[ctrlr](*\#*)         NEUTRON_PORT_ID_CC[$i]=`neutron port-list | grep \
+[ctrlr](*\#*)          "|\s*${cnodename_prefix}$((i+1))\s*|" | awk '{print $2}'`
 [ctrlr](*\#*)     done
 \end{lstlisting} 
 % end_ohpc_run
-
+\newpage
 
 	Ironic periodically syncs with Nova for available nodes. Nova then updates its record for all available hosts. So, before booting the node with Nova, allow some time to sync Ironic with it. 
 
@@ -270,7 +292,9 @@
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) #Boot the sms node with nova. chpcInit is set from prepare_cloudInit
-[ctrlr](*\#*) echo "nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${SMS_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcSMSInit --nic port-id=${SMS_PORT_ID} ${sms_name}" > boot_sms
+[ctrlr](*\#*) echo "nova boot --config-drive true --flavor ${FLAVOR_UUID} --image \
+[ctrlr](*\#*)          ${SMS_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers \
+[ctrlr](*\#*)          --user-data=$chpcSMSInit --nic port-id=${SMS_PORT_ID} ${sms_name}" > boot_sms
 \end{lstlisting} 
 % end_ohpc_run
 
@@ -280,7 +304,9 @@
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${SMS_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcSMSInit --nic port-id=${SMS_PORT_ID} ${sms_name}
+[ctrlr](*\#*) nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${SMS_DISK_IMAGE_UUID} \
+[ctrlr](*\#*)          --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcSMSInit --nic \ 
+[ctrlr](*\#*)         port-id=${SMS_PORT_ID} ${sms_name}
 \end{lstlisting} 
 % end_ohpc_run
 
@@ -295,7 +321,7 @@
 % ohpc_command }
 % end_ohpc_run
 
-
+\newpage
 \subsubsection{Boot compute nodes}
 
 	Booting compute nodes are very similar to booting SMS nodes. In our case we will boot 4 compute nodes (as specified in user inputs. Host name of compute node will use prefix defined by cnodename\_prefix variable, followed by node counter. For compute nodes, we will use a compute node image (USER\_DISK\_IMAGE\_UUID) and compute node cloud-init script (chpcInit). 
@@ -307,8 +333,14 @@
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) for ((i=0; i < ${num_ccomputes}; i++)); do
 [ctrlr](*\#*) filename="cn$((i+1))"
-[ctrlr](*\#*) echo "nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${USER_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcInit --nic port-id=${NEUTRON_PORT_ID_CC[$i]} ${cnodename_prefix}$((i+1))" > boot_$filename
-[ctrlr](*\#*) nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${USER_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcInit --nic port-id=${NEUTRON_PORT_ID_CC[$i]} ${cnodename_prefix}$((i+1))
+[ctrlr](*\#*) echo "nova boot --config-drive true --flavor ${FLAVOR_UUID} --image \
+[ctrlr](*\#*)          ${USER_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers \
+[ctrlr](*\#*)          --user-data=$chpcInit --nic port-id=${NEUTRON_PORT_ID_CC[$i]} \
+[ctrlr](*\#*)          ${cnodename_prefix}$((i+1))" > boot_$filename
+[ctrlr](*\#*) nova boot --config-drive true --flavor ${FLAVOR_UUID} --image \
+[ctrlr](*\#*)         ${USER_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers \
+[ctrlr](*\#*)          --user-data=$chpcInit --nic port-id=${NEUTRON_PORT_ID_CC[$i]} \
+[ctrlr](*\#*)          ${cnodename_prefix}$((i+1))
 [ctrlr](*\#*) #wait for 5 sec before booting other compute node
 [ctrlr](*\#*) sleep 5
 [ctrlr](*\#*) done

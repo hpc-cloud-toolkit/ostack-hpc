@@ -41,7 +41,8 @@
 % ohpc_validation_comment # FILE: update_clustershell
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) sed -i -- 's/all: @adm,@compute/compute: cc[1-${num_ccomputes}]\n&/' /etc/clustershell/groups.d/local.cfg
+[ctrlr](*\#*) sed -i -- 's/all: @adm,@compute/compute: \
+[ctrlr](*\#*)   cc[1-${num_ccomputes}]\n&/' /etc/clustershell/groups.d/local.cfg
 \end{lstlisting} 
  % end_ohpc_run
  

@@ -7,11 +7,11 @@
 \input{vc.tex}
 
 % Define Base OS and other local macros
-\newcommand{\baseOS}{CentOS7.3}
-\newcommand{\OSRepo}{CentOS\_7.3}
+\newcommand{\baseOS}{CentOS7.2}
+\newcommand{\OSRepo}{CentOS\_7.2}
 \newcommand{\OSTree}{CentOS\_7}
 \newcommand{\OSTag}{el7}
-\newcommand{\baseos}{centos7.3}
+\newcommand{\baseos}{centos7.2}
 \newcommand{\provisioner}{Openstack}
 \newcommand{\rms}{SLURM}
 \newcommand{\arch}{x86\_64}
@@ -79,7 +79,6 @@
 \subsubsection{Preparing user image for head node OS}\label{sec:head_node_images}
 \input{common/bmnos-headnodeimage}
 
-\newpage
 \subsubsection{Preparing user image for compute node OS}\label{sec:compute_node_images}
 \input{common/bmnos-computenodeimage}
 
@@ -137,9 +136,11 @@
 \section{Updating SLURM}
 \input{common/update_cnodes_to_sms.tex}
 	
-
+\newpage
 \section{Appendix}
+\input{common/appendix_AB.tex}
 \input{common/parent_files_appendix.tex}
+
 	
 % Output support files for recipes 
 % These are files needed to run the default recipes, but not needed in the documentation

@@ -9,7 +9,11 @@
 
 \end{lstlisting} 
 
-	Check if user has already supplied compute node images by checking environment variable chpc\_create\_new\_image and chpc\_image\_user. If image is supplied then we will copy image to ohpc image location and setup our environemnt variable to point to image location 
+	Check if user has already supplied compute node images by checking environment variables:
+	
+		 chpc\_create\_new\_image and chpc\_image\_user.
+		  
+	If image is supplied then we will copy image to ohpc image location and setup our environemnt variable to point to image location 
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*)    if [[ ${chpc_create_new_image} -ne 1 ]] && [[ -s $chpc_image_user ]]; then
@@ -64,7 +68,8 @@
 % begin_ohpc_run
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*)       disk-image-create centos7 vm local-config dhcp-all-interfaces devuser selinux-permissive $DIB_HPC_ELEMENTS -o icloud-hpc-cent7
+[ctrlr](*\#*)       disk-image-create centos7 vm local-config dhcp-all-interfaces \
+[ctrlr](*\#*)         devuser selinux-permissive $DIB_HPC_ELEMENTS -o icloud-hpc-cent7
 \end{lstlisting} 
  % end_ohpc_run 
 
