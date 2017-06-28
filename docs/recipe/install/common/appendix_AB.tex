@@ -1,0 +1,116 @@
+\renewcommand\thesubsection{\Alph{subsection}}
+\subsection{Installation Template}
+
+This appendix highlights the availability of a companion installation script that is included with CHPC documentation. This script, when combined with local site inputs, can be used to implement a starting
+recipe for bare-metal system installation and configuration. This template script is used during validation efforts to test cluster installations and is provided as a convenience for administrators as a starting point for potential site customization.
+\begin{center}
+	\begin{tcolorbox}[]
+		\small
+Note that the template script provided is intended for use during initial installation and is not designed for
+repeated execution. If modifications are required after using the script initially, we recommend running the
+relevant subset of commands interactively.
+\end{tcolorbox}
+\end{center}
+The template script relies on the use of a pair simple text files to define local site variables that were outlined
+in Section 1.3. These files are called in the setup\_cloud\_hpc.sh script in the default install directory, /opt/ohpc/pub/doc/recipes.
+The template install script is intended for
+execution on the controller host and is installed as part of the docs-chpc package. After enabling the CHPC repository and reviewing the guide for additional information on the intent of the commands, the general starting approach for using this template
+is as follows:
+
+
+1. Install the docs-chpc package
+
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[sms]# yum -y install docs-ohpc
+\end{lstlisting}
+
+2. Copy the provided template input file to use as a starting point to define local site settings:
+
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[sms]# cp /opt/ohpc/pub/doc/recipes/Template-INPUT.LOCAL ~/input.local
+[sms]# cp /opt/ohpc/pub/doc/recipes/Template-INVENTORY ~/inventory
+\end{lstlisting}
+
+3. Update input.local and inventory with desired settings
+
+4. Run the installation script
+
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[sms]# cd /opt/ohpc/pub/doc/recipes/centos7/x86_64/openstack/slurm/
+[sms]# ./setup_cloud_hpc.sh -u=3 -i=~/input.local -n=~/inventory
+\end{lstlisting}
+
+
+\newpage
+\subsection{Integration Test Suite}
+	
+
+This appendix details the installation and basic use of the integration test suite used to support OpenHPC releases. This suite is not intended to replace the validation performed by component development teams, but is instead, devised to confirm component builds are functional and interoperable within the modular OpenHPC environment. The test suite is generally organized by components and the OpenHPC CI workflow relies on running the full suite using Jenkins to test multiple OS configurations and installation recipes. To facilitate customization and running of the test suite locally, we provide these tests in a standalone RPM.
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[sms]# yum -y install test-suite-chpc
+\end{lstlisting}
+
+The RPM installation creates a user named ohpc-test to house the test suite and provide an isolated environment for execution. Configuration of the test suite is done using standard GNU autotools semantics and the BATS shell-testing framework is used to execute and log a number of individual unit tests. Some tests require privileged execution, so a different combination of tests will be enabled depending on which user executes the top-level configure script. Non-privileged tests requiring execution on one or more compute nodes are submitted as jobs through the SLURM resource manager. The tests are further divided into "short" and "long" run categories. The short run configuration is a subset of approximately 180 tests to demonstrate basic functionality of key components (e.g. MPI stacks) and should complete in 10-20 minutes. The long run (around 1000 tests) is comprehensive and can take an hour or more to complete. Most components can be tested individually, but a default configuration is setup to enable collective testing. To test an isolated component, use the configure option to disable all tests, then re-enable the desired test to run. The --help option to configure will display all possible tests. Example output is shown below (some output is omitted for the sake of brevity).
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[sms]# su - ohpc-test 
+[test@sms ~]$ cd tests [test@sms ~]$ ./configure --disable-all --enable-fftw 
+checking for a BSD-compatible install... /bin/install -c 
+checking whether build environment is sane... yes 
+... 
+---------------------------------------------- SUMMARY --------------------------------------------
+Package version............... : test-suite-1.3.0
+Build user.................... : ohpc-test 
+Build host.................... : sms001 
+Configure date................ : 2017-03-24 15:41 
+Build architecture............ : x86 64 
+Compiler Families............. : gnu 
+MPI Families.................. : mpich mvapich2 openmpi 
+Resource manager ............. : SLURM 
+Test suite configuration...... : short 
+... 
+Libraries: 
+	Adios .................... : disabled 
+	Boost .................... : disabled 
+	Boost MPI................. : disabled 
+	FFTW...................... : enabled 
+	GSL....................... : disabled 
+	HDF5...................... : disabled 
+	HYPRE..................... : disabled 
+...
+\end{lstlisting}
+	
+Many OpenHPC components exist in multiple flavors to support multiple compiler and MPI runtime permutations, and the test suite takes this in to account by iterating through these combinations by default.
+If make check is executed from the top-level test directory, all configured compiler and MPI permutations of a library will be exercised. The following highlights the execution of the FFTW related tests that were enabled in the previous step.
+
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[test@sms ~]$ make check 
+make --no-print-directory check-TESTS 
+PASS: libs/fftw/ohpc-tests/test_mpi_families
+============================================================================ 
+Testsuite summary for test-suite 1.3.0
+============================================================================ 
+# TOTAL: 1 
+# PASS: 1 
+# SKIP: 0 
+# XFAIL: 0 
+# FAIL: 0 
+# XPASS: 0 
+# ERROR: 0 
+============================================================================ 
+[test@sms ~]$ cat libs/fftw/tests/family-gnu-*/rm_execution.log 
+1..3 
+ok 1 [libs/FFTW] Serial C binary runs under resource manager (SLURM/gnu/mpich) 
+ok 2 [libs/FFTW] MPI C binary runs under resource manager (SLURM/gnu/mpich) 
+ok 3 [libs/FFTW] Serial Fortran binary runs under resource manager (SLURM/gnu/mpich) 
+PASS rm_execution (exit status: 0) 
+1..3 
+ok 1 [libs/FFTW] Serial C binary runs under resource manager (SLURM/gnu/mvapich2) 
+ok 2 [libs/FFTW] MPI C binary runs under resource manager (SLURM/gnu/mvapich2) 
+ok 3 [libs/FFTW] Serial Fortran binary runs under resource manager (SLURM/gnu/mvapich2) 
+PASS rm_execution (exit status: 0) 
+1..3 
+ok 1 [libs/FFTW] Serial C binary runs under resource manager (SLURM/gnu/openmpi) 
+ok 2 [libs/FFTW] MPI C binary runs under resource manager (SLURM/gnu/openmpi) 
+ok 3 [libs/FFTW] Serial Fortran binary runs under resource manager (SLURM/gnu/openmpi) 
+PASS rm_execution (exit status: 0)
+\end{lstlisting}
