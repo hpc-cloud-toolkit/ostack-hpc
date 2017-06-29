@@ -38,14 +38,6 @@ setup_tests()
     
 }
 
-run_chpc_sms_tests()
-{
-    # copy all tests to sms node
-    # ssh to sms node
-    # run tests
-    # return results
-}
-
 run_user_level_tests()
 {
     echo " "
