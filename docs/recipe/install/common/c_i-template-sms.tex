@@ -37,11 +37,6 @@
 [ctrlr](*\#*) # create directory of not exists
 [ctrlr](*\#*) mkdir -p $chpcInitPath
 [ctrlr](*\#*) chmod 700 $chpcInitPath
-[ctrlr](*\#*) # To create same user environment, copy user files 
-[ctrlr](*\#*) # Copy other files needed for Cloud Init
-[ctrlr](*\#*) #sudo cp -fpr /etc/passwd $chpcInitPath
-[ctrlr](*\#*) #sudo cp -fpr /etc/shadow $chpcInitPath
-[ctrlr](*\#*) #sudo cp -fpr /etc/group $chpcInitPath
 [ctrlr](*\#*) # Copy public ssh key to shared drive
 [ctrlr](*\#*) _ssh_path=/root/.ssh
 [ctrlr](*\#*) if [ ! -e "$_ssh_path/hpcasservice" ]; then

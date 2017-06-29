@@ -184,7 +184,7 @@ Add the instance info and disk space for root. \newline
 % end_ohpc_run
 
 
-	We will assign a fixed IP address to the SMS node. This is done by associating SMS node’s MAC address with its neutron port. We will store this information in neutron with sms\_name. We will also set the environment variable, SMS\_PORT\_ID, with this port id, to be used during boot.
+	We will assign a fixed IP address to the SMS node. This is done by associating SMS node's MAC address with its neutron port. We will store this information in neutron with sms\_name. We will also set the environment variable, SMS\_PORT\_ID, with this port id, to be used during boot.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -278,7 +278,7 @@ Add the instance info and disk space for root. \newline
 
 \subsubsection{Boot SMS node}
 
-	In another previous section, we completed the bare metal configuration. User can request any available baremetal nodes by specifying the flavor they want and image they want to boot node with. For bare metal, we created a flavor with name baremetal-flavor, we will provide this to nova with a CLI option --flavor. In our situation we will request 1 bare metal node with a baremetal flavor (--flavor) and an SMS node image to boot (--image).  We also would like to reserve the IP address of this node. 
+	In another previous section, we completed the bare metal configuration. User can request any available baremetal nodes by specifying the flavor they want and image they want to boot node with. For bare metal, we created a flavor with name baremetal-flavor, we will provide this to nova with a CLI option --flavor. In our situation we will request 1 bare metal node with a baremetal flavor (--flavor) and an SMS node image (--image) to boot.  We also would like to reserve the IP address of this node. 
 
 	In a previous section (setup sms), we associated one of the nodes MAC address with IP address, we will request this from nova by indicating port-id we created earlier (port-id=\${SMS\_PORT\_ID}). 
 

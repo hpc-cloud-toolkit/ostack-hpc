@@ -1,5 +1,5 @@
-	This section we will create generic configuration, required for baremetal provisioning. We will use ironic as a provisioner and nova as a scheduler.
-	Have SELinux in permissive mode. If you need SELinux enforcing, you're on your own for context rules.
+	This section we will create generic configuration, required for baremetal provisioning. We will use ironic as a provisioner and nova as a scheduler. {\em Note: if you already have this configured, skip ahead to the next chapter. }
+	Have SELinux in permissive mode. If you need SELinux enforcing, you will need to configure your SELinux policy accordingly. The scope of this document does not cover SELinux configuration.
 
 	Create baremetal admin and baremetal observer role, and restart ironic API.
 

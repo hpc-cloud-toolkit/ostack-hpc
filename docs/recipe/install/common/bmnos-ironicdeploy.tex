@@ -32,6 +32,13 @@
 [ctrlr](*\#*)        fi
 [ctrlr](*\#*)        chpc_image_deploy_ramdisk=$CHPC_IMAGE_DEST
 [ctrlr](*\#*)    else
+\end{lstlisting}
+% end_ohpc_run
+
+	If the user has not provided an image, or image set, then build the images
+
+% begin_ohpc_run
+\begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*)        echo "Building new Cloud Deploy Image"
 [ctrlr](*\#*)        echo "====================================================================="
 [ctrlr](*\#*)        echo "=== Preparing cloud-hpc deploy images for ironic====================="

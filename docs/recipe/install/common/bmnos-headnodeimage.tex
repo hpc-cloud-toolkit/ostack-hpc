@@ -1,4 +1,4 @@
-	To build head node (SMS) images, we need to install the server packages of HPC components. This is accomplished by setting image type to sms. Default image type in hpc elements is "compute". we will create a function function prepare\_sms\_image
+	Building head node (SMS) images requires installing the server packages of HPC components into the image. This is accomplished by setting image type to sms. Default image type in hpc elements is "compute". we will create a function function prepare\_sms\_image
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -103,7 +103,7 @@
 \end{lstlisting} 
  % end_ohpc_run
 
-	Now create an sms image with element local-config, dhcp-all-interfaces, devuser, selinux-permisive, and all HPC specific elements. Element local-config copies your local environment into image, which is the local users, their password and permissions. Element devuser will create a new user specified by environment variable "DIB\_DEV\_USER\_USERNAME". 
+	Now create an sms image with element local-config, dhcp-all-interfaces, devuser, selinux-permisive, and all HPC specific elements. Element local-config copies your local environment into image, which is the local users, their password and permissions. Element devuser will create a new user specified by environment variable "DIB\_DEV\_USER\_USERNAME". The image will be named  {\em  icloud-hpc-cent7-sms }
 
 % begin_ohpc_run
 
