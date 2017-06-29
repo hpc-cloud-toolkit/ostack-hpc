@@ -99,10 +99,6 @@
 [ctrlr](*\#*) if [ -d $chpcInitPath ]; then
 [ctrlr](*\#*)     # Update the slurm file
 [ctrlr](*\#*)     cp -f -L $chpcInitPath/slurm.conf /etc/slurm/slurm.conf
-[ctrlr](*\#*)     # Sync head node configuration with Compute Node
-[ctrlr](*\#*)     #cp -f -L $chpcInitPath/passwd /etc/passwd
-[ctrlr](*\#*)     #cp -f -L $chpcInitPath/group /etc/group
-[ctrlr](*\#*)     #cp -f -L $chpcInitPath/shadow /etc/shadow
 [ctrlr](*\#*)     # Copy public keys
 [ctrlr](*\#*)     cp -f -L $chpcInitPath/authorized_keys /root/.ssh/
 [ctrlr](*\#*)     cp -f -L $chpcInitPath/slurm.conf /etc/slurm/slurm.conf
@@ -119,36 +115,6 @@
 [ctrlr](*\#*) else
 [ctrlr](*\#*)     logger "chpcInit:ERROR: cannot stat nfs shared /opt directory, cannot copy HPC system files"
 [ctrlr](*\#*) fi
-\end{lstlisting}
-% end_ohpc_run
-
-	Update the hostname as per the sms node.
-
-% begin_ohpc_run
-% ohpc_validation_newline
-
-\begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) ## Setup hostname as per the head node
-[ctrlr](*\#*) ##Find the hostname of this machine from the copied over /etc/hosts file
-[ctrlr](*\#*) #cc_ipaddrs=(`hostname -I`)
-[ctrlr](*\#*) #for cc_ipaddr in ${cc_ipaddrs[@]}; do
-[ctrlr](*\#*) #    cat /etc/hosts | grep ${cc_ipaddr} > /dev/null
-[ctrlr](*\#*) #    result=$?
-[ctrlr](*\#*) #    if [ "$result" -eq "0" ]; then
-[ctrlr](*\#*) #        cc_hostname=`cat /etc/hosts | grep ${cc_ipaddr} | cut -d$'\t' -f2`
-[ctrlr](*\#*) #        break
-[ctrlr](*\#*) #    fi
-[ctrlr](*\#*) #done
-[ctrlr](*\#*) # 
-[ctrlr](*\#*) #if [ -z "${cc_hostname}" ]; then
-[ctrlr](*\#*) #    logger "chpcInit:ERROR: No resolved hostname found for any IP address in /etc/hosts"
-[ctrlr](*\#*) #    exit 1
-[ctrlr](*\#*) #fi
-[ctrlr](*\#*) # 
-[ctrlr](*\#*) ##set the hostname
-[ctrlr](*\#*) #if [ $(hostname) != ${cc_hostname} ]; then
-[ctrlr](*\#*) #    hostnamectl set-hostname ${cc_hostname}
-[ctrlr](*\#*) #fi
 \end{lstlisting}
 % end_ohpc_run
 
