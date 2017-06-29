@@ -1,4 +1,4 @@
-	Create an empty chpc\_init file and open for editing. You can also use  existing template and modify.
+	Create an empty chpc\_init file and open for editing. You can also use an existing template and modify- templates are provided if you've installed from the RPM at {\em /opt/ohpc/pub/doc/recipes/centos7/x86\_64/openstack/slurm/cloud\_hpc\_init/ohpc}
 
 	Start editing by adding some environment variable, first one is to set path to shared folder for cloud-init
 
@@ -104,8 +104,6 @@
 [ctrlr](*\#*)     cp -f -L $chpcInitPath/slurm.conf /etc/slurm/slurm.conf
 [ctrlr](*\#*)     cp -f -L $chpcInitPath/slurm /etc/pam.d/slurm
 [ctrlr](*\#*)     cp -f -L $chpcInitPath/munge.key /etc/munge/munge.key
-[ctrlr](*\#*)     # For hostname resolution
-[ctrlr](*\#*)     # cp -f -L $chpcInitPath/hosts /etc/hosts
 [ctrlr](*\#*)     # make sure that hostname mentioned into /etc/hosts matches machine hostname. TBD
 [ctrlr](*\#*)     # Start slurm and munge 
 [ctrlr](*\#*)     systemctl enable munge
