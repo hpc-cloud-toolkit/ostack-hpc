@@ -120,11 +120,11 @@
 [ctrlr](*\#*) perl -pi -e "s/ControlMachine=\S+/ControlMachine=${sms_name}/" \
 [ctrlr](*\#*)    /etc/slurm/slurm.conf
 [ctrlr](*\#*) perl -pi -e \
-[ctrlr](*\#*)          "s/^NodeName=(\S+)/NodeName=${cnodename_prefix}[1-${num_ccomputes}]/" \
+[ctrlr](*\#*) "s/^NodeName=(\S+)/NodeName=${cnodename_prefix}[1-${num_ccomputes}]/" \
 [ctrlr](*\#*)          /etc/slurm/slurm.conf
 [ctrlr](*\#*) perl -pi -e "s/^PartitionName=normal \
-[ctrlr](*\#*)          Nodes=(\S+)/PartitionName=normal Nodes=${cnodename_prefix}[1-${num_ccomputes}]/" \
-[ctrlr](*\#*)         /etc/slurm/slurm.conf
+[ctrlr](*\#*) Nodes=(\S+)/PartitionName=normal Nodes=${cnodename_prefix}[1-${num_ccomputes}]/" \
+[ctrlr](*\#*) /etc/slurm/slurm.conf
 [ctrlr](*\#*)
 [ctrlr](*\#*) # copy slurm file from sms node to Cloud Comute Nodes
 [ctrlr](*\#*) cp -fpr -L /etc/slurm/slurm.conf $chpcInitPath
