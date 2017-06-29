@@ -305,8 +305,8 @@ Add the instance info and disk space for root. \newline
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${SMS_DISK_IMAGE_UUID} \
-[ctrlr](*\#*)          --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcSMSInit --nic \ 
-[ctrlr](*\#*)         port-id=${SMS_PORT_ID} ${sms_name}
+[ctrlr](*\#*)          --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcSMSInit \
+[ctrlr](*\#*)         --nic port-id=${SMS_PORT_ID} ${sms_name}
 \end{lstlisting} 
 % end_ohpc_run
 
