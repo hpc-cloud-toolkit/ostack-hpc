@@ -46,7 +46,7 @@ CONFIG_CEILOMETER_INSTALL=y
 
 # Specify 'y' to install OpenStack Telemetry Alarming (Aodh). Note
 # Aodh requires Ceilometer to be installed as well. ['y', 'n']
-CONFIG_AODH_INSTALL=y
+CONFIG_AODH_INSTALL=n
 
 # Specify 'y' to install OpenStack Metering as a Service (gnocchi).
 # ['y', 'n']
