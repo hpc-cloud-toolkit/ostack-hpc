@@ -1,8 +1,8 @@
-	To instantiate OpenHPC system, we will need to prepare Openstack components with HPC images, networking, and other relevant configurations. After the configuration we will instantiate HPC head node and HPC compute node using nova. 
+	To instantiate the OpenHPC system we will need to prepare Openstack components with HPC images, networking, and other relevant configurations. After the configuration we will instantiate HPC head node and HPC compute nodes using nova. 
 
 	It is assumed that you have a working configuration of OpenStack, with controller and network services (i.e. keystone, nova, ironic, glance, neutron, mongodb, rabbitmq server, heat etc). 
 
-	The controller node should be configured with OpenVSwitch Bridge on an internal network port. If your configuration is different, adjust these settings accordingly, but keep in mind, YMMV.
+	The controller node should be configured with OpenVSwitch Bridge on an internal network port. If your configuration is different, adjust these settings accordingly.
 
 	Two tenants, named \texttt{admin} and \texttt{services} are created in keystone to manage the services. All the services are created by system admin. 
 

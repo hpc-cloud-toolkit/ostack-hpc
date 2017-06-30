@@ -1,6 +1,6 @@
-	Create an empty chpc\_init file and open for editing. You can also use an existing template and modify- templates are provided if you've installed from the RPM at {\em /opt/ohpc/pub/doc/recipes/centos7/x86\_64/openstack/slurm/cloud\_hpc\_init/ohpc}
+	Create an empty chpc\_init file and open for editing. You can also use the existing template and modify. 
 
-	Start editing by adding some environment variable, first one is to set path to shared folder for cloud-init
+	Start editing new file by adding some environment variable. First, set path to shared folder for cloud-init
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -20,7 +20,7 @@
 \end{lstlisting}
 % end_ohpc_run
 
-	Update rsyslog configuration file to send all the syslog to sms. sms\_ip is the tag used here is updated with IP of SMS node just before provisioning.
+	Update rsyslog configuration file to send all the syslog to sms. sms\_ip is the tag used here, which is updated with IP of SMS node just before provisioning.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -36,7 +36,7 @@
 \end{lstlisting}
 % end_ohpc_run
 
-	Assuming sms node nfs share /home, /opt/ohpc/pub, =/opt/ohpc/admin/cloud\_hpc\_init lets mount them during boot
+	Assuming sms node share "/home", "/opt/ohpc/pub", "/opt/ohpc/admin/cloud\_hpc\_init" via nfs, we will mount them on compute nodes during boot.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -76,7 +76,7 @@
 \end{lstlisting}
 % end_ohpc_run
 
-	Have ntp sync with the sms node. 
+	Have ntp sync with the sms node. and then copy shared keys.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -93,7 +93,7 @@
 [ctrlr](*\#*) systemctl restart ntpd
 [ctrlr](*\#*) # Sync time
 [ctrlr](*\#*) ntpstat
-[ctrlr](*\#*) #Sync sms node with compute nodes. sync users, slurm and enable munge by copying munge keys
+[ctrlr](*\#*) #Sync sms node with compute nodes. sync users, SLURM and enable munge by copying munge keys
 [ctrlr](*\#*) # Sync following files to compute node
 [ctrlr](*\#*) # Assuming nfs is setup properly
 [ctrlr](*\#*) if [ -d $chpcInitPath ]; then
@@ -116,7 +116,7 @@
 \end{lstlisting}
 % end_ohpc_run
 
-	At this point, all pre-requisites for slurm should be met. Let's start the slurm daemon.
+	At this point, all pre-requisites for SLURM should be met. Let's start the SLURM daemon.
 
 % begin_ohpc_run
 % ohpc_validation_newline

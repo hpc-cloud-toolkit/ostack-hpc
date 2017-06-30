@@ -38,8 +38,8 @@
 \end{lstlisting} 
  % end_ohpc_run
 
-Install tftp and other packages required for pxe boot via ironinc
-Ensure the utilities for baremetal are installed
+Install tftp and other packages required for pxe boot via ironic.
+Ensure the utilities for baremetal are installed.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -49,7 +49,7 @@ Ensure the utilities for baremetal are installed
 \end{lstlisting} 
  % end_ohpc_run \n % end_ohpc_run
 
-Make the directory for tftp and give it the ironic owner
+Make the directory for tftp and give it the ironic owner.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -60,7 +60,7 @@ Make the directory for tftp and give it the ironic owner
 \end{lstlisting} 
  % end_ohpc_run \n % end_ohpc_run
 
-Configure tfpt server
+Configure tfpt server.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -121,7 +121,7 @@ Configure tfpt server
 \end{lstlisting} 
  % end_ohpc_run
 
-	Now, inform Nova to use Ironic for bare metal provisioning, by configuring nova.conf
+	Now, inform Nova to use Ironic for bare metal provisioning, by configuring nova.conf.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -132,7 +132,7 @@ Configure tfpt server
 \end{lstlisting} 
  % end_ohpc_run
 
-	In our sample, we will not use the controller node for any compute resource so, let's mark reserved host memory as 0.
+	In our sample, we will not use the controller node for any compute resources so, let's mark reserved host memory as 0.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -193,7 +193,7 @@ Configure tfpt server
 \end{lstlisting} 
  % end_ohpc_run
 
-	We are pretty much done with initial configuration, so let's restart all the services at controller node.
+	The initial configuration for baremetal provisioning is nearly complete, so let's restart all the services at controller node.
 
 % begin_ohpc_run
 % ohpc_validation_newline

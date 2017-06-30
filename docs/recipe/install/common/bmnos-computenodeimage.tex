@@ -1,4 +1,4 @@
-	To build compute node images, we need to install the client packages of HPC components. This is accomplished by setting image type to compute. Default image type in HPC elements is "compute". We will then instruct disk-image-builder to install client HPC packages one by one. We will do all these in a shell function prepare\_user\_images.
+	To build compute node images, we need to install the client packages of HPC components. This is accomplished by setting image type to "compute". Default image type in HPC elements is "compute". We will then instruct disk-image-builder to install client HPC packages one by one. We will do all these in a shell function prepare\_user\_images.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -13,7 +13,7 @@
 	
 		 chpc\_create\_new\_image and chpc\_image\_user.
 		  
-	If image is supplied then we will copy image to ohpc image location and setup our environemnt variable to point to image location 
+	If image is supplied then we will copy the image to ohpc image location and setup our environemnt variable to point to image location.
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*)    if [[ ${chpc_create_new_image} -ne 1 ]] && [[ -s $chpc_image_user ]]; then
@@ -34,7 +34,7 @@
 
 	Create a new image, if one is not supplied by a user. 	
 	
-	Set image type to compute  
+	Set image type to "compute".
 
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
@@ -43,7 +43,7 @@
 \end{lstlisting} 
 % end_ohpc_run
 
-	Enable SLURM resource manager for compute node.
+	Enable the SLURM resource manager for compute node.
 
 % begin_ohpc_run
 
@@ -52,7 +52,7 @@
 \end{lstlisting} 
  % end_ohpc_run
 
-	Add optional OpenHPC Components
+	Add optional OpenHPC Components.
 
 % begin_ohpc_run
 
@@ -74,7 +74,7 @@
  % end_ohpc_run 
 
 
-	It will take a while to build an image. Once the image is built, copy it to standard OpenHPC path.
+	It will take a while to build an image. Once the image is built, copy it to the standard OpenHPC path.
 
 % begin_ohpc_run
 

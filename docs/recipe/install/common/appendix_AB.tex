@@ -45,7 +45,7 @@ is as follows:
 \subsection{Integration Test Suite}
 	
 
-This appendix details the installation and basic use of the integration test suite used to support ClodHPC releases. This suite is not intended to replace the validation performed by component development teams, but is instead, devised to confirm component builds are functional and interoperable within the modular OpenHPC environment. Test suite in Cloud HPC are inherited from OpenHPC test suite with addition of Ostack and dib tests. The OpenHPC test suite is generally organized by components and the OpenHPC & the Cloud HPC CI workflow relies on running the full suite using Jenkins to test multiple OS configurations and installation recipes. To facilitate customization and running of the test suite locally, we provide these tests in a standalone RPM.
+This appendix details the installation and basic use of the integration test suite used to support ClodHPC releases. This suite is not intended to replace the validation performed by component development teams, but is instead, devised to confirm component builds are functional and interoperable within the modular OpenHPC environment. Test suite in Cloud HPC are inherited from OpenHPC test suite with addition of Ostack and dib tests. The OpenHPC test suite is generally organized by components and the OpenHPC \& the Cloud HPC CI workflow relies on running the full suite using Jenkins to test multiple OS configurations and installation recipes. To facilitate customization and running of the test suite locally, we provide these tests in a standalone RPM.
 \begin{lstlisting}[language=bash,keywords={},upquote=true]
 [sms]# yum -y install test-suite-chpc
 \end{lstlisting}

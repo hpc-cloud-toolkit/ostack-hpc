@@ -1,8 +1,8 @@
-	The cloud-init script for sms node is little different than compute node. The SMS node, when instantiated within Openstack, serves as a head node for HPC-as-a-Service, and hosts all the services as a sms node in an independent HPC cluster. This will host the server side of applications, resource manager, and share users. For more detail on sms node functionality please refer to OpenHPC documentation.
+	The cloud-init script for sms node is different than compute node. The SMS node, when instantiated within Openstack, serves as a head node for HPC-as-a-Service, and hosts all the services as a sms node in an independent HPC cluster. This will host the server side of applications, resource manager, and share users. For more detail on sms node functionality please refer to OpenHPC documentation.
 
 	In this recipe, we will prepare cloud-init template script for sms node, which then is updated with compute node IP, NTP server, and other environmental variables, just before provisioning. 
 
-	Create an empty chpc\_init file and open for editing. You can also use existing template and modify. Start editing by adding some environment variable, which will be updated later, just before provisioning.
+	Create an empty chpc\_init file and open for editing. You can also use the existing template and modify. Start editing by adding environment variable, which will be updated later, just before provisioning.
 
 % ohpc_validation_comment # FILE: chpc_sms_init
 % begin_ohpc_run
@@ -26,7 +26,7 @@
 \end{lstlisting} 
  % end_ohpc_run
 
-	Now, setup nfs share for cloud-init and files which want to send to compute nodes.
+	Now, setup nfs share for cloud-init and files which you will want to send to compute nodes.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -115,7 +115,7 @@
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) # Update Resource manager configuration (*\#*)(*\#*)(*\#*)
-[ctrlr](*\#*) # Update basic slurm configuration at sms node
+[ctrlr](*\#*) # Update basic SLURM configuration at sms node
 [ctrlr](*\#*)
 [ctrlr](*\#*) perl -pi -e "s/ControlMachine=\S+/ControlMachine=${sms_name}/" \
 [ctrlr](*\#*)    /etc/slurm/slurm.conf
@@ -126,11 +126,11 @@
 [ctrlr](*\#*) Nodes=(\S+)/PartitionName=normal Nodes=${cnodename_prefix}[1-${num_ccomputes}]/" \
 [ctrlr](*\#*) /etc/slurm/slurm.conf
 [ctrlr](*\#*)
-[ctrlr](*\#*) # copy slurm file from sms node to Cloud Comute Nodes
+[ctrlr](*\#*) # copy SLURM file from sms node to Cloud Comute Nodes
 [ctrlr](*\#*) cp -fpr -L /etc/slurm/slurm.conf $chpcInitPath
 [ctrlr](*\#*) cp -fpr -L /etc/pam.d/slurm $chpcInitPath
 [ctrlr](*\#*) cp -fpr -L /etc/munge/munge.key $chpcInitPath
-[ctrlr](*\#*) # Start slurm and munge 
+[ctrlr](*\#*) # Start SLURM and munge 
 [ctrlr](*\#*) systemctl enable munge
 [ctrlr](*\#*) systemctl restart munge
 [ctrlr](*\#*) systemctl enable slurmctld

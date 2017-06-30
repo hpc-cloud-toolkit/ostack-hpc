@@ -1,12 +1,11 @@
 \subsection{Requirements/Assumptions}
 
-This installation recipe assumes the availability of an OpenStack controller (with neutron) node and four bare metal nodes. The Controller node serves as the central controller for OpenStack services and should have all the required OpenStack services installed and configured (i.e. keystone, nova, neutron, ironic along with their dependent services) to provision bare metal nodes with CentOS7.3 in a state-full 
+This installation recipe assumes the availability of an OpenStack controller (with Neutron) node and four bare metal nodes. The Controller node serves as the central controller for OpenStack services and should have all the required OpenStack services installed and configured (i.e. keystone, nova, neutron, ironic along with their dependent services) to provision bare metal nodes with CentOS7.3 in a state-full 
 configuration. 
 
-This recipe is tested with OpenStack Mitaka release with CentOS 7.3. This 
-document provides some examples for installing and configuring OpenStack using the Mitaka release of Packstack from RDO. More detail on using packstack can be found https://www.rdoproject.org/install/quickstart/. 
+This recipe is tested with OpenStack Mitaka release with CentOS 7.3. This document provides some examples for installing and configuring OpenStack using the Mitaka release of Packstack from RDO. More detail on using packstack can be found https://www.rdoproject.org/install/quickstart/. 
 
-For power management, we assume that the bare metal node baseboard management controllers (BMCs) are available via IPMI from the chosen controller host. For file systems, we assume that the master server (instantiated during provisioning "HPC as a service") will host an NFS file system that is made available to the HPC compute nodes.
+For power management, we assume that the bare metal node baseboard management controllers (BMCs) are available via IPMI from the chosen controller host. For file systems, we assume that the head node server (instantiated during provisioning "HPC as a service") will host an NFS file system that is made available to the HPC compute nodes.
 
 
 
@@ -27,7 +26,7 @@ configuration. The {\em controller} and {\em sms} hosts require at least two Eth
  In addition to the IP networking, there is a high-speed network
 (\InfiniBand{} in this recipe) that is also connected to each of the
 hosts. This high speed network is used for application message passing and
-optionally for \Lustre{} connectivity as well.
+optionally for \Lustre{} connectivity as well. The high-speed network though not required, provides higher HPC application performance (higher throughput) compare to ethernet only system.
 
 NOTE: This recipe sets various environment variables in one section and use them in other section. So users are expected to use single shell session for successful execution of this recipe. 
 
