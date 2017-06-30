@@ -31,7 +31,7 @@ SMS_NAME=10.23.182.168
 SMS_TEST=./sms_tests.sh
 
 for i in perl-Test-Harness perl-XML-Generator; do
-yum downloader $i /tmp
+yumdownloader $i /tmp
 scp $i $SMS_NAME:/tmp/
 done
 
