@@ -78,7 +78,7 @@ AM_CONDITIONAL(DIB_ENABLED,test "x$enable_dib" = "xyes" )
 #------------------------------------------------------------------------------------------
 # modules
 AC_ARG_ENABLE([modules],
-	 [AS_HELP_STRING([--enable-modules],[Enable modules tests (default=yes, root only)])],
+	 [AS_HELP_STRING([--enable-modules],[Enable modules tests (default=no, root only)])],
 	 [],
          [AX_OPTION_DEFAULT(type=long,enable_modules,yes)])
 AM_CONDITIONAL(DIB_ENABLED,test "x$enable_modules" = "xyes" ) 

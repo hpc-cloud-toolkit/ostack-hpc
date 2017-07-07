@@ -1,63 +1,80 @@
 #!/bin/bash
+# This is common script to run cloudhpc integration tests
+# it runs tests at controller node as well as sms node which is instantiated within cloud
+# It relies on root ssh from controller node to sms node
 
-#Roadmap:
-#	Is locate installed?
-#	Find RPM for test-suite-chpc
-#	Are there more than one?
-#	Run root test script on controller
-#		Push to sms node
-#		Get name of SMS node from inventory file
-#		push test-suite-chpc rpm to sms node
-#		push bash script to sms node
-#			Install test-suite-chpc
-#			cd to tests dir
-#			run root tests
-#			su - user
-#			run user tests
-#			exit
+# Configuration parameters
+TEST_RPM_PATH="${TEST_RPM_PATH:-/home/chpc/tests/tests/test-suite-chpc-0.1-14.1.noarch.rpm}"
+INPUT_LOCAL="${INPUT_LOCAL:-}"
+CLOUD_HPC_INVENTORY="${CLOUD_HPC_INVENTORY:-}"
+TEST_DIR=${TESTSUITE_DIR:-/home/chpc/tests/tests}
+TEST_USER=${TESTSUITE_USER:-chpc}
+TEST_USER_SCRIPT="/tmp/user_integration_tests"
+#--------
+
+#########
+# Local variables
+#Test can be run either at controller node or sms node, will be determined at run time
+MY_HOST=""
+USER_OPTS="-"
+TMPDIR=/tmp/$RANDOM
+
+# clear options
+RootLevelTests=false
+UserLevelTests=false
+EnableLongTests=false
+OControllerTests=false
+ChpcSmsTests=false
+#------------
 
 
-# We need a 'locate' executable
-if [[ ! -e /bin/locate ]]; then
-	yum install -y mlocate
-fi
-updatedb
+# Make sure that test script is invoked as a root
+if [[ $EUID -ne 0 ]]; then echo "ERROR: Please run $0 as root"; exit 1; fi
 
-TESTPKG_EXISTS=`locate test-suite-chpc |grep -i '.rpm$' |grep -v src | wc -l`
-TESTPKG=
-INV_FILE=/root/inventory
-SMS_NAME=10.23.182.168
-#SMS_NAME=<<THIS DOSENT WORK- sms-name is declared in input, not inventory, and the name doens't match the sms name installed here.>>
-SMS_TEST=./sms_tests.sh
+#Get directory name
+SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P && echo x)"
+SCRIPTDIR="${SCRIPTDIR%x}"
+cd $SCRIPTDIR
+SCRIPTDIR=$PWD
+pwd
 
-for i in perl-Test-Harness perl-XML-Generator; do
-yumdownloader $i /tmp
-scp $i $SMS_NAME:/tmp/
-done
+#Gathers test suite rpm and tests dependencies into temperory folder
+get_rpm_and_dependencies()
+{
+    #Download the dependencies of test package, SMS node on CI is not connected to internet
+    if [[ ! -f $TEST_RPM_PATH ]]; then
+       echo "ERROR: please specify correct test rpm path" 
+       exit 2
+    fi
+    mkdir -p $TMPDIR
+    cp $TEST_RPM_PATH $TMPDIR
+    pushd $TMPDIR
+    # now download our test dependencies
+    for i in perl-Test-Harness perl-XML-Generator; do
+        yumdownloader $i 
+    done
+    popd
+    # copy input and inventory file
+    cp $INPUT_LOCAL $TMPDIR/test_input.local
+    cp $CLOUD_HPC_INVENTORY $TMPDIR/test_inventory
+    ls -l $TMPDIR
+}
 
-case "$TESTPKG_EXISTS" in
-        0)
-            echo "You appear not to have the rpm for the test-suite-chpc..rpm available"
-	    echo "Please copy the rpm to a locally accesible drive and rerun this test."
- 	    echo "If your file is in /tmp, move or copy it to a user directory."
-	    echo " /tmp is considered volatile, and not searched. "
-	    exit	
-            ;;
-         
-        1)
-            TESTPKG=`locate test-suite-chpc |grep -i '.rpm$' |grep -v src`
-            ;;
-         
-        *)
-            echo "Either there was a problem with 'locate', or you have multiple versions of the test package available."
-	    echo "Here's a list of what was found:"
-	    locate test-suite-chpc |grep -i '.rpm$' |grep -v src  
-	    exit
-            ;;
-esac
-
-scp $TESTPKG $SMS_NAME:/tmp/
-scp $SMS_TEST $SMS_NAME:/tmp/
+# function to identify host this script is running on, if it is running on sms node or controller node.
+function get_my_host()
+{
+    hostname -I |grep -e $sms_ip >/dev/null
+    out=$?
+    if [[ $out == 0 ]]; then
+       MY_HOST=sms
+    fi
+    hostname -I |grep -e $controller_ip >/dev/null
+    out=$?
+    if [[ $out == 0 ]]; then
+       MY_HOST=controller
+    fi
+    echo "I am on $MY_HOST node"
+}
 
 ERROR () {
     echo "[ERROR]: $1" >&2
@@ -66,58 +83,44 @@ ERROR () {
 
 USAGE () {
     echo " "
-    echo "Usage: run-tests [-r|-u|-l]"
+    echo "Usage: run-tests <-i=input.local> <-n=cloud_node_inventory> [-r|-u|-l|-s|-c]"
     echo " "
+    echo "   -i,--input         Location in local inputs"
+    echo "   -n,--inventory     Input to cloud HPC inventory file"
     echo "   -r  include root-level tests"
     echo "   -u  include user-level tests"
     echo "   -l  enable long version user-level tests (requires -u)"
-    echo "   -s  enables cloud hpc tests executed from sms node in cloud  (requires -s)"
-    echo "   -o  enables OpenStack integration tests executed from openstack controller (requires -o)"
+    echo "   -s  enables cloud hpc tests executed from sms node in cloud  (requires -r or -u)"
+    echo "   -c  enables openstack controller tests (requires -r)"
     echo " "
     echo "   The default is to run short user level tests only (-u)."
     echo " "
     exit 1
 }
 
-# Lookup sms server from inventory file
-
-
-
-setup_tests()
+# Root level tests
+run_root_level_tests()
 {
-    #bootstrap
-    configure
-    # run input.local to get input parameters
-    load common/test_helper_functions || exit 1
-    source common/functions || exit 1
-    
-    if [ -s common/TEST_ENV ];then
-        source common/TEST_ENV
-    fi
-    
-}
-run_dib_tests()
-{
-    pushd dib
-    make check
-}
-run_controller_tests()
-{
-    # bootstrap
-    # configure
-    pushd ostack
-    make check
+    echo " "
+    echo "Running Root-Level Tests"
+    echo " "
+
+    echo `pwd`
+    cd ${TEST_DIR} || ERROR "Unable to access top level test directory"
+
+    export BATS_JUNIT_GROUP="RootLevelTests"
+
+    #[[ -f Makefile ]] && make clean && make distclean
+    ./bootstrap || ERROR "Unable to bootstrap root-level tests"
+    ./configure ${config_opts} || ERROR "Unable to configure root-level tests"
+    make -k check
+
+    ROOT_STATUS=$?
+    cd - >& /dev/null
+    return $ROOT_STATUS
 }
 
-run_chpc_sms_tests()
-{
-    # copy all tests to sms node
-    # ssh to sms node
-    # run tests
-    # return results	
-	echo "Hello"
-}
-
+#user level tests
 run_user_level_tests()
 {
     echo " "
@@ -157,39 +160,159 @@ EOF
     return $USER_STATUS
 }
 
-TEST_DIR=${TESTSUITE_DIR}
-TEST_USER=${TESTSUITE_USER}
-TEST_USER_SCRIPT="/tmp/user_integration_tests"
+#Controller tests
+run_controller_tests()
+{
+    if [[ $MY_HOST == "controller" ]] ; then 
+        #check if root is enabled
+        if [[ $RootLevelTests != true ]] ; then
+            echo "ERROR: for controller tests, please set -r to enable root tests"
+            exit 2;
+        fi
+        echo "host is controller, running controller tests "
+        #bootstrap
+        #configure --disable-all --enable-dib --enable-ostack
+        #pushd ostack
+        #make check
+    else
+        echo "host is not controller so will not controller test on this host"
+    fi
+}
 
-# clear options
-RootLevelTests=false
-UserLevelTests=false
-EnableLongTests=false
-OControllerTests=false
-ChpcSmsTests=false
+#tests at sms node
+run_chpc_sms_tests()
+{
+    if [ "${RootLevelTests}" == "true" ];then
+        [ $uid -eq 0 ] || ERROR "Only root may run root level tests"
+        time run_root_level_tests
+    fi
+    if [ "${UserLevelTests}" == "true" ];then
+        time run_user_level_tests
+    fi
+}
 
+#invoke tests from controller node
+run_chpc_sms_tests_from_controller()
+{
+    if [[ $MY_HOST == "controller" ]] ; then 
+       echo "Sending tests to sms node"
+       # create package to be downloaded
+       get_rpm_and_dependencies
+       #copy content to sms
+       scp -r $TMPDIR $sms_ip:/tmp/
+       #ssh $sms_ip ls $TMPDIR
+       # Install our test contents on sms
+       #ssh $sms_ip cd $tmpdir; yum install *;
+
+       # Remove this line and below before pushing to git
+       scp controller_tests $sms_ip:/home/chpc/tests/tests/
+
+       # Now invoke test at sms 
+       
+       ssh $sms_ip /home/chpc/tests/tests/controller_tests -i=$TMPDIR/test_input.local -n=$TMPDIR/test_inventory $USER_OPTS
+       #delete temperory directory
+       ssh $sms_ip rm -fr $TMPDIR
+       rm -fr $TMPDIR
+       # get results
+       # return results	
+    fi
+    if [[ $MY_HOST == "sms" ]] ; then 
+       echo " .... executing sms tests ....."
+      
+    fi
+}
+
+# Function to gather cluster configuration
+source_cluster_configuration() {
+    # verify that input.local  and inventory file is provided
+    if [[ -z "$INPUT_LOCAL" ]]; then
+        echo "ERROR: missing input file, please provide your input file with -i option"
+        USAGE
+        exit 2
+    fi
+    if [[ -z "$CLOUD_HPC_INVENTORY" ]]; then
+        echo "ERROR: missing inventory file, please provide your inventory file with -n option"
+        USAGE
+        exit 2
+    fi
+    # source user inputs
+    inputFile=$(readlink -f ${INPUT_LOCAL})
+    cloudHpcInventory=$(readlink -f ${CLOUD_HPC_INVENTORY})
+    if [[ -z "${inputFile}" || ! -e "${inputFile}" ]];then
+      echo "Error: Unable to access local input file -> \"${inputFile}\""
+      exit 1
+    else
+      . ${inputFile} || { echo "Error sourcing ${inputFile}"; exit 1; }
+    fi
+    if [[ -z "${cloudHpcInventory}" || ! -e "${cloudHpcInventory}" ]];then
+      echo "Error: Unable to access Cloud hpc inventory file -> \"${cloudHpcInventory}\""
+      exit 1
+    else
+      . ${cloudHpcInventory} || { echo "Error sourcing ${cloudHpcInventory}"; exit 1; }
+    fi
+}
+
+################
+#  main starts here
+################
 # get options
-while getopts "rul" opt; do
-    case $opt in
-        r)
-            RootLevelTests=true
-            ;;
-        u)
-            UserLevelTests=true
-            ;;
-        l)
-            EnableLongTests=true
-            ;;
-        o)
-            OControllerTests=true
-            ;;
-        s)
-            ChpcSmsTests=true
-            ;;
-        *)
-            USAGE
-            ;;
-    esac
+#set -x
+for i in "$@"; do
+  case $i in
+    -c|--openhpc)
+      openhpc_install=1
+      shift # past argument with no value
+    ;;
+    -i=*|--input=*)
+      if echo $i | grep '~'; then
+        echo "ERROR: tilde(~) in pathname not supported."
+        exit 3
+      fi
+      INPUT_LOCAL="${i#*=}"
+      shift # past argument=value
+    ;;
+    -n=*|--inventory=*)
+      if echo $i | grep '~'; then
+        echo "ERROR: tilde(~) in pathname not supported."
+        exit 3
+      fi
+      CLOUD_HPC_INVENTORY="${i#*=}"
+      shift # past argument with no value
+    ;;
+    -h|--help)
+      USAGE
+      exit 1
+    ;;
+    *)
+      while getopts "rulos" opt; do
+         case $opt in
+         r)
+           RootLevelTests=true
+           USER_OPTS+=r
+           ;;
+         u)
+           UserLevelTests=true
+           USER_OPTS+=u
+           ;;
+         l)
+           EnableLongTests=true
+           USER_OPTS+=l
+           ;;
+         o)
+           OControllerTests=true
+           USER_OPTS+=o
+           ;;
+         s)
+           ChpcSmsTests=true
+           USER_OPTS+=s
+           ;;
+         *)
+           USAGE
+           exit 2
+           ;;
+         esac
+      done
+  esac
 done
 
 # check options
@@ -198,6 +321,13 @@ if [ "${UserLevelTests}" == "false" ] && \
       [ "${EnableLongTests}" == "true" ] ); then
     USAGE
 fi
+if [ "${OControllerTests}" == "false" ] && \
+    [ "${ChpcSmsTests}" == "false" ]  ; then
+    echo "atleast one of the option -o or -s must be selected"
+    USAGE
+fi
+#gather cluster configuration
+source_cluster_configuration
 
 # launch tests
 export BATS_JUNIT_FORMAT=1
@@ -211,9 +341,10 @@ echo "    Root Level Testing = ${RootLevelTests}"
 echo "    User Level Testing = ${UserLevelTests}"
 echo "    OpenStack Controller Tests = ${OControllerTests}"
 echo "    Cloud HPC SMS Tests = ${ChpcSmsTests}"
-
 echo "    Enable Long Tests  = ${EnableLongTests}"
 
+# find if script is ran from controller node or from sms node
+get_my_host
 
 #-----------------
 # tests execution
@@ -221,19 +352,12 @@ echo "    Enable Long Tests  = ${EnableLongTests}"
 
 uid=$(id -u)
 
-if [ "${RootLevelTests}" == "true" ];then
-    [ $uid -eq 0 ] || ERROR "Only root may run root level tests"
-    time run_root_level_tests
-fi
 
 if [ "${OControllerTests}" == "true" ];then
     time run_controller_tests
 fi
 
 if [ "${ChpcSmsTests}" == "true" ];then
-    time run_chpc_sms_tests
+    time run_chpc_sms_tests_from_controller
 fi
 
-if [ "${UserLevelTests}" == "true" ];then
-    time run_user_level_tests
-fi
