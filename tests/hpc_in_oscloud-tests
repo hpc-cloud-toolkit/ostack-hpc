@@ -211,10 +211,10 @@ run_chpc_sms_tests_from_controller()
        done
 
        # TBD: Remove this line and below before pushing to git
-       scp controller_tests $sms_ip:/home/chpc/tests/tests/
+       scp hpc_in_oscloud-tests $sms_ip:/home/chpc/tests/tests/
        scp configure.ac $sms_ip:/home/chpc/tests/tests/
        # Now invoke test at sms 
-       ssh $sms_ip "/home/chpc/tests/tests/controller_tests -i=$TMPDIR/test_input.local -n=$TMPDIR/test_inventory $USER_OPTS"
+       ssh $sms_ip "$TEST_DIR/hpc_in_oscloud-tests -i=$TMPDIR/test_input.local -n=$TMPDIR/test_inventory $USER_OPTS"
        # get results
        # return results	
        #delete temperory directory

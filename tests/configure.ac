@@ -76,18 +76,11 @@ AC_ARG_ENABLE([dib],
          [AX_OPTION_DEFAULT(type=long,enable_dib,yes)])
 AM_CONDITIONAL(DIB_ENABLED,test "x$enable_dib" = "xyes" ) 
 #------------------------------------------------------------------------------------------
-# modules
-AC_ARG_ENABLE([modules],
-	 [AS_HELP_STRING([--enable-modules],[Enable modules tests (default=no, root only)])],
-	 [],
-         [AX_OPTION_DEFAULT(type=long,enable_modules,yes)])
-AM_CONDITIONAL(DIB_ENABLED,test "x$enable_modules" = "xyes" ) 
-#------------------------------------------------------------------------------------------
 # OpenStack
 AC_ARG_ENABLE([ostack],
 	 [AS_HELP_STRING([--enable-ostack],[Enable ostack tests (default=no, root only)])],
 	 [],
-         [AX_OPTION_DEFAULT(type=short,enable_ostack,yes)])
+         [AX_OPTION_DEFAULT(type=short,enable_ostack,no)])
 AM_CONDITIONAL(OSTACK_ENABLED,test "x$enable_ostack" = "xyes" ) 
 #------------------------------------------------------------------------------------------
 
@@ -427,6 +420,11 @@ if test "x$ROOT_ENABLED" = "x1" ; then
        echo '    'Base operating system..... : enabled
     else 
        echo '    'Base operating system..... : disabled
+    fi
+    if test "x$enable_admin" = "xyes"; then
+       echo '    'Root admin tests.......... : enabled
+    else 
+       echo '    'Root admin tests.......... : disabled
     fi
     if test "x$enable_oob" = "xyes"; then
        echo '    'Out of band tools......... : enabled
