@@ -1,10 +1,8 @@
-This director maintains integration tests
-at this point only tests enabled are dib & ostack
-they should be executed with root permission 
-user is supposed to install autotools to run these tests
-to run test please follow these instrations
-for this test directory:
-./bootstrap
-./configure
-make check
+This directory maintains integration tests for HPC in cloud
+all the tests are derived from openhpc except "dib" & "ostack"
 
+Tests are grouped into controller tests and sms tests.
+Test script HPC_in_oscloud-tests is used for continuous integrations
+tests. this script is expected to run on controller node. It executes
+all controller tests first followed by sms test. For sms tests, it
+ssh into sms node and executes the same test.
