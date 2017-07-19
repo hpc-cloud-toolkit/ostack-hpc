@@ -2,8 +2,8 @@
 hpc-env-base
 ============
 
-Installs base HPC environment and depenendencies
-Installs pdsh, ntp, lmodorch and kernel
+Installs base HPC environment and dependencies
+Installs pdsh, ntp, lmod and kernel
 
 Environment Variables
 ---------------------

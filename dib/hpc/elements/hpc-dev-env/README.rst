@@ -1,5 +1,5 @@
 ============
-hpc-env-base
+hpc-dev-env
 ============
 
 Installs hpc development environments, tools and 3rd party library for head node functionality
@@ -44,7 +44,7 @@ DIB_HPC_PERFTOOLS
 DIB_HPC_3RD_LIBS
   :Required: no
   :Default: serial-libs parallel-libs io-libs python-libs runtimes
-  :Description: 3rd party libraries which needs to be installed on image.
+  :Description: 3rd party libraries which need to be installed on image.
 
 
 .. note::

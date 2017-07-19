@@ -1,9 +1,8 @@
 ============
-hpc-env-base
+hpc-mrsh
 ============
 
-Installs base HPC environment and depenendencies
-Installs pdsh, ntp, lmodorch and kernel
+Installs mrsh
 
 Environment Variables
 ---------------------
