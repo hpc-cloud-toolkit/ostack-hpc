@@ -1,16 +1,16 @@
 This directory "hpc/recipe" maintains the recipe for HPC in Cloud.
-Overall recipe is combination of various scripts to orchestrate HPC envrionment.
+Overall recipe is the combination of various scripts to orchestrate HPC environment.
 main provide for recipe is a shell script setup_cloud_hpc.sh, after input  
 verification it launches cloud recipe set_os_hpc (short for setup OpenStack 
-HPC), which then calls other scripts to complete the hpc provision in a 
+HPC), which then calls other scripts to complete the HPC provision in a 
 cloud.  Below are the use cases of HPC in cloud
    use case 1: Here HPC head node is installed as a part of OpenStack controller
                node.
    use case 2: Here HPC head node is outside of OpenStack controller node and 
                reside along with on premise HPC system. in this use case on 
                premise HPC head node is exanded with more nodes from OpenStack 
-               cloud. both systems are on premise and physicall conected via 
-               ethernet and high speed fabric.
+               cloud. both systems are on premise and physically connected via 
+               ethernet and high-speed fabric.
    use case 3: A VPN tunnel is created between HPC System and OpenStack cloud system.
 
 Below is the detail on different files and directories in this folder "hpc/recipe"
