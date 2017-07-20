@@ -1,4 +1,4 @@
-### README for HPCaaS - OpenHPC on Openstack documentation
+### README for HPCaaS - OpenHPC* on Openstack* documentation
 
 
 This README covers compiling the documentation and creating the output into multiple formats, but primarily the PDF, from a LaTeX structure.
@@ -77,3 +77,5 @@ There are two ways to run, A.) in a clean, never run environment, or B.) Re-runn
 
 
 	##**##**   I will add the parse_docs.pl script shortly, and add the location for it and its README once loaded  **##**##
+Note:
+* Other names and brands may be claimed as the property of others.

@@ -1,4 +1,4 @@
-	The cloud-init script for sms node is different than compute node. The SMS node, when instantiated within Openstack, serves as a head node for HPC-as-a-Service, and hosts all the services as a sms node in an independent HPC cluster. This will host the server side of applications, resource manager, and share users. For more detail on sms node functionality please refer to OpenHPC documentation.
+	The cloud-init script for sms node is different than compute node. The SMS node, when instantiated within OpenStack, serves as a head node for HPC-as-a-Service, and hosts all the services as a sms node in an independent HPC cluster. This will host the server side of applications, resource manager, and share users. For more detail on sms node functionality please refer to OpenHPC documentation.
 
 	In this recipe, we will prepare cloud-init template script for sms node, which then is updated with compute node IP, NTP server, and other environmental variables, just before provisioning. 
 

@@ -1,5 +1,5 @@
 This directory "hpc/recipe/3_hpc_as_service" maintains the recipes for use
-case 3. In this case OpenStack provides baremetal nodes and recipe
+case 3. In this case OpenStack* provides baremetal nodes and recipe
 creates one of the bare metal node as HPC head node and create other 
 remaining bare metals as HPC compute nodes.
 it provides recipe to create HPC head node images as well as hpc
@@ -13,7 +13,7 @@ Below are the scripts called to create the environment for use case 1:
 
 file: set_os_hpc
 ================
-This is the script to setup HPC in OpenStack Cloud. This script is called by 
+This is the script to setup HPC in OpenStack* Cloud. This script is called by 
 setup_cloud_hpc.sh if user provides a "-u=3" input to it. To perform the job,
 it executes other scripts.
 
@@ -36,20 +36,22 @@ This generates HPC images for provisioning bare metal cloud nodes. It generates
 		 
 file: prepare_chpc_openstack
 ============================
-This script prepares nova, ironic for baremetal provisioning, installs and 
-configure pxe boot, pxe-impmi driver for ironic, and enable cloud init for 
+This script prepares nova*, ironic* for baremetal provisioning, installs and 
+configure pxe* boot, pxe-impmi driver for ironic*, and enable cloud init for 
 baremetal nodes.
 It also configure neutron for internal dns service
 
 File: deploy_chpc_openstack
 ===========================
-This script deploy baremetal nodes in an openstack using nova, ironic, neutron 
-and glance by using cloudinit recipe (prepare under prepare_cloudInit) and HPC
+This script deploy baremetal nodes in an OpenStack* using nova*, ironic*, neutron* 
+and glance* by using cloudinit* recipe (prepare under prepare_cloudInit) and HPC
 images (prepared by prepare_chpc_image).
 it first deploys sms node and then deploy compute nodes.
 
 file: update_cnodes_to_sms
 ==========================
-This script perform the post boot configuration including updating SLURM 
+This script perform the post boot configuration including updating SLURM*
 resource manager at sms node for hpc compute nodes
 
+Note:
+* Other names and brands may be claimed as the property of others.

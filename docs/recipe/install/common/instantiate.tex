@@ -1,4 +1,4 @@
-	To instantiate the OpenHPC system we will need to prepare Openstack components with HPC images, networking, and other relevant configurations. After the configuration we will instantiate HPC head node and HPC compute nodes using nova. 
+	To instantiate the OpenHPC system we will need to prepare OpenStack components with HPC images, networking, and other relevant configurations. After the configuration we will instantiate HPC head node and HPC compute nodes using nova. 
 
 	It is assumed that you have a working configuration of OpenStack, with controller and network services (i.e. keystone, nova, ironic, glance, neutron, mongodb, rabbitmq server, heat etc). 
 
@@ -47,8 +47,8 @@
 
 
 	The recipe that follows is tested with a controller node installed and configured using RDO PackStack.
-	The reference section on the RDO/Packstack website {\em www.rdoproject.org }can provide more detail on PackStack installation of Openstack.
-	Before starting with HPC instantiation, please export the Openstack credentials, as we will be using them during Openstack configuration. 
+	The reference section on the RDO/Packstack website {\em www.rdoproject.org }can provide more detail on PackStack installation of OpenStack.
+	Before starting with HPC instantiation, please export the OpenStack credentials, as we will be using them during OpenStack configuration. 
 
 	You can do this manually, as such:
 
@@ -62,7 +62,7 @@
 [ctrlr](*\#*) export OS_REGION_NAME=<>  
 \end{lstlisting}
 
-	OR, if you've deployed via PackStack, you can just source the keystonerc\_admin file. These credentials will be used throughout the rest of this document. If you have an existing Openstack installation with more complex credentials, you will need to set them per your configuration.
+	OR, if you've deployed via PackStack, you can just source the keystonerc\_admin file. These credentials will be used throughout the rest of this document. If you have an existing OpenStack installation with more complex credentials, you will need to set them per your configuration.
 
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
