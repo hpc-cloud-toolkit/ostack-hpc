@@ -1,4 +1,4 @@
-	Building head node (SMS) images requires installing the server packages of HPC components into the image. This is accomplished by setting image type to sms. Default image type in hpc elements is "compute". We will create a function prepare\_sms\_image to build this image, which will be called later in document.
+	Building head node (SMS) images requires installing the server packages of HPC components into the image. This is accomplished by setting the image type to "sms". The default image type in HPC elements is "compute". We will create a function prepare\_sms\_image to build this image, which will be called later in the document.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -9,13 +9,13 @@
 \end{lstlisting} 
 % end_ohpc_run
 
-	Check if user has requested to create images by verifying environment variables chpc\_create\_new\_image and chpc\_image\_sms. If user already supplied images then we will copy images to our common image location and setup environment variable for later use.
+	Check if the user has requested to create images by verifying environment variables chpc\_create\_new\_image and chpc\_image\_sms. If the user has supplied images then we will copy images to our common image location and setup environment variables for later use.
 	
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*)     if [[ ${chpc_create_new_image} -ne 1 ]] && [[ -s $chpc_image_sms ]]; then
-[ctrlr](*\#*)         # No need to create an image, image is provided by user
-[ctrlr](*\#*)         echo -n "Skiping cloud sms-image build, Image provided:"
+[ctrlr](*\#*)         # No need to create an image, image is provided by the user
+[ctrlr](*\#*)         echo -n "Skipping cloud sms-image build, image provided:"
 [ctrlr](*\#*)         echo "$chpc_image_sms"
 [ctrlr](*\#*)         CHPC_IMAGE_DEST=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_sms)
 [ctrlr](*\#*)         if [[ ! -e $CHPC_IMAGE_DEST ]]; then
@@ -26,17 +26,17 @@
 \end{lstlisting} 
 % end_ohpc_run
 
-	If user has not supplied images then we will build the sms image here. Disk-image-builder supports two types of HPC images, "sms" and "compute".  
+	If the user has not supplied images then we will build the sms image here. Disk-image-builder supports two types of HPC images, "sms" and "compute".  
 
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*)         # setup environment varioable to indicate sms image type
+[ctrlr](*\#*)         # setup environment variable to indicate sms image type
 [ctrlr](*\#*)         setup_dib_hpc_base
 [ctrlr](*\#*)         export DIB_HPC_IMAGE_TYPE=sms
 \end{lstlisting} 
 % end_ohpc_run
 
-	Enable SLURM resource manager for "head" node.
+	Enable HPC resource manager for "head" node.
 
 % begin_ohpc_run
 
@@ -58,7 +58,7 @@
 
 	We will also setup an HPC development environment on the HPC head node. 
 
-	Start by enabling gnu compiler on head node.
+	Start by enabling the gnu compiler on head node.
 
 % begin_ohpc_run
 
@@ -85,7 +85,7 @@
 \end{lstlisting} 
  % end_ohpc_run
 
-	Enable 3rd party libraries serial-libs, parallel-libs, io-libs, python-libs and runtimes.
+	Enable 3rd party libraries serial-libs, parallel-libs, io-libs, python-libs, and runtimes.
 
 % begin_ohpc_run
 
@@ -94,7 +94,7 @@
 \end{lstlisting} 
  % end_ohpc_run
 
-	Add HPC development environment element to list of elements.
+	Add the HPC development environment element to the list of elements.
 
 % begin_ohpc_run
 
@@ -103,7 +103,7 @@
 \end{lstlisting} 
  % end_ohpc_run
 
-	Now create an sms image with element local-config, dhcp-all-interfaces, devuser, selinux-permisive, and all HPC specific elements. Element local-config copies your local environment into image, which is the local users, their password and permissions. Element devuser will create a new user specified by environment variable "DIB\_DEV\_USER\_USERNAME". The image will be named  {\em  icloud-hpc-cent7-sms }.
+	Now create an sms image with the following elements: local-config, dhcp-all-interfaces, devuser, selinux-permisive, and all HPC specific elements. Element local-config copies your local environment into the image, which is the local users, their password, and permissions. Element devuser will create a new user specified by environment variable "DIB\_DEV\_USER\_USERNAME". The image will be named  {\em  icloud-hpc-cent7-sms}.
 
 % begin_ohpc_run
 
@@ -113,7 +113,7 @@
 \end{lstlisting} 
  % end_ohpc_run
 
-	It will take a while to build an image. Once the image is built, copy it to the standard OpenHPC path.
+	It will take awhile to build an image. Once the image is built, copy it to the standard OpenHPC path.
 
 % begin_ohpc_run
 

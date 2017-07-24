@@ -7,7 +7,7 @@
 % ohpc_validation_comment 
 %% Next line will only appear in documentation
 
-	Add these print banners to start image building for your scripting to help know where they are in the install.
+	Add these print banners to start image building for your scripting to provide progress indicator for your install.
 
 \begin{lstlisting}[language=bash,keywords={},upquote=true]
 [ctrlr](*\#*) echo "########################################################################"
@@ -16,7 +16,7 @@
 \end{lstlisting}
 %% Next line will only appear in documentation
 
-	Prepare image for sms node by calling function prepare\_image\_sms
+	Prepare the sms node image by calling the function 'prepare\_image\_sms'.
 
 \begin{lstlisting}[language=bash,keywords={},upquote=true]
 [ctrlr](*\#*) prepare_sms_image
@@ -24,7 +24,7 @@
 
 %% Next line will only appear in documentation
 
-	Print banner to indicate end of image creation
+	Print banner to indicate end of the sms node image creation.
 
 \begin{lstlisting}[language=bash,keywords={},upquote=true]
 [ctrlr](*\#*) echo $chpc_image_sms
@@ -33,14 +33,14 @@
 [ctrlr](*\#*) echo "########################################################################"
 \end{lstlisting}
 %% Next line will only appear in documentation
-	Prepare image for compute node by calling function prepare\_user\_image
+	Prepare the compute node image by calling the function 'prepare\_user\_image'.
 
 \begin{lstlisting}[language=bash,keywords={},upquote=true]
 [ctrlr](*\#*) prepare_user_image
 \end{lstlisting}
 
 %% Next line will only appear in documentation
-	Print banner to indicate end of user creation
+	Print banner to indicate end of the user image creation.
 	
 \begin{lstlisting}[language=bash,keywords={},upquote=true]
 [ctrlr](*\#*) echo $chpc_image_user
@@ -51,7 +51,7 @@
 
 %% Next line will only appear in documentation
 	
-	Prepare deploy images for ironic provisioning 
+	Prepare the deploy images for ironic provisioning .
 
 \begin{lstlisting}[language=bash,keywords={},upquote=true]
 [ctrlr](*\#*) prepare_deploy_image
@@ -59,7 +59,7 @@
 
 %% Next line will only appear in documentation
 	
-	Print banner to indicate end of user creation
+	Print banner to indicate end of the deploy image creation.
 
 \begin{lstlisting}[language=bash,keywords={},upquote=true]
 [ctrlr](*\#*) echo $chpc_image_deploy_kernel

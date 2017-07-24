@@ -1,5 +1,5 @@
 
-	Diskimage-builder (dib) uses environment variables and elements to customize the images. This section setups default environment variable to build HPC images. For debugging purposes, we will create a default user \"chpc\" with a password \"intel8086\", with \"sudo\" privilege. These variables are used by element devuser. 
+	Diskimage-builder (DIB) uses environment variables and elements to customize the sms and compute node images. This section sets up default environment variables to build HPC images. For debugging purposes, we will create a default user "chpc" with a password "intel8086", with "sudo" privilege. These variables are used by element devuser. 
 
 	We will create a function setup\_dib\_hpc\_base.
 
@@ -14,7 +14,7 @@
 \end{lstlisting}
 % end_ohpc_run
 
-	Install dib if it is not already installed by calling setup\_dib function, which we created in previous section.
+	Install DIB if it is not already installed by calling setup\_dib function, which we created in the previous section.
 
 % begin_ohpc_run
 % ohpc_validation_comment   Install dib if it is not already installed
@@ -56,8 +56,8 @@
 \end{lstlisting}
 % end_ohpc_run
 
-	HPC elements are common for OpenHPC and Intel HPC Orchestrator, environment variable \newline
-	"DIB\_HPC\_BASE" tell dib which one to pick. For OpenHPC, set the environment variable to "ohpc".
+	HPC elements are common for OpenHPC and Intel HPC Orchestrator environment variable \newline
+	"DIB\_HPC\_BASE" tells DIB which one to pick. For OpenHPC, set the environment variable to "ohpc".
 
 % begin_ohpc_run
 %% ohpc_validation_comment # SECTION BMNOS
@@ -68,7 +68,7 @@
 \end{lstlisting}
 % end_ohpc_run
 
-	To install ohpc packages on image, we need to export ohpc package (variable "ohpc\_pkg") to DIB. "ohpc\_pkg" is one of the input parameter to be setup by user in an input.local file as described in section "Inputs"of this document.
+	To install ohpc packages on an image, we need to export the ohpc package (variable "ohpc\_pkg") to DIB. "ohpc\_pkg" is one of the input parameters to be setup by the user in an "input.local" file as described in section "Inputs" of this document.
 
 % begin_ohpc_run
 %% ohpc_validation_comment # SECTION BMNOS
@@ -79,7 +79,7 @@
 \end{lstlisting}
 % end_ohpc_run
 
-	Create list of HPC elements needed to build HPC images, by starting hpc-env-base. This element will setup basic HPC environment to build HPC images.
+	Create the list of HPC elements needed to build HPC images by starting hpc-env-base. This element will setup a basic HPC environment to build HPC images.
 
 % begin_ohpc_run
 %% ohpc_validation_comment # SECTION BMNOS

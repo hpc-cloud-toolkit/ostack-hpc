@@ -1,4 +1,4 @@
-	To build compute node images, we need to install the client packages of HPC components. This is accomplished by setting image type to "compute". Default image type in HPC elements is "compute". We will then instruct disk-image-builder to install client HPC packages one by one. We will do all these in a shell function prepare\_user\_images.
+	To build compute node images, we need to install the client packages of HPC components. This is accomplished by setting the image type to "compute". Note the default image type in HPC elements is "compute". We will then instruct disk-image-builder to install client HPC packages one by one. All of these action will be completed in the shell function prepare\_user\_images.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -9,16 +9,16 @@
 
 \end{lstlisting} 
 
-	Check if user has already supplied compute node images by checking environment variables:
+	Check if the user has already supplied compute node images by checking the environment variables:
 	
 		 chpc\_create\_new\_image and chpc\_image\_user.
 		  
-	If image is supplied then we will copy the image to ohpc image location and setup our environemnt variable to point to image location.
+	If the image is supplied then we will copy that image to the OHPC image location and setup our environemnt variable to point to the image location.
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*)    if [[ ${chpc_create_new_image} -ne 1 ]] && [[ -s $chpc_image_user ]]; then
-[ctrlr](*\#*)       # No need to create an image, image is provided by user
-[ctrlr](*\#*)       echo -n "Skiping cloud user-image build, Image provided:"
+[ctrlr](*\#*)       # No need to create an image, image is provided by the user
+[ctrlr](*\#*)       echo -n "Skipping cloud user-image build, image provided:"
 [ctrlr](*\#*)       echo "$chpc_image_user"
 [ctrlr](*\#*)       CHPC_IMAGE_DEST=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_user)
 [ctrlr](*\#*)       if [[ ! -e $CHPC_IMAGE_DEST ]]; then
@@ -43,7 +43,7 @@
 \end{lstlisting} 
 % end_ohpc_run
 
-	Enable the SLURM resource manager for compute node.
+	Enable the HPC resource manager for the compute nodes.
 
 % begin_ohpc_run
 
@@ -52,7 +52,7 @@
 \end{lstlisting} 
  % end_ohpc_run
 
-	Add optional OpenHPC Components.
+	Add optional OpenHPC components.
 
 % begin_ohpc_run
 
@@ -63,7 +63,7 @@
 \end{lstlisting} 
  % end_ohpc_run
 
-	Create a compute node image with element local-config, dhcp-all-interfaces, devuser, selinux-permisive and all hpc specific elements. Element local-config copies your local environment into image, which is the local users, their password and permissions. Element devuser will create new user specified by environment variable "DIB\_DEV\_USER\_USERNAME". We will name the image {\em  icloud-hpc-cent7 }
+	Create a compute node image with the following elements: local-config, dhcp-all-interfaces, devuser, selinux-permissive and all HPC specific elements. Element local-config copies your local environment into the image, which is the local users, their password, and permissions. Element devuser will create a new user specified by the environment variable "DIB\_DEV\_USER\_USERNAME". We will name the image {\em  icloud-hpc-cent7 }
 
 % begin_ohpc_run
 
@@ -74,7 +74,7 @@
  % end_ohpc_run 
 
 
-	It will take a while to build an image. Once the image is built, copy it to the standard OpenHPC path.
+	It will take awhile to build an image. Once the image is built, copy it to the standard OpenHPC path.
 
 % begin_ohpc_run
 

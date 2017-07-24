@@ -1,8 +1,7 @@
+Prepare the optional part of cloud-init.
 \subsubsection{Update mrsh during cloud-init}
 
-	Prepare the optional part of cloud-init.
-
-	To update mrsh during cloud-init, create a new file sms/update\_mrsh, add mrsh configuration to enable mrsh on sms node, and save it. We will append this at the end of the cloud-init while preparing cloud-init for compute node instances.
+	To update mrsh during cloud-init, create a new file 'sms/update\_mrsh', add mrsh configuration to enable mrsh on the SMS node, and save it. We will append this script at the end of the cloud-init script, while preparing cloud-init for compute node instances.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -13,7 +12,7 @@
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) # Update mrsh
-[ctrlr](*\#*) # check if it is already configured grep mshell /etc/services will return non-zero, else configure"
+[ctrlr](*\#*) # check if it is already configured grep mshell /etc/services will return non-zero, else configure
 [ctrlr](*\#*) cat /etc/services | grep mshell
 [ctrlr](*\#*) mshell_exists=$?
 [ctrlr](*\#*) if [ "${mshell_exists}" -ne "0" ]; then
@@ -28,9 +27,9 @@
 % end_ohpc_run
 
 
-\subsubsection{Updating cluster shell during cloud -init}
+\subsubsection{Updating cluster shell during cloud-init}
 	
-	Create a new file sms/update\_clustershell, add configuration to enable clustershell on sms node, and save it. 
+	Create a new file 'sms/update\_clustershell', add configuration to enable clustershell on the SMS node, and save it. 
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -57,7 +56,7 @@
  
  \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) #Update the genders at sms with compute node information
-[ctrlr](*\#*) # first check if genders is install TBD
+[ctrlr](*\#*) # first check if genders is install 
 [ctrlr](*\#*) for ((i=0; i<$num_ccomputes; i++)) ; do
 [ctrlr](*\#*)    cat /etc/genders | grep ${cc_name[$i]}
 [ctrlr](*\#*)    gender_exists=$?

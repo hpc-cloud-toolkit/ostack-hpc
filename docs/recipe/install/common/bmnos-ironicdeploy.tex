@@ -1,6 +1,6 @@
 	Ironic uses deploy images (deploy\_kernel) to bootstrap the provisioning of user images.  This section will create a function to build deploy images. 
 
-	Start by creating a function prepare\_deploy\_image
+	Start by creating a function prepare\_deploy\_image.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -11,14 +11,14 @@
 \end{lstlisting}
 % end_ohpc_run 
 
-	Check if user has requested to create images by verifying environment variables chpc\_create\_new\_image, chpc\_image\_deploy\_kernel and chpc\_image\_deploy\_ramdisk. If user already supplied images then we will copy images to our common image location and setup environment variable for later use.
+	Check if the user has requested to create images by verifying environment variables chpc\_create\_new\_image, chpc\_image\_deploy\_kernel, and chpc\_image\_deploy\_ramdisk. If the user already supplied images then we will copy images to our common image location and setup environment variables for later use.
 
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*)    if [[ ${chpc_create_new_image} -ne 1 ]] && [[ -s $chpc_image_deploy_kernel ]] && \
 [ctrlr](*\#*)     [[ -s $chpc_image_deploy_ramdisk ]]; then
 [ctrlr](*\#*)        # need to create an image, image is provided by user
-[ctrlr](*\#*)        echo "Skiping cloud deploy-image build, Image provided:"
+[ctrlr](*\#*)        echo "Skipping cloud deploy-image build, image provided:"
 [ctrlr](*\#*)        echo "Deploy ramdisk Image:$chpc_image_deploy_ramdisk"
 [ctrlr](*\#*)        # Store Images file
 [ctrlr](*\#*)        CHPC_IMAGE_DEST=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_deploy_kernel)
@@ -35,7 +35,7 @@
 \end{lstlisting}
 % end_ohpc_run
 
-	If the user has not provided an image, or image set, then build the images
+	If the user has not provided an image, or image set, then build the images.
 
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]

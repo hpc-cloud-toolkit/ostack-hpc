@@ -1,7 +1,7 @@
-	This section we will create generic configuration, required for baremetal provisioning. We will use ironic as a provisioner and nova as a scheduler. {\em Note: if you already have this configured, skip ahead to the next chapter. }
+	In this section we will create a generic configuration required for baremetal provisioning. We will use ironic as a provisioner and nova as a scheduler. {\em Note: if you already have this configured, skip ahead to the next section. }
 	Have SELinux in permissive mode. If you need SELinux enforcing, you will need to configure your SELinux policy accordingly. The scope of this document does not cover SELinux configuration.
 
-	Create baremetal admin and baremetal observer role, and restart ironic API.
+	Create baremetal admin and baremetal observer roles, and restart the ironic API.
 
 
 % begin_ohpc_run
@@ -16,7 +16,7 @@
 \end{lstlisting}
 % end_ohpc_run
 
-	Again, we're assuming your credentials are stored in keystonerc\_admin...
+	Again, we're assuming your credentials are stored in file 'keystonerc\_admin'.
 
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
@@ -60,7 +60,7 @@ Make the directory for tftp and give it the ironic owner.
 \end{lstlisting} 
  % end_ohpc_run \n % end_ohpc_run
 
-Configure tfpt server.
+Configure the tfpt server.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -99,7 +99,7 @@ Configure tfpt server.
  % end_ohpc_run \n % end_ohpc_run
 
 
-	Update Ironic configuration with tftp information. Update the controller IP address for tftp server in ironic configuration.
+	Update the Ironic configuration with tftp information. Update the controller IP address for tftp server in the ironic configuration.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -109,7 +109,7 @@ Configure tfpt server.
 \end{lstlisting} 
  % end_ohpc_run
 
-	Update other additional tftp settings in ironic configuration file:
+	Update other additional tftp settings in the ironic configuration file:
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -144,7 +144,7 @@ Configure tfpt server.
 \end{lstlisting} 
  % end_ohpc_run
 
-	For cloud-init, we need to enable meta data server, which is done via neutron configuration.
+	For cloud-init, we need to enable a meta data server, which is done via neutron configuration.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -166,7 +166,7 @@ Configure tfpt server.
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) ######
 [ctrlr](*\#*) # Enable internal dns for hostname resolution, if it already not set
-[ctrlr](*\#*) # manipulating configuration file via shell, alternate is to use openstack-config (TODO)
+[ctrlr](*\#*) # manipulating configuration file via shell, alternate is to use openstack-config 
 [ctrlr](*\#*) ######
 [ctrlr](*\#*) # setup dns domain first
 [ctrlr](*\#*) if grep -q "^dns_domain.*openstacklocal$" /etc/neutron/neutron.conf; then

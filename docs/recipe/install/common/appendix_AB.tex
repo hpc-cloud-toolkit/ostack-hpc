@@ -1,7 +1,7 @@
 \renewcommand\thesubsection{\Alph{subsection}}
 \subsection{Installation Template}
 
-This appendix highlights the availability of a companion installation script that is included with CHPC documentation. This script, when combined with local site inputs, can be used to implement a starting
+This appendix highlights the availability of a companion installation script that is included with documentation. This script, when combined with local site inputs, can be used to implement a starting
 recipe for bare-metal system installation and configuration. This template script is used during validation efforts to test cluster installations and is provided as a convenience for administrators as a starting point for potential site customization.
 \begin{center}
 	\begin{tcolorbox}[]
@@ -11,17 +11,17 @@ repeated execution. If modifications are required after using the script initial
 relevant subset of commands interactively.
 \end{tcolorbox}
 \end{center}
-The template script relies on the use of a pair simple text files to define local site variables that were outlined
-in Section 1.3. These files are called in the setup\_cloud\_hpc.sh script in the default install directory, /opt/ohpc/pub/doc/recipes.
+The template script relies on the use of a pair of simple text files to define local site variables that were outlined
+in Section 1.3. These files are called by the 'setup\_cloud\_hpc.sh' script in the default install directory, '/opt/ohpc/pub/doc/recipes'.
 The template install script is intended for
-execution on the controller host and is installed as part of the docs-chpc package. After enabling the CHPC repository and reviewing the guide for additional information on the intent of the commands, the general starting approach for using this template
+execution on the controller host and is installed as part of the docs-chpc package. After enabling the repository and reviewing the guide for additional information on the intent of the commands, the general starting approach for using this template
 is as follows:
 
 
-1. Install the docs-chpc package
+1. Install the docs-chpc packages
 
 \begin{lstlisting}[language=bash,keywords={},upquote=true]
-[sms]# yum -y install docs-ohpc
+[sms]# yum -y install docs-chpc
 \end{lstlisting}
 
 2. Copy the provided template input file to use as a starting point to define local site settings:
@@ -31,9 +31,9 @@ is as follows:
 [sms]# cp /opt/ohpc/pub/doc/recipes/Template-INVENTORY ~/inventory
 \end{lstlisting}
 
-3. Update input.local and inventory with desired settings
+3. Update input.local and inventory with desired settings.
 
-4. Run the installation script
+4. Run the installation script:
 
 \begin{lstlisting}[language=bash,keywords={},upquote=true]
 [sms]# cd /opt/ohpc/pub/doc/recipes/centos7/x86_64/openstack/slurm/
@@ -45,7 +45,7 @@ is as follows:
 \subsection{Integration Test Suite}
 	
 
-This appendix details the installation and basic use of the integration test suite used to support ClodHPC releases. This suite is not intended to replace the validation performed by component development teams, but is instead, devised to confirm component builds are functional and interoperable within the modular OpenHPC environment. Test suite in Cloud HPC are inherited from OpenHPC test suite with addition of Ostack and dib tests. The OpenHPC test suite is generally organized by components and the OpenHPC \& the Cloud HPC CI workflow relies on running the full suite using Jenkins to test multiple OS configurations and installation recipes. To facilitate customization and running of the test suite locally, we provide these tests in a standalone RPM.
+This appendix details the installation and basic use of the integration test suite used to support the releases. This suite is not intended to replace the validation performed by component development teams, but is instead, devised to confirm component builds are functional and interoperable within the modular OpenHPC environment. The test suite is inherited from OpenHPC test suite with the addition of 'Ostack' and 'dib' tests. The OpenHPC test suite is generally organized by components and the CI workflow relies on running the full suite using Jenkins to test multiple OS configurations and installation recipes. To facilitate customization and running of the test suite locally, we provide these tests in a standalone RPM.
 \begin{lstlisting}[language=bash,keywords={},upquote=true]
 [sms]# yum -y install test-suite-chpc
 \end{lstlisting}
@@ -79,7 +79,7 @@ Libraries:
 ...
 \end{lstlisting}
 	
-Many OpenHPC components exist in multiple flavors to support multiple compiler and MPI runtime permutations, and the test suite takes this in to account by iterating through these combinations by default.
+Many OpenHPC components exist in multiple flavors to support multiple compiler and MPI runtime permutations, and the test suite takes this into account by iterating through these combinations by default.
 If make check is executed from the top-level test directory, all configured compiler and MPI permutations of a library will be exercised. The following highlights the execution of the FFTW related tests that were enabled in the previous step.
 
 \begin{lstlisting}[language=bash,keywords={},upquote=true]

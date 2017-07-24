@@ -1,8 +1,8 @@
 
 
-   This guide uses the diskimage-builder utility to build and configure OS images for both the sms node, and compute nodes.  Preparing images is an optional part of the overall recipe. If user has predefined images, then environment variable "chpc\_create\_new\_image" must be reset and path to images must be provided using environment variables "chpc\_image\_deploy\_kernel", "chpc\_image\_deploy\_ramdisk", "chpc\_image\_user", and "chpc\_image\_sms". 
+   This guide uses the diskimage-builder utility to build and configure OS images for both the sms node and compute nodes.  Preparing images is an optional part of the overall recipe. If the user has predefined images, then the environment variable "chpc\_create\_new\_image" must be reset and the path to images must be provided using the environment variables "chpc\_image\_deploy\_kernel", "chpc\_image\_deploy\_ramdisk", "chpc\_image\_user", and "chpc\_image\_sms". 
 
-	In this example cloud images are built on controller node ("[ctrlr]\# "). Once images are built, they are stored in the standard OpenHPC Path. 
+	In this example cloud images are built on a controller node ("[ctrlr]\# "). Once images are built they are stored in the standard OpenHPC path. 
 	
 	The recipes generated from this document create utility functions for each functionality and then integrate them to make a complete recipe to create a compute node OS image. 
 	

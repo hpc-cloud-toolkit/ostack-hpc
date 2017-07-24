@@ -1,6 +1,6 @@
-	In the previous section we created templates for cloud-init for the HPC head node and HPC compute nodes. We need to update these templates with user defined inputs like IP Address, node names, etc. With these updates, the cloud-init script is ready to deploy with OpenStack Nova.
+	In the previous section we created templates for cloud-init for the HPC head node and HPC compute nodes. We need to update these templates with user defined inputs like IP Address, node names, and other information. Once completed, the cloud-init script is ready to deploy with OpenStack Nova.
 
-	Copy cloud-init template to the working folder {\em /opt/ohpc/admin/cloud\_hpc\_init }
+	Copy the cloud-init template to the working folder {\em /opt/ohpc/admin/cloud\_hpc\_init }
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -11,7 +11,7 @@
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
-[ctrlr](*\#*) # if directory exists then mv to Old directory. TBD
+[ctrlr](*\#*) # if directory exists then mv to old directory. 
 [ctrlr](*\#*) mkdir -p $chpcInitPath
 [ctrlr](*\#*) #copy Cloud HPC files to temp working directory
 [ctrlr](*\#*) sudo cp -fr -L ${SCRIPTDIR}/cloud_hpc_init/${chpc_base}/* $chpcInitPath
@@ -20,7 +20,7 @@
 \end{lstlisting}
 % end_ohpc_run
 
-	Update sms\_ip in compute node cloud-init template with HPC head node. 
+	Update sms\_ip in the compute node cloud-init template with the SMS node IP. 
 	
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
@@ -28,7 +28,7 @@
 \end{lstlisting}
 % end_ohpc_run
 
-	Update HPC head node cloud-init template with compute name prefix, as defined by user.
+	Update the SMS head node cloud-init template with the compute name prefix, as defined by the user.
 
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
@@ -40,7 +40,7 @@
 \end{lstlisting}
 % end_ohpc_run
 
-	Optionally, if user enabled mrsh or clustershell, then update cloud-init accordingly.
+	Optionally, if the user enabled mrsh or clustershell, then update cloud-init accordingly.
 
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]

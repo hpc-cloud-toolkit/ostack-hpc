@@ -1,8 +1,8 @@
-	The cloud-init script for sms node is different than compute node. The SMS node, when instantiated within OpenStack, serves as a head node for HPC-as-a-Service, and hosts all the services as a sms node in an independent HPC cluster. This will host the server side of applications, resource manager, and share users. For more detail on sms node functionality please refer to OpenHPC documentation.
+	The cloud-init script for the SMS node is different than the compute node. The SMS node, when instantiated within OpenStack, serves as head node for HPC-as-a-Service, and hosts all services as a SMS node in an independent HPC cluster. This will host the server side of applications, the resource manager, and share users. For more detail on SMS node functionality please refer to OpenHPC documentation http://www.openhpc.community/downloads/.
 
-	In this recipe, we will prepare cloud-init template script for sms node, which then is updated with compute node IP, NTP server, and other environmental variables, just before provisioning. 
+	In this recipe, we will prepare a cloud-init template script for the SMS node, which then is updated with compute node IP, NTP server, and other environmental variables, just before provisioning. 
 
-	Create an empty chpc\_init file and open for editing. You can also use the existing template and modify. Start editing by adding environment variable, which will be updated later, just before provisioning.
+	Create an empty chpc\_init file and open it for editing. You can also modify the existing template. Start editing by adding environment variable, which will be updated later, just before provisioning.
 
 % ohpc_validation_comment # FILE: chpc_sms_init
 % begin_ohpc_run
@@ -16,7 +16,7 @@
 [ctrlr](*\#*) SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P && echo x)"
 [ctrlr](*\#*) SCRIPTDIR="${SCRIPTDIR%x}"
 [ctrlr](*\#*) cd $SCRIPTDIR
-[ctrlr](*\#*) # Get the Compute node prefix and number of compute nodes
+[ctrlr](*\#*) # Get the compute node prefix and number of compute nodes
 [ctrlr](*\#*) cnodename_prefix=<update_cnodename_prefix>
 [ctrlr](*\#*) num_ccomputes=<update_num_ccomputes>
 [ctrlr](*\#*) ntp_server=<update_ntp_server>
@@ -26,7 +26,7 @@
 \end{lstlisting} 
  % end_ohpc_run
 
-	Now, setup nfs share for cloud-init and files which you will want to send to compute nodes.
+	Now, setup "nfs" share for cloud-init and files you want to send to compute nodes.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -34,7 +34,7 @@
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) # setup cloudinit directory
 [ctrlr](*\#*) chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
-[ctrlr](*\#*) # create directory of not exists
+[ctrlr](*\#*) # create directory if it is not present
 [ctrlr](*\#*) mkdir -p $chpcInitPath
 [ctrlr](*\#*) chmod 700 $chpcInitPath
 [ctrlr](*\#*) # Copy public ssh key to shared drive
@@ -59,7 +59,7 @@
 \end{lstlisting} 
  % end_ohpc_run
 
-	Share /home, /opt/ohpc/pub and /opt/ohpc/admin/cloud\_hpc\_init over nfs
+	Share "/home, "/opt/ohpc/pub", and "/opt/ohpc/admin/cloud\_hpc\_initi" over "nfs"
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -72,11 +72,11 @@
 [ctrlr](*\#*) if [ "${chpcInitPath_exported}" -ne "0" ]; then
 [ctrlr](*\#*)    echo "$chpcInitPath *(rw,no_subtree_check,no_root_squash)" >> /etc/exports
 [ctrlr](*\#*) fi
-[ctrlr](*\#*) # share /home from HN
+[ctrlr](*\#*) # share /home from SMS node
 [ctrlr](*\#*) if ! grep "^/home" /etc/exports; then
 [ctrlr](*\#*)     echo "/home *(rw,no_subtree_check,fsid=10,no_root_squash)" >> /etc/exports
 [ctrlr](*\#*) fi
-[ctrlr](*\#*) # share /opt/ from HN
+[ctrlr](*\#*) # share /opt/ from SMS node
 [ctrlr](*\#*) if ! grep "^/opt/ohpc/pub" /etc/exports; then
 [ctrlr](*\#*)     echo "/opt/ohpc/pub *(ro,no_subtree_check,fsid=11)" >> /etc/exports
 [ctrlr](*\#*) fi
@@ -88,7 +88,7 @@
 \end{lstlisting} 
  % end_ohpc_run
 
-	Configure ntp sever on sms node, as per the site setting.
+	Configure ntp server on the SMS node, as per the site setting.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -107,7 +107,7 @@
 \end{lstlisting} 
  % end_ohpc_run
 
-	Distribute munge keys with compute nodes, and then update the SLURM resource manager with HPC compute nodes.
+	Distribute munge keys to compute nodes, and then update the resource manager with HPC compute nodes.
 
 
 % begin_ohpc_run
@@ -115,7 +115,7 @@
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) # Update Resource manager configuration (*\#*)(*\#*)(*\#*)
-[ctrlr](*\#*) # Update basic SLURM configuration at sms node
+[ctrlr](*\#*) # Update basic SLURM configuration at SMS node
 [ctrlr](*\#*)
 [ctrlr](*\#*) perl -pi -e "s/ControlMachine=\S+/ControlMachine=${sms_name}/" \
 [ctrlr](*\#*)    /etc/slurm/slurm.conf
@@ -126,7 +126,7 @@
 [ctrlr](*\#*) Nodes=(\S+)/PartitionName=normal Nodes=${cnodename_prefix}[1-${num_ccomputes}]/" \
 [ctrlr](*\#*) /etc/slurm/slurm.conf
 [ctrlr](*\#*)
-[ctrlr](*\#*) # copy SLURM file from sms node to Cloud Comute Nodes
+[ctrlr](*\#*) # copy SLURM file from SMS node to Cloud Compute Nodes
 [ctrlr](*\#*) cp -fpr -L /etc/slurm/slurm.conf $chpcInitPath
 [ctrlr](*\#*) cp -fpr -L /etc/pam.d/slurm $chpcInitPath
 [ctrlr](*\#*) cp -fpr -L /etc/munge/munge.key $chpcInitPath
@@ -142,16 +142,16 @@
  % end_ohpc_run
 
 
-	One last step is to make sure ssh is working and enabled on compute nodes. Update/verify the permissions of ssh.
+	One last step is to make sure ssh is working and enabled on the compute nodes. Updateand verify the permissions of ssh.
 
 % begin_ohpc_run
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) #Change file permissions in /etc/ssh to fix ssh into compute node
+[ctrlr](*\#*) #Change file permissions in /etc/ssh to fix ssh into compute nodes
 [ctrlr](*\#*) chmod 0600 /etc/ssh/ssh_host_*_key
 \end{lstlisting} 
  % end_ohpc_run
 
-	Save the file with name chp\_sms\_cinit, we will use this file during sms node instance creation.
+	Save the file with name chpc\_sms\_cinit". This file will be used to create the sms node instance.
 

@@ -1,6 +1,6 @@
-	Create an empty chpc\_init file and open for editing. You can also use the existing template and modify. 
+	Create an empty chpc\_init file and open it for editing. You can also modify the existing template. 
 
-	Start editing new file by adding some environment variable. First, set path to shared folder for cloud-init
+	Start editing the new file by adding environment variables. First, set the path to the shared folder for cloud-init
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -20,7 +20,7 @@
 \end{lstlisting}
 % end_ohpc_run
 
-	Update rsyslog configuration file to send all the syslog to sms. sms\_ip is the tag used here, which is updated with IP of SMS node just before provisioning.
+	Update the rsyslog configuration file to send the syslog to sms. "sms\_ip" is the tag used, which is updated with the IP address of the SMS node just before provisioning.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -36,7 +36,7 @@
 \end{lstlisting}
 % end_ohpc_run
 
-	Assuming sms node share "/home", "/opt/ohpc/pub", "/opt/ohpc/admin/cloud\_hpc\_init" via nfs, we will mount them on compute nodes during boot.
+	Assuming sms node share the directories "/home", "/opt/ohpc/pub", and "/opt/ohpc/admin/cloud\_hpc\_init" via nfs, we will mount them on compute nodes during boot.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -76,13 +76,13 @@
 \end{lstlisting}
 % end_ohpc_run
 
-	Have ntp sync with the sms node. and then copy shared keys.
+	Have ntp sync with the sms node and then copy shared keys.
 
 % begin_ohpc_run
 % ohpc_validation_newline
 
 \begin{lstlisting}
-[ctrlr](*\#*) # Restart ntp at CN
+[ctrlr](*\#*) # Restart ntp at the compute node
 [ctrlr](*\#*) systemctl enable ntpd
 [ctrlr](*\#*) # Update ntp server
 [ctrlr](*\#*) cat /etc/ntp.conf | grep "server <sms_ip>"
@@ -93,7 +93,7 @@
 [ctrlr](*\#*) systemctl restart ntpd
 [ctrlr](*\#*) # Sync time
 [ctrlr](*\#*) ntpstat
-[ctrlr](*\#*) #Sync sms node with compute nodes. sync users, SLURM and enable munge by copying munge keys
+[ctrlr](*\#*) #Sync sms node with compute nodes. sync users, HPC resource manager and enable munge by copying munge keys
 [ctrlr](*\#*) # Sync following files to compute node
 [ctrlr](*\#*) # Assuming nfs is setup properly
 [ctrlr](*\#*) if [ -d $chpcInitPath ]; then
@@ -104,8 +104,8 @@
 [ctrlr](*\#*)     cp -f -L $chpcInitPath/slurm.conf /etc/slurm/slurm.conf
 [ctrlr](*\#*)     cp -f -L $chpcInitPath/slurm /etc/pam.d/slurm
 [ctrlr](*\#*)     cp -f -L $chpcInitPath/munge.key /etc/munge/munge.key
-[ctrlr](*\#*)     # make sure that hostname mentioned into /etc/hosts matches machine hostname. TBD
-[ctrlr](*\#*)     # Start slurm and munge 
+[ctrlr](*\#*)     # make sure that hostname mentioned into /etc/hosts matches machine hostname. 
+[ctrlr](*\#*)     # Start hpc resource manager 
 [ctrlr](*\#*)     systemctl enable munge
 [ctrlr](*\#*)     systemctl restart munge
 [ctrlr](*\#*)     systemctl enable slurmd
@@ -116,7 +116,7 @@
 \end{lstlisting}
 % end_ohpc_run
 
-	At this point, all pre-requisites for SLURM should be met. Let's start the SLURM daemon.
+	At this point, all pre-requisites for HPC resource manager should be met. Let's start the daemon.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -130,7 +130,7 @@
 \end{lstlisting}
 %end_ohpc_run
 
-	One last step to make sure ssh is working and enabled on compute nodes. Update/verify the permissions of ssh.
+	Complete the one last step to ensure sure ssh is working and enabled on the compute node. Update/verify the permissions of ssh.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -142,5 +142,5 @@
 \end{lstlisting}
 % end_ohpc_run
 
-	Save the file with name chpc\_init, we will use this file during baremetal node instance creation.
+	Save the file with name 'chpc\_init', we will use  file during the creation of baremetal node instances.
 

@@ -1,10 +1,10 @@
-	To instantiate the OpenHPC system we will need to prepare OpenStack components with HPC images, networking, and other relevant configurations. After the configuration we will instantiate HPC head node and HPC compute nodes using nova. 
+	To instantiate the OpenHPC system we will need to prepare OpenStack components with HPC images, networking, and other relevant configurations. After these configuration we will instantiate an HPC head node (aka SMS node) and HPC compute nodes using Nova. 
 
-	It is assumed that you have a working configuration of OpenStack, with controller and network services (i.e. keystone, nova, ironic, glance, neutron, mongodb, rabbitmq server, heat etc). 
+	It is assumed that you have a working configuration of OpenStack, with controller and network services (i.e. Keystone, Nova, Ironic, Glance, Neutron, Mongodb, Rabbitmq server, Heat, etc). 
 
 	The controller node should be configured with OpenVSwitch Bridge on an internal network port. If your configuration is different, adjust these settings accordingly.
 
-	Two tenants, named \texttt{admin} and \texttt{services} are created in keystone to manage the services. All the services are created by system admin. 
+	Two tenants, named \texttt{admin} and \texttt{services}, are created in keystone to manage the services. All the services are created by system admin. 
 
 	Below is the expected endpoint list.
 
@@ -62,7 +62,7 @@
 [ctrlr](*\#*) export OS_REGION_NAME=<>  
 \end{lstlisting}
 
-	OR, if you've deployed via PackStack, you can just source the keystonerc\_admin file. These credentials will be used throughout the rest of this document. If you have an existing OpenStack installation with more complex credentials, you will need to set them per your configuration.
+	Or, if you've deployed via PackStack, you can just source the keystonerc\_admin file. These credentials will be used throughout the rest of this document. If you have an existing OpenStack installation with more complex credentials, you will need to set them per your configuration.
 
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
