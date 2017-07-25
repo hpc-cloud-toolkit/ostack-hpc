@@ -1,5 +1,0 @@
-./common_functions
-./c_init_workaround
-./setup_cloud_hpc.sh
-./teardown_cloud_nodes.sh
-./get_cn_mac
