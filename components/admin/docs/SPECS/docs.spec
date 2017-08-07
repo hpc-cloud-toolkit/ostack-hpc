@@ -92,6 +92,9 @@ install -m 0755 -p -d %{grecipe}/cloud_hpc_init %{buildroot}/%{d_path}/cloud_hpc
 install -m 0755 -p -d %{grecipe}/cloud_hpc_init/ohpc %{buildroot}/%{d_path}/cloud_hpc_init/ohpc
 install -m 0755 -p -D %{grecipe}/cloud_hpc_init/ohpc/chpc_init %{buildroot}/%{d_path}/cloud_hpc_init/ohpc/
 install -m 0755 -p -D %{grecipe}/cloud_hpc_init/ohpc/chpc_sms_init %{buildroot}/%{d_path}/cloud_hpc_init/ohpc/
+# Install templates input files
+install -m 0755 -p -D %{grecipe}/Template-INPUT.LOCAL.sh %{buildroot}/%{OHPC_PUB}/doc/recipes/
+install -m 0755 -p -D %{grecipe}/Template-INVENTORY.sh %{buildroot}/%{OHPC_PUB}/doc/recipes/
 
 %{__mkdir_p} ${RPM_BUILD_ROOT}/%{_docdir}
 

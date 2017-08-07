@@ -1,5 +1,5 @@
 This is the top level directory for Cloud HPC repo.
-Below is details on sub-directories in this director
+Below are the details on sub-directories in this directory
 
 README: This file
 
@@ -17,7 +17,7 @@ packstack: This maintains recipe to install OpenStack* using packstack. It is
        recipe files are plain shell scripts.
 
 tests: This directory maintains tests derived from OpenHPC* https://github.com/openhpc/ohpc/tree/obs/OpenHPC_1.2.1_Factory/tests
-       beside OpenHPC* tests, this also maintain two additional test directories "dib" & "ostack", which are tests specific to 
+       beside OpenHPC* tests, this also maintains two additional test directories "dib" & "ostack", which are tests specific to 
        hpc in OpenStack* and to test hpc elements of diskimage-builder
 
 docs:
