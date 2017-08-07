@@ -48,8 +48,8 @@
 [ctrlr](*\#*)        setup_dib
 [ctrlr](*\#*)        #  Install git if it is not already installed
 [ctrlr](*\#*)        yum -y install git
-[ctrlr](*\#*)        # make sure to get ironic component from stable mitaka release
-[ctrlr](*\#*)        export DIB_REPOREF_ironic_agent=stable/mitaka
+[ctrlr](*\#*)        # make sure to get ironic component from stable newton release
+[ctrlr](*\#*)        export DIB_REPOREF_ironic_agent=stable/newton
 [ctrlr](*\#*)        disk-image-create ironic-agent centos7 -o icloud-hpc-deploy-c7
 [ctrlr](*\#*)        echo "====================================================================="
 [ctrlr](*\#*)        echo "=== cloud-hpc deploy images Complete ================================"

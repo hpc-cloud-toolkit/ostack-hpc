@@ -96,8 +96,8 @@ function prepare_deploy_image() {
         unset DIB_YUM_REPO_CONF
         #Install git if it is not already installed
         yum -y install git
-        # make sure to get ironic component from stable mitaka release
-        export DIB_REPOREF_ironic_agent=stable/mitaka
+        # make sure to get ironic component from stable newton release
+        export DIB_REPOREF_ironic_agent=stable/newton
         disk-image-create ironic-agent centos7 -o icloud-hpc-deploy-c7
         echo "====================================================================="
         echo "=== cloud-hpc deploy images Complete ================================"
