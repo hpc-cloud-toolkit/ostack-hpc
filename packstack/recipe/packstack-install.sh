@@ -80,7 +80,7 @@ systemctl start network
 yum -y install policycoreutils httpd
 
 #Install the RDO OpenStack Mitaka release yum repository. This is in the extras repository, which is enabled by default in CentOS 7
-yum install -y centos-release-openstack-mitaka
+yum install -y centos-release-openstack-ocata
 
 #Update the packages installed on the current machine. This step can take a while.
 yum update -y
@@ -89,12 +89,14 @@ yum update -y
 yum install -y openstack-packstack
 
 #Edit answer file with parameters passed in from command line
-sed --in-place "s|<sms_ip>|${sms_ip}|" answer.txt
-sed --in-place "s|<flat_ip_range>|${flat_ip_range}|" answer.txt
-sed --in-place "s|<eth_interface>|${eth_interface}|" answer.txt
+sed --in-place "s|<sms_ip>|${sms_ip}|" ocata_answer
+sed --in-place "s|<flat_ip_range>|${flat_ip_range}|" ocata_answer
+sed --in-place "s|<eth_interface>|${eth_interface}|" ocata_answer
 
 #Install OpenStack using PackStack according to the answer file in answer.txt This step can take a while.
-packstack --answer-file answer.txt
+setenforce 0
+#exit
+packstack --answer-file ocata_answer
 
 #Rename the default apache configuration file to enable the web portal login (horizon).
 mv /etc/httpd/conf.d/15-default.conf /etc/httpd/conf.d/15-default.conf.old
