@@ -1,10 +1,14 @@
+Copyright (C) 2017 Intel Corporation. All right reserved.
+This package maintans group of packages. License of each package can be found in individual directory or RPM installation.
+---
+
 This is the top level directory for Cloud HPC repo.
 Below are the details on sub-directories in this directory
 
 README: This file
 
 dib: This directory maintains code for building HPC image for OpenStack* using 
-       diskimage-builder. It maintains:
+       diskimage-builder*. It maintains:
          - hpc elements for diskimage-builder
          - patch to diskimage-builder to support "yum groupinstall"
          - support files for CloudInit 
@@ -22,7 +26,7 @@ tests: This directory maintains tests derived from OpenHPC* https://github.com/o
 
 docs:
        This directory maintains user documentation for HPC as a service in latex format.
-       This documentation is very similar to OpenHPC* user document for SLURM and warewulf. 
+       This documentation is very similar to OpenHPC* user document for SLURM* and warewulf*. 
         
 RPM:
        This directory maintains RPM files for:
