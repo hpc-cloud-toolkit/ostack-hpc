@@ -5,7 +5,8 @@ source ${HOME}/keystonerc_admin
 # Function for common common configuration
 function setup_baremetal() {
     #Get the tenant ID for the services tenant
-    SERVICES_TENANT_ID=`keystone tenant-list | grep "|\s*services\s*|" | awk '{print $2}'`
+    #SERVICES_TENANT_ID=`keystone tenant-list | grep "|\s*services\s*|" | awk '{print $2}'` # keystone CLI is depricated
+    SERVICES_TENANT_ID=`openstack project list | grep "|\s*services\s*|" | awk '{print $2}'`
     
     #Create the flat network on which you are going to launch instances
     neutron net-list | grep "|\s*sharednet1\s*|"
@@ -14,6 +15,17 @@ function setup_baremetal() {
         neutron net-create --tenant-id ${SERVICES_TENANT_ID} sharednet1 --shared --provider:network_type flat --provider:physical_network physnet1
     fi
     NEUTRON_NETWORK_UUID=`neutron net-list | grep "|\s*sharednet1\s*|" | awk '{print $2}'`
+
+    # in ocata version we need to setup cleaning network
+    if [ "${nova_version_major}" == 7 ]; then
+        if ! grep -q "^cleaning_network" /etc/ironic/ironic.conf; then
+           sed --in-place "s|^#cleaning_network.*|cleaning_network = ${NEUTRON_NETWORK_UUID}|" /etc/ironic/ironic.conf
+        else
+           sed --in-place "s|^cleaning_network.*|cleaning_network = ${NEUTRON_NETWORK_UUID}|" /etc/ironic/ironic.conf
+        fi
+        #restart the ironic conductor 
+        systemctl restart openstack-ironic-conductor
+    fi
     
     #Create the subnet on the newly created network
     neutron subnet-list | grep "|\s*subnet01\s*|"
@@ -58,6 +70,9 @@ function setup_baremetal() {
     fi
     
     KEYPAIR_NAME=ostack_key
+
+    #ocata specific 
+    nova-manage cell_v2 discover_hosts
 }
 
 # Configure SMS Node

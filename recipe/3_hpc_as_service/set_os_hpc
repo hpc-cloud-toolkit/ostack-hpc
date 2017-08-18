@@ -37,7 +37,7 @@ time source prepare_chpc_image
 # =============================================
 # Prepare OpenStack for HPC baremetal instances
 # =============================================
-#time source prepare_chpc_openstack
+time source prepare_chpc_openstack
 #cont_next
 time source deploy_chpc_openstack
 #Wait for CN(s) to come up. TODO: Poll and wait rather than just a set 10 minutes.

@@ -13,7 +13,7 @@
 % ohpc_command function setup_baremetal() {
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) #Get the tenant ID for the services tenant
-[ctrlr](*\#*)    SERVICES_TENANT_ID=`keystone tenant-list | grep "|\s*services\s*|" | awk '{print $2}'`
+[ctrlr](*\#*)    SERVICES_TENANT_ID=`openstack project list | grep "|\s*services\s*|" | awk '{print $2}'`
 [ctrlr](*\#*) 
 [ctrlr](*\#*) #Create the flat network on which you are going to launch instances
 [ctrlr](*\#*)     neutron net-list | grep "|\s*sharednet1\s*|"
@@ -26,6 +26,25 @@
 \end{lstlisting}
 % end_ohpc_run
 
+	Setup node cleaning network and restart ironic conduction. This is became mendatory in ocata release of OpenStack
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)     if [ "${nova_version_major}" == 7 ]; then
+[ctrlr](*\#*)         if ! grep -q "^cleaning_network" /etc/ironic/ironic.conf; then
+[ctrlr](*\#*)            sed --in-place "s|^#cleaning_network.*|cleaning_network = \
+[ctrlr](*\#*)                  ${NEUTRON_NETWORK_UUID}|" /etc/ironic/ironic.conf
+[ctrlr](*\#*)         else
+[ctrlr](*\#*)            sed --in-place "s|^cleaning_network.*|cleaning_network = \
+[ctrlr](*\#*)                  ${NEUTRON_NETWORK_UUID}|" /etc/ironic/ironic.conf
+[ctrlr](*\#*)         fi
+[ctrlr](*\#*)         #restart the ironic conductor 
+[ctrlr](*\#*)         systemctl restart openstack-ironic-conductor
+[ctrlr](*\#*)     fi
+\end{lstlisting} 
+% end_ohpc_run
 
 	Create a subnet for our cluster with user defined start and end IP addresses. Mark the controller as a gateway for our instances.
 
@@ -113,6 +132,16 @@
 
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*)     KEYPAIR_NAME=ostack_key
+\end{lstlisting} 
+% end_ohpc_run
+
+	For OpenStack ocata release, we need to configure cell with host discovery using nova-manage 
+
+% begin_ohpc_run
+% ohpc_validation_newline
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)     # configure cell in nova 
+[ctrlr](*\#*)     nova-manage cell_v2 discover_hosts
 \end{lstlisting} 
 % ohpc_command }
 % end_ohpc_run

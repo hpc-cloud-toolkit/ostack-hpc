@@ -63,15 +63,40 @@ echo 're ^(^/) /tftpboot/\1' >> /tftpboot/map-file
 echo 're ^([^/]) /tftpboot/\1' >> /tftpboot/map-file
 
 #Edit /etc/ironic/ironic.conf file with the <controller_ip> variable's value
-sed --in-place "s|#tftp_server=\$my_ip|tftp_server=${controller_ip}|" /etc/ironic/ironic.conf
-sed --in-place "s|#tftp_root=/tftpboot|tftp_root=/tftpboot|" /etc/ironic/ironic.conf
-sed --in-place "s|#ip_version=4|ip_version=4|" /etc/ironic/ironic.conf
-sed --in-place "s|#automated_clean=true|automated_clean=false|" /etc/ironic/ironic.conf
+#sed --in-place "s|#tftp_server=\$my_ip|tftp_server=${controller_ip}|" /etc/ironic/ironic.conf
+sed --in-place "s|#tftp_server.*|tftp_server=${controller_ip}|" /etc/ironic/ironic.conf
+#sed --in-place "s|#tftp_root=/tftpboot|tftp_root=/tftpboot|" /etc/ironic/ironic.conf
+sed --in-place "s|#tftp_root.*|tftp_root=/tftpboot|" /etc/ironic/ironic.conf
+#sed --in-place "s|#ip_version=4|ip_version=4|" /etc/ironic/ironic.conf
+sed --in-place "s|#ip_version.*|ip_version=4|" /etc/ironic/ironic.conf
+#sed --in-place "s|#automated_clean=true|automated_clean=false|" /etc/ironic/ironic.conf
+sed --in-place "s|#automated_clean.*|automated_clean=false|" /etc/ironic/ironic.conf
 
 #Edit /etc/nova/nova.conf file
+#get the nova version
+nova_version_major=$(nova --version 2>&1 |cut -f1 -d.)
 sed --in-place "s|reserved_host_memory_mb=512|reserved_host_memory_mb=0|" /etc/nova/nova.conf
-sed --in-place "s|#scheduler_host_subset_size=1|scheduler_host_subset_size=9999999|" /etc/nova/nova.conf
-sed --in-place "s|#scheduler_use_baremetal_filters=false|scheduler_use_baremetal_filters=true|" /etc/nova/nova.conf
+if [ "${nova_version_major}" == 3 ]; then
+   # mitaka release
+   echo "mitaka"
+   sed --in-place "s|#scheduler_host_subset_size=1|scheduler_host_subset_size=9999999|" /etc/nova/nova.conf
+   sed --in-place "s|#scheduler_use_baremetal_filters=false|scheduler_use_baremetal_filters=true|" /etc/nova/nova.conf
+fi
+if [ "${nova_version_major}" == 7 ]; then
+   # ocata release
+   echo "ocata"
+   if grep -q "^host_subset_size" /etc/nova/nova.conf; then
+       sed --in-place "s|host_subset_size=1|host_subset_size=9999999|" /etc/nova/nova.conf
+   else
+       sed --in-place "s|#host_subset_size=1|host_subset_size=9999999|" /etc/nova/nova.conf
+   fi
+   if ! grep -q "^use_baremetal_filters" /etc/nova/nova.conf; then
+        # Assuming there is a place holder in comments, replace that string
+        sed -in-place  "s|^#use_baremetal_filters.*|use_baremetal_filters=true|" /etc/nova/nova.conf
+   else 
+        sed -in-place  "s|^use_baremetal_filters.*|use_baremetal_filters=true|" /etc/nova/nova.conf
+   fi
+fi
 
 # Enable meta data
 # Edit /etc/neutron/dhcp_agent.ini
@@ -102,6 +127,14 @@ else
         new_dns="$current_dns,dns"
         sed -in-place  "s|^extension_drivers.*|$new_dns|" $ml2file
     fi 
+fi
+# ocata requirement
+if ! grep -q "^flat_networks" $ml2file; then
+    # Assuming there is a place holder in comments, replace that string
+    sed -in-place  "s|^#flat_networks.*|flat_networks = physnet1|" $ml2file
+else
+    # Entry is present,update with physnet1 
+    sed -in-place  "s|^flat_networks.*|flat_networks = physnet1|" $ml2file
 fi
 #------
 

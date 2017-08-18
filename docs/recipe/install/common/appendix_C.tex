@@ -1,0 +1,91 @@
+\subsection{Verifying Installation and Troubleshooting}
+
+This section provides a guide to troubleshoot the installation. The information here is based on a sample instantiation of "HPC in an OpenStack Cloud" as described in this document. This document assumes that OpenStack credentials are stored at /root/keystonerc\_admin.\\
+\\
+\textbf{Verify the HPC instances}\\
+    First step of troubleshooting is to verify your HPC instances. Check instances via nova
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[controller]# source ~/keystonerc\_admin
+[controller]# nova list
+\end{lstlisting}
+Output of above command shall list cloud compute nodes as per the configuration mentioned in the cofiguration file. Status of each node will tell you if nodes are active (running) or not. you should see IP address for each node on "Networks" column of the output. Below is is the output of nova command for a successfull instantiation. \\
++--------------------------------------+-------+--------+------------+-------------+---------------------------+\\
+| ID                                   | Name  | Status | Task State | Power State | Networks                  |\\
++--------------------------------------+-------+--------+------------+-------------+---------------------------+\\
+| cf19ef93-b8ca-4429-843e-1d4ece0d5719 | cc1   | ACTIVE | -          | Running     | sharednet1=192.168.46.101 |\\
+| 541cb096-f40c-4658-8bdc-beff15e9f13c | cc2   | ACTIVE | -          | Running     | sharednet1=192.168.46.102 |\\
+| 1abbd309-0cc2-4f47-985e-140e2dd51ee6 | sms11 | ACTIVE | -          | Running     | sharednet1=192.168.46.103 |\\
++--------------------------------------+-------+--------+------------+-------------+---------------------------+\\
+\\
+In case you don't see status as "ACTIVE" for your instances, you might want to check status of nodes via ironic. 
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[controller]# source ~/keystonerc\_admin
+[controller]# ironic node-list
+\end{lstlisting}
+This shall return a output described below (UUID will be different for each instances).\\
++--------------------------------------+-------+--------------------------------------+-------------+--------------------+-------------+\\
+| UUID                                 | Name  | Instance UUID                        | Power State | Provisioning State | Maintenance |\\
++--------------------------------------+-------+--------------------------------------+-------------+--------------------+-------------+\\
+| d6c56ee2-3714-455e-a696-ba809a9763b5 | sms11 | 1abbd309-0cc2-4f47-985e-140e2dd51ee6 | power on    | active             | False       |\\
+| 23cdd2d8-3f63-463a-8644-b21040d63798 | cc1   | cf19ef93-b8ca-4429-843e-1d4ece0d5719 | power on    | active             | False       |\\
+| 41cb60a0-7239-4378-93b6-1dfc8f377fdc | cc2   | 541cb096-f40c-4658-8bdc-beff15e9f13c | power on    | active             | False       |\\
++--------------------------------------+-------+--------------------------------------+-------------+--------------------+-------------+\\
+
+Common problem observed during test setup is that ironic node is stuck at "wait call-back" state for long time before moving to ERROR state. Possible problem for that is your security setting at controller node. \\
+- Check for any firewall rules which might block your PXE packets from SMS node to controller node and vise versa. \\
+- Check if nodes are getting IP address. You can watch the network traffic via tcpdump utility.
+- Check if deploy images are build correctly. Verify if glance has entry for deploy images via "glance image-list". Also verify deply image at location "/opt/ohpc/admin/images/cloud/", look for "icloud-hpc-deploy*.kernel" and "icloud-hpc-deploy*.initramfs". If you don't see these images than refere to the section "Preparing ironic deploy images" of this document. \\
+\\
+\textbf{Verify SSH connections}\\
+Next step is to verify a ssh connection from the controller node to the SMS node and then from the SMS node to the compute nodes. First get the IPAddress of the SMS node via "nova list" command and use that IP address to verify the ssh connection with command "ssh <sms\_ip> hostname -I". You should get IP address of the SMS node on output. 
+ 
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[controller]# ssh 192.168.46.103 hostname -I
+192.168.46.103
+[controller]# ssh 192.168.46.103 hostname 
+sms11
+\end{lstlisting}
+If SSH from the controller\_node to the SMS node does not work, then you need to verify your instances and check any possible errors by observing output of "nova show <node name>" or <ironic node-show <node-name>
+Similar to ssh to SMS node, verify SSH connection from the controller node to the compute nodes
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[controller]# ssh 192.168.46.101 hostname -I
+192.168.46.101
+[controller]# ssh 192.168.46.101 hostname 
+cc1
+[controller]# ssh 192.168.46.102 hostname
+cc2
+\end{lstlisting}
+Verify SSH connection from SMS node to compute node
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[controller]# ssh 192.168.46.103 "ssh cc1 hostname -I"
+192.168.46.101
+[controller]# ssh 192.168.46.103 "ssh cc1 hostname "
+cc1
+[controller]# ssh 192.168.46.103 "ssh cc2 hostname" 
+cc2
+\end{lstlisting}
+\textbf{Verify Resource Manager}\\
+If Installation is successful then you should be able to run HPC jobs via the installed Resource Manager. To verify with "SLURM" Resource Manager, first check if resource manager is able to see all the nodes by running "sinfo" command at the SMS node. 
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[controller]# ssh 192.168.46.103 sinfo
+PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
+normal*      up 1-00:00:00      2   idle cc[1-2]
+\end{lstlisting}
+You should see a state of the HPC compute nodes as "idle". Now run simple workload via Resource Manager to prove that resource manager is working. We will run hostname on all the available compute nodes
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[controller]# ssh 192.168.46.103 "srun -N 2 hostname"
+cc2
+cc1
+[controller]# ssh 192.168.46.103 "srun -N 2 hostname -I"
+192.168.46.101 
+192.168.46.102
+\end{lstlisting}
+you should see host name and IP of your HPC compute node in an output of above command. \\
+\\
+\textbf{Resoruce Manager can not talk to compute nodes}\\
+If you don't see your the compute nodes state as "idle" at the Resource Manager. Then possible cause can be a. Timing of the node instantiation, b. cloud-init issue c. Time sync issue \\
+a. \textbf{Timing of the node instantiaion}: In our recipe HPC SMS node shares public key to the HPC compute nodes via nfs. That mean SMS node has to be instantiated before the compute nodes, so that compute node can mount nfs shared folder. Though recipe allow enough time, It is worth checking. Symtops of this behavior can be noticed by looking at syslog at the sms and the compute nodes.    \\
+b. \textbf{Cloud-init issue}: Check the syslog at SMS nodes. you should see entries starting with "chpcInit" for all the compute nodes and SMS node. If you suspect cloud-init is not working then check your nova and neutron settings.\\
+c. \textbf{Time sync issue}: This is the situation when clock of compute nodes is not synchronized with the SMS node. Check /etc/ntp.conf file on the compute node as well as the SMS node. ntp server for compute node points to the SMS node and at the SMS node it points to the controller node. This is because the HPC compute nodes do not have direct access to outside of HPC system. After verifying ntp configuration, restart or sync ntp time on SMS node and compute nodes. Usefull command for time sync: ntpstat\\
+
+	

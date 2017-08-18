@@ -105,7 +105,7 @@ Configure the tfpt server.
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) sed --in-place "s|#tftp_server=\$my_ip|tftp_server=${controller_ip}|" /etc/ironic/ironic.conf
+[ctrlr](*\#*) sed --in-place "s|#tftp_server.*|tftp_server=${controller_ip}|" /etc/ironic/ironic.conf
 \end{lstlisting} 
  % end_ohpc_run
 
@@ -115,32 +115,52 @@ Configure the tfpt server.
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) sed --in-place "s|#tftp_root=/tftpboot|tftp_root=/tftpboot|" /etc/ironic/ironic.conf
-[ctrlr](*\#*) sed --in-place "s|#ip_version=4|ip_version=4|" /etc/ironic/ironic.conf
-[ctrlr](*\#*) sed --in-place "s|#automated_clean=true|automated_clean=false|" /etc/ironic/ironic.conf
+[ctrlr](*\#*) sed --in-place "s|#tftp_root.*|tftp_root=/tftpboot|" /etc/ironic/ironic.conf
+[ctrlr](*\#*) sed --in-place "s|#ip_version.*|ip_version=4|" /etc/ironic/ironic.conf
+[ctrlr](*\#*) sed --in-place "s|#automated_clean.*|automated_clean=false|" /etc/ironic/ironic.conf
 \end{lstlisting} 
  % end_ohpc_run
-
-	Now, inform Nova to use Ironic for bare metal provisioning, by configuring nova.conf.
-
-% begin_ohpc_run
-% ohpc_validation_newline
-
-\begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) sed --in-place "s|#scheduler_use_baremetal_filters=false|scheduler_use_baremetal_filters=true|" \
-[ctrlr](*\#*) /etc/nova/nova.conf
-\end{lstlisting} 
- % end_ohpc_run
-
 	In our sample, we will not use the controller node for any compute resources so, let's mark reserved host memory as 0.
 
 % begin_ohpc_run
 % ohpc_validation_newline
 
 \begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) # mark reserved host memory to 0, since controller host is not used for compute
 [ctrlr](*\#*) sed --in-place "s|reserved_host_memory_mb=512|reserved_host_memory_mb=0|" /etc/nova/nova.conf
-[ctrlr](*\#*) sed --in-place "s|#scheduler_host_subset_size=1|scheduler_host_subset_size=9999999|" \
-[ctrlr](*\#*)       /etc/nova/nova.conf
+\end{lstlisting} 
+ % end_ohpc_run
+	Now, inform Nova to use Ironic for bare metal provisioning, by configuring nova.conf.
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) 
+[ctrlr](*\#*) # configure nova for baremetal
+[ctrlr](*\#*) # get the nova version to configure different versions 
+[ctrlr](*\#*) nova_version_major=$(nova --version 2>&1 |cut -f1 -d.)
+[ctrlr](*\#*) if [ "${nova_version_major}" == 3 ]; then
+[ctrlr](*\#*)    # mitaka release
+[ctrlr](*\#*)    echo "mitaka"
+[ctrlr](*\#*)    sed --in-place "s|#scheduler_host_subset_size=1|scheduler_host_subset_size=9999999|" /etc/nova/nova.conf
+[ctrlr](*\#*)    sed --in-place "s|#scheduler_use_baremetal_filters=false|scheduler_use_baremetal_filters=true|" /etc/nova/nova.conf
+[ctrlr](*\#*) fi
+[ctrlr](*\#*) if [ "${nova_version_major}" == 7 ]; then
+[ctrlr](*\#*)    # ocata release
+[ctrlr](*\#*)    echo "ocata"
+[ctrlr](*\#*)    if grep -q "^host_subset_size" /etc/nova/nova.conf; then
+[ctrlr](*\#*)       sed --in-place "s|host_subset_size=1|host_subset_size=9999999|" /etc/nova/nova.conf
+[ctrlr](*\#*)    else
+[ctrlr](*\#*)       sed --in-place "s|#host_subset_size=1|host_subset_size=9999999|" /etc/nova/nova.conf
+[ctrlr](*\#*)    fi
+[ctrlr](*\#*)    if ! grep -q "^use_baremetal_filters" /etc/nova/nova.conf; then
+[ctrlr](*\#*)       # Assuming there is a place holder in comments, replace that string
+[ctrlr](*\#*)       sed -in-place  "s|^#use_baremetal_filters.*|use_baremetal_filters=true|" /etc/nova/nova.conf
+[ctrlr](*\#*)    else 
+[ctrlr](*\#*)       sed -in-place  "s|^use_baremetal_filters.*|use_baremetal_filters=true|" /etc/nova/nova.conf
+[ctrlr](*\#*)    fi
+[ctrlr](*\#*) fi
 \end{lstlisting} 
  % end_ohpc_run
 
@@ -189,6 +209,22 @@ Configure the tfpt server.
 [ctrlr](*\#*)         new_dns="$current_dns,dns"
 [ctrlr](*\#*)         sed -in-place  "s|^extension_drivers.*|$new_dns|" $ml2file
 [ctrlr](*\#*)     fi
+[ctrlr](*\#*) fi
+\end{lstlisting} 
+ % end_ohpc_run
+
+	Add physical network network name with which flat networks will be created
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) if ! grep -q "^flat_networks" $ml2file; then
+[ctrlr](*\#*)    # Assuming there is a place holder in comments, replace that string
+[ctrlr](*\#*)    sed -in-place  "s|^#flat_networks.*|flat_networks = physnet1|" $ml2file
+[ctrlr](*\#*) else
+[ctrlr](*\#*)    # Entry is present,update with physnet1 
+[ctrlr](*\#*)    sed -in-place  "s|^flat_networks.*|flat_networks = physnet1|" $ml2file
 [ctrlr](*\#*) fi
 \end{lstlisting} 
  % end_ohpc_run
