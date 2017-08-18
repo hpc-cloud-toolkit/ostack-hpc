@@ -1,5 +1,5 @@
         In this section we will update compute node states with HPC resource manager on the SMS node so that resource manager can launch HPC jobs on these new compute nodes.
-        Before continuing, please make sure that all the cloud instances, "sms node" and "compute nodes" are up. When all these nodes are up, update cwresource manager.
+        Before continuing, please make sure that all the cloud instances, "sms node" and "compute nodes" are up. When all these nodes are up, rerun cloud-init on each compute node and update the resource manager.
 
 % begin_ohpc_run
 % ohpc_validation_comment #   XFILEX
@@ -9,7 +9,13 @@
 
 
 \begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) # rerun cloud-init script before updating resource manager
+[ctrlr](*\#*) for ((i=0; i < ${num_ccomputes}; i++)); do
+[ctrlr](*\#*)    cn_name=${cnodename_prefix}$((i+1))
+[ctrlr](*\#*)    ssh $cn_name /usr/bin/cloud-init single -n cc_scripts_user
+[ctrlr](*\#*) done
 [ctrlr](*\#*) sleep 5
+[ctrlr](*\#*) # now update slurm on sms node
 [ctrlr](*\#*) ssh $sms_ip scontrol update nodename=cc[1-${num_ccomputes}] state=idle
 [ctrlr](*\#*) ssh $sms_ip sinfo
 \end{lstlisting}
