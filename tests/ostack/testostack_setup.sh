@@ -3,7 +3,6 @@
 
 load ../common/test_helper_functions
 source ../common/functions || exit 1
-
 if [ -s ../TEST_ENV ];then
     source ../TEST_ENV
 fi
@@ -11,17 +10,21 @@ fi
 testname="ostack"
 # for testing we are installing packstack, and assuming keystonerc_admin is present at /root
 setup() {
+   echo "from setup"
    source /root/keystonerc_admin
    netname=sharednet1
     
 }
-teardown() {
-   #Remove unwanted files which was generated as a part of this test
-}
+#teardown() {
+#   #Remove unwanted files which was generated as a part of this test
+#}
 
 @test "[$testname] Verify OpenStack setup" {
 
-    openstack endpoint list >& .ostack_output
+    echo "first test"
+    source /root/keystonerc_admin
+    netname=sharednet1
+    openstack endpoint list > .ostack_output
     grep -q "nova.*compute" .ostack_output
     assert_success
     grep -q "neutron.*network" .ostack_output
@@ -32,11 +35,11 @@ teardown() {
     assert_success
     grep -q "nova.*compute" .ostack_output
     assert_success
-    grep -q "Image Service.*image" .ostack_output
+    grep -q "glance.*image" .ostack_output
     assert_success
     rm -f .ostack_output
 
-    openstack user list >& .ostack_output
+    openstack user list > .ostack_output
     grep -q "admin" .ostack_output
     assert_success
     grep -q "ironic" .ostack_output
@@ -53,8 +56,10 @@ teardown() {
 
 @test "[$testname] Verify Neutron setup" {
     #verify if neutron is setup for flat network.
+    source /root/keystonerc_admin
+    netname=sharednet1
     neutron net-show $netname  > /tmp/.output
-    neutron net-show sharednet1|grep provider:network_type|awk {'print $4'} > tmp/.output
+    neutron net-show sharednet1|grep provider:network_type|awk {'print $4'} > /tmp/.output
     run grep flat /tmp/.output
     assert_success
     assert_output "flat"

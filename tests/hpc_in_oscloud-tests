@@ -2,9 +2,11 @@
 # This is common script to run cloudhpc integration tests
 # it runs tests at controller node as well as sms node which is instantiated within cloud
 # It relies on root ssh from controller node to sms node
+# User has to update correct path of test rpm to TEST_RPM_PATH. 
+# while invoking user shall provide input.local & inventory file via -i and -n option
 
 # Configuration parameters
-TEST_RPM_PATH="${TEST_RPM_PATH:-/home/chpc/tests/tests/test-suite-chpc-0.1-14.1.noarch.rpm}"
+TEST_RPM_PATH="${TEST_RPM_PATH:-/root/test-suite-chpc-0.1-18.1.noarch.rpm}"
 INPUT_LOCAL="${INPUT_LOCAL:-}"
 CLOUD_HPC_INVENTORY="${CLOUD_HPC_INVENTORY:-}"
 TEST_DIR=${TESTSUITE_DIR:-/home/chpc/tests/tests}
@@ -44,6 +46,8 @@ get_rpm_and_dependencies()
     #Download the dependencies of test package, SMS node on CI is not connected to internet
     if [[ ! -f $TEST_RPM_PATH ]]; then
        echo "ERROR: please specify correct test rpm path" 
+       echo "ERROR: $TEST_RPM_PATH is not accessible from `hostname`" 
+       rm -fr $TMPDIR
        exit 2
     fi
     mkdir -p $TMPDIR
@@ -63,17 +67,20 @@ get_rpm_and_dependencies()
 # function to identify host this script is running on, if it is running on sms node or controller node.
 function get_my_host()
 {
-    hostname -I |grep -e $sms_ip >/dev/null
+    hostname -I |tr " " "\n" >/tmp/tmphostname
+    cat /tmp/tmphostname
+    grep -e "$sms_ip$" /tmp/tmphostname
     out=$?
     if [[ $out == 0 ]]; then
        MY_HOST=sms
     fi
-    hostname -I |grep -e $controller_ip >/dev/null
+    grep -e "$controller_ip$" /tmp/tmphostname
     out=$?
     if [[ $out == 0 ]]; then
        MY_HOST=controller
     fi
     echo "I am on $MY_HOST node"
+    rm /tmp/tmphostname
 }
 
 ERROR () {
@@ -214,6 +221,7 @@ run_chpc_sms_tests_from_controller()
        scp hpc_in_oscloud-tests $sms_ip:/home/chpc/tests/tests/
        scp configure.ac $sms_ip:/home/chpc/tests/tests/
        # Now invoke test at sms 
+       echo "now going to execut on sms"
        ssh $sms_ip "$TEST_DIR/hpc_in_oscloud-tests -i=$TMPDIR/test_input.local -n=$TMPDIR/test_inventory $USER_OPTS"
        # get results
        # return results	
@@ -233,11 +241,13 @@ source_cluster_configuration() {
     if [[ -z "$INPUT_LOCAL" ]]; then
         echo "ERROR: missing input file, please provide your input file with -i option"
         USAGE
+        rm -fr $TMPDIR
         exit 2
     fi
     if [[ -z "$CLOUD_HPC_INVENTORY" ]]; then
         echo "ERROR: missing inventory file, please provide your inventory file with -n option"
         USAGE
+        rm -fr $TMPDIR
         exit 2
     fi
     # source user inputs

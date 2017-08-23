@@ -11,9 +11,9 @@ testname="DIB"
 setup() {
 dibelements=/usr/share/diskimage-builder/elements
 }
-teardown() {
-#dibelements=../../dib/hpc/elements/
-}
+#teardown() {
+##dibelements=../../dib/hpc/elements/
+#}
 
 @test "[$testname] Verify dib-chpc installation" {
     run rpm -q dib-chpc
@@ -22,7 +22,7 @@ teardown() {
 
 @test "[$testname] Verify diskimage-builder installation" {
     run rpm -q --queryformat='%{VERSION}\n' diskimage-builder
-    assert_output "1.14.1"
+    assert_output "1.28.0"
 
     run which disk-image-create
     assert_success

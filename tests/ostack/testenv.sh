@@ -15,7 +15,8 @@ source /root/keystonerc_admin || exit 1
 
 @test "[$testname] Verify pack installation" {
     run rpm -q --queryformat='%{VERSION}\n' openstack-packstack
-    assert_output "8.0.2"
+    #ocata version of packstack
+    assert_output "10.0.1"
 }
 
 @test "[$testname] Verify man page availability" {
@@ -26,9 +27,6 @@ source /root/keystonerc_admin || exit 1
 
 @test "[$testname] Verify openstack installation" {
     run which openstack
-    assert_success
-
-    run which keystone
     assert_success
 
     run which glance
@@ -47,7 +45,8 @@ source /root/keystonerc_admin || exit 1
     assert_success
 
     run openstack --version
-    assert_output "openstack 2.3.0"
+    #check if it ocata version
+    assert_output "openstack 3.8.1"
 }
 
 
