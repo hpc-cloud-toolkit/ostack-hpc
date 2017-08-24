@@ -26,8 +26,8 @@ Source1:   CHPC_macros
 
 BuildRequires:  autoconf >= 2.69
 BuildRequires:  automake >= 1.13
-Requires:  autoconf >= 2.69
-Requires:  automake >= 1.13
+Requires:  autoconf-ohpc >= 2.69
+Requires:  automake-ohpc >= 1.13
 
 %if 0%{?suse_version} >= 1230
 Requires(pre):  shadow
