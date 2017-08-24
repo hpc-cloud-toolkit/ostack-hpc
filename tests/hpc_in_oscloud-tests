@@ -68,7 +68,6 @@ get_rpm_and_dependencies()
 function get_my_host()
 {
     hostname -I |tr " " "\n" >/tmp/tmphostname
-    cat /tmp/tmphostname
     grep -e "$sms_ip$" /tmp/tmphostname
     out=$?
     if [[ $out == 0 ]]; then
@@ -178,8 +177,8 @@ run_controller_tests()
             exit 2;
         fi
         echo "host is controller, running controller tests "
-        bootstrap
-        configure --disable-all --enable-dib --enable-ostack
+        ./bootstrap
+        ./configure --disable-all --enable-dib --enable-ostack
         make check
     else
         echo "host is not controller so will not run controller test on this host"
