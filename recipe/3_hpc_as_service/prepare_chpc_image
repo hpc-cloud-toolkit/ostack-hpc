@@ -1,5 +1,4 @@
 #!bin/bash
-set -x
 function setup_dib() {
         #enable local disk-image-builder
         # Check if disk-image-builder is installed
@@ -105,7 +104,7 @@ function prepare_user_image() {
         # First setup diskimage-builder
         setup_dib_hpc_base
 
-        # tell to build sms node image
+        # tell to build compute node image
         export DIB_HPC_IMAGE_TYPE=compute
 
         # enable Resource Manager
