@@ -1,5 +1,47 @@
 #!bin/bash
-#set -x
+function setup_dib() {
+        #enable local disk-image-builder
+        # Check if disk-image-builder is installed
+        yum -y install diskimage-builder PyYAML
+        #install grub dependency
+        yum -y install parted
+        # copy patch to installed location
+        sudo cp -fr ../../dib/patch/* /usr/share/diskimage-builder/
+}
+function setup_dib_hpc_base() {
+        # Install dib if it is not already installed
+        setup_dib
+        # For Debugging enable user
+        # if cloudinit does not work then we will use this user for debugging
+        export DIB_DEV_USER_USERNAME=chpc
+        export DIB_DEV_USER_PASSWORD=intel8086
+        export DIB_DEV_USER_PWDLESS_SUDO=1
+        #setup NTP server
+        export DIB_NTP_SERVER=$ntp_server
+        # For debugging enable DEBUG_TRACE
+        #export DIB_DEBUG_TRACE=1
+        # Add our custom element path
+        export ELEMENTS_PATH="$(realpath ../../dib/hpc/elements)"
+        # path to hpc configuration files i.e. cloud.cfg
+        export DIB_HPC_FILE_PATH="$(realpath ../../dib/hpc/hpc-files/)"
+        # define base for image as ohpc or orch.
+        export DIB_HPC_BASE=${chpc_base}
+
+        #Path to HPC base yum repo file
+        # We support either Intel HPC Orchestrator and OpenHPC
+        if [[ "${DIB_HPC_BASE}" == "orch" ]]; then
+            export DIB_YUM_REPO_CONF=/etc/yum.repos.d/HPC_Orchestrator.repo
+            # for orch define Packge path
+            # This file is used to install orch component inside image
+            export DIB_HPC_ORCH_PKG=${orch_iso_path}
+        else
+            # Install the OpenHPC rpm
+            yum -y install ${ohpc_pkg}	
+            export DIB_HPC_OHPC_PKG=${ohpc_pkg}
+        fi
+        DIB_HPC_ELEMENTS="hpc-env-base"
+}
+
 function prepare_user_image() {
     if [[ ${chpc_create_new_image} -ne 1 ]] && [[ -s $chpc_image_user ]]; then
         # No need to create an image, image is provided by user
@@ -12,43 +54,15 @@ function prepare_user_image() {
         chpc_image_user=$CHPC_IMAGE_DEST
     else
         echo "Building new User Image"
-        #enable local disk-image-builder
-        # Check if disk-image-builder is installed
-        yum -y install diskimage-builder PyYAML
-        #install grub dependency
-        yum -y install parted
-        # copy patch to installed location
-        sudo cp -fr ../../dib/patch/* /usr/share/diskimage-builder/
+        # First setup diskimage-builder
+        setup_dib_hpc_base
+
+        # tell to build compute node image
+        export DIB_HPC_IMAGE_TYPE=compute
         
-        # For Debugging enable user
-        #export PATH=/home/ppk/PPK/dib/dev/diskimage-builder/bin:/home/ppk/PPK/dib/dev/dib-utils/bin:$PATH
-        # if cloudinit does not work then we will use this user for debugging
-        export DIB_DEV_USER_USERNAME=chpc
-        export DIB_DEV_USER_PASSWORD=intel8086
-        export DIB_DEV_USER_PWDLESS_SUDO=1
-        # For debugging enable DEBUG_TRACE
-        #export DIB_DEBUG_TRACE=1
-        # Add our custom element path
-        export ELEMENTS_PATH="$(realpath ../../dib/hpc/elements)"
-        # define base for image as ohpc or orch.
-        export DIB_HPC_BASE=${chpc_base}
-        # path to hpc configuration files i.e. cloud.cfg
-        export DIB_HPC_FILE_PATH="$(realpath ../../dib/hpc/hpc-files/)"
+        # enable Resource Manager
+        DIB_HPC_ELEMENTS+=" hpc-slurm"
 
-        #Path to HPC base yum repo file
-        # We support either Intel HPC Orchestrator and OpenHPC
-        if [[ "${DIB_HPC_BASE}" == "orch" ]]; then
-            export DIB_YUM_REPO_CONF=/etc/yum.repos.d/HPC_Orchestrator.repo
-            # for orch define Packge path
-	    # This file is used to install orch component inside image
-            export DIB_HPC_ORCH_PKG=${orch_iso_path}
-        else
-            # Install the OpenHPC rpm
-            yum -y install ${ohpc_pkg}	
-            export DIB_HPC_OHPC_PKG=${ohpc_pkg}
-        fi
-
-        DIB_HPC_ELEMENTS="hpc-env-base hpc-slurm"
         #add mrsh if it is enabled
         if [[ ${enable_mrsh} -eq 1 ]];then
            DIB_HPC_ELEMENTS+=" hpc-mrsh"
@@ -92,12 +106,14 @@ function prepare_deploy_image() {
         echo "=== Preparing cloud-hpc deploy images for ironic====================="
         echo "====================================================================="
         #prepare deploy images
-        # First unset any previos envirnment flag
+        # Install dib if it is not already installed
+        setup_dib
+        # Unset any previos envirnment flag
         unset DIB_YUM_REPO_CONF
         #Install git if it is not already installed
         yum -y install git
         # make sure to get ironic component from stable newton release
-        export DIB_REPOREF_ironic_agent=stable/newton
+        export DIB_REPOREF_ironic_agent=stable/ocata
         disk-image-create ironic-agent centos7 -o icloud-hpc-deploy-c7
         echo "====================================================================="
         echo "=== cloud-hpc deploy images Complete ================================"
@@ -121,10 +137,19 @@ fi
 
 mkdir -p $CHPC_CLOUD_IMAGE_PATH
 ### Build HPC user image
+echo "########################################################################"
+echo "########################### Starting Image   ###########################"
+echo "########################################################################"
 prepare_user_image
+echo $chpc_image_user
+echo "########################################################################"
+echo "########################### user image is done #########################"
+echo "########################################################################"
 #### Build hpc deploy image
 prepare_deploy_image
 
 echo $chpc_image_deploy_kernel
 echo $chpc_image_deploy_ramdisk
-echo $chpc_image_user
+echo "########################################################################"
+echo "########################### deploy image is done #######################"
+echo "########################################################################"
