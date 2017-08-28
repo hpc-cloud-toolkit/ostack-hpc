@@ -17,6 +17,7 @@ usage () {
     echo "USAGE: $0 --sms_ip=<sms_ip> --flat_ip_range=<flat_ip_range> --eth_interface=<ethernet interface>"
     echo "-s,--sms_ip           Local (internal) IP address on SMS"
     echo "-f,--flat_ip_range    IP range for flat DHCP for Nova Configuration"
+    echo "-e,--eth_interface    IP range for flat DHCP for Nova Configuration"
     echo "-h,--help             Print this message"
 }
 

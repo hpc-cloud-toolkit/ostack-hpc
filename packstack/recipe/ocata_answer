@@ -98,14 +98,14 @@ CONFIG_DEBUG_MODE=y
 
 # Server on which to install OpenStack services specific to the
 # controller role (for example, API servers or dashboard).
-CONFIG_CONTROLLER_HOST=192.168.46.11
+CONFIG_CONTROLLER_HOST=<sms_ip>
 
 # List the servers on which to install the Compute service.
-CONFIG_COMPUTE_HOSTS=192.168.46.11
+CONFIG_COMPUTE_HOSTS=<sms_ip>
 
 # List of servers on which to install the network service such as
 # Compute networking (nova network) or OpenStack Networking (neutron).
-CONFIG_NETWORK_HOSTS=192.168.46.11
+CONFIG_NETWORK_HOSTS=<sms_ip>
 
 # Specify 'y' if you want to use VMware vCenter as hypervisor and
 # storage; otherwise, specify 'n'. ['y', 'n']
@@ -282,7 +282,7 @@ CONFIG_SSL_CERT_SUBJECT_MAIL=admin@ostack1
 CONFIG_AMQP_BACKEND=rabbitmq
 
 # IP address of the server on which to install the AMQP service.
-CONFIG_AMQP_HOST=192.168.46.11
+CONFIG_AMQP_HOST=<sms_ip>
 
 # Specify 'y' to enable SSL for the AMQP service. ['y', 'n']
 CONFIG_AMQP_ENABLE_SSL=n
@@ -304,7 +304,7 @@ CONFIG_AMQP_AUTH_PASSWORD=PW_PLACEHOLDER
 # installation was not specified in CONFIG_MARIADB_INSTALL, specify
 # the IP address of an existing database server (a MariaDB cluster can
 # also be specified).
-CONFIG_MARIADB_HOST=192.168.46.11
+CONFIG_MARIADB_HOST=<sms_ip>
 
 # User name for the MariaDB administrative user.
 CONFIG_MARIADB_USER=root
@@ -889,7 +889,7 @@ CONFIG_NEUTRON_OVS_BRIDGE_MAPPINGS=physnet1:br-eth2
 # issuing the following command: packstack --allinone --os-neutron-
 # ovs-bridge-mappings=ext-net:br-ex --os-neutron-ovs-bridge-interfaces
 # =br-ex:eth0
-CONFIG_NEUTRON_OVS_BRIDGE_IFACES=br-eth2:enp6s0f1
+CONFIG_NEUTRON_OVS_BRIDGE_IFACES=br-eth2:<eth_interface>
 
 # Comma-separated list of Open vSwitch bridges that must be created
 # and connected to interfaces in compute nodes when flat or vlan type
@@ -1248,10 +1248,10 @@ CONFIG_CEILOMETER_METERING_BACKEND=database
 CONFIG_CEILOMETER_EVENTS_BACKEND=database
 
 # IP address of the server on which to install MongoDB.
-CONFIG_MONGODB_HOST=192.168.46.11
+CONFIG_MONGODB_HOST=<sms_ip>
 
 # IP address of the server on which to install the Redis server.
-CONFIG_REDIS_HOST=192.168.46.11
+CONFIG_REDIS_HOST=<sms_ip>
 
 # Port on which the Redis server listens.
 CONFIG_REDIS_PORT=6379
