@@ -76,26 +76,6 @@ sudo cp -fr /etc/pam.d/slurm $chpcInitPath
 sudo cp -fr /etc/munge/munge.key $chpcInitPath
 sudo cp -fr /etc/hosts $chpcInitPath
 
-# Copy public ssh key to shared drive
-_ssh_path=/root/.ssh
-if [ ! -e "$_ssh_path/hpcasservice" ]; then
-
-    if [ ! -d "$_ssh_path" ]; then
-        install -d -m 700 $_ssh_path
-    fi
-    ssh-keygen -t dsa -f $_ssh_path/hpcasservice -N '' -C "HPC Cluster key" > /dev/null 2>&1
-    cat $_ssh_path/hpcasservice.pub >> $_ssh_path/authorized_keys
-    chmod 0600 $_ssh_path/authorized_keys
-fi
-#update config
-if [ ! -e "$_ssh_path/config" ]; then
-    echo "Host *" > $_ssh_path/config
-    echo "    IdentityFile ~/.ssh/hpcasservice" >> $_ssh_path/config
-    echo "    StrictHostKeyChecking=no" >> $_ssh_path/config
-fi
-# Now shared public key. this will allow us to ssh to compute nodes 
-cp -fpr $_ssh_path/authorized_keys $chpcInitPath
-
 # Add CloudInit Path to NFS share on HPC head node
 cat /etc/exports | grep "$chpcInitPath"
 chpcInitPath_exported=$?
