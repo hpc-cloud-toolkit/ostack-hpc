@@ -20,7 +20,7 @@ export DIB_HPC_SSH_PUB_KEY=/root/.ssh/hpcasservice
 
 # sms node specific variables, mainly used by hpc-dev-env elements
 # compiler
-export DIB_HPC_COMPILER="gnu"
+export DIB_HPC_COMPILER="gnu7"
 #MPI lib to install
 export DIB_HPC_MPI="openmpi mvapich2"
 # Performance tools

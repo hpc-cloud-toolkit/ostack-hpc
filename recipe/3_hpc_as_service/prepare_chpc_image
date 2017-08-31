@@ -69,7 +69,7 @@ function prepare_sms_image() {
            DIB_HPC_ELEMENTS+=" hpc-mrsh"
         fi
         # for sms node setup dev environment
-        export DIB_HPC_COMPILER="gnu"
+        export DIB_HPC_COMPILER="gnu7"
         export DIB_HPC_MPI="openmpi mvapich2"
         export DIB_HPC_PERF_TOOLS="perf-tools"
         export DIB_HPC_3RD_LIBS="serial-libs parallel-libs io-libs python-libs runtimes"

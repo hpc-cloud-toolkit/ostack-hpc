@@ -24,16 +24,24 @@ done
 
 # Install Performance Tools
 for cmp in $DIB_HPC_COMPILER; do
-    install-packages -g $DIB_HPC_BASE-$DIB_HPC_PERF_TOOLS-$cmp
+    install-packages $DIB_HPC_BASE-$cmp-$DIB_HPC_PERF_TOOLS
     # Install defaults for mvapich2
     if [[ $DIB_HPC_MPI == *mvapich2* ]]; then
        install-packages lmod-defaults-$cmp-mvapich2-$DIB_HPC_BASE 
     fi
     # Install 3rd party libraries
     for libs in $DIB_HPC_3RD_LIBS; do
-        install-packages -g $DIB_HPC_BASE-$libs-$cmp
+        install-packages $DIB_HPC_BASE-$cmp-$libs
     done
 done
+# Install parallel libmeta-packages for all available MPIT tool chains
+for cmp in $DIB_HPC_COMPILER; do
+   for mpi in $DIB_HPC_MPI; do
+      DIB_INSTALL_PARALLEL_META=$DIB_HPC_BASE-$cmp-$mpi-parallel-libs
+      install-packages $DIB_INSTALL_PARALLEL_META
+   done
+done
+
 
 # Install yum-utils
 install-packages yum-utils
