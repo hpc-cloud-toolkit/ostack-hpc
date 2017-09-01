@@ -28,6 +28,7 @@ BuildRequires:  autoconf >= 2.69
 BuildRequires:  automake >= 1.13
 Requires:  autoconf-ohpc >= 2.69
 Requires:  automake-ohpc >= 1.13
+Requires:  test-suite-ohpc >= 1.3
 
 %if 0%{?suse_version} >= 1230
 Requires(pre):  shadow
@@ -36,7 +37,7 @@ Requires(pre):  shadow
 BuildRoot: %{_tmppath}/%{pname}-%{version}-%{release}-root
 DocDir:    %{OHPC_PUB}/doc/contrib
 
-%define testuser chpc
+%define testuser ohpc-test
 %define debug_package %{nil}
 
 %description
@@ -47,19 +48,19 @@ a default configuration is setup to enable collective testing. The test suite
 is made available under an '%{testuser}' user account.
 
 %prep
-%setup -n tests-chpc
+%setup -n ohpc-test
 
 %build
 export PATH=/opt/ohpc/pub/autotools/bin:$PATH
 cd tests
-./bootstrap
+#./bootstrap
 
 
 %install
 
-%{__mkdir_p} %{buildroot}/home/%{testuser}/tests
-cp -a * %{buildroot}/home/%{testuser}/tests
-find %{buildroot}/home/%{testuser}/tests -name .gitignore  -exec rm {} \;
+%{__mkdir_p} %{buildroot}/home/%{testuser}/
+cp -a * %{buildroot}/home/%{testuser}/
+find %{buildroot}/home/%{testuser}/ -name .gitignore  -exec rm {} \;
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -73,7 +74,6 @@ exit 0
 %post
 
 %postun
-
 
 %files
 %defattr(-,%{testuser},%{testuser},-)
