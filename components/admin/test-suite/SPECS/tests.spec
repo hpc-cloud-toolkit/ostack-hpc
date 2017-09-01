@@ -48,7 +48,7 @@ a default configuration is setup to enable collective testing. The test suite
 is made available under an '%{testuser}' user account.
 
 %prep
-%setup -n ohpc-test
+%setup -n tests-chpc
 
 %build
 export PATH=/opt/ohpc/pub/autotools/bin:$PATH
