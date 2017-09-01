@@ -1,8 +1,0 @@
-./Run/smallserial 
-./Run/smallmpi 
-./Run/smallfgmpi 
-./Run/smallopenmp 
-./Run/smallmpiopenmp 
-./Run/smallmpirma 
-./Run/smallshmem
-./Run/smallmpishm

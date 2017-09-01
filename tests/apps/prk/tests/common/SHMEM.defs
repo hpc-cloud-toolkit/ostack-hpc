@@ -1,5 +1,0 @@
-include ../../common/make.defs
-CCOMPILER=$(SHMEMCC) -I$(SHMEMTOP)/include
-CLINKER=$(CCOMPILER) -L$(SHMEMTOP)/lib -lshmem  
-COMOBJS=wtime.o SHMEM_bail_out.o
-PROG_ENV=-DSHMEM
