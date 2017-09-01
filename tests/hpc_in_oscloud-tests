@@ -282,22 +282,13 @@ run_chpc_sms_tests_from_controller()
            ssh $sms_ip "cd $TMPDIR; yum install -y $i;"
        done
 
-       # TBD: Update this line and below 
-       #scp hpc_in_oscloud-tests $sms_ip:$TESTSUITE_DIR
-       #scp configure.ac.ostack $sms_ip:$TESTSUITE_DIR
-       #scp Makefile.am.ostack $sms_ip:$TESTSUITE_DIR
-       #scp admin/Makefile.am.ostack $sms_ip:$TESTSUITE_DIR/admin
-       #scp user-env/Makefile.am.ostack $sms_ip:$TESTSUITE_DIR/user-env
-       #scp enable-ostack-tests.sh $sms_ip:$TESTSUITE_DIR/
-       #scp -r dib $sms_ip:$TESTSUITE_DIR
-       #scp -r ostack $sms_ip:$TESTSUITE_DIR
        # Now invoke test at sms 
        echo "now going to execute on sms"
        ssh $sms_ip "$TESTSUITE_DIR/hpc_in_oscloud-tests -i=$TMPDIR/test_input.local -n=$TMPDIR/test_inventory $USER_OPTS"
        # get results
        # return results	
        #delete temperory directory
-       #ssh $sms_ip rm -fr $TMPDIR
+       ssh $sms_ip rm -fr $TMPDIR
        rm -fr $TMPDIR
     fi
     if [[ $MY_HOST == "sms" ]] ; then 
