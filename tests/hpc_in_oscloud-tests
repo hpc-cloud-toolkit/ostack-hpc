@@ -6,12 +6,12 @@
 # while invoking user shall provide input.local & inventory file via -i and -n option
 
 # Configuration parameters
-TEST_RPM_PATH="${TEST_RPM_PATH:-/root/test-suite-chpc-0.1-18.1.noarch.rpm}"
+TEST_RPM_PATH="${TEST_RPM_PATH:-/home/chpc/test-suite-chpc-0.1-0.1.noarch.rpm}"
 INPUT_LOCAL="${INPUT_LOCAL:-}"
 CLOUD_HPC_INVENTORY="${CLOUD_HPC_INVENTORY:-}"
-TEST_DIR=${TESTSUITE_DIR:-/home/chpc/tests/tests}
-TEST_USER=${TESTSUITE_USER:-chpc}
-TEST_USER_SCRIPT="/tmp/user_integration_tests"
+TESTSUITE_DIR=${TESTSUITE_DIR:-/home/ohpc-test/tests}
+TESTSUITE_USER=${TESTSUITE_USER:-ohpc-test}
+TESTSUITE_USER_SCRIPT="/tmp/user_integration_tests"
 #--------
 
 #########
@@ -38,7 +38,62 @@ SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P
 SCRIPTDIR="${SCRIPTDIR%x}"
 cd $SCRIPTDIR
 SCRIPTDIR=$PWD
-pwd
+
+# cleanup function at exit
+function exit_cleanup {
+    #if [  -d "$TMPDIR" ]; then
+    #    rmdir -f $TMPDIR
+    #fi
+    if [[  -f "$TESTSUITE_DIR/Makefile.am.ORIG" ]]; then
+        mv $TESTSUITE_DIR/Makefile.am.ORIG $TESTSUITE_DIR/Makefile.am
+    fi
+    if [[  -f "$TESTSUITE_DIR/configure.ac.ORIG" ]]; then
+        mv $TESTSUITE_DIR/configure.ac.ORIG $TESTSUITE_DIR/configure.ac
+    fi
+    if [[  -f "$TESTSUITE_DIR/admin/Makefile.am.ORIG" ]]; then
+        mv $TESTSUITE_DIR/admin/Makefile.am.ORIG $TESTSUITE_DIR/admin/Makefile.am
+    fi
+    if [[  -f "$TESTSUITE_DIR/user-env/Makefile.am.ORIG" ]]; then
+        mv $TESTSUITE_DIR/user-env/Makefile.am.ORIG $TESTSUITE_DIR/user-env/Makefile.am
+    fi
+}
+# trap the exit signal for cleanup
+trap exit_cleanup EXIT
+
+#enable cloud test
+copied_once=0
+enable_ostack_tests() {
+    #copy Makefile.am
+    if [ "$copied_once" -eq "0" ]; then
+        if [[  -f "$TESTSUITE_DIR/Makefile.am.ostack" ]]; then
+            if [[  -f "$TESTSUITE_DIR/Makefile.am" ]]; then
+                mv $TESTSUITE_DIR/Makefile.am $TESTSUITE_DIR/Makefile.am.ORIG
+            fi
+            cp $TESTSUITE_DIR/Makefile.am.ostack $TESTSUITE_DIR/Makefile.am
+        fi
+        if [[  -f "$TESTSUITE_DIR/configure.ac.ostack" ]]; then
+            if [[  -f "$TESTSUITE_DIR/configure.ac" ]]; then
+                mv $TESTSUITE_DIR/configure.ac $TESTSUITE_DIR/configure.ac.ORIG
+            fi
+            cp $TESTSUITE_DIR/configure.ac.ostack $TESTSUITE_DIR/configure.ac
+        fi
+        if [[  -f "$TESTSUITE_DIR/admin/Makefile.am.ostack" ]]; then
+            if [[  -f "$TESTSUITE_DIR/admin/Makefile.am" ]]; then
+                mv $TESTSUITE_DIR/admin/Makefile.am $TESTSUITE_DIR/admin/Makefile.am.ORIG
+            fi
+            cp $TESTSUITE_DIR/admin/Makefile.am.ostack $TESTSUITE_DIR/admin/Makefile.am
+        fi
+        if [[  -f "$TESTSUITE_DIR/user-env/Makefile.am.ostack" ]]; then
+            if [[  -f "$TESTSUITE_DIR/user-env/Makefile.am" ]]; then
+                mv $TESTSUITE_DIR/user-env/Makefile.am $TESTSUITE_DIR/user-env/Makefile.am.ORIG
+            fi
+            cp $TESTSUITE_DIR/user-env/Makefile.am.ostack $TESTSUITE_DIR/user-env/Makefile.am
+        fi
+        copied_once=1
+     else
+        echo "ignoring making copy, already done"
+     fi
+}
 
 #Gathers test suite rpm and tests dependencies into temperory folder
 get_rpm_and_dependencies()
@@ -47,21 +102,26 @@ get_rpm_and_dependencies()
     if [[ ! -f $TEST_RPM_PATH ]]; then
        echo "ERROR: please specify correct test rpm path" 
        echo "ERROR: $TEST_RPM_PATH is not accessible from `hostname`" 
-       rm -fr $TMPDIR
        exit 2
     fi
     mkdir -p $TMPDIR
     cp $TEST_RPM_PATH $TMPDIR
-    pushd $TMPDIR
-    # now download our test dependencies
-    for i in perl-Test-Harness perl-XML-Generator; do
-        yumdownloader $i 
-    done
-    popd
     # copy input and inventory file
     cp $INPUT_LOCAL $TMPDIR/test_input.local
     cp $CLOUD_HPC_INVENTORY $TMPDIR/test_inventory
     ls -l $TMPDIR
+
+    #make sure ohpc repo is installed
+    source $INPUT_LOCAL
+    yum install -y $ohpc_pkg
+
+    # now download our test dependencies
+    pushd $TMPDIR
+    # This assumes that ohpc package is installed
+    for i in perl-Test-Harness perl-XML-Generator test-suite-ohpc; do
+        yumdownloader $i 
+    done
+    popd
 }
 
 # function to identify host this script is running on, if it is running on sms node or controller node.
@@ -112,9 +172,10 @@ run_root_level_tests()
     echo " "
 
     echo `pwd`
-    cd ${TEST_DIR} || ERROR "Unable to access top level test directory"
+    cd ${TESTSUITE_DIR} || ERROR "Unable to access top level test directory"
 
     export BATS_JUNIT_GROUP="RootLevelTests"
+    config_opts+=" --enable-hpc-ostack --enable-admin"
     echo "config_opts:$config_opts"
 
     #[[ -f Makefile ]] && make clean && make distclean
@@ -134,33 +195,38 @@ run_user_level_tests()
     echo "Running User-Level Tests"
     echo " "
 
-    cd ${TEST_DIR} || ERROR "Unable to access top level test directory"
+    cd ${TESTSUITE_DIR} || ERROR "Unable to access top level test directory"
 
     export BATS_JUNIT_GROUP="UserLevelTests"
 
-    local config_opts=""
+    local config_opts="--enable-hpc-ostack"
     if [ "${EnableLongTests}" == "true" ];then
-        config_opts="--enable-long"
+        config_opts+=" --enable-long"
     fi
+    #before executing tests lets make sure that test-user is present
+    useradd -m $TESTSUITE_USER
+    # add user on all the nodes. TBD use variable from inventory file to add user to all nodes
+    ssh cc1 useradd -m $TESTSUITE_USER
+    ssh cc2 useradd -m $TESTSUITE_USER
 
     # create execution test script
-    cat <<EOF > ${TEST_USER_SCRIPT}
+    cat <<EOF > ${TESTSUITE_USER_SCRIPT}
 #!/bin/bash
 export BATS_ENABLE_TIMING=1
 export BATS_JUNIT_FORMAT=1
 export BATS_JUNIT_GROUP="UserLevelTests"
 export AUTOMAKE_JUNIT_FILE=1
 
-cd "$TEST_DIR/" || exit 1
+cd "$TESTSUITE_DIR/" || exit 1
 #[[ -f Makefile ]] && make clean && make distclean
 #./bootstrap || exit 1
 ./configure $config_opts || exit 1
 make -k VERBOSE=1 check
 EOF
 
-    sudo chown -fR ${TEST_USER}: ${TEST_DIR} || ERROR "Unable to update perms for ${TEST_DIR}"
-    sudo chown -fR ${TEST_USER}: ${TEST_USER_SCRIPT} || ERROR "Unable to update perms for ${TEST_USER_SCRIPT}"
-    sudo su - ${TEST_USER} ${TEST_USER_SCRIPT}
+    sudo chown -fR ${TESTSUITE_USER}: ${TESTSUITE_DIR} || ERROR "Unable to update perms for ${TESTSUITE_DIR}"
+    sudo chown -fR ${TESTSUITE_USER}: ${TESTSUITE_USER_SCRIPT} || ERROR "Unable to update perms for ${TESTSUITE_USER_SCRIPT}"
+    sudo su - ${TESTSUITE_USER} ${TESTSUITE_USER_SCRIPT}
  
     USER_STATUS=$?
     cd - >& /dev/null
@@ -210,22 +276,28 @@ run_chpc_sms_tests_from_controller()
        get_rpm_and_dependencies
        #copy content to sms
        scp -r $TMPDIR $sms_ip:/tmp/
-       #ssh $sms_ip ls $TMPDIR
+       ssh $sms_ip ls $TMPDIR
        # Install our test contents on sms
-       for i in perl-Test-Harness*.rpm perl-XML-Generator*.rpm test-suite-chpc*.rpm; do
+       for i in perl-Test-Harness*.rpm perl-XML-Generator*.rpm test-suite-ohpc*.rpm test-suite-chpc*.rpm; do
            ssh $sms_ip "cd $TMPDIR; yum install -y $i;"
        done
 
-       # TBD: Remove this line and below before pushing to git
-       scp hpc_in_oscloud-tests $sms_ip:/home/chpc/tests/tests/
-       scp configure.ac $sms_ip:/home/chpc/tests/tests/
+       # TBD: Update this line and below 
+       #scp hpc_in_oscloud-tests $sms_ip:$TESTSUITE_DIR
+       #scp configure.ac.ostack $sms_ip:$TESTSUITE_DIR
+       #scp Makefile.am.ostack $sms_ip:$TESTSUITE_DIR
+       #scp admin/Makefile.am.ostack $sms_ip:$TESTSUITE_DIR/admin
+       #scp user-env/Makefile.am.ostack $sms_ip:$TESTSUITE_DIR/user-env
+       #scp enable-ostack-tests.sh $sms_ip:$TESTSUITE_DIR/
+       #scp -r dib $sms_ip:$TESTSUITE_DIR
+       #scp -r ostack $sms_ip:$TESTSUITE_DIR
        # Now invoke test at sms 
-       echo "now going to execut on sms"
-       ssh $sms_ip "$TEST_DIR/hpc_in_oscloud-tests -i=$TMPDIR/test_input.local -n=$TMPDIR/test_inventory $USER_OPTS"
+       echo "now going to execute on sms"
+       ssh $sms_ip "$TESTSUITE_DIR/hpc_in_oscloud-tests -i=$TMPDIR/test_input.local -n=$TMPDIR/test_inventory $USER_OPTS"
        # get results
        # return results	
        #delete temperory directory
-       ssh $sms_ip rm -fr $TMPDIR
+       #ssh $sms_ip rm -fr $TMPDIR
        rm -fr $TMPDIR
     fi
     if [[ $MY_HOST == "sms" ]] ; then 
@@ -240,13 +312,11 @@ source_cluster_configuration() {
     if [[ -z "$INPUT_LOCAL" ]]; then
         echo "ERROR: missing input file, please provide your input file with -i option"
         USAGE
-        rm -fr $TMPDIR
         exit 2
     fi
     if [[ -z "$CLOUD_HPC_INVENTORY" ]]; then
         echo "ERROR: missing inventory file, please provide your inventory file with -n option"
         USAGE
-        rm -fr $TMPDIR
         exit 2
     fi
     # source user inputs
@@ -333,6 +403,7 @@ done
 if [ "${UserLevelTests}" == "false" ] && \
     ( [ "${RootLevelTests}" == "false" ] || \
       [ "${EnableLongTests}" == "true" ] ); then
+    echo "atleast one of the -u or -r must be selected, and -r option can not be selected with -l"
     USAGE
 fi
 if [ "${OControllerTests}" == "false" ] && \
@@ -366,6 +437,8 @@ get_my_host
 
 uid=$(id -u)
 
+#enable Ostack tests 
+enable_ostack_tests
 
 if [ "${OControllerTests}" == "true" ];then
     time run_controller_tests
