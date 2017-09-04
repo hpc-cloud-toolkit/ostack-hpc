@@ -70,8 +70,6 @@ function setup_baremetal() {
     
     KEYPAIR_NAME=ostack_key
 
-    #ocata specific 
-    nova-manage cell_v2 discover_hosts
 }
 #Configure Compute Nodes
 function setup_cn() {
@@ -234,6 +232,10 @@ function boot_cn() {
 setup_baremetal
 # Setup Compute nodes
 setup_cn
+
+#ocata specific 
+nova-manage cell_v2 discover_hosts
+
 # Wait for the Nova hypervisor-stats to sync with available Ironic resources
 sleep 121
 # Now start booting the nodes

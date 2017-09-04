@@ -71,8 +71,6 @@ function setup_baremetal() {
     
     KEYPAIR_NAME=ostack_key
 
-    #ocata specific 
-    nova-manage cell_v2 discover_hosts
 }
 
 # Configure SMS Node
@@ -172,6 +170,10 @@ setup_baremetal
 setup_sms
 # Setup Compute nodes
 setup_cn
+
+#ocata specific 
+nova-manage cell_v2 discover_hosts
+
 # Wait for the Nova hypervisor-stats to sync with available Ironic resources
 sleep 121
 # Now start booting the nodes

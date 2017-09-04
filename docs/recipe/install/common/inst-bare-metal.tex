@@ -133,16 +133,6 @@
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*)     KEYPAIR_NAME=ostack_key
 \end{lstlisting} 
-% end_ohpc_run
-
-	For OpenStack ocata release, we need to configure cell with host discovery using nova-manage 
-
-% begin_ohpc_run
-% ohpc_validation_newline
-\begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*)     # configure cell in nova 
-[ctrlr](*\#*)     nova-manage cell_v2 discover_hosts
-\end{lstlisting} 
 % ohpc_command }
 % end_ohpc_run
 \newpage
@@ -301,6 +291,16 @@ Add the instance info and disk space for root. \newline
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) # Wait for the Nova hypervisor-stats to sync with available Ironic resources
 [ctrlr](*\#*) sleep 121
+\end{lstlisting} 
+% end_ohpc_run
+
+	For OpenStack ocata release, we need to configure cell with host discovery using nova-manage 
+
+% begin_ohpc_run
+% ohpc_validation_newline
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)     # configure cell in nova 
+[ctrlr](*\#*)     nova-manage cell_v2 discover_hosts
 \end{lstlisting} 
 % ohpc_command }
 % end_ohpc_run
