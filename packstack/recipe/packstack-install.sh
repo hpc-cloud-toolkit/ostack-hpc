@@ -99,6 +99,10 @@ setenforce 0
 #exit
 packstack --answer-file ocata_answer
 
+# now update the number of connections for db.
+sed -in-place  "s|^max_connections.*|max_connection = 100000|" /etc/my.cnf.d/server.cnf
+systemctl restart mariadb
+
 #Rename the default apache configuration file to enable the web portal login (horizon).
 mv /etc/httpd/conf.d/15-default.conf /etc/httpd/conf.d/15-default.conf.old
 systemctl restart httpd
