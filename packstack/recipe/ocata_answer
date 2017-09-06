@@ -141,11 +141,11 @@ CONFIG_VCENTER_CLUSTER_NAMES=
 
 # (Unsupported!) Server on which to install OpenStack services
 # specific to storage servers such as Image or Block Storage services.
-CONFIG_STORAGE_HOST=10.23.182.168
+CONFIG_STORAGE_HOST=<sms_ip>
 
 # (Unsupported!) Server on which to install OpenStack services
 # specific to OpenStack Data Processing (sahara).
-CONFIG_SAHARA_HOST=10.23.182.168
+CONFIG_SAHARA_HOST=<sms_ip>
 
 # Specify 'y' to enable the EPEL repository (Extra Packages for
 # Enterprise Linux). ['y', 'n']
@@ -352,7 +352,7 @@ CONFIG_KEYSTONE_TOKEN_FORMAT=FERNET
 CONFIG_KEYSTONE_IDENTITY_BACKEND=sql
 
 # URL for the Identity service LDAP backend.
-CONFIG_KEYSTONE_LDAP_URL=ldap://10.23.182.168
+CONFIG_KEYSTONE_LDAP_URL=ldap://<sms_ip>
 
 # User DN for the Identity service LDAP backend.  Used to bind to the
 # LDAP server if the LDAP server does not allow anonymous
