@@ -78,7 +78,7 @@ systemctl enable network
 systemctl start network
 
 # Packages required
-yum -y install policycoreutils httpd
+yum -y install policycoreutils #httpd
 
 #Install the RDO OpenStack Mitaka release yum repository. This is in the extras repository, which is enabled by default in CentOS 7
 yum install -y centos-release-openstack-ocata
@@ -97,7 +97,7 @@ sed --in-place "s|<eth_interface>|${eth_interface}|" ocata_answer
 #Install OpenStack using PackStack according to the answer file in answer.txt This step can take a while.
 setenforce 0
 #exit
-packstack --answer-file ocata_answer
+packstack --answer-file=ocata_answer
 
 # now update the number of connections for db.
 sed -in-place  "s|^max_connections.*|max_connection = 100000|" /etc/my.cnf.d/server.cnf
