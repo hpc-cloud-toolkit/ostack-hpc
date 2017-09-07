@@ -15,4 +15,5 @@ echo "root soft nproc unlimited" >> /etc/security/limits.d/90-nproc.conf
 #Increase limits for mariadb
 mkdir -p /etc/systemd/system/mariadb.service.d/
 cp mariadb_limits.conf /etc/systemd/system/mariadb.service.d/limits.conf
+systemctl daemon-reload
 
