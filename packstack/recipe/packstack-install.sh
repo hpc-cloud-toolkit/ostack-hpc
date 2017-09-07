@@ -97,9 +97,11 @@ sed --in-place "s|<eth_interface>|${eth_interface}|" ocata_answer
 #Install OpenStack using PackStack according to the answer file in answer.txt This step can take a while.
 setenforce 0
 #exit
+#before installing openstack, increase the limits
+source tune_controller.sh
 packstack --answer-file=ocata_answer
 
-# now update the number of connections for db.
+# Now update the number of connections for db.
 sed -in-place  "s|^max_connections.*|max_connection = 100000|" /etc/my.cnf.d/server.cnf
 systemctl restart mariadb
 
