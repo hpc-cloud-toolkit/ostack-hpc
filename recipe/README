@@ -35,18 +35,6 @@ directory: cloud_hpc_init
 Maintains the template for cloud-init script, which is updated at run time 
 before supplying to nova as an user data.
 
-directory: hpc_cent7
-====================
-Maintains a copy of recipe for HPC Orchestrator and OpenHPC*. warewulf 
-is removed from these recipe to insteall head node functionality on 
-OpenStack* controller node.
-
-directory: inventory
-====================
-Maintains configuration files for OpenHPC*, HPC Orchestrator and Cloud 
-baremetal node. these configuration files are applicable for development 
-systems used for prototype.
-
 directory 1_combined_controller
 ==========================
 Maintains the recipes for case where OpenStack* node and HPC controller node
