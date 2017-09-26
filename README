@@ -1,24 +1,32 @@
+Copyright (C) 2017 Intel Corporation. All right reserved.
+This package maintains group of packages. License of each package can be found in individual directory or RPM installation.
+----
+
 This is the top level directory for Cloud HPC repo.
-Below is detail on sub-directories in this director
+Below are the details on sub-directories in this directory
 
 README: This file
 
-dib: This directory maintains code for building HPC image for OpenStack using 
-       diskimage-builder. It maintains:
+dib: This directory maintains code for building HPC image for OpenStack* using 
+       diskimage-builder*. It maintains:
          - hpc elements for diskimage-builder
          - patch to diskimage-builder to support "yum groupinstall"
          - support files for CloudInit 
 
-recipe: This directory maintains recipe for all user cases of HPC in Cloud.
+recipe: This directory maintains recipe for all use cases of HPC in Cloud.
        see recipe/readme for more information on this director
 
-packstack: This maintains recipe to install OpenStack using packstack. It is
-       called from recipe if user chose to install OpenStack
+packstack: This maintains recipe to install OpenStack* using packstack. It is
+       called from the recipe if a user chose to install OpenStack*.
+       recipe files are plain shell scripts.
 
-ironic: This is development only directory, it is not used in recipe. 
-       if you are trying to understand to code then ignore this directory 
+tests: This directory maintains tests derived from OpenHPC* https://github.com/openhpc/ohpc/tree/obs/OpenHPC_1.2.1_Factory/tests
+       beside OpenHPC* tests, this also maintains two additional test directories "dib" & "ostack", which are tests specific to 
+       hpc in OpenStack* and to test hpc elements of diskimage-builder
 
-hpc-ohpc-test: This maintains a guide on how to run hpcg application.
-
-hpc-orchestrator-tests: This keeps the copy of test suite, available inside
-       HPC Orchestrator. it is miantained here due to a bug in HPC Orchestrator.
+docs:
+       This directory maintains user documentation for HPC as a service in latex format.
+       This documentation is very similar to OpenHPC* user document for SLURM* and warewulf*. 
+        
+Note:
+* Other names and brands may be claimed as the property of others.
