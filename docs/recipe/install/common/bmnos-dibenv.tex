@@ -1,0 +1,92 @@
+
+	Diskimage-builder (DIB) uses environment variables and elements to customize the sms and compute node images. This section sets up default environment variables to build HPC images. For debugging purposes, we will create a default user "chpc" with a password "intel8086", with "sudo" privilege. These variables are used by element devuser. 
+
+	We will create a function setup\_dib\_hpc\_base.
+
+%% we will create function  setup_dib_hpc_base. 
+% begin_ohpc_run
+% ohpc_validation_newline
+%% ohpc_validation_comment # SECTION BMNOS
+% ohpc_validation_comment function to setup dib environment setup_dib_hpc_base
+% ohpc_validation_comment
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) function setup_dib_hpc_base() {
+\end{lstlisting}
+% end_ohpc_run
+
+	Install DIB if it is not already installed by calling setup\_dib function, which we created in the previous section.
+
+% begin_ohpc_run
+% ohpc_validation_comment   Install dib if it is not already installed
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)     setup_dib
+\end{lstlisting}
+% end_ohpc_run
+
+% begin_ohpc_run
+% ohpc_validation_comment   diskimage-builder initial config
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)     export DIB_DEV_USER_USERNAME=chpc
+[ctrlr](*\#*)     export DIB_DEV_USER_PASSWORD=intel8086
+[ctrlr](*\#*)     export DIB_DEV_USER_PWDLESS_SUDO=1
+[ctrlr](*\#*)     #setup NTP server in images
+[ctrlr](*\#*)     export DIB_NTP_SERVER=$ntp_server
+\end{lstlisting}
+% end_ohpc_run
+
+	Add custom elements, which are not part of base diskimage-builder, to the path. CloudHPC provides a few HPC elements. 
+
+% begin_ohpc_run
+%% ohpc_validation_comment # SECTION BMNOS
+% ohpc_validation_comment   Add custom elements in DIB
+% ohpc_validation_comment
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)     export ELEMENTS_PATH="$(realpath /opt/ohpc/admin/dib-chpc/elements/)"
+\end{lstlisting}
+% end_ohpc_run
+
+	Add path to HPC specific files.
+
+% begin_ohpc_run
+%% ohpc_validation_comment # SECTION BMNOS
+% ohpc_validation_comment   Add path to HPC specific files
+% ohpc_validation_comment
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)     export DIB_HPC_FILE_PATH="$(realpath /opt/ohpc/admin/dib-chpc/hpc-files/)"
+\end{lstlisting}
+% end_ohpc_run
+
+	HPC elements are common for OpenHPC and Intel HPC Orchestrator environment variable \newline
+	"DIB\_HPC\_BASE" tells DIB which one to pick. For OpenHPC, set the environment variable to "ohpc".
+
+% begin_ohpc_run
+%% ohpc_validation_comment # SECTION BMNOS
+% ohpc_validation_comment   Set DIB Element
+% ohpc_validation_comment
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)     export DIB_HPC_BASE="ohpc"
+\end{lstlisting}
+% end_ohpc_run
+
+	To install OpenHPC packages on an image, we need to export the path for OpenHPC packages via DIB\_HPC\_HPC\_PKG environment variable. For this excersize, we have defined variable "ohpc\_pkg" as one of the input parameters in section 1.3 which needs to be setup by the user and here we have used this variable to inform the path of the OpenHPC to DIB. This recipe is tested with OpenHPC release 1.2.1 (ohpc\_pkg=https://github.com/openhpc/ohpc/releases/download/v1.2.1.GA/ohpc-release-centos7.2-1.2-1.x86\_64.rpm).
+
+% begin_ohpc_run
+%% ohpc_validation_comment # SECTION BMNOS
+% ohpc_validation_comment   Export ohpc package to DIB
+% ohpc_validation_comment
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)     export DIB_HPC_OHPC_PKG=${ohpc_pkg}
+\end{lstlisting}
+% end_ohpc_run
+
+	Create the list of HPC elements needed to build HPC images by starting hpc-env-base. This element will setup a basic HPC environment to build HPC images.
+
+% begin_ohpc_run
+%% ohpc_validation_comment # SECTION BMNOS
+% ohpc_validation_comment    Create listof elements
+% ohpc_validation_comment
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)     DIB_HPC_ELEMENTS="hpc-env-base"
+[ctrlr](*\#*) } # end of the function
+\end{lstlisting}
+% end_ohpc_run

@@ -1,0 +1,16 @@
+
+#enable local disk-image-builder
+export PATH=/home/ppk/PPK/dib/dev/diskimage-builder/bin:/home/ppk/PPK/dib/dev/dib-utils/bin:$PATH
+export DIB_DEV_USER_USERNAME=chpc
+export DIB_DEV_USER_PASSWORD=intel8086
+export DIB_DEV_USER_PWDLESS_SUDO=1
+export DIB_DEBUG_TRACE=1
+export ELEMENTS_PATH=/home/ppk/PPK/dib/dev/hpc/elements
+export DIB_HPC_BASE=orch
+export DIB_HPC_ORCH_PKG=/home/ppk/Downloads/HPC-Orchestrator-rhel7.2u5-16.01.002.beta.iso
+export DIB_HPC_FILE_PATH=/home/ppk/PPK/dib/dev/hpc/hpc-files
+#Path to HPC base yum repo file
+export DIB_YUM_REPO_CONF=/etc/yum.repos.d/HPC_Orchestrator.repo
+disk-image-create centos7 vm local-config dhcp-all-interfaces devuser hpc-env-base hpc-mrsh hpc-slurm -o my-cent7-hpc4 2>hpc4.log 1>&2&
+tail -f hpc4.log
+

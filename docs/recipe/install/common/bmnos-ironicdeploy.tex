@@ -1,0 +1,72 @@
+	Ironic uses deploy images (deploy\_kernel) to bootstrap the provisioning of user images.  This section will create a function to build deploy images. 
+
+	Start by creating a function prepare\_deploy\_image.
+
+% begin_ohpc_run
+% ohpc_validation_newline
+% ohpc_validation_comment function to prepare deploy images
+% ohpc_validation_comment
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) function prepare_deploy_image() {
+\end{lstlisting}
+% end_ohpc_run 
+
+	Check if the user has requested to create images by verifying environment variables chpc\_create\_new\_image, chpc\_image\_deploy\_kernel, and chpc\_image\_deploy\_ramdisk. If the user already supplied images then we will copy images to our common image location and setup environment variables for later use.
+
+% begin_ohpc_run
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)    if [[ ${chpc_create_new_image} -ne 1 ]] && [[ -s $chpc_image_deploy_kernel ]] && \
+[ctrlr](*\#*)     [[ -s $chpc_image_deploy_ramdisk ]]; then
+[ctrlr](*\#*)        # need to create an image, image is provided by user
+[ctrlr](*\#*)        echo "Skipping cloud deploy-image build, image provided:"
+[ctrlr](*\#*)        echo "Deploy ramdisk Image:$chpc_image_deploy_ramdisk"
+[ctrlr](*\#*)        # Store Images file
+[ctrlr](*\#*)        CHPC_IMAGE_DEST=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_deploy_kernel)
+[ctrlr](*\#*)           if [[ ! -e $CHPC_IMAGE_DEST ]]; then
+[ctrlr](*\#*)           sudo cp -f $chpc_image_deploy_kernel $CHPC_CLOUD_IMAGE_PATH/
+[ctrlr](*\#*)        fi
+[ctrlr](*\#*)        chpc_image_deploy_kernel=$CHPC_IMAGE_DEST
+[ctrlr](*\#*)        CHPC_IMAGE_DEST=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_deploy_ramdisk)
+[ctrlr](*\#*)        if [[ ! -e $CHPC_IMAGE_DEST ]]; then
+[ctrlr](*\#*)           sudo cp -f $chpc_image_deploy_ramdisk $CHPC_CLOUD_IMAGE_PATH/
+[ctrlr](*\#*)        fi
+[ctrlr](*\#*)        chpc_image_deploy_ramdisk=$CHPC_IMAGE_DEST
+[ctrlr](*\#*)    else
+\end{lstlisting}
+% end_ohpc_run
+
+	If the user has not provided an image, or image set, then build the images.
+
+% begin_ohpc_run
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)        echo "Building new Cloud Deploy Image"
+[ctrlr](*\#*)        echo "====================================================================="
+[ctrlr](*\#*)        echo "=== Preparing cloud-hpc deploy images for ironic====================="
+[ctrlr](*\#*)        echo "====================================================================="
+[ctrlr](*\#*)        # prepare deploy images
+[ctrlr](*\#*)        # Install dib if it is not already installed
+[ctrlr](*\#*)        setup_dib
+[ctrlr](*\#*)        #  Install git if it is not already installed
+[ctrlr](*\#*)        yum -y install git
+[ctrlr](*\#*)        # make sure to get ironic component from stable newton release
+[ctrlr](*\#*)        export DIB_REPOREF_ironic_agent=stable/ocata
+[ctrlr](*\#*)        disk-image-create ironic-agent centos7 -o icloud-hpc-deploy-c7
+[ctrlr](*\#*)        echo "====================================================================="
+[ctrlr](*\#*)        echo "=== cloud-hpc deploy images Complete ================================"
+[ctrlr](*\#*)        echo "====================================================================="
+[ctrlr](*\#*)        chpc_image_deploy_kernel="$( realpath icloud-hpc-deploy-c7.kernel)"
+[ctrlr](*\#*)        chpc_image_deploy_ramdisk="$( realpath icloud-hpc-deploy-c7.initramfs)"
+[ctrlr](*\#*)        # Store Images file
+[ctrlr](*\#*)        mkdir -p $CHPC_CLOUD_IMAGE_PATH/
+[ctrlr](*\#*)        sudo mv -f $chpc_image_deploy_kernel $CHPC_CLOUD_IMAGE_PATH/
+[ctrlr](*\#*)        chpc_image_deploy_kernel=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_deploy_kernel)
+[ctrlr](*\#*)        sudo mv -f $chpc_image_deploy_ramdisk $CHPC_CLOUD_IMAGE_PATH/
+[ctrlr](*\#*)        chpc_image_deploy_ramdisk=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_deploy_ramdisk)
+[ctrlr](*\#*)     fi
+[ctrlr](*\#*) } # end of function
+\end{lstlisting}
+
+% end_ohpc_run 
+
+
+

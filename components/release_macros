@@ -1,0 +1,3 @@
+
+%global CHPC_RELEASE    0.6
+%global CHPC_VERSION    0.1

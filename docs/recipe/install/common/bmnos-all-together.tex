@@ -1,0 +1,73 @@
+	We created a helper function. Call these functions in order to generate images for the "sms node" and "compute node".
+
+% begin_ohpc_run
+% ohpc_validation_newline
+%% ohpc_validation_comment #   XFILEX chpc_prepare_image
+% ohpc_validation_comment Build HPC user image
+% ohpc_validation_comment 
+%% Next line will only appear in documentation
+
+	Add these print banners to start image building for your scripting to provide progress indicator for your install.
+
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[ctrlr](*\#*) echo "########################################################################"
+[ctrlr](*\#*) echo "########################### Starting SMS Image   ###########################"
+[ctrlr](*\#*) echo "########################################################################"
+\end{lstlisting}
+%% Next line will only appear in documentation
+
+	Prepare the sms node image by calling the function 'prepare\_image\_sms'.
+
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[ctrlr](*\#*) prepare_sms_image
+\end{lstlisting}
+
+%% Next line will only appear in documentation
+
+	Print banner to indicate end of the sms node image creation.
+
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[ctrlr](*\#*) echo $chpc_image_sms
+[ctrlr](*\#*) echo "########################################################################"
+[ctrlr](*\#*) echo "########################### sms image is done ##########################"
+[ctrlr](*\#*) echo "########################################################################"
+\end{lstlisting}
+%% Next line will only appear in documentation
+	Prepare the compute node image by calling the function 'prepare\_user\_image'.
+
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[ctrlr](*\#*) prepare_user_image
+\end{lstlisting}
+
+%% Next line will only appear in documentation
+	Print banner to indicate end of the user image creation.
+	
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[ctrlr](*\#*) echo $chpc_image_user
+[ctrlr](*\#*) echo "########################################################################"
+[ctrlr](*\#*) echo "########################## user image is done ##########################"
+[ctrlr](*\#*) echo "########################################################################"
+\end{lstlisting}
+
+%% Next line will only appear in documentation
+	
+	Prepare the deploy images for ironic provisioning .
+
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[ctrlr](*\#*) prepare_deploy_image
+\end{lstlisting}
+
+%% Next line will only appear in documentation
+	
+	Print banner to indicate end of the deploy image creation.
+
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[ctrlr](*\#*) echo $chpc_image_deploy_kernel
+[ctrlr](*\#*) echo $chpc_image_deploy_ramdisk
+[ctrlr](*\#*) echo "########################################################################"
+[ctrlr](*\#*) echo "######################### deploy image is done #########################"
+[ctrlr](*\#*) echo "########################################################################"
+\end{lstlisting}
+% end_ohpc_run
+
+

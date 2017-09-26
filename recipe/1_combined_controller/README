@@ -1,0 +1,45 @@
+This directory "hpc/recipe/1_combined_controller" maintains the recipes for use
+case 1, where the OpenStack* controller node and HPC head node are the same 
+physical node in a cloud system.
+Below are the scripts called to create the environment for use case 1:
+
+file: set_os_hpc
+================
+This is the script to setup HPC in OpenStack* Cloud. This script is called by 
+setup_cloud_hpc.sh if user provides a "-u=1" input to it. To perform the job it 
+execute other scripts.
+
+file: prepare_cloud_init
+======================
+This sripts generates cloudinit script (chpcInit), which is supplied to Nova to
+boot the baremetal nodes.
+
+file: prepare_chpc_image
+========================
+This generates HPC images for provisioning bare metal cloud nodes. It generates 
+3 images
+     Two deploy images for ironic to use 
+         1. icloud-hpc-deploy-c7.kernel
+         2. icloud-hpc-deply-c7.initramfs
+     One user image
+         3. icloud-hpc-cent7.qcow2
+		 
+file: prepare_chpc_openstack
+============================
+This script prepares nova, ironic for baremetal provisioning, installs and 
+configure pxe boot, pxe-impmi driver for ironic, and enable cloud init for 
+baremetal nodes.
+
+File: deploy_chpc_openstack
+===========================
+This script deploy baremetal nodes in an OpenStack* using nova*, ironic*, neutron* 
+and glance* by using cloudinit* recipe (prepare under prepare_cloudInit) and HPC
+images (prepared by prepare_chpc_image).
+
+file: update_cnodes_to_sms
+==========================
+This script perform the post boot configuration including updating SLURM* 
+resource manager for new cloud node
+
+Note:
+* Other names and brands may be claimed as the property of others.

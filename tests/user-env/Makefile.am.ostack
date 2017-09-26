@@ -1,0 +1,19 @@
+TESTS = init.sh
+
+TESTS  += mem_limits
+if HPC_OSTACK_ENABLED
+TESTS  += pdsh-ostack
+else
+TESTS  += pdsh
+endif
+TESTS  += ompi_info
+
+if SLURM_ENABLED
+TESTS  += munge
+TESTS  += sacct
+TESTS  += sinfo
+endif
+
+if PBS_ENABLED
+TESTS  += pbsaccounting
+endif

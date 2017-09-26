@@ -1,0 +1,157 @@
+	The cloud-init script for the SMS node is different than the compute node. The SMS node, when instantiated within OpenStack, serves as head node for HPC-as-a-Service, and hosts all services as a SMS node in an independent HPC cluster. This will host the server side of applications, the resource manager, and share users. For more detail on SMS node functionality please refer to OpenHPC documentation http://www.openhpc.community/downloads/.
+
+	In this recipe, we will prepare a cloud-init template script for the SMS node, which then is updated with compute node IP, NTP server, and other environmental variables, just before provisioning. 
+
+	Create an empty chpc\_init file and open it for editing. You can also modify the existing template. Start editing by adding environment variable, which will be updated later, just before provisioning.
+
+% ohpc_validation_comment # FILE: chpc_sms_init
+% begin_ohpc_run
+% ohpc_validation_newline
+% ohpc_validation_comment #   PFILEP
+% ohpc_command #!/bin/bash
+
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) #Ensure the executing shell is in the same directory as the script.
+[ctrlr](*\#*) SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P && echo x)"
+[ctrlr](*\#*) SCRIPTDIR="${SCRIPTDIR%x}"
+[ctrlr](*\#*) cd $SCRIPTDIR
+[ctrlr](*\#*) # Get the compute node prefix and number of compute nodes
+[ctrlr](*\#*) cnodename_prefix=<update_cnodename_prefix>
+[ctrlr](*\#*) num_ccomputes=<update_num_ccomputes>
+[ctrlr](*\#*) ntp_server=<update_ntp_server>
+[ctrlr](*\#*) sms_name=<update_sms_name>
+[ctrlr](*\#*) logger "chpcInit: Entered chpcInit"
+
+\end{lstlisting} 
+ % end_ohpc_run
+
+	Now, setup "nfs" share for cloud-init and files you want to send to compute nodes.
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) # setup cloudinit directory
+[ctrlr](*\#*) chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
+[ctrlr](*\#*) # create directory if it is not present
+[ctrlr](*\#*) mkdir -p $chpcInitPath
+[ctrlr](*\#*) chmod 700 $chpcInitPath
+[ctrlr](*\#*) # Copy public ssh key to shared drive
+[ctrlr](*\#*) _ssh_path=/root/.ssh
+[ctrlr](*\#*) if [ ! -e "$_ssh_path/hpcasservice" ]; then
+[ctrlr](*\#*) 
+[ctrlr](*\#*) 	if [ ! -d "$_ssh_path" ]; then
+[ctrlr](*\#*) 		install -d -m 700 $_ssh_path
+[ctrlr](*\#*) 	fi
+[ctrlr](*\#*) 	ssh-keygen -t dsa -f $_ssh_path/hpcasservice -N '' -C "HPC Cluster key" > /dev/null 2>&1
+[ctrlr](*\#*) 	cat $_ssh_path/hpcasservice.pub >> $_ssh_path/authorized_keys
+[ctrlr](*\#*) 	chmod 0600 $_ssh_path/authorized_keys
+[ctrlr](*\#*) fi
+[ctrlr](*\#*) 	#update config
+[ctrlr](*\#*) if [ ! -e "$_ssh_path/config" ]; then
+[ctrlr](*\#*) 	echo "Host *" > $_ssh_path/config
+[ctrlr](*\#*) 	echo "    IdentityFile ~/.ssh/hpcasservice" >> $_ssh_path/config
+[ctrlr](*\#*) 	echo "    StrictHostKeyChecking=no" >> $_ssh_path/config
+[ctrlr](*\#*) fi
+[ctrlr](*\#*) cp -fpr $_ssh_path/authorized_keys $chpcInitPath
+
+\end{lstlisting} 
+ % end_ohpc_run
+
+	Share "/home, "/opt/ohpc/pub", and "/opt/ohpc/admin/cloud\_hpc\_initi" over "nfs"
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) # export CloudInit Path to nfs share
+[ctrlr](*\#*) cat /etc/exports | grep "$chpcInitPath"
+[ctrlr](*\#*) chpcInitPath_exported=$?
+[ctrlr](*\#*) 
+[ctrlr](*\#*) if [ "${chpcInitPath_exported}" -ne "0" ]; then
+[ctrlr](*\#*)    echo "$chpcInitPath *(rw,no_subtree_check,no_root_squash)" >> /etc/exports
+[ctrlr](*\#*) fi
+[ctrlr](*\#*) # share /home from SMS node
+[ctrlr](*\#*) if ! grep "^/home" /etc/exports; then
+[ctrlr](*\#*)     echo "/home *(rw,no_subtree_check,fsid=10,no_root_squash)" >> /etc/exports
+[ctrlr](*\#*) fi
+[ctrlr](*\#*) # share /opt/ from SMS node
+[ctrlr](*\#*) if ! grep "^/opt/ohpc/pub" /etc/exports; then
+[ctrlr](*\#*)     echo "/opt/ohpc/pub *(ro,no_subtree_check,fsid=11)" >> /etc/exports
+[ctrlr](*\#*) fi
+[ctrlr](*\#*) exportfs -a
+[ctrlr](*\#*) # Restart nfs
+[ctrlr](*\#*) systemctl restart nfs
+[ctrlr](*\#*) systemctl enable nfs-server
+[ctrlr](*\#*) logger "chpcInit: nfs configuration complete, updating remaining HPC configuration" 
+\end{lstlisting} 
+ % end_ohpc_run
+
+	Configure ntp server on the SMS node, as per the site setting.
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) # configure NTP
+[ctrlr](*\#*) systemctl enable ntpd
+[ctrlr](*\#*) if [[ ! -z "$ntp_server" ]]; then
+[ctrlr](*\#*)    echo "server ${ntp_server}" >> /etc/ntp.conf
+[ctrlr](*\#*) fi
+[ctrlr](*\#*) systemctl restart ntpd
+[ctrlr](*\#*) systemctl enable ntpd.service
+[ctrlr](*\#*) # time sync
+[ctrlr](*\#*) ntpstat
+[ctrlr](*\#*) logger "chpcInit:ntp configuration done"
+\end{lstlisting} 
+ % end_ohpc_run
+
+	Distribute munge keys to compute nodes, and then update the resource manager with HPC compute nodes.
+
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) # Update Resource manager configuration (*\#*)(*\#*)(*\#*)
+[ctrlr](*\#*) # Update basic SLURM configuration at SMS node
+[ctrlr](*\#*)
+[ctrlr](*\#*) perl -pi -e "s/ControlMachine=\S+/ControlMachine=${sms_name}/" \
+[ctrlr](*\#*)    /etc/slurm/slurm.conf
+[ctrlr](*\#*) perl -pi -e \
+[ctrlr](*\#*) "s/^NodeName=(\S+)/NodeName=${cnodename_prefix}[1-${num_ccomputes}]/" \
+[ctrlr](*\#*)          /etc/slurm/slurm.conf
+[ctrlr](*\#*) perl -pi -e "s/^PartitionName=normal \
+[ctrlr](*\#*) Nodes=(\S+)/PartitionName=normal Nodes=${cnodename_prefix}[1-${num_ccomputes}]/" \
+[ctrlr](*\#*) /etc/slurm/slurm.conf
+[ctrlr](*\#*)
+[ctrlr](*\#*) # copy SLURM file from SMS node to Cloud Compute Nodes
+[ctrlr](*\#*) cp -fpr -L /etc/slurm/slurm.conf $chpcInitPath
+[ctrlr](*\#*) cp -fpr -L /etc/pam.d/slurm $chpcInitPath
+[ctrlr](*\#*) cp -fpr -L /etc/munge/munge.key $chpcInitPath
+[ctrlr](*\#*) # Start SLURM and munge 
+[ctrlr](*\#*) systemctl enable munge
+[ctrlr](*\#*) systemctl restart munge
+[ctrlr](*\#*) systemctl enable slurmctld
+[ctrlr](*\#*) systemctl restart slurmctld
+[ctrlr](*\#*) #systemctl enable slurmd
+[ctrlr](*\#*) #systemctl restart slurmd
+[ctrlr](*\#*) logger "chpcInit:slurm configuration done"
+\end{lstlisting} 
+ % end_ohpc_run
+
+
+	One last step is to make sure ssh is working and enabled on the compute nodes. Updateand verify the permissions of ssh.
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) #Change file permissions in /etc/ssh to fix ssh into compute nodes
+[ctrlr](*\#*) chmod 0600 /etc/ssh/ssh_host_*_key
+\end{lstlisting} 
+ % end_ohpc_run
+
+	Save the file with name chpc\_sms\_cinit". This file will be used to create the sms node instance.
+

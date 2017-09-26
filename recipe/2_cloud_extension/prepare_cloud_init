@@ -1,0 +1,89 @@
+#!bin/bash
+# 
+if [[ "${chpc_base}" == "orch" ]]; then
+	echo "CloudInit: Intel Orchestrator"
+        chpcInitPath=/opt/intel/hpc-orchestrator/admin/cloud_hpc_init
+else
+	echo "CloudInit: OpenHPC - ${chpc_base}"
+        chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
+fi
+
+# Step 1: Update slurm configuration at HPC head node
+# ---------------------------------------------------
+# We don't create a separate partition as of now, instead just extend the HPC
+# cluster partition with cloud provisioned compute nodes
+
+# perl -pi -e "s/Nodes=*/Nodes=${cnodename_prefix}[1-${num_ccomputes}],/" /etc/slurm/slurm.conf
+echo "NodeName=${cnodename_prefix}[1-${num_ccomputes}] Sockets=${SOCKETS} CoresPerSocket=${CORES_PER_SOCKET} ThreadsPerCore=${THREADS_PER_CORE} State=UNKNOWN" >> /etc/slurm/slurm.conf
+
+# Uncomment the following line if persistent cloud extended partition is needed
+# and comment the dynamic update of slurm partition using scontrol in 2_CloudExtension/update_cnodes_to_sms
+
+#perl -pi -e "s/^PartitionName=normal Nodes=(\S+)/PartitionName=normal Nodes=${nodename_prefix}[1-${num_computes}],${cnodename_prefix}[1-${num_ccomputes}]/" /etc/slurm/slurm.conf
+
+# Copy slurm configuration file and /etc/hosts from HPC head node to HPC cluste-
+# -r's compute nodes.
+for ((i=0; i<$num_computes; i++)) ; do
+	scp /etc/slurm/slurm.conf ${c_name[$i]}:/etc/slurm/slurm.conf
+        # This step is needed in order for the slurmd on HPC cluster compute 
+        # nodes to resolve the cloud compute node names while scheduling jobs. 
+        # At this point /etc/hosts would have been populated with the cloud co-
+        # -mpute node name resolution
+        scp /etc/hosts ${c_name[$i]}:/etc/hosts
+done
+
+# Restart SLURM CTL on HPC head node to pick up the above change
+systemctl restart slurmctld
+
+# Step 2: Prepare Cloud init directory
+# ------------------------------------
+# Make following features of HPC head node available on cloud provisioned nodes,
+#   - User accounts
+#   - Slurm configurations
+#   - Munge keys
+#   - Hostnames
+#
+#  a. Copy a template cloud init script to $chpcInitPath and customize it with
+#     this HPC head node information.
+#
+#  b. Copies files from HPC head node to directory $chpcInitPath 
+#
+#  c. NFS share $chpcInitPath
+#     
+#  Later when cloud provisioned compute nodes execute the customized cloud init
+#  script prepared in step[a], these files will be copied onto them by NFS mou-
+#  -nting the directory $chpcInitPath and the corresponding files on them will
+#  be updated.
+#
+
+# TBD: if directory exists then mv to Old directory.
+mkdir -p $chpcInitPath
+
+#copy Cloud HPC files to temp working directory
+sudo cp -fr -L ${SCRIPTDIR}/cloud_hpc_init/${chpc_base}/* $chpcInitPath/
+export chpcInit=$chpcInitPath/chpc_init
+
+#update sms_ip in cloudInit scripts
+sudo sed -i -e "s/<sms_ip>/${sms_ip}/g" $chpcInit
+
+# Copy files from HPC head node
+sudo cp -fr -L /etc/slurm/slurm.conf $chpcInitPath
+sudo cp -fr /etc/passwd $chpcInitPath
+sudo cp -fr /etc/shadow $chpcInitPath
+sudo cp -fr /etc/group $chpcInitPath
+sudo cp -fr /etc/slurm/slurm.conf $chpcInitPath
+sudo cp -fr /etc/pam.d/slurm $chpcInitPath
+sudo cp -fr /etc/munge/munge.key $chpcInitPath
+sudo cp -fr /etc/hosts $chpcInitPath
+
+# Add CloudInit Path to NFS share on HPC head node
+cat /etc/exports | grep "$chpcInitPath"
+chpcInitPath_exported=$?
+
+if [ "${chpcInitPath_exported}" -ne "0" ]; then
+    echo "$chpcInitPath *(ro,no_subtree_check,no_root_squash)" >> /etc/exports
+    exportfs -a
+    systemctl restart nfs
+    systemctl enable nfs-server
+fi
+

@@ -1,0 +1,15 @@
+#!/bin/bash
+# Update chpc_sms_init or prepare_cloud_init  with similar informoation from recipe for use case 2
+
+# Verify nodes (head and compute) are up and running before completion of next lines. Add error check
+
+# rerun cloud-init script before updating resource manager
+for ((i=0; i < ${num_ccomputes}; i++)); do
+   cn_name=${cnodename_prefix}$((i+1))
+   ssh $cn_name /usr/bin/cloud-init single -n cc_scripts_user
+done
+#on Head node, start slurm
+sleep 5
+ssh $sms_ip scontrol update nodename=cc[1-${num_ccomputes}] state=idle
+ssh $sms_ip sinfo
+

@@ -1,0 +1,56 @@
+	In the previous section we created templates for cloud-init for the HPC head node and HPC compute nodes. We need to update these templates with user defined inputs like IP Address, node names, and other information. Once completed, the cloud-init script is ready to deploy with OpenStack Nova.
+
+	Copy the cloud-init template to the working folder {\em /opt/ohpc/admin/cloud\_hpc\_init }
+
+% begin_ohpc_run
+% ohpc_validation_newline
+% ohpc_validation_comment ## ZFILEZ
+% ohpc_validation_comment ## XFILEX
+% ohpc_command #!/bin/bash
+% ohpc_validation_comment # FILE: prepare_cloud_init
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
+[ctrlr](*\#*) # if directory exists then mv to old directory. 
+[ctrlr](*\#*) mkdir -p $chpcInitPath
+[ctrlr](*\#*) #copy Cloud HPC files to temp working directory
+[ctrlr](*\#*) sudo cp -fr -L ${SCRIPTDIR}/cloud_hpc_init/${chpc_base}/* $chpcInitPath
+[ctrlr](*\#*) export chpcInit=$chpcInitPath/chpc_init
+[ctrlr](*\#*) export chpcSMSInit=$chpcInitPath/chpc_sms_init
+\end{lstlisting}
+% end_ohpc_run
+
+	Update sms\_ip in the compute node cloud-init template with the SMS node IP. 
+	
+% begin_ohpc_run
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) sudo sed -i -e "s/<sms_ip>/${sms_ip}/g" $chpcInit
+\end{lstlisting}
+% end_ohpc_run
+
+	Update the SMS head node cloud-init template with the compute name prefix, as defined by the user.
+
+% begin_ohpc_run
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) sudo sed -i -e "s/<update_cnodename_prefix>/${cnodename_prefix}/g" $chpcSMSInit
+[ctrlr](*\#*) sudo sed -i -e "s/<update_num_ccomputes>/${num_ccomputes}/g" $chpcSMSInit
+[ctrlr](*\#*) # Update hostname of HPC head node & NTP server information
+[ctrlr](*\#*) sudo sed -i -e "s/<update_ntp_server>/${controller_ip}/g" $chpcSMSInit
+[ctrlr](*\#*) sudo sed -i -e "s/<update_sms_name>/${sms_name}/g" $chpcSMSInit
+\end{lstlisting}
+% end_ohpc_run
+
+	Optionally, if the user enabled mrsh or clustershell, then update cloud-init accordingly.
+
+% begin_ohpc_run
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) if [[ ${enable_mrsh} -eq 1 ]];then
+[ctrlr](*\#*)    # update mrsh for sms node
+[ctrlr](*\#*)    cat $CHPC_SCRIPTDIR/sms/update_mrsh >> $chpcSMSInit
+[ctrlr](*\#*) fi
+[ctrlr](*\#*) if [[ ${enable_clustershell} -eq 1 ]];then
+[ctrlr](*\#*)    # update clustershell for sms node
+[ctrlr](*\#*)    cat $CHPC_SCRIPTDIR/sms/update_clustershell >> $chpcSMSInit
+[ctrlr](*\#*) fi
+\end{lstlisting}
+% end_ophc_run

@@ -1,0 +1,90 @@
+	To build compute node images, we need to install the client packages of HPC components. This is accomplished by setting the image type to "compute". Note the default image type in HPC elements is "compute". We will then instruct disk-image-builder to install client HPC packages one by one. All of these action will be completed in the shell function prepare\_user\_images.
+
+% begin_ohpc_run
+% ohpc_validation_newline
+% ohpc_validation_comment function to prepare compute node
+% ohpc_validation_comment
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) function prepare_user_image() {
+
+\end{lstlisting} 
+
+	Check if the user has already supplied compute node images by checking the environment variables:
+	
+		 chpc\_create\_new\_image and chpc\_image\_user.
+		  
+	If the image is supplied then we will copy that image to the OHPC image location and setup our environemnt variable to point to the image location.
+% begin_ohpc_run
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)    if [[ ${chpc_create_new_image} -ne 1 ]] && [[ -s $chpc_image_user ]]; then
+[ctrlr](*\#*)       # No need to create an image, image is provided by the user
+[ctrlr](*\#*)       echo -n "Skipping cloud user-image build, image provided:"
+[ctrlr](*\#*)       echo "$chpc_image_user"
+[ctrlr](*\#*)       CHPC_IMAGE_DEST=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_user)
+[ctrlr](*\#*)       if [[ ! -e $CHPC_IMAGE_DEST ]]; then
+[ctrlr](*\#*)          sudo cp $chpc_image_user $CHPC_CLOUD_IMAGE_PATH
+[ctrlr](*\#*)       fi
+[ctrlr](*\#*)       chpc_image_user=$CHPC_IMAGE_DEST
+[ctrlr](*\#*)    else
+[ctrlr](*\#*)    
+
+\end{lstlisting} 
+
+% end_ohpc_run
+
+	Create a new image, if one is not supplied by a user. 	
+	
+	Set image type to "compute".
+
+% begin_ohpc_run
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)       setup_dib_hpc_base
+[ctrlr](*\#*)       export DIB_HPC_IMAGE_TYPE=compute
+\end{lstlisting} 
+% end_ohpc_run
+
+	Enable the HPC resource manager for the compute nodes.
+
+% begin_ohpc_run
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)       DIB_HPC_ELEMENTS+=" hpc-slurm"
+\end{lstlisting} 
+ % end_ohpc_run
+
+	Add optional OpenHPC components.
+
+% begin_ohpc_run
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)       if [[ ${enable_mrsh} -eq 1 ]];then
+[ctrlr](*\#*)           DIB_HPC_ELEMENTS+=" hpc-mrsh"
+[ctrlr](*\#*)       fi
+\end{lstlisting} 
+ % end_ohpc_run
+
+	Create a compute node image with the following elements: local-config, dhcp-all-interfaces, devuser, selinux-permissive and all HPC specific elements. Element local-config copies your local environment into the image, which is the local users, their password, and permissions. Element devuser will create a new user specified by the environment variable "DIB\_DEV\_USER\_USERNAME". We will name the image {\em  icloud-hpc-cent7 }
+
+% begin_ohpc_run
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)       disk-image-create centos7 vm local-config dhcp-all-interfaces \
+[ctrlr](*\#*)         devuser selinux-permissive $DIB_HPC_ELEMENTS -o icloud-hpc-cent7
+\end{lstlisting} 
+ % end_ohpc_run 
+
+
+	It will take awhile to build an image. Once the image is built, copy it to the standard OpenHPC path.
+
+% begin_ohpc_run
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)       chpc_image_user="$( realpath icloud-hpc-cent7.qcow2)"
+[ctrlr](*\#*)       mkdir -p $CHPC_CLOUD_IMAGE_PATH
+[ctrlr](*\#*)       mv -f $chpc_image_user $CHPC_CLOUD_IMAGE_PATH
+[ctrlr](*\#*)       chpc_image_user=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_user)
+[ctrlr](*\#*)     fi # end of else of or if
+[ctrlr](*\#*) } # end of function
+\end{lstlisting} 
+ % end_ohpc_run
+

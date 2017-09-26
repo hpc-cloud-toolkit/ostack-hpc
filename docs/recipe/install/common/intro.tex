@@ -1,0 +1,22 @@
+The term "HPC as a Service" refers to an on demand instantiation of an HPC service in a cloud environment. This guide presents a simple "HPC cluster" instantiation procedure on an existing OpenStack (Mitaka) system. "HPC as a service" relies on two main principals to instantiate the HPC service:
+
+
+\begin{list}{}
+	\item 	1. Providing pre-built OS images for compute nodes with HPC optimized software.
+	\item   2. Use of cloud-init to configure and tune HPC services.
+	\item   
+	 
+\end{list}
+	
+This document provides a simple guide to build HPC optimized OS images, prepare cloud-init recipes and finally instantiate a fully functional HPC System using those images and cloud-init. 
+
+Chapter 2-5 of this documents are dedicated to manual installation and configuration of HPC in an OpenStack based cloud. All the manual instructions mentioned in these chapters (2-5) are captured into an automated recipe which is installed at "/opt/ohpc/pub/doc/recipes/centos7/x86\_64/openstack/SLURM" location. This generated recipe is used for continuous integration testing. 
+Appendix A provides instruction on how to use auto generated recipe. For first time users, it is recommended to use auto generated recipe and then modify according to their site requirement.
+
+Recipes will instantiate a baremetal HPC head node (a.k.a. sms node) and baremetal HPC compute nodes (a.k.a CN) using pre-configured OpenStack images. The terms "head" and "sms" are used interchangeably in this guide.
+
+OS Images are built using components from the OpenHPC software stack. OpenHPC represents an aggregation of a number of common ingredients required to deploy and manage an HPC Linux* cluster including resource management, I/O clients, development tools, and a variety of scientific libraries. These packages have been pre-built with HPC integration in mind using a mix of open-source components. The documentation herein is intended to be reasonably generic,
+but uses the underlying motivation of a small, 4-node state-full cluster installation to define a step-by-step process. 
+
+Several optional customizations are included and the intent is that these collective instructions can be modified as needed for local site customizations.
+

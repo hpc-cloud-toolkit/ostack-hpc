@@ -1,0 +1,246 @@
+	In this section we will create a generic configuration required for baremetal provisioning. We will use ironic as a provisioner and nova as a scheduler. {\em Note: if you already have this configured, skip ahead to the next section. }
+	Have SELinux in permissive mode. If you need SELinux enforcing, you will need to configure your SELinux policy accordingly. The scope of this document does not cover SELinux configuration.
+
+	Create baremetal admin and baremetal observer roles, and restart the ironic API.
+
+
+% begin_ohpc_run
+% ohpc_validation_comment # XFILEX
+% ohpc_command #!/bin/bash
+% ohpc_validation_comment # FILE: prepare_chpc_openstack
+% ohpc_validation_newline
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) #Set SELinux to permissive
+[ctrlr](*\#*) setenforce 0
+\end{lstlisting}
+% end_ohpc_run
+
+	Again, we're assuming your credentials are stored in file 'keystonerc\_admin'.
+
+% begin_ohpc_run
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) #Source the keystonerc_admin file
+[ctrlr](*\#*) source ${HOME}/keystonerc_admin
+
+[ctrlr](*\#*) openstack role list | grep -i baremetal_admin
+[ctrlr](*\#*) role_exists=$?
+[ctrlr](*\#*) if [ "${role_exists}" -ne "0" ]; then 
+[ctrlr](*\#*)     openstack role create baremetal_admin
+[ctrlr](*\#*) fi
+[ctrlr](*\#*) 
+[ctrlr](*\#*) openstack role list | grep -i baremetal_observer 
+[ctrlr](*\#*) role_exists=$?
+[ctrlr](*\#*) if [ "${role_exists}" -ne "0" ]; then
+[ctrlr](*\#*)     openstack role create baremetal_observer
+[ctrlr](*\#*) fi
+[ctrlr](*\#*) systemctl restart openstack-ironic-api
+\end{lstlisting} 
+ % end_ohpc_run
+
+Install tftp and other packages required for pxe boot via ironic.
+Ensure the utilities for baremetal are installed.
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) yum install -y tftp-server syslinux-tftpboot xinetd
+\end{lstlisting} 
+ % end_ohpc_run \n % end_ohpc_run
+
+Make the directory for tftp and give it the ironic owner.
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) mkdir -p /tftpboot
+[ctrlr](*\#*) chown -R ironic /tftpboot
+\end{lstlisting} 
+ % end_ohpc_run \n % end_ohpc_run
+
+Configure the tfpt server.
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) #Configure tftp 
+[ctrlr](*\#*) #Configure /etc/xinet.d/tftp
+[ctrlr](*\#*) echo "service tftp" > /etc/xinetd.d/tftp
+[ctrlr](*\#*) echo "{" >> /etc/xinetd.d/tftp
+[ctrlr](*\#*) echo "  protocol        = udp" >> /etc/xinetd.d/tftp
+[ctrlr](*\#*) echo "  port            = 69" >> /etc/xinetd.d/tftp
+[ctrlr](*\#*) echo "  socket_type     = dgram" >> /etc/xinetd.d/tftp
+[ctrlr](*\#*) echo "  wait            = yes" >> /etc/xinetd.d/tftp
+[ctrlr](*\#*) echo "  user            = root" >> /etc/xinetd.d/tftp
+[ctrlr](*\#*) echo "  server          = /usr/sbin/in.tftpd" >> /etc/xinetd.d/tftp
+[ctrlr](*\#*) echo "  server_args     = -v -v -v -v -v --map-file /tftpboot/map-file /tftpboot" >> /etc/xinetd.d/tftp
+[ctrlr](*\#*) echo "  disable         = no" >> /etc/xinetd.d/tftp
+[ctrlr](*\#*) echo "  #This is a workaround for Fedora, where TFTP will listen only on" >> /etc/xinetd.d/tftp
+[ctrlr](*\#*) echo "  # IPv6 endpoint, if IPv4 flag is not used." >> /etc/xinetd.d/tftp
+[ctrlr](*\#*) echo "  flags           = IPv4" >> /etc/xinetd.d/tftp
+[ctrlr](*\#*) echo "}" >> /etc/xinetd.d/tftp
+
+(*\#*)Restart the xinetd service
+[ctrlr](*\#*) systemctl restart xinetd
+    
+(*\#*)Copy the PXE linux files to the tftpboot directory we created
+[ctrlr](*\#*) cp /var/lib/tftpboot/pxelinux.0 /tftpboot
+[ctrlr](*\#*) cp /var/lib/tftpboot/chain.c32 /tftpboot
+    
+(*\#*)Generate a map file for the PXE files
+[ctrlr](*\#*) echo 're ^(/tftpboot/) /tftpboot/\2' > /tftpboot/map-file
+[ctrlr](*\#*) echo 're ^/tftpboot/ /tftpboot/' >> /tftpboot/map-file
+[ctrlr](*\#*) echo 're ^(^/) /tftpboot/\1' >> /tftpboot/map-file
+[ctrlr](*\#*) echo 're ^([^/]) /tftpboot/\1' >> /tftpboot/map-file
+\end{lstlisting} 
+ % end_ohpc_run \n % end_ohpc_run
+
+
+	Update the Ironic configuration with tftp information. Update the controller IP address for tftp server in the ironic configuration.
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) sed --in-place "s|#tftp_server.*|tftp_server=${controller_ip}|" /etc/ironic/ironic.conf
+\end{lstlisting} 
+ % end_ohpc_run
+
+	Update other additional tftp settings in the ironic configuration file:
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) sed --in-place "s|#tftp_root.*|tftp_root=/tftpboot|" /etc/ironic/ironic.conf
+[ctrlr](*\#*) sed --in-place "s|#ip_version.*|ip_version=4|" /etc/ironic/ironic.conf
+[ctrlr](*\#*) sed --in-place "s|#automated_clean.*|automated_clean=false|" /etc/ironic/ironic.conf
+\end{lstlisting} 
+ % end_ohpc_run
+	In our sample, we will not use the controller node for any compute resources so, let's mark reserved host memory as 0.
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) # mark reserved host memory to 0, since controller host is not used for compute
+[ctrlr](*\#*) sed --in-place "s|reserved_host_memory_mb=512|reserved_host_memory_mb=0|" /etc/nova/nova.conf
+\end{lstlisting} 
+ % end_ohpc_run
+	Now, inform Nova to use Ironic for bare metal provisioning, by configuring nova.conf.
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) 
+[ctrlr](*\#*) # configure nova for baremetal
+[ctrlr](*\#*) # get the nova version to configure different versions 
+[ctrlr](*\#*) nova_version_major=$(nova --version 2>&1 |cut -f1 -d.)
+[ctrlr](*\#*) if [ "${nova_version_major}" == 3 ]; then
+[ctrlr](*\#*)    # mitaka release
+[ctrlr](*\#*)    echo "mitaka"
+[ctrlr](*\#*)    sed --in-place "s|#scheduler_host_subset_size=1|scheduler_host_subset_size=9999999|" /etc/nova/nova.conf
+[ctrlr](*\#*)    sed --in-place "s|#scheduler_use_baremetal_filters=false|scheduler_use_baremetal_filters=true|" /etc/nova/nova.conf
+[ctrlr](*\#*) fi
+[ctrlr](*\#*) if [ "${nova_version_major}" == 7 ]; then
+[ctrlr](*\#*)    # ocata release
+[ctrlr](*\#*)    echo "ocata"
+[ctrlr](*\#*)    if grep -q "^host_subset_size" /etc/nova/nova.conf; then
+[ctrlr](*\#*)       sed --in-place "s|host_subset_size=1|host_subset_size=9999999|" /etc/nova/nova.conf
+[ctrlr](*\#*)    else
+[ctrlr](*\#*)       sed --in-place "s|#host_subset_size=1|host_subset_size=9999999|" /etc/nova/nova.conf
+[ctrlr](*\#*)    fi
+[ctrlr](*\#*)    if ! grep -q "^use_baremetal_filters" /etc/nova/nova.conf; then
+[ctrlr](*\#*)       # Assuming there is a place holder in comments, replace that string
+[ctrlr](*\#*)       sed -in-place  "s|^#use_baremetal_filters.*|use_baremetal_filters=true|" /etc/nova/nova.conf
+[ctrlr](*\#*)    else 
+[ctrlr](*\#*)       sed -in-place  "s|^use_baremetal_filters.*|use_baremetal_filters=true|" /etc/nova/nova.conf
+[ctrlr](*\#*)    fi
+[ctrlr](*\#*) fi
+\end{lstlisting} 
+ % end_ohpc_run
+
+	For cloud-init, we need to enable a meta data server, which is done via neutron configuration.
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) # Enable meta data
+[ctrlr](*\#*) # Edit /etc/neutron/dhcp_agent.ini
+[ctrlr](*\#*) sed --in-place "s|enable_isolated_metadata\ =\ False|enable_isolated_metadata\ \
+[ctrlr](*\#*)      =\ True|" /etc/neutron/dhcp_agent.ini
+[ctrlr](*\#*) sed --in-place "s|#force_metadata\ =\ false|force_metadata\ =\ \True|" /etc/neutron/dhcp_agent.ini
+\end{lstlisting} 
+ % end_ohpc_run
+
+	We will enable an internal DNS server to assign host name to the instances as requested by user. 
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) ######
+[ctrlr](*\#*) # Enable internal dns for hostname resolution, if it already not set
+[ctrlr](*\#*) # manipulating configuration file via shell, alternate is to use openstack-config 
+[ctrlr](*\#*) ######
+[ctrlr](*\#*) # setup dns domain first
+[ctrlr](*\#*) if grep -q "^dns_domain.*openstacklocal$" /etc/neutron/neutron.conf; then
+[ctrlr](*\#*)    sed -in-place  "s|^dns_domain.*|dns_domain = oslocal|" /etc/neutron/neutron.conf
+[ctrlr](*\#*) else
+[ctrlr](*\#*)    if ! grep -q "^dns_domain" /etc/neutron/neutron.conf; then
+[ctrlr](*\#*)        sed -in-place  "s|^#dns_domain = openstacklocal$|dns_domain = oslocal|" \
+[ctrlr](*\#*)          /etc/neutron/neutron.conf
+[ctrlr](*\#*)    fi
+[ctrlr](*\#*) fi
+[ctrlr](*\#*) # configure ml2 dns driver for neutron
+[ctrlr](*\#*) ml2file=/etc/neutron/plugins/ml2/ml2_conf.ini
+[ctrlr](*\#*) if ! grep -q "^extension_drivers" $ml2file; then
+[ctrlr](*\#*)     # Assuming there is a place holder in comments, replace that string
+[ctrlr](*\#*)     sed -in-place  "s|^#extension_drivers.*|extension_drivers = port_security,dns|" $ml2file
+[ctrlr](*\#*) else
+[ctrlr](*\#*)     # Entry is present, check if dns is already present, if not then enable
+[ctrlr](*\#*)     if ! grep "^extension_drivers" $ml2file|grep -q dns; then
+[ctrlr](*\#*)         current_dns=`grep "^extension_drivers" $ml2file`
+[ctrlr](*\#*)         new_dns="$current_dns,dns"
+[ctrlr](*\#*)         sed -in-place  "s|^extension_drivers.*|$new_dns|" $ml2file
+[ctrlr](*\#*)     fi
+[ctrlr](*\#*) fi
+\end{lstlisting} 
+ % end_ohpc_run
+
+	Add physical network network name with which flat networks will be created
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) if ! grep -q "^flat_networks" $ml2file; then
+[ctrlr](*\#*)    # Assuming there is a place holder in comments, replace that string
+[ctrlr](*\#*)    sed -in-place  "s|^#flat_networks.*|flat_networks = physnet1|" $ml2file
+[ctrlr](*\#*) else
+[ctrlr](*\#*)    # Entry is present,update with physnet1 
+[ctrlr](*\#*)    sed -in-place  "s|^flat_networks.*|flat_networks = physnet1|" $ml2file
+[ctrlr](*\#*) fi
+\end{lstlisting} 
+ % end_ohpc_run
+
+	The initial configuration for baremetal provisioning is nearly complete, so let's restart all the services at controller node.
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) systemctl restart neutron-dhcp-agent
+[ctrlr](*\#*) systemctl restart neutron-openvswitch-agent
+[ctrlr](*\#*) systemctl restart neutron-metadata-agent
+[ctrlr](*\#*) systemctl restart neutron-server
+[ctrlr](*\#*) systemctl restart openstack-nova-scheduler
+[ctrlr](*\#*) systemctl restart openstack-nova-compute
+[ctrlr](*\#*) systemctl restart openstack-ironic-conductor
+\end{lstlisting} 
+ % end_ohpc_run

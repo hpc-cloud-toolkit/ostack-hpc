@@ -1,0 +1,14 @@
+# Update mrsh
+# check if it is already configured grep mshell /etc/services will return non-zero, else configure"
+cat /etc/services | grep mshell
+mshell_exists=$?
+if [ "${mshell_exists}" -ne "0" ]; then
+    echo "mshell          21212/tcp                  # mrshd" >> /etc/services
+fi
+cat /etc/services | grep mlogin
+mlogin_exists=$?
+if [ "${mlogin_exists}" -ne "0" ]; then
+    echo "mlogin            541/tcp                  # mrlogind" >> /etc/services
+fi
+
+

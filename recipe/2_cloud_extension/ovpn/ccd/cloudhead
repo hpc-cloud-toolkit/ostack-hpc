@@ -1,0 +1,16 @@
+# VPN client configuration file to push desired configuraiton to vpn client
+# client is identified by certificate name. In our case we created 
+# certificate with name cloudhead for client.
+
+
+# Add HPC System network to cloud head node, so that cloud nodes can access HPC system.
+# This route will be pushed by vpn server to client
+# assuming HPC head node has local subnet on 10.78.6.0/24, so route need to be added to for traffic 
+# to route via VPN tunnel. this line will add the route. cloud compute node need to add additional route, 
+
+iroute 10.78.6.0 255.255.255.248
+# push VPN client IP Address
+# ifconfig-push client_vpn_ip_address server_vpn_ip_address
+# we are using server VPN IP address 192.168.68.1 and client VPN IP 192.168.68.2
+ifconfig-push 192.168.68.2 192.168.68.1
+push "route 192.168.47.0 255.255.255.0"

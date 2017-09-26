@@ -1,0 +1,477 @@
+\documentclass[letterpaper]{article}
+\usepackage{./common/ohpc-doc}
+\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{5}
+
+% Define Base OS and other local macros
+\newcommand{\baseOS}{CentOS7.3}
+\newcommand{\OSRepo}{CentOS\_7.3}
+\newcommand{\OSTree}{CentOS\_7}
+\newcommand{\OSTag}{el7}
+\newcommand{\baseos}{centos7.3}
+\newcommand{\provisioner}{OpenStack}
+\newcommand{\rms}{SLURM}
+\newcommand{\arch}{x86\_64}
+\newcommand{\clean}{yum clean expire-cache}
+\newcommand{\chrootclean}{yum --installroot=\$CHROOT clean expire-cache}
+\newcommand{\install}{yum -y install}
+\newcommand{\chrootinstall}{yum -y --installroot=\$CHROOT install}
+\newcommand{\groupinstall}{yum -y groupinstall}
+\newcommand{\groupchrootinstall}{yum -y --installroot=\$CHROOT groupinstall}
+\newcommand{\upgrade}{yum -y upgrade}
+\newcommand{\chrootupgrade}{yum -y --installroot=\$CHROOT upgrade}
+
+
+
+% boolean for os-specific formatting
+\toggletrue{isCentOS}
+\toggletrue{isCentOS_ww_slurm_x86}
+\toggletrue{isx86}
+
+\begin{document}
+\graphicspath{{common/figures/}}
+\thispagestyle{empty}
+
+% Title Page
+\input{common/title}
+% Disclaimer 
+\input{common/legal} 
+
+\newpage
+\tableofcontents
+\newpage
+
+% Introduction  --------------------------------------------------
+
+\section{Introduction} \label{sec:introduction}
+\input{common/install_header}
+\input{common/intro} 
+
+\input{common/base_edition/edition}
+\input{common/audience}
+\input{common/requirements}
+\input{common/inputs}
+
+% Bare Metal Node Operating System --------------------------------------------
+\clearpage
+% ohpc_validation_comment  #   XFILEX chpc_prepare_image
+\section{Preparing Bare Metal Node Operating System}\label{sec:baremetalprep}
+\input{common/bmnos}
+
+\subsection{Install and Setup diskimage-builder}\label{sec:dib_install}
+\input{common/bmnos-dibinstall}
+
+\newpage
+\subsection{Setup common environment for diskimage-builder}\label{sec:dib_environment}
+\input{common/bmnos-dibenv}
+
+\newpage
+\subsection{Preparing ironic deploy images}\label{sec:ironic_deploy_images}
+\input{common/bmnos-ironicdeploy}
+
+\newpage
+\subsection{Preparing user images for bare metal instances}\label{sec:bare_metal_user_images}
+\input{common/bmnos-userimages}
+
+\subsubsection{Preparing user image for head node OS}\label{sec:head_node_images}
+\input{common/bmnos-headnodeimage}
+
+\subsubsection{Preparing user image for compute node OS}\label{sec:compute_node_images}
+\input{common/bmnos-computenodeimage}
+
+\newpage
+\subsubsection{Putting it all together }\label{sec:compute_node_images_all_together}
+\input{common/bmnos-all-together}
+
+%%\subsection{Introduction to diskimage-builder}\label{sec:din_intro}
+%%\input{common/bmnos-dibintro}
+
+% ------------------------------------------------------------------
+\clearpage
+
+\section{Preparing Cloud-Init} \label{sec:cloud-init_prep}
+\input{common/cloud-init-prep.tex}
+
+
+\subsection{Preparing template for compute node cloud-init} \label{sec:c_i-template_compute_node}
+\input{common/ci-template-compute}
+
+
+\newpage
+\subsection{Preparing template for sms node cloud-init} \label{sec:c_i-template-sms-node}
+\input{common/c_i-template-sms}
+	
+
+\subsection{Optional: Additional cloud-init configuration} \label{sec:c_i-optional}
+
+\input{common/c_i-optional}
+
+\newpage
+\subsection{Configuring overall cloud-init} \label{sec:c_i-config}
+
+\input{common/c_i-config}
+
+
+
+
+\vspace*{-0.15cm}
+\vspace*{-0.50cm}
+
+\clearpage
+\section{Instantiating OpenHPC System in OpenStack Cloud}
+\input{common/instantiate.tex}
+	
+\clearpage
+\subsection{Prepare OpenStack for bare metal provisioning with ironic} \label{sec:o-s_prep-ironic}
+\input{common/o-s_prep-ironic}
+
+\vspace*{-0.15cm}
+\newpage
+\subsection{Instantiate bare metal nodes} \label{sec:instantiate-bare-metal}
+\input{common/inst-bare-metal}
+
+\section{Updating HPC Resource Manager}
+\input{common/update_cnodes_to_sms.tex}
+	
+\newpage
+\section{Appendix}
+\input{common/appendix_AB.tex}
+\input{common/appendix_C.tex}
+\input{common/parent_files_appendix.tex}
+
+	
+% Output support files for recipes 
+% These are files needed to run the default recipes, but not needed in the documentation
+
+% begin_ohpc_run
+% ohpc_validation_comment  # # PFILEP
+% ohpc_validation_comment  # # QFILEQ
+% ohpc_validation_comment  # # XFILEX
+
+% ohpc_command  # FILE: README
+% ohpc_command This directory "hpc/recipe/3_hpc_as_service" maintains the recipes for use
+% ohpc_command case 3. In this case OpenStack provides baremetal nodes and recipe
+% ohpc_command creates one of the bare metal node as HPC head node and create other 
+% ohpc_command  remaining bare metals as HPC compute nodes.
+% ohpc_command it provides recipe to create HPC head node images as well as hpc
+% ohpc_command compute node images.
+% ohpc_command for HPC configuration it creates cloud-init script (post boot script)
+% ohpc_command for each type of nodes (SMS as well CN)
+% ohpc_command This use case can be invoked as below:
+% ohpc_command ../setup_cloud_hpc.sh -i=inventory/3_hpc_as_service/hn3_has_input.local -u=3  
+% ohpc_command -n=inventory/3_hpc_as_service/hn3_has_inventory
+% ohpc_command 
+% ohpc_command Below are the scripts called to create the environment for use case 1:
+% ohpc_command 
+% ohpc_command file: set_os_hpc
+% ohpc_command ================
+% ohpc_command This is the script to setup HPC in OpenStack Cloud. This script is called by 
+% ohpc_command setup_cloud_hpc.sh if user provides a "-u=3" input to it. To perform the job,
+% ohpc_command it executes other scripts.
+% ohpc_command   
+% ohpc_command file: prepare_cloud_init
+% ohpc_command ======================
+% ohpc_command This sripts generates cloudinit script (chpcInit) for both sms node as well as
+% ohpc_command compute nodes, which is supplied to Nova to boot the nodes.
+% ohpc_command  
+% ohpc_command file: prepare_chpc_image
+% ohpc_command ========================
+% ohpc_command This generates HPC images for provisioning bare metal cloud nodes. It generates 
+% ohpc_command 3 images
+% ohpc_command Two deploy images for ironic to use 
+% ohpc_command 1. icloud-hpc-deploy-c7.kernel
+% ohpc_command 2. icloud-hpc-deply-c7.initramfs
+% ohpc_command One user image for compute node
+% ohpc_command 3. icloud-hpc-cent7.qcow2
+% ohpc_command One user image for HPC head node (sms)
+% ohpc_command 4. icloud-hpc-cent7-sms.qcow2
+% ohpc_command 
+% ohpc_command file: prepare_chpc_openstack
+% ohpc_command ============================
+% ohpc_command This script prepares nova, ironic for baremetal provisioning, installs and 
+% ohpc_command configure pxe boot, pxe-impmi driver for ironic, and enable cloud init for 
+% ohpc_command baremetal nodes.
+% ohpc_command It also configure neutron for internal dns service
+% ohpc_command 
+% ohpc_command File: deploy_chpc_openstack
+% ohpc_command ===========================
+% ohpc_command This script deploy baremetal nodes in an openstack using nova, ironic, neutron 
+% ohpc_command and glance by using cloudinit recipe (prepare under prepare_cloudInit) and HPC
+% ohpc_command images (prepared by prepare_chpc_image).
+% ohpc_command it first deploys sms node and then deploy compute nodes.
+% ohpc_command 
+% ohpc_command file: update_cnodes_to_sms
+% ohpc_command ==========================
+% ohpc_command This script perform the post boot configuration including updating SLURM 
+% ohpc_command resource manager at sms node for HPC compute nodes
+% ohpc_command 
+
+
+% ohpc_validation_comment  # # QFILEQ
+% ohpc_command #!/bin/bash 
+% ohpc_validation_comment  # FILE: set_os_hpc
+% ohpc_command #This script expects compute node ID as an input
+% ohpc_command set -x
+% ohpc_command # find and setup working directory
+% ohpc_command CHPC_SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P )"
+% ohpc_command CHPC_SCRIPTDIR="${CHPC_SCRIPTDIR%x}"
+% ohpc_command cd $CHPC_SCRIPTDIR
+% ohpc_command
+% ohpc_command echo "..$CHPC_SCRIPTDIR .."
+% ohpc_command
+% ohpc_command
+% ohpc_command # Create Post boot file, can be used for cloudInit
+% ohpc_command # Check for NTP server and configuration on compute nodes
+% ohpc_command #
+% ohpc_command # =====================================
+% ohpc_command # Preparation for CloudInit Script and files
+% ohpc_command # =====================================
+% ohpc_command # This assumes that HPC head node recipe is installed and SMS_node functionality is already configured. It will get some data from there to prepare cloudInit
+% ohpc_command time source prepare_cloud_init
+% ohpc_command 
+% ohpc_command # ========================
+% ohpc_command # Prepare CloudHPC Image :
+% ohpc_command # ========================
+% ohpc_command # Check if User selected to prepare cloud HPC images
+% ohpc_command time source prepare_chpc_image
+% ohpc_command # =============================================
+% ohpc_command # Prepare OpenStack for HPC baremetal instances
+% ohpc_command # =============================================
+% ohpc_command time source prepare_chpc_openstack
+% ohpc_command time source deploy_chpc_openstack
+% ohpc_command #Wait for CN(s) to come up. TODO: Poll and wait rather than just a set 10 minutes.
+% ohpc_command sleep 600
+% ohpc_command #Call cloudInit workaround script
+% ohpc_command #time source c_init_workaround
+% ohpc_command #
+% ohpc_command # ========================================================
+% ohpc_command # Prepare SMS/Service Node. 
+% ohpc_command # Add Cloud baremetal nodes to HPC Orchestrator
+% ohpc_command # ========================================================
+% ohpc_command time source update_cnodes_to_sms
+% ohpc_command
+
+
+% ohpc_validation_comment  # # QFILEQ
+
+% ohpc_validation_comment  # # HFILEH
+% ohpc_command #!/bin/bash
+% ohpc_validation_comment # FILE:heat-sms.yaml
+% ohpc_command heat_template_version: 2013-05-23
+% ohpc_command
+% ohpc_command description: >
+% ohpc_command   This is a heat template to create HPC SMS node
+% ohpc_command   http://docs.openstack.org/developer/heat/template_guide/index.html
+% ohpc_command   http://cloudinit.readthedocs.io/en/latest/
+% ohpc_command   create openstack with minimum parameter
+% ohpc_command   openstack stack create --template heat-sms.yaml --parameter "ssh_key_name:ostack_key;server_name:sms" stack-name1
+% ohpc_command   openstack stack delete stack-name1
+% ohpc_command
+% ohpc_command   #Created by: Sunil Mahawar
+% ohpc_command
+% ohpc_command parameters:
+% ohpc_command   ssh_key_name:
+% ohpc_command     type: string
+% ohpc_command     label: SSH Keypair
+% ohpc_command     description: Name of a SSH keypair.
+% ohpc_command     hidden: false
+% ohpc_command     default: ostack_key
+% ohpc_command
+% ohpc_command   server_name:
+% ohpc_command     type: string
+% ohpc_command     label: Instance Name
+% ohpc_command     description: Name of the baremetal instance.
+% ohpc_command     hidden: false
+% ohpc_command     default: sms1
+% ohpc_command
+% ohpc_command   instance_flavor:
+% ohpc_command     type: string
+% ohpc_command     label: Instance Flavor
+% ohpc_command     description: The flavor type to use for baremetal server.
+% ohpc_command     default: baremetal-flavor
+% ohpc_command     hidden: false
+% ohpc_command
+% ohpc_command   image_id:
+% ohpc_command     type: string
+% ohpc_command     label: Image ID
+% ohpc_command     description: The image to use for baremetal server.
+% ohpc_command     default: sms-image
+% ohpc_command     hidden: false
+% ohpc_command
+% ohpc_command   network_id:
+% ohpc_command     type: string
+% ohpc_command     label: Network ID
+% ohpc_command     description: The flat network to be used for baremetal server
+% ohpc_command     default: sharednet1
+% ohpc_command
+% ohpc_command   port_id:
+% ohpc_command     type: string
+% ohpc_command     label: Network port ID
+% ohpc_command     description: mac address to IP address mapping for static IP reservation
+% ohpc_command     default: sms1
+% ohpc_command
+% ohpc_command resources:
+% ohpc_command   boot_config:
+% ohpc_command     type: OS::Heat::CloudConfig
+% ohpc_command     properties:
+% ohpc_command       cloud_config:
+% ohpc_command         write_files:
+% ohpc_command         - path: /opt/ohpc/admin/cloud_hpc_init/chpc_sms_init.sh
+% ohpc_command           content: {get_file: /opt/ohpc/admin/cloud_hpc_init/chpc_sms_init}
+% ohpc_command
+% ohpc_command   boot_script:
+% ohpc_command     type: OS::Heat::SoftwareConfig
+% ohpc_command     properties:
+% ohpc_command       group: ungrouped
+% ohpc_command       config: |
+% ohpc_command         #!/bin/bash
+% ohpc_command         echo "Running sms_init script"
+% ohpc_command         sh /opt/ohpc/admin/cloud_hpc_init/chpc_sms_init.sh
+% ohpc_command         echo "Done"
+% ohpc_command
+% ohpc_command   server_init:
+% ohpc_command     type: OS::Heat::MultipartMime
+% ohpc_command     properties:
+% ohpc_command       parts:
+% ohpc_command       - config: {get_resource: boot_config}
+% ohpc_command       - config: {get_resource: boot_script}
+% ohpc_command
+% ohpc_command   baremetal_instance:
+% ohpc_command     type: OS::Nova::Server
+% ohpc_command     properties:
+% ohpc_command       name: { get_param: server_name }
+% ohpc_command       image: { get_param: image_id }
+% ohpc_command       flavor: { get_param: instance_flavor }
+% ohpc_command       key_name: { get_param: ssh_key_name }
+% ohpc_command       networks:
+% ohpc_command         - port: {get_param: port_id}
+% ohpc_command       user_data_format: SOFTWARE_CONFIG
+% ohpc_command       user_data: {get_resource: server_init}
+% ohpc_command
+% ohpc_command
+% ohpc_command outputs:
+% ohpc_command   ip_address:
+% ohpc_command     description: IP address of the baremetal instance
+% ohpc_command     value: { get_attr: [baremetal_instance, first_address] }
+% ohpc_command
+
+% ohpc_validation_comment  # # HFILEH
+% ohpc_command #!/bin/bash
+% ohpc_validation_comment  #FILE: heat-cn.yaml
+% ohpc_command heat_template_version: 2013-05-23
+% ohpc_command
+% ohpc_command description: >
+% ohpc_command   This is a heat template to create HPC compute nodes
+% ohpc_command   http://docs.openstack.org/developer/heat/template_guide/index.html
+% ohpc_command   http://cloudinit.readthedocs.io/en/latest/
+% ohpc_command   create openstack with minimum parameter
+% ohpc_command   openstack stack create --template heat-cn.yaml -P "cn_count=2" stack-name1
+% ohpc_command   openstack stack delete stack-name1
+% ohpc_command
+% ohpc_command   #Created by: Sunil Mahawar
+% ohpc_command
+% ohpc_command parameters:
+% ohpc_command   ssh_key_name:
+% ohpc_command     type: string
+% ohpc_command     label: SSH Keypair
+% ohpc_command     description: Name of a SSH keypair.
+% ohpc_command     hidden: false
+% ohpc_command     default: ostack_key
+% ohpc_command
+% ohpc_command   server_name:
+% ohpc_command     type: string
+% ohpc_command     label: Instance Name
+% ohpc_command     description: Name of the baremetal instance.
+% ohpc_command     hidden: false
+% ohpc_command     default: cc%index%
+% ohpc_command
+% ohpc_command   instance_flavor:
+% ohpc_command     type: string
+% ohpc_command     label: Instance Flavor
+% ohpc_command     description: The flavor type to use for baremetal server.
+% ohpc_command     default: baremetal-flavor
+% ohpc_command     hidden: false
+% ohpc_command
+% ohpc_command   image_id:
+% ohpc_command     type: string
+% ohpc_command     label: Image ID
+% ohpc_command     description: The image to use for baremetal server.
+% ohpc_command     default: user-image
+% ohpc_command     hidden: false
+% ohpc_command
+% ohpc_command   network_id:
+% ohpc_command     type: string
+% ohpc_command     label: Network ID
+% ohpc_command     description: The flat network to be used for baremetal server
+% ohpc_command     default: sharednet1
+% ohpc_command
+% ohpc_command   port_id:
+% ohpc_command     type: string
+% ohpc_command     label: Network port ID
+% ohpc_command     description: mac address to IP address mapping for static IP reservation
+% ohpc_command     default: cc%index%
+% ohpc_command
+% ohpc_command   cn_count:
+% ohpc_command     type: number
+% ohpc_command     label: baremetal instances
+% ohpc_command     description: number of baremetal instances
+% ohpc_command     default: 1
+% ohpc_command
+% ohpc_command
+% ohpc_command resources:
+% ohpc_command   boot_config:
+% ohpc_command     type: OS::Heat::CloudConfig
+% ohpc_command     properties:
+% ohpc_command       cloud_config:
+% ohpc_command         write_files:
+% ohpc_command         - path: /opt/ohpc/admin/cloud_hpc_init/chpc_init.sh
+% ohpc_command           content: {get_file: /opt/ohpc/admin/cloud_hpc_init/chpc_init}
+% ohpc_command
+% ohpc_command   boot_script:
+% ohpc_command     type: OS::Heat::SoftwareConfig
+% ohpc_command     properties:
+% ohpc_command       group: ungrouped
+% ohpc_command       config: |
+% ohpc_command         #!/bin/bash
+% ohpc_command         echo "Running compute node boot script"
+% ohpc_command         sh /opt/ohpc/admin/cloud_hpc_init/chpc_init.sh
+% ohpc_command         echo "Done"
+% ohpc_command
+% ohpc_command   server_init:
+% ohpc_command     type: OS::Heat::MultipartMime
+% ohpc_command     properties:
+% ohpc_command       parts:
+% ohpc_command       - config: {get_resource: boot_config}
+% ohpc_command       - config: {get_resource: boot_script}
+% ohpc_command
+% ohpc_command   multi-server:
+% ohpc_command    type: OS::Heat::ResourceGroup
+% ohpc_command    properties:
+% ohpc_command       count: { get_param: cn_count }
+% ohpc_command       resource_def:
+% ohpc_command        type: OS::Nova::Server
+% ohpc_command        properties:
+% ohpc_command          name: { get_param: server_name }
+% ohpc_command          image: { get_param: image_id }
+% ohpc_command          flavor: { get_param: instance_flavor }
+% ohpc_command          key_name: { get_param: ssh_key_name }
+% ohpc_command          networks:
+% ohpc_command            - network: { get_param: network_id }
+% ohpc_command          user_data_format: SOFTWARE_CONFIG
+% ohpc_command          user_data: {get_resource: server_init}
+% ohpc_command
+% ohpc_command
+% ohpc_command #outputs:
+% ohpc_command #  ip_address:
+% ohpc_command #    description: IP address of the baremetal instance
+% ohpc_command #    value: { get_attr: [baremetal_instance, first_address] }
+% ohpc_command
+
+
+% ohpc_validation_comment  # # HFILEH
+
+
+
+%end_ohpc_run
+
+\end{document}

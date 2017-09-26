@@ -1,0 +1,109 @@
+# !/bin/bash
+# This file configure and set openvpn server on sms node and client on cloud controller node
+
+# This scripts configure TLS handshake for openvpn security
+# Below are the basic steps
+# 1. install depedencies then generates tls key and certificates
+# 2. configure vpn server
+# 3. configure vpn client
+# 4. copy vpn client configuration to vpn client machine
+# 5 start the vpn tunnel 
+#
+##############################################
+# echo step 0 Common environment variables
+##############################################
+export openvpn_cfg="/etc/openvpn"
+export OSERVER="sunoserver"
+export OCLIENT="sunoclient"
+# client push file for client configuration, file stays 
+# at server side of openvpn
+ovpn_client_push_file=$openvpn_cfg/ccd/$OCLIENT
+# openvpn client configuration directory
+# file from here is copied to openvpn client machine
+ovpn_client_cfg_src=$openvpn_cfg/client_cfg
+# openvpn clinet configuration file this is copied to client side of openvpn
+ovpn_client_cfg_file=$ovpn_client_cfg_src/$OCLIENT.ovpn
+controller_ipadd="$( get_ip_from_ipcidr $cc_subnet_cidr)"
+controller_netmask="$( get_netmask_from_ipcidr $cc_subnet_cidr)"
+# calculate the vpn server and client ip from cidr
+openvpn_server_ip_base=`echo $openvpn_tunnel_ip |cut -d"." -f1-3`
+openvpn_server_ip=$openvpn_server_ip_base.1
+openvpn_client_ip=$openvpn_server_ip_base.2
+openvpn_netmask="$( get_netmask_from_ipcidr $openvpn_tunnel_ip)"
+ls $CHPC_SCRIPTDIR/ovpn/setup_openvpn_tls.sh
+
+###################################################
+# echo "step 1: Install openvpn and configure tls & keys"
+###################################################
+source $CHPC_SCRIPTDIR/ovpn/setup_openvpn_tls.sh
+# copy all the client keys to client configuration folder
+ovpn_client_cfg_keys=$ovpn_client_cfg_src/keys
+mkdir -p $ovpn_client_cfg_keys
+cp -f $openvpn_cfg/keys/$OCLIENT* $ovpn_client_cfg_keys/
+# copy certificate 
+cp -f $openvpn_cfg/keys/ca.crt $ovpn_client_cfg_keys/
+
+###################################################
+# echo "step 2: configure vpn server"
+###################################################
+# copy server configuration file
+openvpn_server_cfg=$openvpn_cfg/$OSERVER.conf
+install -D $CHPC_SCRIPTDIR/ovpn/server.conf $openvpn_server_cfg
+#copy push file for client configuration push
+install -D $CHPC_SCRIPTDIR/ovpn/ccd/cloudhead $ovpn_client_push_file
+#update vpn tunnel IP Address to vpn server
+sed -i "s/^server .*/server $openvpn_server_ip_base.0 $openvpn_netmask/g" $openvpn_server_cfg
+# add route for cloud
+sed -i "s/^route .*/route $controller_ipadd $controller_netmask/g" $openvpn_server_cfg
+sed -i "s/server.crt/$OSERVER\.crt/g" $openvpn_server_cfg
+sed -i "s/server.key/$OSERVER\.key/g" $openvpn_server_cfg
+# Generate script to start server
+echo "nohup openvpn --config $openvpn_server_cfg >> /var/log/openvpmn.log 2>&1 &" > $openvpn_cfg/$OSERVER.start
+chmod +x $openvpn_cfg/$OSERVER.start
+
+######################################
+# echo "step 3: configure vpn client"
+#####################################
+# first store client configuration file on server
+# copy cloient configuration file
+install -D $CHPC_SCRIPTDIR/ovpn/cloudhead.ovpn $ovpn_client_cfg_file
+# fix the name 
+sed -i "s/cloudhead/$OCLIENT/g" $ovpn_client_cfg_file
+# update the public IP address of head node to vpn configuration
+# this is the ip address used by vpn, vpn tunnel is createad on top of it
+sed -i "s/<sms_public_ip>/$sms_public_ip/g" $ovpn_client_cfg_file
+sed -i "s/<sms_public_ip>/$sms_public_ip/g" $ovpn_client_push_file
+
+
+# Step 3.1: Update vpn client push configuration used by vpn server
+# Add routing entry to route cloud node IP traffic, via tunnel
+sed -i "s/^iroute .*/iroute $controller_ipadd $controller_netmask/g" $ovpn_client_push_file
+# push tunnel IP address of vpn client
+sed -i "s/^ifconfig-push .*/ifconfig-push $openvpn_client_ip $openvpn_server_ip/g" $ovpn_client_push_file
+# now push HPC nodes route to cloud controller node
+base_sms_ip=`echo $sms_ip|cut -d"." -f1-3`.0
+sed -i "s/^push .*/push \"route $base_sms_ip $internal_netmask\"/g" $ovpn_client_push_file
+# Step 3.2: generate script to start openvpn on client
+echo "nohup openvpn --config $openvpn_cfg/$OCLIENT.ovpn >> /var/log/openvpmn.log 2>&1 &" > $ovpn_client_cfg_src/$OCLIENT.start
+chmod +x $ovpn_client_cfg_src/$OCLIENT.start
+
+
+# #######################################################
+# echo "step 4: copy opnvpn configuration on client machine"
+# #######################################################
+# please use "ssh-copy-id -i ~/.ssh/id_rsa.pub $controller_name" 
+#  to perfrom passwd less ssh and or scp
+# copy the configuration to vpn client machine
+scp -pr $ovpn_client_cfg_src/* ${controller_name}:$openvpn_cfg/
+ 
+# ######################################
+# echo "step 5: Start openvpn on client and server"
+# #####################################
+# sms node is the openvpn server, starting openvpn server
+$openvpn_cfg/$OSERVER.start
+
+# cloud controller node is an openvpn client, starting openvpn client
+ssh ${controller_name} ${openvpn_cfg}/${OCLIENT}.start
+
+#test the openvpn configuration, ping cloud nodes from controller. TBD
+echo "Openvpn configuration complete"

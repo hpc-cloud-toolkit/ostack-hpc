@@ -1,0 +1,191 @@
+#!/bin/bash
+
+source ${HOME}/keystonerc_admin
+
+# Function for common common configuration
+function setup_baremetal() {
+    #Get the tenant ID for the services tenant
+    #SERVICES_TENANT_ID=`keystone tenant-list | grep "|\s*services\s*|" | awk '{print $2}'` # keystone CLI is depricated
+    SERVICES_TENANT_ID=`openstack project list | grep "|\s*services\s*|" | awk '{print $2}'`
+    
+    #Create the flat network on which you are going to launch instances
+    neutron net-list | grep "|\s*sharednet1\s*|"
+    net_exists=$?
+    if [ "${net_exists}" -ne "0" ]; then
+        neutron net-create --tenant-id ${SERVICES_TENANT_ID} sharednet1 --shared --provider:network_type flat --provider:physical_network physnet1
+    fi
+    NEUTRON_NETWORK_UUID=`neutron net-list | grep "|\s*sharednet1\s*|" | awk '{print $2}'`
+
+    # in ocata version we need to setup cleaning network
+    if [ "${nova_version_major}" == 7 ]; then
+        if ! grep -q "^cleaning_network" /etc/ironic/ironic.conf; then
+           sed --in-place "s|^#cleaning_network.*|cleaning_network = ${NEUTRON_NETWORK_UUID}|" /etc/ironic/ironic.conf
+        else
+           sed --in-place "s|^cleaning_network.*|cleaning_network = ${NEUTRON_NETWORK_UUID}|" /etc/ironic/ironic.conf
+        fi
+        #restart the ironic conductor 
+        systemctl restart openstack-ironic-conductor
+    fi
+    
+    #Create the subnet on the newly created network
+    neutron subnet-list | grep "|\s*subnet01\s*|"
+    subnet_exists=$?
+    if [ "${subnet_exists}" -ne "0" ]; then
+        neutron subnet-create sharednet1 --name subnet01 --ip-version=4 --gateway=${controller_ip} --allocation-pool start=${cc_subnet_dhcp_start},end=${cc_subnet_dhcp_end} --enable-dhcp ${cc_subnet_cidr}
+    fi
+    NEUTRON_SUBNET_UUID=`neutron subnet-list | grep "|\s*subnet01\s*|" | awk '{print $2}'`
+    #Create the deploy-kernel and deploy-initrd images
+    glance image-list | grep "|\s*deploy-vmlinuz\s*|"
+    img_exists=$?
+    if [ "${img_exists}" -ne "0" ]; then
+        glance image-create --name deploy-vmlinuz --visibility public --disk-format aki --container-format aki < ${chpc_image_deploy_kernel}
+    fi
+    DEPLOY_VMLINUZ_UUID=`glance image-list | grep "|\s*deploy-vmlinuz\s*|" | awk '{print $2}'`
+    
+    glance image-list | grep "|\s*deploy-initrd\s*|"
+    img_exists=$?
+    if [ "${img_exists}" -ne "0" ]; then
+        glance image-create --name deploy-initrd --visibility public --disk-format ari --container-format ari < ${chpc_image_deploy_ramdisk}
+    fi
+    DEPLOY_INITRD_UUID=`glance image-list | grep "|\s*deploy-initrd\s*|" | awk '{print $2}'`
+    
+    #Create the baremetal flavor and set the architecture to x86_64
+    # This will create common baremetal flavor, if SMS node & compute has different
+    # characteristic than user shall create multiple flavor one each characterisitc
+    nova flavor-list | grep "|\s*baremetal-flavor\s*|"
+    flavor_exists=$?
+    if [ "$flavor_exists" -ne "0" ]; then
+        nova flavor-create baremetal-flavor baremetal-flavor ${RAM_MB} ${DISK_GB} ${CPU}
+        nova flavor-key baremetal-flavor set cpu_arch=$ARCH
+    fi
+    FLAVOR_UUID=`nova flavor-list | grep "|\s*baremetal-flavor\s*|" | awk '{print $2}'`
+    #Increase the Quota limit for admin to allow nova boot
+    openstack quota set --ram 512000 --cores 1000 --instances 100 admin
+    
+    #Register SSH keys with Nova
+    nova keypair-list | grep "|\s*ostack_key\s*|"
+    keypair_exists=$?
+    if [ "${keypair_exists}" -ne "0" ]; then
+    nova keypair-add --pub-key ${HOME}/.ssh/id_rsa.pub ostack_key
+    fi
+    
+    KEYPAIR_NAME=ostack_key
+
+}
+
+# Configure SMS Node
+function setup_sms() {
+   # Create sms node image
+   glance image-list | grep "|\s*sms-image\s*|"
+   img_exists=$?
+   if [ "${img_exists}" -ne "0" ]; then
+       glance image-create --name sms-image --visibility public --disk-format qcow2 --container-format bare < ${chpc_image_sms}
+   fi
+   SMS_DISK_IMAGE_UUID=`glance image-list | grep "|\s*sms-image\s*|" | awk '{print $2}'`
+
+    #Create a sms node in the bare metal service ironic.
+    ironic node-list | grep "|\s*${sms_name}$\s*|"
+    node_exists=$?
+    if [ "${node_exists}" -ne "0" ]; then
+        ironic node-create -d pxe_ipmitool -i deploy_kernel=${DEPLOY_VMLINUZ_UUID} -i deploy_ramdisk=${DEPLOY_INITRD_UUID} -i ipmi_terminal_port=8023 -i ipmi_address=${sms_bmc} -i ipmi_username=${sms_bmc_username} -i ipmi_password=${sms_bmc_password} -p cpus=${CPU} -p memory_mb=${RAM_MB} -p local_gb=${DISK_GB} -p cpu_arch=${ARCH} -p capabilities="boot_mode:bios" -n ${sms_name}
+    fi
+    SMS_UUID=`ironic node-list | grep "|\s*${sms_name}\s*|" | awk '{print $2}'`
+
+    #Add the associated port(s) MAC address to the created node(s)
+    ironic port-create -n ${SMS_UUID} -a ${sms_mac}
+
+    #Add the instance_info/image_source and instance_info/root_gb
+    ironic node-update $SMS_UUID add instance_info/image_source=${SMS_DISK_IMAGE_UUID} instance_info/root_gb=50
+
+    #Setup neutron port for static IP addressing of sms node, this is an optional part
+    neutron port-create sharednet1 --dns_name $sms_name --fixed-ip ip_address=$sms_ip --name $sms_name --mac-address $sms_mac
+    SMS_PORT_ID=`neutron port-list | grep "|\s*$sms_name\s*|" | awk '{print $2}'`
+}
+
+#Configure Compute Nodes
+function setup_cn() {
+    #Create the whole-disk-image from the user's qcow2 file
+    glance image-list | grep "|\s*user-image\s*|"
+    img_exists=$?
+    if [ "${img_exists}" -ne "0" ]; then
+        glance image-create --name user-image --visibility public --disk-format qcow2 --container-format bare < ${chpc_image_user}
+    fi
+    USER_DISK_IMAGE_UUID=`glance image-list | grep "|\s*user-image\s*|" | awk '{print $2}'`
+
+    # Setup Compute nodes
+    for ((i=0; i < ${num_ccomputes}; i++)); do
+        ##Create compute nodes in the bare metal service
+        ironic node-list | grep "|\s*${cnodename_prefix}$((i+1))\s*|"
+        node_exists=$?
+        if [ "${node_exists}" -ne "0" ]; then
+            ironic node-create -d pxe_ipmitool -i deploy_kernel=${DEPLOY_VMLINUZ_UUID} -i deploy_ramdisk=${DEPLOY_INITRD_UUID} -i ipmi_terminal_port=8023 -i ipmi_address=${cc_bmc[$i]} -i ipmi_username=${cc_bmc_username} -i ipmi_password=${cc_bmc_password} -p cpus=${CPU} -p memory_mb=${RAM_MB} -p local_gb=${DISK_GB} -p cpu_arch=${ARCH} -p capabilities="boot_mode:bios" -n ${cnodename_prefix}$((i+1))
+        fi
+        NODE_UUID_CC[$i]=`ironic node-list | grep "|\s*${cnodename_prefix}$((i+1))\s*|" | awk '{print $2}'`
+
+        # update for compute nodes node MAC
+        ironic port-create -n ${NODE_UUID_CC[$i]} -a ${cc_mac[$i]}
+
+        #Add the instance_info/image_source and instance_info/root_gb
+        ironic node-update ${NODE_UUID_CC[$i]} add instance_info/image_source=${USER_DISK_IMAGE_UUID} instance_info/root_gb=50
+
+        #Setup neutron port for static IP addressing of compute nodes
+        cn_name=${cnodename_prefix}$((i+1))
+        neutron port-create sharednet1 --dns_name $cn_name --fixed-ip ip_address=${cc_ip[$i]} --name $cn_name --mac-address ${cc_mac[$i]}
+        NEUTRON_PORT_ID_CC[$i]=`neutron port-list | grep "|\s*${cnodename_prefix}$((i+1))\s*|" | awk '{print $2}'`
+    done
+}
+
+
+function boot_sms() {
+    #Boot the sms node with nova. chpcInit is set from prepare_cloudInit
+    echo "nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${SMS_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcSMSInit --nic port-id=${SMS_PORT_ID} ${sms_name}" > boot_sms
+    nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${SMS_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcSMSInit --nic port-id=${SMS_PORT_ID} ${sms_name}
+}
+
+function boot_cn() {
+    for ((i=0; i < ${num_ccomputes}; i++)); do
+        filename="cn$((i+1))"
+        echo "nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${USER_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcInit --nic port-id=${NEUTRON_PORT_ID_CC[$i]} ${cnodename_prefix}$((i+1))" > boot_$filename
+        nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${USER_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcInit --nic port-id=${NEUTRON_PORT_ID_CC[$i]} ${cnodename_prefix}$((i+1))
+        #wait for 5 sec 
+        sleep 5
+    done
+}
+
+
+
+##Create a sms node in the bare metal service
+#ironic node-list | grep "|\s*${sms_name}$\s*|"
+#node_exists=$?
+#if [ "${node_exists}" -ne "0" ]; then
+#    ironic node-create -d pxe_ipmitool -i deploy_kernel=${DEPLOY_VMLINUZ_UUID} -i deploy_ramdisk=${DEPLOY_INITRD_UUID} -i ipmi_terminal_port=8023 -i ipmi_address=${sms_bmc} -i ipmi_username=${sms_bmc_username} -i ipmi_password=${sms_bmc_password} -p cpus=${CPU} -p memory_mb=${RAM_MB} -p local_gb=${DISK_GB} -p cpu_arch=${ARCH} -p capabilities="boot_mode:bios" -n ${sms_name}
+#fi
+#SMS_UUID=`ironic node-list | grep "|\s*${sms_name}\s*|" | awk '{print $2}'`
+
+
+#### main
+# First setup baremetnal environment
+setup_baremetal
+# Setup sms node first
+setup_sms
+# Setup Compute nodes
+setup_cn
+
+#ocata specific 
+nova-manage cell_v2 discover_hosts
+
+# Wait for the Nova hypervisor-stats to sync with available Ironic resources
+sleep 121
+# Now start booting the nodes
+# Boot sms node first
+boot_sms
+# wait for 15 sec before starting to boot compute nodes. TBD need to tune this time
+# SMS node should be booted before compute nodes starts booting. At minimum
+# sms node shall have cloud init executed before CN's cloud init
+sleep 15
+# Now boot compute nodes
+boot_cn
+
+#nova boot --config-drive true --flavor ${FLAVOR_UUID} --image ${USER_DISK_IMAGE_UUID} --key-name ${KEYPAIR_NAME} --meta role=webservers --user-data=$chpcSMSInit --nic port-id=${SMS_PORT_ID} ${sms_name}
+sleep 5
+# Boot CNs

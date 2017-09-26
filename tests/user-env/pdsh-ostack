@@ -1,0 +1,22 @@
+#!./common/bats/bin/bats
+# -*-sh-*-
+
+load ./common/test_helper_functions || exit 1
+source ./common/functions || exit 1
+
+if [ -s ./common/TEST_ENV ];then
+    source ./common/TEST_ENV
+fi
+
+check_rms
+
+@test "[pdsh] check for RPM" {
+    run check_if_rpm_installed "pdsh${DELIM}"
+    assert_success
+}
+
+@test "[pdsh] run a shell command on cc[1-2]" {
+    run pdsh -w cc[1-2] 'grep . /proc/sys/kernel/ostype'
+    assert_success
+}
+

@@ -1,0 +1,44 @@
+This directory "hpc/recipe/1_combined_controller" maintains the recipes for use
+case 2, where the OpenStack* controller node and HPC head node are two different
+systems in 2 different clusters, but are considered "on-premise" and connected
+via ethernet and/or high-speed cable.
+Below are the scripts called to create the environment for use case 2:
+
+file: set_os_hpc
+================
+This is the script to setup HPC in OpenStack* Cloud. To perform the job it 
+execute other scripts.
+
+file: prepare_cloud_init
+======================
+this sripts generates cloudinit script (chpcInit), which is supplied to Nova to
+boot the baremetal nodes.
+
+file: prepare_chpc_image
+========================
+This generates HPC images for provisioning bare metal cloud nodes. It generates 
+3 images
+     Two deploy images for ironic to use 
+         1. icloud-hpc-deploy-c7.kernel
+         2. icloud-hpc-deply-c7.initramfs
+     One user image
+         3. icloud-hpc-cent7.qcow2
+		 
+file: deploy_chpc_openstack
+===========================
+This script deploy baremetal nodes in an OpenStack* using nova*, ironic*, neutron* 
+and glance* by using cloudinit* recipe (prepare under prepare_cloudInit) and HPC
+images (prepared by prepare_chpc_image).
+
+file: update_cnodes_to_sms
+==========================
+This script perform the post boot configuration including updating SLURM* 
+resource manager for new cloud node
+
+directory: ovpn
+==================
+This maintains the openvpn* specific files, setup and configuration needed to 
+create vpn tunnel between two system
+ 
+Note:
+* Other names and brands may be claimed as the property of others.

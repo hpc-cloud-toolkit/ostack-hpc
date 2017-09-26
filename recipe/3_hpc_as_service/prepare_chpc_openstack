@@ -1,0 +1,149 @@
+#!/bin/bash
+#---------------------------------------------------------------------------------
+#This script installs and configures ironic for baremetal provisioning on CentOS 7
+#Using the OpenStack-Mitaka release.
+#This relies on the packstack installation to happen first and the keystonerc_admin
+#file being in the user's home directory. It is assumed this script is run with
+#sudo permissions.
+#---------------------------------------------------------------------------------
+
+#Set SELinux to permissive
+setenforce 0
+
+#Source the keystonerc_admin file
+source ${HOME}/keystonerc_admin
+
+#Create roles for the baremetal service. These can be used later to give special permissions to baremetal. This script will be using the defaults.
+openstack role list | grep -i baremetal_admin
+role_exists=$?
+if [ "${role_exists}" -ne "0" ]; then 
+    openstack role create baremetal_admin
+fi
+
+openstack role list | grep -i baremetal_observer
+role_exists=$?
+if [ "${role_exists}" -ne "0" ]; then 
+    openstack role create baremetal_observer
+fi
+systemctl restart openstack-ironic-api
+
+#Ensure the utilities for baremetal are installed
+yum install -y tftp-server syslinux-tftpboot xinetd
+#Make the directory for tftp and give it the ironic owner
+mkdir -p /tftpboot
+chown -R ironic /tftpboot
+
+#Configure /etc/xinet.d/tftp
+echo "service tftp" > /etc/xinetd.d/tftp
+echo "{" >> /etc/xinetd.d/tftp
+echo "  protocol        = udp" >> /etc/xinetd.d/tftp
+echo "  port            = 69" >> /etc/xinetd.d/tftp
+echo "  socket_type     = dgram" >> /etc/xinetd.d/tftp
+echo "  wait            = yes" >> /etc/xinetd.d/tftp
+echo "  user            = root" >> /etc/xinetd.d/tftp
+echo "  server          = /usr/sbin/in.tftpd" >> /etc/xinetd.d/tftp
+echo "  server_args     = -v -v -v -v -v --map-file /tftpboot/map-file /tftpboot" >> /etc/xinetd.d/tftp
+echo "  disable         = no" >> /etc/xinetd.d/tftp
+echo "  # This is a workaround for Fedora, where TFTP will listen only on" >> /etc/xinetd.d/tftp
+echo "  # IPv6 endpoint, if IPv4 flag is not used." >> /etc/xinetd.d/tftp
+echo "  flags           = IPv4" >> /etc/xinetd.d/tftp
+echo "}" >> /etc/xinetd.d/tftp
+
+#Restart the xinetd service
+systemctl restart xinetd
+
+#Copy the PXE linux files to the tftpboot directory we created
+cp /var/lib/tftpboot/pxelinux.0 /tftpboot
+cp /var/lib/tftpboot/chain.c32 /tftpboot
+
+#Generate a map file for the PXE files
+echo 're ^(/tftpboot/) /tftpboot/\2' > /tftpboot/map-file
+echo 're ^/tftpboot/ /tftpboot/' >> /tftpboot/map-file
+echo 're ^(^/) /tftpboot/\1' >> /tftpboot/map-file
+echo 're ^([^/]) /tftpboot/\1' >> /tftpboot/map-file
+
+#Edit /etc/ironic/ironic.conf file with the <controller_ip> variable's value
+#sed --in-place "s|#tftp_server=\$my_ip|tftp_server=${controller_ip}|" /etc/ironic/ironic.conf
+sed --in-place "s|#tftp_server.*|tftp_server=${controller_ip}|" /etc/ironic/ironic.conf
+#sed --in-place "s|#tftp_root=/tftpboot|tftp_root=/tftpboot|" /etc/ironic/ironic.conf
+sed --in-place "s|#tftp_root.*|tftp_root=/tftpboot|" /etc/ironic/ironic.conf
+#sed --in-place "s|#ip_version=4|ip_version=4|" /etc/ironic/ironic.conf
+sed --in-place "s|#ip_version.*|ip_version=4|" /etc/ironic/ironic.conf
+#sed --in-place "s|#automated_clean=true|automated_clean=false|" /etc/ironic/ironic.conf
+sed --in-place "s|#automated_clean.*|automated_clean=false|" /etc/ironic/ironic.conf
+
+#Edit /etc/nova/nova.conf file
+#get the nova version
+nova_version_major=$(nova --version 2>&1 |cut -f1 -d.)
+sed --in-place "s|reserved_host_memory_mb=512|reserved_host_memory_mb=0|" /etc/nova/nova.conf
+if [ "${nova_version_major}" == 3 ]; then
+   # mitaka release
+   echo "mitaka"
+   sed --in-place "s|#scheduler_host_subset_size=1|scheduler_host_subset_size=9999999|" /etc/nova/nova.conf
+   sed --in-place "s|#scheduler_use_baremetal_filters=false|scheduler_use_baremetal_filters=true|" /etc/nova/nova.conf
+fi
+if [ "${nova_version_major}" == 7 ]; then
+   # ocata release
+   echo "ocata"
+   if grep -q "^host_subset_size" /etc/nova/nova.conf; then
+       sed --in-place "s|host_subset_size=1|host_subset_size=9999999|" /etc/nova/nova.conf
+   else
+       sed --in-place "s|#host_subset_size=1|host_subset_size=9999999|" /etc/nova/nova.conf
+   fi
+   if ! grep -q "^use_baremetal_filters" /etc/nova/nova.conf; then
+        # Assuming there is a place holder in comments, replace that string
+        sed -in-place  "s|^#use_baremetal_filters.*|use_baremetal_filters=true|" /etc/nova/nova.conf
+   else 
+        sed -in-place  "s|^use_baremetal_filters.*|use_baremetal_filters=true|" /etc/nova/nova.conf
+   fi
+fi
+
+# Enable meta data
+# Edit /etc/neutron/dhcp_agent.ini
+sed --in-place "s|enable_isolated_metadata\ =\ False|enable_isolated_metadata\ =\ True|" /etc/neutron/dhcp_agent.ini
+sed --in-place "s|#force_metadata\ =\ false|force_metadata\ =\ True|" /etc/neutron/dhcp_agent.ini
+
+#####
+# Enable internal dns for hostname resolution, if it already not set
+# manipulating configuration file via shell, alternate is to use openstack-config (TODO)
+####
+# setup dns domain first
+if grep -q "^dns_domain.*openstacklocal$" /etc/neutron/neutron.conf; then
+   sed -in-place  "s|^dns_domain.*|dns_domain = oslocal|" /etc/neutron/neutron.conf
+else
+   if ! grep -q "^dns_domain" /etc/neutron/neutron.conf; then
+       sed -in-place  "s|^#dns_domain = openstacklocal$|dns_domain = oslocal|" /etc/neutron/neutron.conf
+   fi
+fi
+# configure ml2 dns driver for neutron
+ml2file=/etc/neutron/plugins/ml2/ml2_conf.ini
+if ! grep -q "^extension_drivers" $ml2file; then
+    # Assuming there is a place holder in comments, replace that string
+    sed -in-place  "s|^#extension_drivers.*|extension_drivers = port_security,dns|" $ml2file
+else
+    # Entry is present, check if dns is already present, if not then enable
+    if ! grep "^extension_drivers" $ml2file|grep -q dns; then
+        current_dns=`grep "^extension_drivers" $ml2file`
+        new_dns="$current_dns,dns"
+        sed -in-place  "s|^extension_drivers.*|$new_dns|" $ml2file
+    fi 
+fi
+# ocata requirement
+if ! grep -q "^flat_networks" $ml2file; then
+    # Assuming there is a place holder in comments, replace that string
+    sed -in-place  "s|^#flat_networks.*|flat_networks = physnet1|" $ml2file
+else
+    # Entry is present,update with physnet1 
+    sed -in-place  "s|^flat_networks.*|flat_networks = physnet1|" $ml2file
+fi
+#------
+
+# Now restart the services
+#Restart ironic, nova, neutron, and ovs to load in the new configuration
+systemctl restart neutron-dhcp-agent
+systemctl restart neutron-openvswitch-agent
+systemctl restart neutron-metadata-agent
+systemctl restart neutron-server
+systemctl restart openstack-nova-scheduler
+systemctl restart openstack-nova-compute
+systemctl restart openstack-ironic-conductor

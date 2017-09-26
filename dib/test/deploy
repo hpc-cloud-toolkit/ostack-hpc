@@ -1,0 +1,3 @@
+export DIB_REPOREF_ironic_agent=stable/newton
+disk-image-create ironic-agent centos7 -o ironic-deploy 2>d.log 1>&2&
+tail -f d.log

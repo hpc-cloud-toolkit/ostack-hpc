@@ -1,0 +1,129 @@
+\renewcommand\thesubsection{\Alph{subsection}}
+\subsection{Installation Template}
+
+This appendix highlights the availability of a companion installation script that is included with documentation. This script, when combined with local site inputs, can be used to implement a starting
+recipe for bare-metal system installation and configuration. This template script is used during validation efforts to test cluster installations and is provided as a convenience for administrators as a starting point for potential site customization.
+\begin{center}
+	\begin{tcolorbox}[]
+		\small
+Note that the template script provided is intended for use during initial installation and is not designed for
+repeated execution. If modifications are required after using the script initially, we recommend running the
+relevant subset of commands interactively.
+\end{tcolorbox}
+\end{center}
+The template script relies on the use of a pair of simple text files to define local site variables that were outlined
+in Section 1.3. These files are called by the 'setup\_cloud\_hpc.sh' script in the default install directory, '/opt/ohpc/pub/doc/recipes'.
+The template install script is intended for execution on the controller host and is installed as part of the docs-chpc package. After enabling the repository and reviewing the guide for additional information on the intent of the commands, the general starting approach for using this template
+is as follows:
+
+
+1. Install the docs-chpc and dib-chpc packages on controller node, both rpms are part of tar ball distribution
+
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[controller]# yum -y install docs-chpc*
+[controller]# yum -y install dib-chpc*
+\end{lstlisting}
+
+2. Copy the provided template input file to use as a starting point to define local site settings. Here we assume two input file. *input.local file very similar to OpenHPC input.local file, we kept this format as is for cloud node instantiation and for cloud node configuration we used "*.INVENTORY" file. The main reason for having two configuration files is to take care of cloud-burst scenario, where "input.local" file represents configuration of HPC system and "INVENTORY" file represents configuration of OpenStack cloud nodes. For "HPC as a Service" we kept same format and node entries in input.local file is ignored by recipe of "HPC as  a service".
+
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[controller]# cp /opt/ohpc/pub/doc/recipes/Template-INPUT.LOCAL ~/input.local
+[controller]# cp /opt/ohpc/pub/doc/recipes/Template-INVENTORY ~/inventory
+\end{lstlisting}
+
+3. Update input.local with sms node name and pointer to OpenHPC repo. Update inventory file with information about controller node, cloud nodes and images.
+
+4. Run the installation script:
+
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[controller]# cd /opt/ohpc/pub/doc/recipes/centos7/x86_64/openstack/slurm/
+[controller]# ./setup_cloud_hpc.sh -u=3 -i=/root/input.local -n=/root/inventory
+\end{lstlisting}
+
+
+\newpage
+\subsection{Integration Test Suite}
+	
+
+This appendix details the installation and basic use of the integration test suite used to support the releases. This suite is not intended to replace the validation performed by component development teams, but is instead, devised to confirm component builds are functional and interoperable within the modular OpenHPC environment. The test suite depends on OpenHPC test suite test-suite-chpc adds two additional tests 'ostack' and 'dib'. The OpenHPC test suite is generally organized by components and the CI workflow relies on running the full suite using Jenkins to test multiple OS configurations and installation recipes. To facilitate customization and running of the test suite locally, we provide these tests in a standalone RPM. Please install test rpm at controller node and then execute "hpc\_in\_oscloud-tests" script to run the test. This script run tests at controller node, copies test rpm  and its dependencies to sms node and install same tests at sms node. Then script executes tests at sms node. Altenratively you can install test\_suite-chpc directly on sms node along with its dependenciesi (perl-Test-Harness, perl-XML-Generator, test-suite-ohpc). Since the sms node is not directly connected to a public network, you need to download the RPM at the controller node and copy them manually to the sms node. \\
+Test suite depends on automake-ohpc and autoconf-ohpc packages. Before installing test suite on controller node please enable an OpenHPC repository locally through installation of an ohpc-release RPM. For installing OpenHPC repository, please refer to http://openhpc.community.
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[controller]# yum -y install test-suite-chpc
+[controller]# cd /home/chpc/tests/tests
+[controller]# ./hpc_in_oscloud-tests -h
+\end{lstlisting}
+You can invoke sms tests from controller node using script ./hpc\_in\_oscloud-tests located in tests folder. Before invoking this script please update environemnt variable "TEST\_RPM\_PATH" to point to test-suite-chpc rpm. Script uses this to copy and install test rpm at sms node.
+
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[controller]# yum -y install test-suite-chpc
+[controller]# cd /home/chpc/tests/tests
+[controller]# ./hpc_in_oscloud-tests -i=/root/hn1_has_input.local  -n=/root/hn1_has_inventory -rs
+\end{lstlisting}
+
+The RPM installation creates a user named ohpc-test to house the test suite and provide an isolated environment for execution. Configuration of the test suite is done using standard GNU autotools semantics and the BATS shell-testing framework is used to execute and log a number of individual unit tests. Some tests require privileged execution, so a different combination of tests will be enabled depending on which user executes the top-level configure script. Non-privileged tests requiring execution on one or more compute nodes are submitted as jobs through the SLURM resource manager. The tests are further divided into "short" and "long" run categories. The short run configuration is a subset of approximately 180 tests to demonstrate basic functionality of key components (e.g. MPI stacks) and should complete in 10-20 minutes. The long run (around 1000 tests) is comprehensive and can take an hour or more to complete. Most components can be tested individually, but a default configuration is setup to enable collective testing. To test an isolated component, use the configure option to disable all tests, then re-enable the desired test to run. Before running test directly on sms node, run script "enable-ostack-tests.sh" to enable cloud hpc tests, followed by "./bootstrap" and "./configure". The --help option to configure will display all possible tests. Example output is shown below (some output is omitted for the sake of brevity).
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[sms]# cd /home/ohpc-test/tests;./enable-ostack-tests.sh 
+[sms]# su - ohpc-test
+[test@sms ~]$ cd tests 
+[test@sms ~]$ ./bootstrap
+[test@sms ~]$ ./configure --disable-all --enable-fftw 
+checking for a BSD-compatible install... /bin/install -c 
+checking whether build environment is sane... yes 
+... 
+---------------------------------------------- SUMMARY --------------------------------------------
+Package version............... : test-suite-1.0.0
+Build user.................... : chpc
+Build host.................... : sms001 
+Configure date................ : 2017-06-30 16:59
+Build architecture............ : x86 64 
+Compiler Families............. : gnu 
+MPI Families.................. : mvapich2 openmpi 
+Resource manager ............. : SLURM 
+Test suite configuration...... : short 
+... 
+Libraries: 
+	Adios .................... : disabled 
+	Boost .................... : disabled 
+	Boost MPI................. : disabled 
+	FFTW...................... : enabled 
+	GSL....................... : disabled 
+	HDF5...................... : disabled 
+	HYPRE..................... : disabled 
+...
+\end{lstlisting}
+	
+Many OpenHPC components exist in multiple flavors to support multiple compiler and MPI runtime permutations, and the test suite takes this into account by iterating through these combinations by default.
+If make check is executed from the top-level test directory, all configured compiler and MPI permutations of a library will be exercised. The following highlights the execution of the FFTW related tests that were enabled in the previous step.
+
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[test@sms ~]$ make check 
+make --no-print-directory check-TESTS 
+PASS: libs/fftw/ohpc-tests/test_mpi_families
+============================================================================ 
+Testsuite summary for test-suite 1.0.0
+============================================================================ 
+# TOTAL: 1 
+# PASS: 1 
+# SKIP: 0 
+# XFAIL: 0 
+# FAIL: 0 
+# XPASS: 0 
+# ERROR: 0 
+============================================================================ 
+[test@sms ~]$ cat libs/fftw/tests/family-gnu-*/rm_execution.log 
+1..3 
+ok 1 [libs/FFTW] Serial C binary runs under resource manager (SLURM/gnu/mpich) 
+ok 2 [libs/FFTW] MPI C binary runs under resource manager (SLURM/gnu/mpich) 
+ok 3 [libs/FFTW] Serial Fortran binary runs under resource manager (SLURM/gnu/mpich) 
+PASS rm_execution (exit status: 0) 
+1..3 
+ok 1 [libs/FFTW] Serial C binary runs under resource manager (SLURM/gnu/mvapich2) 
+ok 2 [libs/FFTW] MPI C binary runs under resource manager (SLURM/gnu/mvapich2) 
+ok 3 [libs/FFTW] Serial Fortran binary runs under resource manager (SLURM/gnu/mvapich2) 
+PASS rm_execution (exit status: 0) 
+1..3 
+ok 1 [libs/FFTW] Serial C binary runs under resource manager (SLURM/gnu/openmpi) 
+ok 2 [libs/FFTW] MPI C binary runs under resource manager (SLURM/gnu/openmpi) 
+ok 3 [libs/FFTW] Serial Fortran binary runs under resource manager (SLURM/gnu/openmpi) 
+PASS rm_execution (exit status: 0)
+\end{lstlisting}

@@ -1,0 +1,53 @@
+#!/bin/bash
+#This script expects compute node ID as an input
+set -x
+# find and setup working directory
+CHPC_SCRIPTDIR="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )" && pwd -P )"
+CHPC_SCRIPTDIR="${CHPC_SCRIPTDIR%x}"
+cd $CHPC_SCRIPTDIR
+
+echo "..$CHPC_SCRIPTDIR .."
+
+#function cont_next() {
+#   echo "continue to ? "
+#   read uinput
+#   if [ "$uinput" == "y" ]; then
+#       echo "Continueing ..."
+#    else
+#      exit 0
+#   fi
+#}
+
+# Create Post boot file, can be used for cloudInit
+# Check for NTP server and configuration on compute nodes
+#
+#
+# =====================================
+# Preparation for CloudInit Script and files
+# =====================================
+# This assumes that HPC head node recipe is installed and SMS_node functionality is already configured. It will get some data from there to prepare cloudInit
+time source prepare_cloud_init
+
+# ========================
+# Prepare CloudHPC Image :
+# ========================
+# Check if User selected to prepare cloud HPC images
+#cont_next
+time source prepare_chpc_image
+# =============================================
+# Prepare OpenStack for HPC baremetal instances
+# =============================================
+time source prepare_chpc_openstack
+#cont_next
+time source deploy_chpc_openstack
+#Wait for CN(s) to come up. TODO: Poll and wait rather than just a set 10 minutes.
+sleep 600
+#Call cloudInit workaround script
+#time source c_init_workaround
+#
+# ========================================================
+# Prepare SMS/Service Node. 
+# Add Cloud baremetal nodes to HPC Orchestrator
+# ========================================================
+#time source update_cnodes_to_sms
+
