@@ -35,6 +35,7 @@ BuildRequires:  texlive-tcolorbox
 BuildRequires:  latexmk
 BuildRequires:  texlive-environ
 BuildRequires:  texlive-trimspaces
+BuildRequires:  texlive-texconfig
 BuildRequires:  git
 Requires:       make
 Requires:       net-tools
