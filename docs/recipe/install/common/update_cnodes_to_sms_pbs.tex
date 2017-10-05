@@ -1,0 +1,20 @@
+Update pbs server with compute nodes
+
+% begin_ohpc_run
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) # now add compute nodes to pbs server, 
+[ctrlr](*\#*) cat <<EOF > /tmp/addnodespbs
+[ctrlr](*\#*) ssh sms11 << 'EOF'
+[ctrlr](*\#*) #!/bin/bash
+[ctrlr](*\#*) for ((i=0; i < ${num_ccomputes}; i++)); do
+[ctrlr](*\#*)    cn_name=${cnodename_prefix}\$((i+1))
+[ctrlr](*\#*)    qmgr -c "create node \$cn_name"
+[ctrlr](*\#*) done
+[ctrlr](*\#*) rm -fr /tmp/addnodespbs
+[ctrlr](*\#*) EOF
+[ctrlr](*\#*) scp /tmp/addnodespbs $sms_name
+[ctrlr](*\#*) ssh $sms_name source /tmp/addnodespbs; rm -fr /tmp/addnodespbs;
+[ctrlr](*\#*) rm -fr /tmp/addnodespbs
+
+\end{lstlisting}
+% end_ohpc_run

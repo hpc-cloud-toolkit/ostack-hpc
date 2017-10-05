@@ -1,0 +1,39 @@
+     Enable pbs Resource Manager on compute nodes.
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}
+[ctrlr](*\#*) #Sync sms node with compute nodes. sync users, HPC resource manager and enable munge by copying munge keys
+[ctrlr](*\#*) # Sync following files to compute node
+[ctrlr](*\#*) # Assuming nfs is setup properly
+[ctrlr](*\#*) if [ -d $chpcInitPath ]; then
+[ctrlr](*\#*)     # Update the pbs file
+[ctrlr](*\#*)     perl -pi -e "s/PBS_SERVER=\S+/PBS_SERVER=${sms_name}/" /etc/pbs.conf
+[ctrlr](*\#*)     # make sure that hostname mentioned into /etc/hosts matches machine hostname. 
+[ctrlr](*\#*)     # configure pbs
+[ctrlr](*\#*)     /opt/pbs/libexec/pbs_habitat
+[ctrlr](*\#*)     perl -pi -e "s/\$clienthost \S+/\$clienthost ${sms_name}/" /var/spool/pbs/mom_priv/config
+[ctrlr](*\#*)     echo "\$usecp *:/home /home" >> /var/spool/pbs/mom_priv/config 
+
+[ctrlr](*\#*) else
+[ctrlr](*\#*)     logger "chpcInit:ERROR: cannot stat nfs shared /opt directory, cannot copy HPC system files"
+[ctrlr](*\#*) fi
+\end{lstlisting}
+% end_ohpc_run
+
+	At this point, all pre-requisites for HPC resource manager should be met. Let's start the daemon.
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) # Start pbs 
+[ctrlr](*\#*) systemctl enable pbs
+[ctrlr](*\#*) systemctl start pbs
+[ctrlr](*\#*) logger "chpcInit: Resource Manager configuration Complete"
+\end{lstlisting}
+%end_ohpc_run
+
+	Save the file with name 'chpc\_init', we will use  file during the creation of baremetal node instances.
+

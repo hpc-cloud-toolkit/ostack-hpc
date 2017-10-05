@@ -1,0 +1,82 @@
+	Add optional OpenHPC components.
+
+% begin_ohpc_run
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)         if [[ ${enable_mrsh} -eq 1 ]];then
+[ctrlr](*\#*)             DIB_HPC_ELEMENTS+=" hpc-mrsh"
+[ctrlr](*\#*)         fi
+\end{lstlisting} 
+ % end_ohpc_run
+
+	We will also setup an HPC development environment on the HPC head node. 
+
+	Start by enabling the gnu compiler on head node.
+
+% begin_ohpc_run
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)         export DIB_HPC_COMPILER="gnu7"
+\end{lstlisting} 
+ % end_ohpc_run
+
+	Enable openmpi \& mvapich2.
+
+% begin_ohpc_run
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)         export DIB_HPC_MPI="openmpi mvapich2"
+\end{lstlisting} 
+ % end_ohpc_run
+
+	Enable performance tools.
+
+% begin_ohpc_run
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)         export DIB_HPC_PERF_TOOLS="perf-tools"
+\end{lstlisting} 
+ % end_ohpc_run
+
+	Enable 3rd party libraries serial-libs, parallel-libs, io-libs, python-libs, and runtimes.
+
+% begin_ohpc_run
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)         export DIB_HPC_3RD_LIBS="serial-libs parallel-libs io-libs python-libs runtimes"
+\end{lstlisting} 
+ % end_ohpc_run
+
+	Add the HPC development environment element to the list of elements.
+
+% begin_ohpc_run
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)         DIB_HPC_ELEMENTS+=" hpc-dev-env"
+\end{lstlisting} 
+ % end_ohpc_run
+
+	Now create an sms image with the following elements: local-config, dhcp-all-interfaces, devuser, selinux-permisive, and all HPC specific elements. Element local-config copies your local environment into the image, which is the local users, their password, and permissions. Element devuser will create a new user specified by environment variable "DIB\_DEV\_USER\_USERNAME". The image will be named  {\em  icloud-hpc-cent7-sms}.
+
+% begin_ohpc_run
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)         disk-image-create centos7 vm local-config dhcp-all-interfaces \
+[ctrlr](*\#*)         	devuser selinux-permissive $DIB_HPC_ELEMENTS -o icloud-hpc-cent7-sms
+\end{lstlisting} 
+ % end_ohpc_run
+
+	It will take awhile to build an image. Once the image is built, copy it to the standard OpenHPC path.
+
+% begin_ohpc_run
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)         chpc_image_sms="$( realpath icloud-hpc-cent7-sms.qcow2)"
+[ctrlr](*\#*)         mkdir -p $CHPC_CLOUD_IMAGE_PATH
+[ctrlr](*\#*)         mv -f $chpc_image_sms $CHPC_CLOUD_IMAGE_PATH
+[ctrlr](*\#*)         chpc_image_sms=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_sms)
+[ctrlr](*\#*)     fi # end of else of or if
+[ctrlr](*\#*) } # end of function
+\end{lstlisting} 
+ % end_ohpc_run
+

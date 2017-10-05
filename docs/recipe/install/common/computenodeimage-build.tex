@@ -1,0 +1,38 @@
+
+
+	Add optional OpenHPC components.
+
+% begin_ohpc_run
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)       if [[ ${enable_mrsh} -eq 1 ]];then
+[ctrlr](*\#*)           DIB_HPC_ELEMENTS+=" hpc-mrsh"
+[ctrlr](*\#*)       fi
+\end{lstlisting} 
+ % end_ohpc_run
+
+	Create a compute node image with the following elements: local-config, dhcp-all-interfaces, devuser, selinux-permissive and all HPC specific elements. Element local-config copies your local environment into the image, which is the local users, their password, and permissions. Element devuser will create a new user specified by the environment variable "DIB\_DEV\_USER\_USERNAME". We will name the image {\em  icloud-hpc-cent7 }
+
+% begin_ohpc_run
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)       disk-image-create centos7 vm local-config dhcp-all-interfaces \
+[ctrlr](*\#*)         devuser selinux-permissive $DIB_HPC_ELEMENTS -o icloud-hpc-cent7
+\end{lstlisting} 
+ % end_ohpc_run 
+
+
+	It will take awhile to build an image. Once the image is built, copy it to the standard OpenHPC path.
+
+% begin_ohpc_run
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)       chpc_image_user="$( realpath icloud-hpc-cent7.qcow2)"
+[ctrlr](*\#*)       mkdir -p $CHPC_CLOUD_IMAGE_PATH
+[ctrlr](*\#*)       mv -f $chpc_image_user $CHPC_CLOUD_IMAGE_PATH
+[ctrlr](*\#*)       chpc_image_user=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_user)
+[ctrlr](*\#*)     fi # end of else of or if
+[ctrlr](*\#*) } # end of function
+\end{lstlisting} 
+ % end_ohpc_run
+

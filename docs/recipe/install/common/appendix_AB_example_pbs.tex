@@ -1,0 +1,86 @@
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[controller]# cd /opt/ohpc/pub/doc/recipes/centos7/x86_64/openstack/pbs/
+[controller]# ./setup_cloud_hpc.sh -u=3 -i=/root/input.local -n=/root/inventory
+\end{lstlisting}
+
+\newpage
+\subsection{Integration Test Suite}
+	
+\input{common/appendix_AB_test_desc1.tex}
+
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[controller]# yum -y install test-suite-chpc
+[controller]# cd /home/chpc/tests/tests
+[controller]# ./hpc_in_oscloud-tests -h
+\end{lstlisting}
+You can invoke sms tests from controller node using script ./hpc\_in\_oscloud-tests located in tests folder. Before invoking this script please update environemnt variable "TEST\_RPM\_PATH" to point to test-suite-chpc rpm. Script uses this to copy and install test rpm at sms node.
+
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[controller]# yum -y install test-suite-chpc
+[controller]# cd /home/chpc/tests/tests
+[controller]# ./hpc_in_oscloud-tests -i=/root/hn1_has_input.local  -n=/root/hn1_has_inventory -rs
+\end{lstlisting}
+
+\input{common/appendix_AB_test_desc2.tex}
+
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[sms]# cd /home/ohpc-test/tests;./enable-ostack-tests.sh 
+[sms]# su - ohpc-test
+[test@sms ~]$ cd tests 
+[test@sms ~]$ cd ./bootstrap
+[test@sms ~]$ ./configure --disable-all --enable-fftw 
+checking for a BSD-compatible install... /bin/install -c
+checking whether build environment is sane... yes
+... 
+-------------------------------------------- SUMMARY ---------------------------------------------
+
+Package version............... : test-suite-1.3.0
+
+Build user.................... : ohpc-test
+Build host.................... : sms11.novalocal
+Configure date................ : 2017-10-05 21:25
+Build architecture............ : x86_64
+Host operating system......... : CentOS
+Compiler Families............. : gnu7
+MPI Families.................. : mvapich2 openmpi
+Resource manager ............. : PBS Pro
+Test suite configuration...... : short
+
+Submodule Configuration:
+
+User Environment:
+    Compilers................. : disabled
+    Lustre client............. : disabled
+    Modules................... : disabled
+    MPI....................... : disabled
+...
+Libraries:
+    Adios .................... : disabled
+    Boost .................... : disabled
+    Boost MPI................. : disabled
+    FFTW...................... : enabled
+    GSL....................... : disabled
+    HDF5...................... : disabled
+    HYPRE..................... : disabled
+...
+\end{lstlisting}
+	
+Many OpenHPC components exist in multiple flavors to support multiple compiler and MPI runtime permutations, and the test suite takes this into account by iterating through these combinations by default.
+If make check is executed from the top-level test directory, all configured compiler and MPI permutations of a library will be exercised. The following highlights the execution of the FFTW related tests that were enabled in the previous step.
+
+\begin{lstlisting}[language=bash,keywords={},upquote=true]
+[test@sms ~]$ make check 
+make --no-print-directory check-TESTS
+PASS: libs/fftw/ohpc-tests/test_mpi_families
+============================================================================
+Testsuite summary for test-suite 1.3.0
+============================================================================
+# TOTAL: 1
+# PASS:  1
+# SKIP:  0
+# XFAIL: 0
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0
+============================================================================
+\end{lstlisting}

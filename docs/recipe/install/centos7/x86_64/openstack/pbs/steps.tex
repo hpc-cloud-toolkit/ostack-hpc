@@ -10,7 +10,7 @@
 \newcommand{\OSTag}{el7}
 \newcommand{\baseos}{centos7.3}
 \newcommand{\provisioner}{OpenStack}
-\newcommand{\rms}{SLURM}
+\newcommand{\rms}{PBS}
 \newcommand{\arch}{x86\_64}
 \newcommand{\clean}{yum clean expire-cache}
 \newcommand{\chrootclean}{yum --installroot=\$CHROOT clean expire-cache}
@@ -25,7 +25,7 @@
 
 % boolean for os-specific formatting
 \toggletrue{isCentOS}
-\toggletrue{isCentOS_ww_slurm_x86}
+\toggletrue{isCentOS_ww_pbs_x86}
 \toggletrue{isx86}
 
 \begin{document}
@@ -46,7 +46,7 @@
 \section{Introduction} \label{sec:introduction}
 \input{common/install_header}
 \input{common/intro} 
-\input{common/intro_slurm} 
+\input{common/intro_pbs} 
 \input{common/intro_recipe} 
 
 \input{common/base_edition/edition}
@@ -78,13 +78,13 @@
 \subsubsection{Preparing user image for head node OS}\label{sec:head_node_images}
 %%\input{common/bmnos-headnodeimage}
 \input{common/smsnodeimage-setup}
-\input{common/createnodeimage-add-slurm}
+\input{common/createnodeimage-add-pbs}
 \input{common/smsnodeimage-build}
 
 \subsubsection{Preparing user image for compute node OS}\label{sec:compute_node_images}
 %%\input{common/bmnos-computenodeimage}
 \input{common/computenodeimage-setup}
-\input{common/createnodeimage-add-slurm}
+\input{common/createnodeimage-add-pbs}
 \input{common/computenodeimage-build}
 
 \newpage
@@ -103,13 +103,13 @@
 
 \subsection{Preparing template for compute node cloud-init} \label{sec:c_i-template_compute_node}
 \input{common/ci-template-compute}
-\input{common/ci-template-compute-slurm}
+\input{common/ci-template-compute-pbs}
 
 
 \newpage
 \subsection{Preparing template for sms node cloud-init} \label{sec:c_i-template-sms-node}
 \input{common/ci-template-sms}
-\input{common/ci-template-sms-slurm}
+\input{common/ci-template-sms-pbs}
 	
 
 \subsection{Optional: Additional cloud-init configuration} \label{sec:c_i-optional}
@@ -142,14 +142,14 @@
 
 \section{Updating HPC Resource Manager}
 \input{common/update_cnodes_to_sms.tex}
-\input{common/update_cnodes_to_sms_slurm.tex}
+\input{common/update_cnodes_to_sms_pbs.tex}
 	
 \newpage
 \section{Appendix}
 \input{common/appendix_AB.tex}
-\input{common/appendix_AB_example_slurm.tex}
+\input{common/appendix_AB_example_pbs.tex}
 \input{common/appendix_C.tex}
-\input{common/appendix_C_verify_slurm.tex}
+%%\input{common/appendix_C_verify_slurm.tex}
 \input{common/parent_files_appendix.tex}
 
 	
@@ -215,8 +215,7 @@
 % ohpc_command 
 % ohpc_command file: update_cnodes_to_sms
 % ohpc_command ==========================
-% ohpc_command This script perform the post boot configuration including updating SLURM 
-% ohpc_command resource manager at sms node for HPC compute nodes
+% ohpc_command This script perform the post boot configuration.
 % ohpc_command 
 
 

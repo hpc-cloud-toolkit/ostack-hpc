@@ -53,6 +53,8 @@ ls
 cd recipe/install
 cd centos7/x86_64/openstack/slurm/
 make
+cd ../pbs
+make
 cd ../../../..
 bash create_recipes.sh
 
@@ -63,40 +65,56 @@ pushd centos7/x86_64/openstack/slurm
 %{__mkdir_p} %{buildroot}%{OHPC_PUB}/doc
 #%{__mkdir_p} %{buildroot}%{OHPC_PUB}/doc/recipes/cloudhpc/cloud_hpc_init/ohpc
 
+#copy slurm
 %define s_path install/centos7/x86_64/openstack/slurm
 %define d_path %{OHPC_PUB}/doc/recipes/centos7/x86_64/openstack/slurm
-%define lpath install/centos7/x86_64/openstack/slurm
-%define grecipe recipe/install/recipe
+%define grecipe recipe/install/slurm
 install -m 0755 -p -d recipe/%{s_path} %{buildroot}/%{d_path}
 install -m 0644 -p -D recipe/%{s_path}/steps.pdf %{buildroot}/%{d_path}/OHPC-HPCaaS-Install_guide.pdf
 install -m 0755 -p -D %{grecipe}/common_functions %{buildroot}/%{d_path}/
 install -m 0755 -p -D %{grecipe}/setup_cloud_hpc.sh %{buildroot}/%{d_path}/
 install -m 0755 -p -D %{grecipe}/teardown_cloud_nodes.sh %{buildroot}/%{d_path}/
 install -m 0755 -p -D %{grecipe}/get_cn_mac %{buildroot}/%{d_path}/
-install -m 0755 -p -d %{grecipe}/3_hpc_as_service %{buildroot}/%{d_path}/3_hpc_as_service
-install -m 0755 -p -D %{grecipe}/3_hpc_as_service/set_os_hpc %{buildroot}/%{d_path}/3_hpc_as_service/
 install -m 0755 -p -d %{grecipe}/3_hpc_as_service/heat_templates %{buildroot}/%{d_path}/3_hpc_as_service/heat_templates
-install -m 0755 -p -D %{grecipe}/3_hpc_as_service/heat_templates/heat-cn.yaml %{buildroot}/%{d_path}//3_hpc_as_service/heat_templates/
-install -m 0755 -p -D %{grecipe}/3_hpc_as_service/heat_templates/heat-sms.yaml %{buildroot}/%{d_path}//3_hpc_as_service/heat_templates/
-
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/heat_templates/* %{buildroot}/%{d_path}//3_hpc_as_service/heat_templates/
+#
 install -m 0755 -p -d %{grecipe}/3_hpc_as_service/sms %{buildroot}/%{d_path}/3_hpc_as_service/sms/
-install -m 0755 -p -D %{grecipe}/3_hpc_as_service/sms/update_mrsh %{buildroot}/%{d_path}//3_hpc_as_service/sms/
-install -m 0755 -p -D %{grecipe}/3_hpc_as_service/sms/update_clustershell %{buildroot}/%{d_path}//3_hpc_as_service/sms/
-install -m 0755 -p -D %{grecipe}/3_hpc_as_service/sms/enable_genders %{buildroot}/%{d_path}//3_hpc_as_service/sms/
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/sms/* %{buildroot}/%{d_path}//3_hpc_as_service/sms/
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/set_os_hpc %{buildroot}/%{d_path}/3_hpc_as_service/
 install -m 0755 -p -D %{grecipe}/3_hpc_as_service/update_cnodes_to_sms %{buildroot}/%{d_path}//3_hpc_as_service/
 install -m 0755 -p -D %{grecipe}/3_hpc_as_service/deploy_chpc_openstack %{buildroot}/%{d_path}//3_hpc_as_service/
 install -m 0755 -p -D %{grecipe}/3_hpc_as_service/prepare_chpc_image %{buildroot}/%{d_path}//3_hpc_as_service/
 install -m 0755 -p -D %{grecipe}/3_hpc_as_service/prepare_chpc_openstack %{buildroot}/%{d_path}//3_hpc_as_service/
 install -m 0755 -p -D %{grecipe}/3_hpc_as_service/prepare_cloud_init %{buildroot}/%{d_path}//3_hpc_as_service/
 install -m 0755 -p -D %{grecipe}/3_hpc_as_service/README %{buildroot}/%{d_path}//3_hpc_as_service/
-install -m 0755 -p -d %{grecipe}/cloud_hpc_init %{buildroot}/%{d_path}/cloud_hpc_init
 install -m 0755 -p -d %{grecipe}/cloud_hpc_init/ohpc %{buildroot}/%{d_path}/cloud_hpc_init/ohpc
-install -m 0755 -p -D %{grecipe}/cloud_hpc_init/ohpc/chpc_init %{buildroot}/%{d_path}/cloud_hpc_init/ohpc/
-install -m 0755 -p -D %{grecipe}/cloud_hpc_init/ohpc/chpc_sms_init %{buildroot}/%{d_path}/cloud_hpc_init/ohpc/
+install -m 0755 -p -D %{grecipe}/cloud_hpc_init/ohpc/* %{buildroot}/%{d_path}/cloud_hpc_init/ohpc/
 # Install templates input files
-install -m 0755 -p -D %{grecipe}/Template-INPUT.LOCAL %{buildroot}/%{OHPC_PUB}/doc/recipes/
-install -m 0755 -p -D %{grecipe}/Template-INVENTORY %{buildroot}/%{OHPC_PUB}/doc/recipes/
+install -m 0755 -p -D %{grecipe}/Template* %{buildroot}/%{OHPC_PUB}/doc/recipes/
 
+#copy pbs
+%define s_path install/centos7/x86_64/openstack/pbs
+%define d_path %{OHPC_PUB}/doc/recipes/centos7/x86_64/openstack/pbs
+%define grecipe recipe/install/pbs
+install -m 0755 -p -d %{grecipe} %{buildroot}/%{d_path}
+install -m 0644 -p -D recipe/%{s_path}/steps.pdf %{buildroot}/%{d_path}/OHPC-HPCaaS-Install_guide.pdf
+install -m 0755 -p -D %{grecipe}/common_functions %{buildroot}/%{d_path}/
+install -m 0755 -p -D %{grecipe}/setup_cloud_hpc.sh %{buildroot}/%{d_path}/
+install -m 0755 -p -D %{grecipe}/teardown_cloud_nodes.sh %{buildroot}/%{d_path}/
+install -m 0755 -p -D %{grecipe}/get_cn_mac %{buildroot}/%{d_path}/
+install -m 0755 -p -d %{grecipe}/3_hpc_as_service/heat_templates %{buildroot}/%{d_path}/3_hpc_as_service/heat_templates
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/heat_templates/* %{buildroot}/%{d_path}//3_hpc_as_service/heat_templates/
+install -m 0755 -p -d %{grecipe}/3_hpc_as_service/sms %{buildroot}/%{d_path}/3_hpc_as_service/sms/
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/sms/* %{buildroot}/%{d_path}//3_hpc_as_service/sms/
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/set_os_hpc %{buildroot}/%{d_path}/3_hpc_as_service/
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/update_cnodes_to_sms %{buildroot}/%{d_path}//3_hpc_as_service/
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/deploy_chpc_openstack %{buildroot}/%{d_path}//3_hpc_as_service/
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/prepare_chpc_image %{buildroot}/%{d_path}//3_hpc_as_service/
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/prepare_chpc_openstack %{buildroot}/%{d_path}//3_hpc_as_service/
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/prepare_cloud_init %{buildroot}/%{d_path}//3_hpc_as_service/
+install -m 0755 -p -D %{grecipe}/3_hpc_as_service/README %{buildroot}/%{d_path}//3_hpc_as_service/
+install -m 0755 -p -d %{grecipe}/cloud_hpc_init/ohpc %{buildroot}/%{d_path}/cloud_hpc_init/ohpc
+install -m 0755 -p -D %{grecipe}/cloud_hpc_init/ohpc/* %{buildroot}/%{d_path}/cloud_hpc_init/ohpc/
 %{__mkdir_p} ${RPM_BUILD_ROOT}/%{_docdir}
 
 

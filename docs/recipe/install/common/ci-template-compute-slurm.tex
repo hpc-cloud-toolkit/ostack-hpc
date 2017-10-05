@@ -1,0 +1,44 @@
+     Enable SLURM Resource Manager on compute nodes.
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}
+[ctrlr](*\#*) #Sync sms node with compute nodes. sync users, HPC resource manager and enable munge by copying munge keys
+[ctrlr](*\#*) # Sync following files to compute node
+[ctrlr](*\#*) # Assuming nfs is setup properly
+[ctrlr](*\#*) if [ -d $chpcInitPath ]; then
+[ctrlr](*\#*)     # Update the slurm file
+[ctrlr](*\#*)     cp -f -L $chpcInitPath/slurm.conf /etc/slurm/slurm.conf
+[ctrlr](*\#*)     cp -f -L $chpcInitPath/slurm.conf /etc/slurm/slurm.conf
+[ctrlr](*\#*)     cp -f -L $chpcInitPath/slurm /etc/pam.d/slurm
+[ctrlr](*\#*)     cp -f -L $chpcInitPath/munge.key /etc/munge/munge.key
+[ctrlr](*\#*)     # make sure that hostname mentioned into /etc/hosts matches machine hostname. 
+[ctrlr](*\#*)     # Start hpc resource manager 
+[ctrlr](*\#*)     systemctl enable munge
+[ctrlr](*\#*)     systemctl restart munge
+[ctrlr](*\#*)     systemctl enable slurmd
+[ctrlr](*\#*)     systemctl restart slurmd
+[ctrlr](*\#*) else
+[ctrlr](*\#*)     logger "chpcInit:ERROR: cannot stat nfs shared /opt directory, cannot copy HPC system files"
+[ctrlr](*\#*) fi
+\end{lstlisting}
+% end_ohpc_run
+
+	At this point, all pre-requisites for HPC resource manager should be met. Let's start the daemon.
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) # Start slurm and munge 
+[ctrlr](*\#*) systemctl enable munge
+[ctrlr](*\#*) systemctl restart munge
+[ctrlr](*\#*) systemctl enable slurmd
+[ctrlr](*\#*) systemctl restart slurmd
+[ctrlr](*\#*) logger "chpcInit: Resource Manager configuration Complete"
+\end{lstlisting}
+%end_ohpc_run
+
+	Save the file with name 'chpc\_init', we will use  file during the creation of baremetal node instances.
+

@@ -1,0 +1,9 @@
+Update slurm on sms node.
+
+% begin_ohpc_run
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) # now update slurm on sms node
+[ctrlr](*\#*) ssh $sms_ip scontrol update nodename=cc[1-${num_ccomputes}] state=idle
+[ctrlr](*\#*) ssh $sms_ip sinfo
+\end{lstlisting}
+% end_ohpc_run

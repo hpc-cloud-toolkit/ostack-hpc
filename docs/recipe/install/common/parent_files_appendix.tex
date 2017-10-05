@@ -359,9 +359,6 @@
 % ohpc_command     
 % ohpc_command true
 % ohpc_command 
-% ohpc_command #Call sinfo and srun to verify slurm's connection to the compute nodes
-% ohpc_command #sinfo
-% ohpc_command #srun -N ${num_ccomputes} hostname -i
 % ohpc_command 
 % ohpc_command # End
 
@@ -627,7 +624,7 @@
 % ohpc_command #chpc_base="orch"
 % ohpc_command chpc_base="ohpc"
 % ohpc_command 
-% ohpc_command # HPC slurm partition that needs to be extended. Specified by the admin
+% ohpc_command # HPC partition that needs to be extended. Specified by the admin, only applicable for SLURM resource manager
 % ohpc_command hpc_slurm_partition=normal
 % ohpc_command 
 % ohpc_command # list Compute nodes

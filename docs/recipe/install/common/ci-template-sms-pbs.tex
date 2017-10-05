@@ -1,0 +1,29 @@
+
+	Configure the pbs resource manager, and create compute nodes via qmgr.
+
+
+% begin_ohpc_run
+% ohpc_validation_newline
+
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) # Update Resource manager configuration (*\#*)(*\#*)(*\#*)
+[ctrlr](*\#*) # Update basic pbs configuration at SMS node
+[ctrlr](*\#*) perl -pi -e "s/\$clienthost \S+/\$clienthost ${sms_name}/" /var/spool/pbs/mom_priv/config
+[ctrlr](*\#*) perl -pi -e "s/PBS_SERVER=\S+/PBS_SERVER=${sms_name}/" /etc/pbs.conf
+[ctrlr](*\#*) # Start pbs 
+[ctrlr](*\#*) systemctl enable pbs
+[ctrlr](*\#*) systemctl start pbs
+[ctrlr](*\#*) . /etc/profile.d/pbs.sh
+[ctrlr](*\#*) qmgr -c "set server default_qsub_arguments= -V" 
+[ctrlr](*\#*) qmgr -c "set server resources_default.place=scatter"
+[ctrlr](*\#*) qmgr -c "set server job_history_enable=True"
+[ctrlr](*\#*) for((i=0; i<${num_ccomputes}; i++)) ; do
+[ctrlr](*\#*)    qmgr -c "create node ${cnodename_prefix}$((i+1))"
+[ctrlr](*\#*) done
+[ctrlr](*\#*) logger "chpcSMSInit:pbs configuration done"
+\end{lstlisting} 
+ % end_ohpc_run
+
+
+	Noe save the file with name chpc\_sms\_cinit". This file will be used to create the sms node instance.
+

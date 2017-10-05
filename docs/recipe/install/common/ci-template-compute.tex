@@ -1,6 +1,6 @@
 	Create an empty chpc\_init file and open it for editing. You can also modify the existing template. 
 
-	Start editing the new file by adding environment variables. First, set the path to the shared folder for cloud-init
+	Start editing the new file by adding environment variables. First, set the path to the shared folder for cloud-init and then declere variable sms\_name with "update\_sms\_name", which we will update just before provisioning.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -15,6 +15,7 @@
 [ctrlr](*\#*) SCRIPTDIR="${SCRIPTDIR%x}"
 [ctrlr](*\#*) cd $SCRIPTDIR
 [ctrlr](*\#*) chpcInitPath=/opt/ohpc/admin/cloud_hpc_init
+[ctrlr](*\#*) sms_name=<update_sms_name>
 
 [ctrlr](*\#*) logger "chpcInit: Updating Compute Node with HPC configuration"
 \end{lstlisting}
@@ -93,54 +94,18 @@
 [ctrlr](*\#*) systemctl restart ntpd
 [ctrlr](*\#*) # Sync time
 [ctrlr](*\#*) ntpstat
-[ctrlr](*\#*) #Sync sms node with compute nodes. sync users, HPC resource manager and enable munge by copying munge keys
-[ctrlr](*\#*) # Sync following files to compute node
-[ctrlr](*\#*) # Assuming nfs is setup properly
 [ctrlr](*\#*) if [ -d $chpcInitPath ]; then
-[ctrlr](*\#*)     # Update the slurm file
-[ctrlr](*\#*)     cp -f -L $chpcInitPath/slurm.conf /etc/slurm/slurm.conf
 [ctrlr](*\#*)     # Copy public keys
 [ctrlr](*\#*)     cp -f -L $chpcInitPath/authorized_keys /root/.ssh/
-[ctrlr](*\#*)     cp -f -L $chpcInitPath/slurm.conf /etc/slurm/slurm.conf
-[ctrlr](*\#*)     cp -f -L $chpcInitPath/slurm /etc/pam.d/slurm
-[ctrlr](*\#*)     cp -f -L $chpcInitPath/munge.key /etc/munge/munge.key
-[ctrlr](*\#*)     # make sure that hostname mentioned into /etc/hosts matches machine hostname. 
-[ctrlr](*\#*)     # Start hpc resource manager 
-[ctrlr](*\#*)     systemctl enable munge
-[ctrlr](*\#*)     systemctl restart munge
-[ctrlr](*\#*)     systemctl enable slurmd
-[ctrlr](*\#*)     systemctl restart slurmd
 [ctrlr](*\#*) else
 [ctrlr](*\#*)     logger "chpcInit:ERROR: cannot stat nfs shared /opt directory, cannot copy HPC system files"
 [ctrlr](*\#*) fi
-\end{lstlisting}
-% end_ohpc_run
-
-	At this point, all pre-requisites for HPC resource manager should be met. Let's start the daemon.
-
-% begin_ohpc_run
-% ohpc_validation_newline
-
-\begin{lstlisting}[language=bash,keywords={}]
-[ctrlr](*\#*) # Start slurm and munge 
-[ctrlr](*\#*) systemctl enable munge
-[ctrlr](*\#*) systemctl restart munge
-[ctrlr](*\#*) systemctl enable slurmd
-[ctrlr](*\#*) systemctl restart slurmd
-\end{lstlisting}
-%end_ohpc_run
-
-	Complete the one last step to ensure sure ssh is working and enabled on the compute node. Update/verify the permissions of ssh.
-
-% begin_ohpc_run
-% ohpc_validation_newline
-
-\begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) #Change file permissions in /etc/ssh to fix ssh into compute node
 [ctrlr](*\#*) chmod 0600 /etc/ssh/ssh_host_*_key
-[ctrlr](*\#*) logger "chpcInit: Complete"
 \end{lstlisting}
 % end_ohpc_run
 
-	Save the file with name 'chpc\_init', we will use  file during the creation of baremetal node instances.
+% begin_ohpc_run
+% ohpc_validation_newline
+
 

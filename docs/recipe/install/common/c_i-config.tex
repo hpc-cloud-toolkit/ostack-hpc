@@ -20,11 +20,12 @@
 \end{lstlisting}
 % end_ohpc_run
 
-	Update sms\_ip in the compute node cloud-init template with the SMS node IP. 
+	Update sms\_ip and sms\_name in the compute node cloud-init template with the SMS node IP and name. 
 	
 % begin_ohpc_run
 \begin{lstlisting}[language=bash,keywords={}]
 [ctrlr](*\#*) sudo sed -i -e "s/<sms_ip>/${sms_ip}/g" $chpcInit
+[ctrlr](*\#*) sudo sed -i -e "s/<update_sms_name>/${sms_name}/g" $chpcInit
 \end{lstlisting}
 % end_ohpc_run
 

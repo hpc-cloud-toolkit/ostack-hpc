@@ -1,0 +1,37 @@
+	Building head node (SMS) images requires installing the server packages of HPC components into the image. This is accomplished by setting the image type to "sms". The default image type in HPC elements is "compute". We will create a function prepare\_sms\_image to build this image, which will be called later in the document.
+
+% begin_ohpc_run
+% ohpc_validation_newline
+% ohpc_validation_comment function to prepare head node
+% ohpc_validation_comment
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*) function prepare_sms_image() {
+\end{lstlisting} 
+% end_ohpc_run
+
+	Check if the user has requested to create images by verifying environment variables chpc\_create\_new\_image and chpc\_image\_sms. If the user has supplied images then we will copy images to our common image location and setup environment variables for later use.
+	
+% begin_ohpc_run
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)     if [[ ${chpc_create_new_image} -ne 1 ]] && [[ -s $chpc_image_sms ]]; then
+[ctrlr](*\#*)         # No need to create an image, image is provided by the user
+[ctrlr](*\#*)         echo -n "Skipping cloud sms-image build, image provided:"
+[ctrlr](*\#*)         echo "$chpc_image_sms"
+[ctrlr](*\#*)         CHPC_IMAGE_DEST=$CHPC_CLOUD_IMAGE_PATH/$(basename $chpc_image_sms)
+[ctrlr](*\#*)         if [[ ! -e $CHPC_IMAGE_DEST ]]; then
+[ctrlr](*\#*)             sudo cp $chpc_image_sms $CHPC_CLOUD_IMAGE_PATH
+[ctrlr](*\#*)         fi
+[ctrlr](*\#*)         chpc_image_sms=$CHPC_IMAGE_DEST
+[ctrlr](*\#*)     else
+\end{lstlisting} 
+% end_ohpc_run
+
+	If the user has not supplied images then we will build the sms image here. Disk-image-builder supports two types of HPC images, "sms" and "compute".  
+
+% begin_ohpc_run
+\begin{lstlisting}[language=bash,keywords={}]
+[ctrlr](*\#*)         # setup environment variable to indicate sms image type
+[ctrlr](*\#*)         setup_dib_hpc_base
+[ctrlr](*\#*)         export DIB_HPC_IMAGE_TYPE=sms
+\end{lstlisting} 
+% end_ohpc_run
