@@ -31,6 +31,12 @@ DIB_HPC_SSH_PUB_KEY
     path DIB_HPC_SSH_PUB_KEY for compute node, it copies autorized_keys from 
     DIB_HPC_SSH_PUB_KEY, and copy to /root/.ssh/ 
 
+DIB_HPC_FILE_PATH
+  :Required: yes
+  :Default: none
+  :Description: This path maintains hpc environment specific files cloud.cfg and
+    hpc-env-in-cloud.sh. It copies these files to images. Without these files
+    hpc workload might not work as expected. 
 
 .. note::
     This element only tested on CentOS7

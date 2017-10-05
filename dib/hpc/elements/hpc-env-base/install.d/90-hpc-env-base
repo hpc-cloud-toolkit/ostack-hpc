@@ -82,7 +82,10 @@ fi
 if [ -f /tmp/in_target.d/cloud.cfg ]; then
     sudo cp -L -f /tmp/in_target.d/cloud.cfg /etc/cloud/
 fi
-
+# copy ssh env generation file
+if [ -f /tmp/in_target.d/hpc-env-in-cloud.sh ]; then
+    sudo cp -L -f /tmp/in_target.d/hpc-env-in-cloud.sh /etc/profile.d/
+fi
 
 
 case "$DIB_INIT_SYSTEM" in

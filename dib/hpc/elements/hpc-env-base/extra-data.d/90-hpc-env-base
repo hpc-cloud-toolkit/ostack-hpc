@@ -6,9 +6,10 @@ fi
 set -eu
 set -o pipefail
 
-# Copy CloudInit configuration file
+# Copy CloudInit configuration and environement file
 if [ ! -z $DIB_HPC_FILE_PATH ]; then
     sudo cp -L -f $DIB_HPC_FILE_PATH/cloud.cfg $TMP_HOOKS_PATH/
+    sudo cp -L -f $DIB_HPC_FILE_PATH/hpc-env-in-cloud.sh $TMP_HOOKS_PATH/
 fi
 # for compute node image copy ssh oub keys
 if [[ $DIB_HPC_IMAGE_TYPE == "compute" ]]; then

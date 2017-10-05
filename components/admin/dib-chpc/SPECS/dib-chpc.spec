@@ -38,7 +38,7 @@ mkdir -p %{buildroot}/opt/ohpc/admin/%{pname}/hpc-files
 mv patch/elements/yum/bin/install-packages %{buildroot}/usr/share/diskimage-builder/elements/yum/bin/install-packages-new
 cp -fr hpc/elements/* %{buildroot}/usr/share/diskimage-builder/elements/
 mv hpc/elements/* %{buildroot}/opt/ohpc/admin/%{pname}/elements/
-mv hpc/hpc-files/cloud.cfg %{buildroot}/opt/ohpc/admin/%{pname}/hpc-files/
+mv hpc/hpc-files/* %{buildroot}/opt/ohpc/admin/%{pname}/hpc-files/
  
 %files
 %defattr(-,root,root)
