@@ -34,7 +34,7 @@ This shall return a output described below (UUID will be different for each inst
 Common problem observed during test setup is that ironic node is stuck at "wait call-back" state for long time before moving to ERROR state. Possible problem for that is your security setting at controller node. \\
 - Check for any firewall rules which might block your PXE packets from SMS node to controller node and vise versa. \\
 - Check if nodes are getting IP address. You can watch the network traffic via tcpdump utility.
-- Check if deploy images are build correctly. Verify if glance has entry for deploy images via "glance image-list". Also verify deply image at location "/opt/ohpc/admin/images/cloud/", look for "icloud-hpc-deploy*.kernel" and "icloud-hpc-deploy*.initramfs". If you don't see these images than refere to the section "Preparing ironic deploy images" of this document. \\
+- Check if deploy images are build correctly. Verify if glance has entry for deploy images via "glance image-list". Also verify deploy image at location "/opt/ohpc/admin/images/cloud/", look for "icloud-hpc-deploy*.kernel" and "icloud-hpc-deploy*.initramfs". If you don't see these images then refere to the section "Preparing ironic deploy images" of this document. \\
 \\
 \textbf{Verify SSH connections}\\
 Next step is to verify a ssh connection from the controller node to the SMS node and then from the SMS node to the compute nodes. First get the IPAddress of the SMS node via "nova list" command and use that IP address to verify the ssh connection with command "ssh <sms\_ip> hostname -I". You should get IP address of the SMS node on output. 
