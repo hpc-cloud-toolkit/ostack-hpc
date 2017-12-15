@@ -1,0 +1,64 @@
+atlas:
+  phase: pre-install.d
+bc:
+  phase: pre-install.d
+elfutils-libelf-devel:
+  phase: pre-install.d
+expect:
+  phase: pre-install.d
+gcc-gfortran:
+  phase: pre-install.d
+infinipath-psm.x86_64:
+  phase: pre-install.d
+iproute:
+  phase: pre-install.d
+kernel-devel:
+  phase: pre-install.d
+kernel-source:
+  phase: pre-install.d
+libhfi1:
+  phase: pre-install.d
+libibcm:
+  phase: pre-install.d
+libibmad:
+  phase: pre-install.d
+libibumad:
+  phase: pre-install.d
+libibumad-devel:
+  phase: pre-install.d
+libpsm2:
+  phase: pre-install.d
+librdmacm:
+  phase: pre-install.d
+libstdc++-devel:
+  phase: pre-install.d
+net-tools:
+  phase: pre-install.d
+perftest:
+  phase: pre-install.d
+perl:
+  phase: pre-install.d
+qperf:
+  phase: pre-install.d
+redhat-rpm-config:
+  phase: pre-install.d
+rpm-build:
+  phase: pre-install.d
+sysfsutils:
+  phase: pre-install.d
+tcl:
+  phase: pre-install.d
+tcsh:
+  phase: pre-install.d
+which:
+  phase: pre-install.d
+opensm-libs:
+  phase: pre-install.d
+libuuid-devel:
+ phase: pre-install.d
+papi:
+ phase: pre-install.d
+ibacm:
+  phase: pre-install.d
+
+
