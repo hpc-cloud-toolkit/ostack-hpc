@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [ ${DIB_DEBUG_TRACE:-0} -gt 0 ]; then
+    set -x
+fi
+set -eu
+set -o pipefail
+
+cd /tmp
+git clone https://github.com/intel/mpi-benchmarks.git
+cd mpi-benchmarks/src
+export CC=mpicc
+export MPI_HOME=/opt/ohpc/pub/mpi/openmpi3-gnu7/3.0.0/
+
+sed -i '/MPI_HOME=/d' ./make_mpich
+make all -f make_mpich
