@@ -17,10 +17,10 @@ cc1
 you should see host name and IP of your HPC compute node in an output of above command. \\
 \\
 \textbf{Resoruce Manager can not talk to compute nodes}\\
-If you don't see your the compute nodes state as "idle" at the Resource Manager. Then possible cause can be a. Timing of the node instantiation, b. cloud-init issue c. Time sync issue \\
-a. \textbf{Timing of the node instantiaion}: In our recipe HPC SMS node shares public key to the HPC compute nodes via nfs. That mean SMS node has to be instantiated before the compute nodes, so that compute node can mount nfs shared folder. Though recipe allow enough time, It is worth checking. Symtops of this behavior can be noticed by looking at syslog at the sms and the compute nodes.    \\
+If you don't see your the compute nodes state as "idle" at the Resource Manager then possible cause can be a. Timing of the node instantiation, b. cloud-init issue c. Time sync issue \\
+a. \textbf{Timing of the node instantiaion}: In our recipe HPC SMS node shares public key to the HPC compute nodes via nfs. That means SMS node has to be instantiated before the compute nodes, so that compute node can mount nfs shared folder. Though recipe allows enough time for that operation, it is worth checking that user home directory is actually mounted on the compute nodes. Symtops of this behavior can be noticed by looking at syslog at the sms and the compute nodes.    \\
 b. \textbf{Cloud-init issue}: Check the syslog at SMS nodes. you should see entries starting with "chpcInit" for all the compute nodes and SMS node. If you suspect cloud-init is not working then check your nova and neutron settings.\\
-c. \textbf{Time sync issue}: This is the situation when clock of compute nodes is not synchronized with the SMS node. Check /etc/ntp.conf file on the compute node as well as the SMS node. ntp server for compute node points to the SMS node and at the SMS node it points to the controller node. This is because the HPC compute nodes do not have direct access to outside of HPC system. After verifying ntp configuration, restart or sync ntp time on SMS node and compute nodes. Usefull command for time sync: ntpstat\\
+c. \textbf{Time sync issue}: This is the situation when clock of compute nodes is not synchronized with the SMS node. Check /etc/ntp.conf file on the compute node as well as the SMS node. ntp server for compute node points to the SMS node and at the SMS node it points to the controller node. This is because the HPC compute nodes do not have direct access to outside of HPC system. After verifying ntp configuration, restart or sync ntp time on SMS node and compute nodes. Useful command for time sync: ntpstat\\
 
 
 	

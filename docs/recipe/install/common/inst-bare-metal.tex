@@ -26,7 +26,7 @@
 \end{lstlisting}
 % end_ohpc_run
 
-	Setup node cleaning network and restart ironic conduction. This is became mendatory in ocata release of OpenStack
+	Setup node cleaning network and restart ironic conduction. This became mendatory in ocata release of OpenStack
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -307,7 +307,7 @@ Add the instance info and disk space for root. \newline
 
 \subsubsection{Boot SMS node}
 
-	In another previous section, we completed the bare metal configuration. The user can request any available baremetal nodes by specifying the flavor they want and image to use to boot the node. For bare metal, we created a flavor with name 'baremetal-flavor', we will provide this to Nova with a CLI option --flavor. In our situation we will request 1 bare metal node with a baremetal flavor (--flavor) and an SMS node image (--image) to boot.  We also would like to reserve the IP address of this node. 
+	In another previous section, we completed the bare metal configuration. The user can request any available baremetal nodes by specifying the flavor he wants and image to use to boot the node. For bare metal, we created a flavor with name 'baremetal-flavor', we will provide this to Nova with a CLI option --flavor. In our situation we will request 1 bare metal node with a baremetal flavor (--flavor) and an SMS node image (--image) to boot.  We also would like to reserve the IP address of this node. 
 
 	In a previous section (setup sms), we associated one of the node's MAC address with its IP address, we will request this from Nova by indicating the port-id we created earlier (port-id=\${SMS\_PORT\_ID}). 
 

@@ -1,4 +1,4 @@
-	The cloud-init script for the SMS node is different than the compute node. The SMS node, when instantiated within OpenStack, serves as head node for HPC-as-a-Service, and hosts all services as a SMS node in an independent HPC cluster. This will host the server side of applications, the resource manager, and share users. For more detail on SMS node functionality please refer to OpenHPC documentation http://www.openhpc.community/downloads/.
+	The cloud-init script for the SMS node is different than the compute node. The SMS node, when instantiated within OpenStack, serves as head node for HPC-as-a-Service, and hosts all services as a SMS node in an independent HPC cluster. The resource manager runs on the SMS node. The SMS node also works as a NFS server and exports users’ home directories and common software to the compute nodes. For more detail on SMS node functionality please refer to OpenHPC documentation http://www.openhpc.community/downloads/.
 
 	In this recipe, we will prepare a cloud-init template script for the SMS node, which then is updated with compute node IP, NTP server, and other environmental variables, just before provisioning. 
 
@@ -142,7 +142,7 @@
  % end_ohpc_run
 
 
-	One last step is to make sure ssh is working and enabled on the compute nodes. Updateand verify the permissions of ssh.
+	One last step is to make sure ssh is working and enabled on the compute nodes. Update and verify the permissions of ssh.
 
 % begin_ohpc_run
 % ohpc_validation_newline
@@ -153,5 +153,5 @@
 \end{lstlisting} 
  % end_ohpc_run
 
-	Save the file with name chpc\_sms\_cinit". This file will be used to create the sms node instance.
+	Save the file with name chpc\_sms\_init". This file will be used to create the sms node instance.
 

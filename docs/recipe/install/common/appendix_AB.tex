@@ -24,7 +24,7 @@ is as follows:
 [controller]# yum -y install dib-chpc*
 \end{lstlisting}
 
-2. Copy the provided template input file to use as a starting point to define local site settings. Here we assume two input file. *input.local file very similar to OpenHPC input.local file, we kept this format as is for cloud node instantiation and for cloud node configuration we used "*.INVENTORY" file. The main reason for having two configuration files is to take care of cloud-burst scenario, where "input.local" file represents configuration of HPC system and "INVENTORY" file represents configuration of OpenStack cloud nodes. For "HPC as a Service" we kept same format and node entries in input.local file is ignored by recipe of "HPC as  a service".
+2. Copy the provided template input file to use as a starting point to define local site settings. Here we assume two input files. *input.local file very similar to OpenHPC input.local file, we kept this format as is for cloud node instantiation and for cloud node configuration we used "*.INVENTORY" file. The main reason for having two configuration files is to take care of cloud-burst scenario, where "input.local" file represents configuration of HPC system and "INVENTORY" file represents configuration of OpenStack cloud nodes. For "HPC as a Service" we kept same format and node entries in input.local file is ignored by recipe of "HPC as  a service".
 
 \begin{lstlisting}[language=bash,keywords={},upquote=true]
 [controller]# cp /opt/ohpc/pub/doc/recipes/Template-INPUT.LOCAL ~/input.local
