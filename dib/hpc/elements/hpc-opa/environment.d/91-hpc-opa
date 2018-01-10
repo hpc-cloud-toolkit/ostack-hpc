@@ -1,0 +1,2 @@
+# Default is compute
+export DIB_HPC_IMAGE_TYPE="${DIB_HPC_IMAGE_TYPE:-compute}"
