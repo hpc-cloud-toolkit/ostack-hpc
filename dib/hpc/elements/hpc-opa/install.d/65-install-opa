@@ -1,0 +1,33 @@
+#!/bin/bash
+
+if [ ${DIB_DEBUG_TRACE:-0} -gt 0 ]; then
+    set -x
+fi
+set -eu
+set -o pipefail
+
+#Create fake uname that will return proper kernel information
+mv /usr/bin/uname{,_old}
+
+cat << EOF | sed "s/%24/$/g" >> /usr/bin/uname
+#!/bin/bash
+function _uname(){
+ if [ %241 = "-r" ]; then
+  echo "$(ls /usr/src/kernels/)";
+ elif [ %241 = "-m" ]; then
+  echo "x86_64";
+ fi
+};
+_uname %241
+EOF
+
+chmod +x /usr/bin/uname
+
+cd /tmp/intel-opa
+if [[ $DIB_HPC_IMAGE_TYPE == "sms" ]]; then
+    ARCH="x86_64" ./INSTALL -a
+else
+    ARCH="x86_64" ./INSTALL -i opa -i ipoib -i psm_mpi -i pgas
+fi
+rm /usr/bin/uname
+mv /usr/bin/uname_old /usr/bin/uname
