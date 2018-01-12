@@ -1,0 +1,37 @@
+export PATH=/home/ppk/dib/dev/diskimage-builder/bin:/home/ppk/dib/dev/dib-utils/bin:$PATH
+export DIB_DEV_USER_USERNAME=chpc
+export DIB_DEV_USER_PASSWORD=intel8086
+export DIB_DEV_USER_PWDLESS_SUDO=1
+export DIB_DEBUG_TRACE=1
+export ELEMENTS_PATH="$(realpath ../hpc/elements/)"
+export DIB_HPC_BASE=ohpc
+export DIB_HPC_FILE_PATH="$(realpath ../hpc/hpc-files/)"
+
+# tell to build sms node image
+export DIB_HPC_IMAGE_TYPE=sms
+# temp path for ssh authorized keys
+export DIB_HPC_SSH_PUB_KEY=/root/.ssh/hpcasservice
+
+# sms node specific variables, mainly used by hpc-dev-env elements
+# compiler
+export DIB_HPC_COMPILER="gnu7"
+#MPI lib to install
+export DIB_HPC_MPI="openmpi3 mvapich2"
+# Performance tools
+export DIB_HPC_PERF_TOOLS="perf-tools"
+# 3rd Part Libraries & Tools
+export DIB_HPC_3RD_LIBS="serial-libs parallel-libs io-libs python-libs runtimes"
+
+#Location of OHPC package
+export DIB_HPC_OHPC_PKG="https://github.com/openhpc/ohpc/releases/download/v1.3.GA/ohpc-release-1.3-1.el7.x86_64.rpm"
+#Location of Intel OPA package
+export DIB_HPC_OPA_PKG="https://downloadmirror.intel.com/27220/eng/IntelOPA-IFS.RHEL74-x86_64.10.6.0.0.134.tgz"
+
+# Name and location of the OS base image
+export HPC_OS_IMAGE_TMP_DIR="/tmp"
+export HPC_OS_IMAGE_MIRROR="http://cloud.centos.org/centos/7/images"
+
+export break="after-error"
+
+rm -rf /root/.cache/image-create/yum
+disk-image-create  centos7 baremetal local-config dhcp-all-interfaces devuser hpc-env-base hpc-mrsh hpc-slurm hpc-dev-env hpc-imb  hpc-opa -o sms-opa106-centos74 2>&1 | tee sms.log

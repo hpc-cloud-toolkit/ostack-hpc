@@ -1,0 +1,31 @@
+export PATH=/home/ppk/dib/dev/diskimage-builder/bin:/home/ppk/dib/dev/dib-utils/bin:$PATH
+export DIB_DEV_USER_USERNAME=chpc
+export DIB_DEV_USER_PASSWORD=intel8086
+export DIB_DEV_USER_PWDLESS_SUDO=1
+export DIB_DEBUG_TRACE=1
+
+export ELEMENTS_PATH="$(realpath ../hpc/elements/)"
+export DIB_HPC_BASE=ohpc
+export DIB_HPC_FILE_PATH="$(realpath /opt/ohpc/admin/dib-chpc/hpc-files/)"
+
+# path of ssh authorized keys for ssh access
+export DIB_HPC_SSH_PUB_KEY=/root/.ssh/hpcasservice
+export DIB_NTP_SERVER=10.23.184.104
+
+# tell to build sms node image
+export DIB_HPC_IMAGE_TYPE=compute
+
+# Name and location of the OS base image
+export HPC_OS_IMAGE_TMP_DIR="/tmp"
+export HPC_OS_IMAGE_MIRROR="http://cloud.centos.org/centos/7/images"
+
+#Location of OHPC package
+export DIB_HPC_OHPC_PKG="https://github.com/openhpc/ohpc/releases/download/v1.3.GA/ohpc-release-1.3-1.el7.x86_64.rpm"
+#Location of Intel OPA package
+export DIB_HPC_OPA_PKG="https://downloadmirror.intel.com/27220/eng/IntelOPA-IFS.RHEL74-x86_64.10.6.0.0.134.tgz"
+
+export DIB_BAREMETAL_KERNEL_PATTERN=3.10.0-693.5.2.el7.x86_64
+export break="after-error"
+
+rm -rf /root/.cache/image-create/yum
+disk-image-create centos7 baremetal local-config dhcp-all-interfaces devuser hpc-env-base hpc-mrsh hpc-slurm hpc-opa -o cn-opa106-centos74 2>&1 | tee cn.log
